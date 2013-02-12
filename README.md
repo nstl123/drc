@@ -1,2 +1,0 @@
-drc
-dar vienas testas

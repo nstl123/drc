@@ -1,8 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:base="services.base.*">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			protected function button1_clickHandler(event:MouseEvent):void
+			{				
+				testConnResult.token = base.testConn();
+			}
+
+			protected function base_resultHandler(event:ResultEvent):void
+			{
+				var rez:ArrayCollection = new ArrayCollection();
+				rez = ArrayCollection(this.testConnResult.lastResult);
+				cntryGrid.dataProvider = rez;
+			}
+
+			[bindable] public var selectedCntry:int = -1;
+			protected function cntryGrid_changeHandler(event:ListEvent):void
+			{
+				selectedCntry = cntryGrid.selectedItem.id;					
+			}
+
+			
+			protected function getSomeData_clickHandler(event:MouseEvent):void
+			{
+				getDeviceBaseResult.token = base.getDeviceBase(selectedCntry);
+			}
+			
+
+			protected function getDeviceBaseResult_resultHandler(event:ResultEvent):void
+			{
+				this.devBaseGrid.dataProvider = this.getDeviceBaseResult.lastResult;
+			}
+
+		]]>
+	</fx:Script>
+
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:CallResponder id="testConnResult" result="base_resultHandler(event)"/>
+		<base:Base id="base" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"
+				   />
+		<s:CallResponder id="getDeviceBaseResult" result="getDeviceBaseResult_resultHandler(event)"/>
 	</fx:Declarations>
+	<mx:ViewStack id="viewstack1" width="90%" height="90%" horizontalCenter="0" verticalCenter="0">
+		<s:NavigatorContent label="inputPane" width="100%" height="100%">
+			<mx:TabNavigator width="95%" height="95%" horizontalCenter="0" verticalCenter="0">
+				<s:NavigatorContent label="InputTab" width="100%" height="100%">
+					<s:Button x="255" y="9" label="getSomeList()" click="button1_clickHandler(event)" id="getList" width="128"/>
+					<mx:DataGrid x="214" y="87" width="582" id="devBaseGrid" height="382">
+						<mx:columns>
+							<mx:DataGridColumn headerText="cntry" dataField="countryID"/>
+							<mx:DataGridColumn headerText="device" dataField="deviceID"/>
+							<mx:DataGridColumn headerText="2004" dataField="Y2004"/>
+							<mx:DataGridColumn headerText="2005" dataField="Y2005"/>
+							<mx:DataGridColumn headerText="2006" dataField="Y2006"/>
+							<mx:DataGridColumn headerText="2007" dataField="Y2007"/>
+							<mx:DataGridColumn headerText="2008" dataField="Y2008"/>
+						</mx:columns>
+					</mx:DataGrid>
+					<mx:DataGrid x="5" y="8" width="189" height="469" id="cntryGrid" change="cntryGrid_changeHandler(event)">
+						<mx:columns>
+							<mx:DataGridColumn headerText="id" dataField="id"/>
+							<mx:DataGridColumn headerText="namen" dataField="namen"/>
+						</mx:columns>
+					</mx:DataGrid>
+					<s:Button x="254" y="50" label="getSomeData()" width="128" id="getSomeData" click="getSomeData_clickHandler(event)"/>
+				</s:NavigatorContent>
+			</mx:TabNavigator>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+	<s:Label text="experiments with connection. v. 0.1" right="206" top="10"/>
 </s:Application>

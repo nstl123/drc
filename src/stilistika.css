@@ -1,0 +1,15 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+
+global
+{
+	textAlign: center;
+	font-size: 12;
+	font-family: Calibri;
+	chrome-color: #CCCCCC;
+	content-background-color: #9A9A00;
+	content-background-alpha: 0.47;
+}
+	

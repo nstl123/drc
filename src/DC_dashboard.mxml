@@ -104,7 +104,7 @@
 	</fx:Script>
 
 	<fx:Declarations>		
-		<mx:CurrencyFormatter   id="stilius1" precision="2"
+		<mx:CurrencyFormatter   id="stilius1" precision="4"
 								rounding="none"
 								decimalSeparatorTo="."
 								thousandsSeparatorTo=","

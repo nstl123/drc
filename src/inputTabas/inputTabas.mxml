@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"		 
+		 xmlns:inputTabas="inputTabas.*"
+		 width="100%" height="100%" 
+		 xmlns:base="services.base.*" >
+	
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
+
+	<fx:Declarations>
+		<s:RadioButtonGroup id="batTypes"/>
+		<s:RadioButtonGroup id="pwrSource"/>		
+		
+		<base:Base id="base" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"			    
+				   showBusyCursor="true"  />
+		
+		<s:CallResponder id="getCountriesList" result="base_resultHandler(event)"/>	
+		<s:CallResponder id="getDeviceBaseResult" result="getDeviceBaseResult_resultHandler(event)"/>
+		<s:CallResponder id="getDemandResult" result="getDemandResult_resultHandler(event)" />
+	
+	</fx:Declarations>
+		
+
+	<fx:Declarations>		
+		<mx:CurrencyFormatter   id="stilius1" precision="4"
+								rounding="none"
+								decimalSeparatorTo="."
+								thousandsSeparatorTo=","
+								useThousandsSeparator="true"
+								currencySymbol=""
+								useNegativeSign="true"                  
+								/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			[bindable] public var selectedCntry:int = 1;
+			[bindable] public var selectedDevice:int = 1;
+			[bindable] public var selectedBatType:int = 1;
+			[bindable] public var selectedPwrType:int = 1;
+			
+			protected function base_resultHandler(event:ResultEvent):void
+			{
+				var rez:ArrayCollection = new ArrayCollection();
+				rez = ArrayCollection(this.getCountriesList.lastResult);
+				cntryGrid.dataProvider = rez;
+			}
+			
+			/* monitoring change events */
+			
+			public function startApp(event:Event):void
+			{				
+				this.getCountriesList.token = this.base.getCountryList();
+				
+				this.addEventListener("cntrySelectionChanged", refreshDemandData);
+				this.addEventListener("typesSelectionChanged", refreshDemandData);				
+			}		
+			
+			protected function refreshDemandData(evt:Event):void {
+				if (evt.type == "cntrySelectionChanged") {
+					getDeviceBaseResult.token = base.getDeviceBase(selectedCntry);	
+				};			
+				getDemandResult.token = base.getDemand(selectedCntry, selectedBatType, selectedPwrType);
+			}
+			
+			protected function cntryGrid_changeHandler(event:ListEvent):void
+			{
+				selectedCntry = cntryGrid.selectedItem.id;			
+				selCountry.text = cntryGrid.selectedItem.namen;
+				
+				this.dispatchEvent(new Event("cntrySelectionChanged"));							
+			}			
+			
+			protected function batTypesChange_clickHandler(event:MouseEvent):void
+			{
+				selectedBatType = int(this.batTypes.selectedValue);
+				this.dispatchEvent(new Event("typesSelectionChanged"));				
+			}
+			
+			protected function pwrTypes_clickHandler(event:MouseEvent):void
+			{
+				selectedPwrType = int(this.pwrSource.selectedValue);
+				this.dispatchEvent(new Event("typesSelectionChanged"));			
+			}
+			
+			/* END of change monitor */
+			
+			protected function devBaseGrid_changeHandler(event:ListEvent):void
+			{
+				selectedDevice = this.devBaseGrid.selectedItem.deviceID;
+				selDevice.text = this.devBaseGrid.selectedItem.deviceName;
+			}
+			
+			protected function getDemand_clickHandler(event:MouseEvent):void
+			{				
+				getDemandResult.token = base.getDemand(selectedCntry, selectedBatType, selectedPwrType);					
+			}
+			
+			protected function getDemandResult_resultHandler(event:ResultEvent):void
+			{
+				this.demandGrid.dataProvider = this.getDemandResult.lastResult;
+			}
+			
+			protected function getDeviceBaseResult_resultHandler(event:ResultEvent):void
+			{
+				this.devBaseGrid.dataProvider = this.getDeviceBaseResult.lastResult;
+			}		
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Script>
+		<![CDATA[
+			/* some text/numbers formatting tasks go here */
+			
+			public function format_numbers(item:Object, column:DataGridColumn):String { 
+				var a:Object = item[column.dataField]				
+				return this.stilius1.format(a);	
+			}		
+			
+			public function format_text(item:Object, column:DataGridColumn):String { 
+				var a:Object = item[column.dataField]				
+				return a.toString();	
+			}
+		]]>
+	</fx:Script>
+	
+	<mx:DataGrid id="cntryGrid" change="cntryGrid_changeHandler(event)" 
+				 left="0" top="0" bottom="289" right="623" height="100%" width="30%">
+		<mx:columns>
+			<mx:DataGridColumn headerText="id" dataField="id"/>
+			<mx:DataGridColumn headerText="namen" dataField="namen"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<s:BorderContainer width="70%" height="100%">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<s:BorderContainer width="100%" height="46">
+			<s:layout>
+				<s:BasicLayout/>
+			</s:layout>
+			<s:Label x="10" text="selected country:" width="93" height="24" verticalAlign="middle" textAlign="right" verticalCenter="-1"/>
+			<s:Label x="121" text="CC" width="93" height="24" verticalAlign="middle" textAlign="left" id="selCountry" verticalCenter="-1"/>
+			<s:Label x="202" text="selected device:" width="93" height="24" verticalAlign="middle" textAlign="right" verticalCenter="-1"/>
+			<s:Label x="301" text="DD" width="151" height="24" verticalAlign="middle" textAlign="left" id="selDevice" verticalCenter="-2"/>
+			<s:Label text="InputTabStyle" width="139" right="10" top="10" fontSize="14" textAlign="right"/>
+		</s:BorderContainer>
+		<s:BorderContainer width="100%" height="50%">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<mx:DataGrid id="devBaseGrid" height="100%" width="80%" x="35" y="10" 
+						 change="devBaseGrid_changeHandler(event)">
+				<mx:columns>
+					<mx:DataGridColumn headerText="country" dataField="countryName" textAlign="left"/>
+					<mx:DataGridColumn headerText="device" dataField="deviceName" textAlign="left"/>
+					<mx:DataGridColumn headerText="2004" dataField="Y2004" labelFunction="format_numbers"/>
+					<mx:DataGridColumn headerText="2005" dataField="Y2005" labelFunction="format_numbers"/>
+					<mx:DataGridColumn headerText="2006" dataField="Y2006" labelFunction="format_numbers"/>
+					<mx:DataGridColumn headerText="2007" dataField="Y2007" labelFunction="format_numbers"/>
+					<mx:DataGridColumn headerText="2008" dataField="Y2008" labelFunction="format_numbers"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<s:BorderContainer width="20%" height="100%">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="center"/>
+				</s:layout>
+				<s:Label text="BatteryTypes" width="80%" height="8%" verticalAlign="middle" textAlign="left"/>								
+				<s:RadioButton label="1C" groupName="batTypes" value="1" x="15" y="57" width="50%" height="8%" click="batTypesChange_clickHandler(event)" selected="true"/>
+				<s:RadioButton label="1D" groupName="batTypes" value="2" x="51" y="57" width="50%" height="8%" click="batTypesChange_clickHandler(event)"/>
+				<s:RadioButton label="3A" groupName="batTypes" value="3" x="89" y="57" width="50%" height="8%" click="batTypesChange_clickHandler(event)"/>
+				<s:RadioButton label="9V" groupName="batTypes" value="4" x="127" y="57" width="50%" height="8%" click="batTypesChange_clickHandler(event)"/>
+				<s:RadioButton label="AA" groupName="batTypes" value="5" x="44" y="140" width="50%" height="8%" selected="false" click="batTypesChange_clickHandler(event)"/>
+				<s:Label text="PowerSource" width="80%" height="8%" verticalAlign="middle" textAlign="left"/>
+				<s:RadioButton label="DPP" groupName="pwrSource" value="1" width="50%" height="8%" selected="true" click="pwrTypes_clickHandler(event)"/>
+				<s:RadioButton label="RCH" groupName="pwrSource" value="2" width="50%" height="8%" click="pwrTypes_clickHandler(event)"/>
+			</s:BorderContainer>
+		</s:BorderContainer>
+		<mx:DataGrid id="demandGrid" height="50%" width="100%" x="106" y="10">
+			<mx:columns>
+				<mx:DataGridColumn headerText="country" dataField="countryName" textAlign="left"/>
+				<mx:DataGridColumn headerText="device" dataField="deviceName" textAlign="left"/>
+				<mx:DataGridColumn headerText="batery Type" dataField="batTypeName" textAlign="left" labelFunction="format_text"/>
+				<mx:DataGridColumn headerText="power Source" dataField="batPwrName" textAlign="left" labelFunction="format_text"/>
+				<mx:DataGridColumn headerText="2004" dataField="Y2004" labelFunction="format_numbers"/>
+				<mx:DataGridColumn headerText="2005" dataField="Y2005" labelFunction="format_numbers"/>
+				<mx:DataGridColumn headerText="2006" dataField="Y2006" labelFunction="format_numbers"/>
+				<mx:DataGridColumn headerText="2007" dataField="Y2007" labelFunction="format_numbers"/>
+				<mx:DataGridColumn headerText="2008" dataField="Y2008" labelFunction="format_numbers"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</s:BorderContainer>
+</s:Group>

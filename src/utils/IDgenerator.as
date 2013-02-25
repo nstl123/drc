@@ -13,11 +13,13 @@ package utils
 			var randomPart:Number = Math.round(Math.random()*1000);
 			var rP:String = String(randomPart);
 			var i:Number = rP.length;
+			
 			if (rP.length < 4) {
-				for (i=i;i < 4; i++) {
-					rP = "0"+rP;
+				for (i = i; i < 4; i++) {
+					rP = "0" + rP;
 				}
 			}
+			
 			sid = String(timePart)+rP;
 			
 			return sid;

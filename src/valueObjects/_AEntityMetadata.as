@@ -22,12 +22,12 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
 {
     private static var emptyArray:Array = new Array();
 
-    model_internal static var allProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "namen");
+    model_internal static var allProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments");
     model_internal static var allAssociationProperties:Array = new Array();
-    model_internal static var allRequiredProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "namen");
-    model_internal static var allAlwaysAvailableProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "namen");
+    model_internal static var allRequiredProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments");
+    model_internal static var allAlwaysAvailableProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments");
     model_internal static var guardedProperties:Array = new Array();
-    model_internal static var dataProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "namen");
+    model_internal static var dataProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments");
     model_internal static var derivedProperties:Array = new Array();
     model_internal static var collectionProperties:Array = new Array();
     model_internal static var collectionBaseMap:Object;
@@ -36,10 +36,25 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
     model_internal static var dependedOnServices:Array = new Array();
 
     
+    model_internal var _unitIsValid:Boolean;
+    model_internal var _unitValidator:com.adobe.fiber.styles.StyleValidator;
+    model_internal var _unitIsValidCacheInitialized:Boolean = false;
+    model_internal var _unitValidationFailureMessages:Array;
+    
+    model_internal var _hierarchyIsValid:Boolean;
+    model_internal var _hierarchyValidator:com.adobe.fiber.styles.StyleValidator;
+    model_internal var _hierarchyIsValidCacheInitialized:Boolean = false;
+    model_internal var _hierarchyValidationFailureMessages:Array;
+    
     model_internal var _namenIsValid:Boolean;
     model_internal var _namenValidator:com.adobe.fiber.styles.StyleValidator;
     model_internal var _namenIsValidCacheInitialized:Boolean = false;
     model_internal var _namenValidationFailureMessages:Array;
+    
+    model_internal var _commentsIsValid:Boolean;
+    model_internal var _commentsValidator:com.adobe.fiber.styles.StyleValidator;
+    model_internal var _commentsIsValidCacheInitialized:Boolean = false;
+    model_internal var _commentsValidationFailureMessages:Array;
 
     model_internal var _instance:_Super_A;
     model_internal static var _nullStyle:com.adobe.fiber.styles.Style = new com.adobe.fiber.styles.Style();
@@ -58,18 +73,41 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
             model_internal::dependentsOnMap["countryID"] = new Array();
             model_internal::dependentsOnMap["scenarioID"] = new Array();
             model_internal::dependentsOnMap["Y2005"] = new Array();
+            model_internal::dependentsOnMap["id"] = new Array();
+            model_internal::dependentsOnMap["unit"] = new Array();
+            model_internal::dependentsOnMap["isOutputIndicator"] = new Array();
+            model_internal::dependentsOnMap["hasSplitByDevices"] = new Array();
+            model_internal::dependentsOnMap["hasSplitByTypes"] = new Array();
+            model_internal::dependentsOnMap["hierarchy"] = new Array();
+            model_internal::dependentsOnMap["hasTimeSeries"] = new Array();
             model_internal::dependentsOnMap["namen"] = new Array();
+            model_internal::dependentsOnMap["comments"] = new Array();
 
             // collection base map
             model_internal::collectionBaseMap = new Object()
         }
 
         model_internal::_instance = value;
+        model_internal::_unitValidator = new StyleValidator(model_internal::_instance.model_internal::_doValidationForUnit);
+        model_internal::_unitValidator.required = true;
+        model_internal::_unitValidator.requiredFieldError = "unit is required";
+        //model_internal::_unitValidator.source = model_internal::_instance;
+        //model_internal::_unitValidator.property = "unit";
+        model_internal::_hierarchyValidator = new StyleValidator(model_internal::_instance.model_internal::_doValidationForHierarchy);
+        model_internal::_hierarchyValidator.required = true;
+        model_internal::_hierarchyValidator.requiredFieldError = "hierarchy is required";
+        //model_internal::_hierarchyValidator.source = model_internal::_instance;
+        //model_internal::_hierarchyValidator.property = "hierarchy";
         model_internal::_namenValidator = new StyleValidator(model_internal::_instance.model_internal::_doValidationForNamen);
         model_internal::_namenValidator.required = true;
         model_internal::_namenValidator.requiredFieldError = "namen is required";
         //model_internal::_namenValidator.source = model_internal::_instance;
         //model_internal::_namenValidator.property = "namen";
+        model_internal::_commentsValidator = new StyleValidator(model_internal::_instance.model_internal::_doValidationForComments);
+        model_internal::_commentsValidator.required = true;
+        model_internal::_commentsValidator.requiredFieldError = "comments is required";
+        //model_internal::_commentsValidator.source = model_internal::_instance;
+        //model_internal::_commentsValidator.property = "comments";
     }
 
     override public function getEntityName():String
@@ -321,7 +359,55 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
     }
 
     [Bindable(event="propertyChange")]
+    public function get isIdAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isUnitAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isIsOutputIndicatorAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isHasSplitByDevicesAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isHasSplitByTypesAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isHierarchyAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isHasTimeSeriesAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
     public function get isNamenAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isCommentsAvailable():Boolean
     {
         return true;
     }
@@ -330,12 +416,36 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
     /**
      * derived property recalculation
      */
+    public function invalidateDependentOnUnit():void
+    {
+        if (model_internal::_unitIsValidCacheInitialized )
+        {
+            model_internal::_instance.model_internal::_doValidationCacheOfUnit = null;
+            model_internal::calculateUnitIsValid();
+        }
+    }
+    public function invalidateDependentOnHierarchy():void
+    {
+        if (model_internal::_hierarchyIsValidCacheInitialized )
+        {
+            model_internal::_instance.model_internal::_doValidationCacheOfHierarchy = null;
+            model_internal::calculateHierarchyIsValid();
+        }
+    }
     public function invalidateDependentOnNamen():void
     {
         if (model_internal::_namenIsValidCacheInitialized )
         {
             model_internal::_instance.model_internal::_doValidationCacheOfNamen = null;
             model_internal::calculateNamenIsValid();
+        }
+    }
+    public function invalidateDependentOnComments():void
+    {
+        if (model_internal::_commentsIsValidCacheInitialized )
+        {
+            model_internal::_instance.model_internal::_doValidationCacheOfComments = null;
+            model_internal::calculateCommentsIsValid();
         }
     }
 
@@ -382,6 +492,236 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
 
     [Bindable(event="propertyChange")]   
     public function get Y2005Style():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get idStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get unitStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    public function get unitValidator() : StyleValidator
+    {
+        return model_internal::_unitValidator;
+    }
+
+    model_internal function set _unitIsValid_der(value:Boolean):void 
+    {
+        var oldValue:Boolean = model_internal::_unitIsValid;         
+        if (oldValue !== value)
+        {
+            model_internal::_unitIsValid = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "unitIsValid", oldValue, value));
+        }                             
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get unitIsValid():Boolean
+    {
+        if (!model_internal::_unitIsValidCacheInitialized)
+        {
+            model_internal::calculateUnitIsValid();
+        }
+
+        return model_internal::_unitIsValid;
+    }
+
+    model_internal function calculateUnitIsValid():void
+    {
+        var valRes:ValidationResultEvent = model_internal::_unitValidator.validate(model_internal::_instance.unit)
+        model_internal::_unitIsValid_der = (valRes.results == null);
+        model_internal::_unitIsValidCacheInitialized = true;
+        if (valRes.results == null)
+             model_internal::unitValidationFailureMessages_der = emptyArray;
+        else
+        {
+            var _valFailures:Array = new Array();
+            for (var a:int = 0 ; a<valRes.results.length ; a++)
+            {
+                _valFailures.push(valRes.results[a].errorMessage);
+            }
+            model_internal::unitValidationFailureMessages_der = _valFailures;
+        }
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get unitValidationFailureMessages():Array
+    {
+        if (model_internal::_unitValidationFailureMessages == null)
+            model_internal::calculateUnitIsValid();
+
+        return _unitValidationFailureMessages;
+    }
+
+    model_internal function set unitValidationFailureMessages_der(value:Array) : void
+    {
+        var oldValue:Array = model_internal::_unitValidationFailureMessages;
+
+        var needUpdate : Boolean = false;
+        if (oldValue == null)
+            needUpdate = true;
+    
+        // avoid firing the event when old and new value are different empty arrays
+        if (!needUpdate && (oldValue !== value && (oldValue.length > 0 || value.length > 0)))
+        {
+            if (oldValue.length == value.length)
+            {
+                for (var a:int=0; a < oldValue.length; a++)
+                {
+                    if (oldValue[a] !== value[a])
+                    {
+                        needUpdate = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                needUpdate = true;
+            }
+        }
+
+        if (needUpdate)
+        {
+            model_internal::_unitValidationFailureMessages = value;   
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "unitValidationFailureMessages", oldValue, value));
+            // Only execute calculateIsValid if it has been called before, to update the validationFailureMessages for
+            // the entire entity.
+            if (model_internal::_instance.model_internal::_cacheInitialized_isValid)
+            {
+                model_internal::_instance.model_internal::isValid_der = model_internal::_instance.model_internal::calculateIsValid();
+            }
+        }
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get isOutputIndicatorStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get hasSplitByDevicesStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get hasSplitByTypesStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get hierarchyStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    public function get hierarchyValidator() : StyleValidator
+    {
+        return model_internal::_hierarchyValidator;
+    }
+
+    model_internal function set _hierarchyIsValid_der(value:Boolean):void 
+    {
+        var oldValue:Boolean = model_internal::_hierarchyIsValid;         
+        if (oldValue !== value)
+        {
+            model_internal::_hierarchyIsValid = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "hierarchyIsValid", oldValue, value));
+        }                             
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get hierarchyIsValid():Boolean
+    {
+        if (!model_internal::_hierarchyIsValidCacheInitialized)
+        {
+            model_internal::calculateHierarchyIsValid();
+        }
+
+        return model_internal::_hierarchyIsValid;
+    }
+
+    model_internal function calculateHierarchyIsValid():void
+    {
+        var valRes:ValidationResultEvent = model_internal::_hierarchyValidator.validate(model_internal::_instance.hierarchy)
+        model_internal::_hierarchyIsValid_der = (valRes.results == null);
+        model_internal::_hierarchyIsValidCacheInitialized = true;
+        if (valRes.results == null)
+             model_internal::hierarchyValidationFailureMessages_der = emptyArray;
+        else
+        {
+            var _valFailures:Array = new Array();
+            for (var a:int = 0 ; a<valRes.results.length ; a++)
+            {
+                _valFailures.push(valRes.results[a].errorMessage);
+            }
+            model_internal::hierarchyValidationFailureMessages_der = _valFailures;
+        }
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get hierarchyValidationFailureMessages():Array
+    {
+        if (model_internal::_hierarchyValidationFailureMessages == null)
+            model_internal::calculateHierarchyIsValid();
+
+        return _hierarchyValidationFailureMessages;
+    }
+
+    model_internal function set hierarchyValidationFailureMessages_der(value:Array) : void
+    {
+        var oldValue:Array = model_internal::_hierarchyValidationFailureMessages;
+
+        var needUpdate : Boolean = false;
+        if (oldValue == null)
+            needUpdate = true;
+    
+        // avoid firing the event when old and new value are different empty arrays
+        if (!needUpdate && (oldValue !== value && (oldValue.length > 0 || value.length > 0)))
+        {
+            if (oldValue.length == value.length)
+            {
+                for (var a:int=0; a < oldValue.length; a++)
+                {
+                    if (oldValue[a] !== value[a])
+                    {
+                        needUpdate = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                needUpdate = true;
+            }
+        }
+
+        if (needUpdate)
+        {
+            model_internal::_hierarchyValidationFailureMessages = value;   
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "hierarchyValidationFailureMessages", oldValue, value));
+            // Only execute calculateIsValid if it has been called before, to update the validationFailureMessages for
+            // the entire entity.
+            if (model_internal::_instance.model_internal::_cacheInitialized_isValid)
+            {
+                model_internal::_instance.model_internal::isValid_der = model_internal::_instance.model_internal::calculateIsValid();
+            }
+        }
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get hasTimeSeriesStyle():com.adobe.fiber.styles.Style
     {
         return model_internal::_nullStyle;
     }
@@ -486,6 +826,106 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
         }
     }
 
+    [Bindable(event="propertyChange")]   
+    public function get commentsStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    public function get commentsValidator() : StyleValidator
+    {
+        return model_internal::_commentsValidator;
+    }
+
+    model_internal function set _commentsIsValid_der(value:Boolean):void 
+    {
+        var oldValue:Boolean = model_internal::_commentsIsValid;         
+        if (oldValue !== value)
+        {
+            model_internal::_commentsIsValid = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "commentsIsValid", oldValue, value));
+        }                             
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get commentsIsValid():Boolean
+    {
+        if (!model_internal::_commentsIsValidCacheInitialized)
+        {
+            model_internal::calculateCommentsIsValid();
+        }
+
+        return model_internal::_commentsIsValid;
+    }
+
+    model_internal function calculateCommentsIsValid():void
+    {
+        var valRes:ValidationResultEvent = model_internal::_commentsValidator.validate(model_internal::_instance.comments)
+        model_internal::_commentsIsValid_der = (valRes.results == null);
+        model_internal::_commentsIsValidCacheInitialized = true;
+        if (valRes.results == null)
+             model_internal::commentsValidationFailureMessages_der = emptyArray;
+        else
+        {
+            var _valFailures:Array = new Array();
+            for (var a:int = 0 ; a<valRes.results.length ; a++)
+            {
+                _valFailures.push(valRes.results[a].errorMessage);
+            }
+            model_internal::commentsValidationFailureMessages_der = _valFailures;
+        }
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get commentsValidationFailureMessages():Array
+    {
+        if (model_internal::_commentsValidationFailureMessages == null)
+            model_internal::calculateCommentsIsValid();
+
+        return _commentsValidationFailureMessages;
+    }
+
+    model_internal function set commentsValidationFailureMessages_der(value:Array) : void
+    {
+        var oldValue:Array = model_internal::_commentsValidationFailureMessages;
+
+        var needUpdate : Boolean = false;
+        if (oldValue == null)
+            needUpdate = true;
+    
+        // avoid firing the event when old and new value are different empty arrays
+        if (!needUpdate && (oldValue !== value && (oldValue.length > 0 || value.length > 0)))
+        {
+            if (oldValue.length == value.length)
+            {
+                for (var a:int=0; a < oldValue.length; a++)
+                {
+                    if (oldValue[a] !== value[a])
+                    {
+                        needUpdate = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                needUpdate = true;
+            }
+        }
+
+        if (needUpdate)
+        {
+            model_internal::_commentsValidationFailureMessages = value;   
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "commentsValidationFailureMessages", oldValue, value));
+            // Only execute calculateIsValid if it has been called before, to update the validationFailureMessages for
+            // the entire entity.
+            if (model_internal::_instance.model_internal::_cacheInitialized_isValid)
+            {
+                model_internal::_instance.model_internal::isValid_der = model_internal::_instance.model_internal::calculateIsValid();
+            }
+        }
+    }
+
 
      /**
      * 
@@ -511,9 +951,21 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
      {
          switch(propertyName)
          {
+            case("unit"):
+            {
+                return unitValidationFailureMessages;
+            }
+            case("hierarchy"):
+            {
+                return hierarchyValidationFailureMessages;
+            }
             case("namen"):
             {
                 return namenValidationFailureMessages;
+            }
+            case("comments"):
+            {
+                return commentsValidationFailureMessages;
             }
             default:
             {

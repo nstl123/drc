@@ -45,7 +45,15 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     private var _internal_countryID : int;
     private var _internal_scenarioID : int;
     private var _internal_Y2005 : Number = Number(0);
+    private var _internal_id : int;
+    private var _internal_unit : Object;
+    private var _internal_isOutputIndicator : int;
+    private var _internal_hasSplitByDevices : int;
+    private var _internal_hasSplitByTypes : int;
+    private var _internal_hierarchy : Object;
+    private var _internal_hasTimeSeries : int;
     private var _internal_namen : String;
+    private var _internal_comments : String;
 
     private static var emptyArray:Array = new Array();
 
@@ -64,7 +72,10 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         _model = new _AEntityMetadata(this);
 
         // Bind to own data properties for cache invalidation triggering
+        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "unit", model_internal::setterListenerUnit));
+        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "hierarchy", model_internal::setterListenerHierarchy));
         model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "namen", model_internal::setterListenerNamen));
+        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "comments", model_internal::setterListenerComments));
 
     }
 
@@ -115,9 +126,57 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     }
 
     [Bindable(event="propertyChange")]
+    public function get id() : int
+    {
+        return _internal_id;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get unit() : Object
+    {
+        return _internal_unit;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isOutputIndicator() : int
+    {
+        return _internal_isOutputIndicator;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get hasSplitByDevices() : int
+    {
+        return _internal_hasSplitByDevices;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get hasSplitByTypes() : int
+    {
+        return _internal_hasSplitByTypes;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get hierarchy() : Object
+    {
+        return _internal_hierarchy;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get hasTimeSeries() : int
+    {
+        return _internal_hasTimeSeries;
+    }
+
+    [Bindable(event="propertyChange")]
     public function get namen() : String
     {
         return _internal_namen;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get comments() : String
+    {
+        return _internal_comments;
     }
 
     /**
@@ -194,6 +253,76 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
+    public function set id(value:int) : void
+    {
+        var oldValue:int = _internal_id;
+        if (oldValue !== value)
+        {
+            _internal_id = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "id", oldValue, _internal_id));
+        }
+    }
+
+    public function set unit(value:Object) : void
+    {
+        var oldValue:Object = _internal_unit;
+        if (oldValue !== value)
+        {
+            _internal_unit = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "unit", oldValue, _internal_unit));
+        }
+    }
+
+    public function set isOutputIndicator(value:int) : void
+    {
+        var oldValue:int = _internal_isOutputIndicator;
+        if (oldValue !== value)
+        {
+            _internal_isOutputIndicator = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "isOutputIndicator", oldValue, _internal_isOutputIndicator));
+        }
+    }
+
+    public function set hasSplitByDevices(value:int) : void
+    {
+        var oldValue:int = _internal_hasSplitByDevices;
+        if (oldValue !== value)
+        {
+            _internal_hasSplitByDevices = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "hasSplitByDevices", oldValue, _internal_hasSplitByDevices));
+        }
+    }
+
+    public function set hasSplitByTypes(value:int) : void
+    {
+        var oldValue:int = _internal_hasSplitByTypes;
+        if (oldValue !== value)
+        {
+            _internal_hasSplitByTypes = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "hasSplitByTypes", oldValue, _internal_hasSplitByTypes));
+        }
+    }
+
+    public function set hierarchy(value:Object) : void
+    {
+        var oldValue:Object = _internal_hierarchy;
+        if (oldValue !== value)
+        {
+            _internal_hierarchy = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "hierarchy", oldValue, _internal_hierarchy));
+        }
+    }
+
+    public function set hasTimeSeries(value:int) : void
+    {
+        var oldValue:int = _internal_hasTimeSeries;
+        if (oldValue !== value)
+        {
+            _internal_hasTimeSeries = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "hasTimeSeries", oldValue, _internal_hasTimeSeries));
+        }
+    }
+
     public function set namen(value:String) : void
     {
         var oldValue:String = _internal_namen;
@@ -201,6 +330,16 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         {
             _internal_namen = value;
             this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "namen", oldValue, _internal_namen));
+        }
+    }
+
+    public function set comments(value:String) : void
+    {
+        var oldValue:String = _internal_comments;
+        if (oldValue !== value)
+        {
+            _internal_comments = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "comments", oldValue, _internal_comments));
         }
     }
 
@@ -216,9 +355,24 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
      *  - the validity of the property (and the containing entity) if the given data property is required.
      */
 
+    model_internal function setterListenerUnit(value:flash.events.Event):void
+    {
+        _model.invalidateDependentOnUnit();
+    }
+
+    model_internal function setterListenerHierarchy(value:flash.events.Event):void
+    {
+        _model.invalidateDependentOnHierarchy();
+    }
+
     model_internal function setterListenerNamen(value:flash.events.Event):void
     {
         _model.invalidateDependentOnNamen();
+    }
+
+    model_internal function setterListenerComments(value:flash.events.Event):void
+    {
+        _model.invalidateDependentOnComments();
     }
 
 
@@ -242,10 +396,25 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         var validationFailureMessages:Array = new Array();
 
         var propertyValidity:Boolean = true;
+        if (!_model.unitIsValid)
+        {
+            propertyValidity = false;
+            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_unitValidationFailureMessages);
+        }
+        if (!_model.hierarchyIsValid)
+        {
+            propertyValidity = false;
+            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_hierarchyValidationFailureMessages);
+        }
         if (!_model.namenIsValid)
         {
             propertyValidity = false;
             com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_namenValidationFailureMessages);
+        }
+        if (!_model.commentsIsValid)
+        {
+            propertyValidity = false;
+            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_commentsValidationFailureMessages);
         }
 
         model_internal::_cacheInitialized_isValid = true;
@@ -326,6 +495,60 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
+    model_internal var _doValidationCacheOfUnit : Array = null;
+    model_internal var _doValidationLastValOfUnit : Object;
+
+    model_internal function _doValidationForUnit(valueIn:Object):Array
+    {
+        var value : Object = valueIn as Object;
+
+        if (model_internal::_doValidationCacheOfUnit != null && model_internal::_doValidationLastValOfUnit == value)
+           return model_internal::_doValidationCacheOfUnit ;
+
+        _model.model_internal::_unitIsValidCacheInitialized = true;
+        var validationFailures:Array = new Array();
+        var errorMessage:String;
+        var failure:Boolean;
+
+        var valRes:ValidationResult;
+        if (_model.isUnitAvailable && _internal_unit == null)
+        {
+            validationFailures.push(new ValidationResult(true, "", "", "unit is required"));
+        }
+
+        model_internal::_doValidationCacheOfUnit = validationFailures;
+        model_internal::_doValidationLastValOfUnit = value;
+
+        return validationFailures;
+    }
+    
+    model_internal var _doValidationCacheOfHierarchy : Array = null;
+    model_internal var _doValidationLastValOfHierarchy : Object;
+
+    model_internal function _doValidationForHierarchy(valueIn:Object):Array
+    {
+        var value : Object = valueIn as Object;
+
+        if (model_internal::_doValidationCacheOfHierarchy != null && model_internal::_doValidationLastValOfHierarchy == value)
+           return model_internal::_doValidationCacheOfHierarchy ;
+
+        _model.model_internal::_hierarchyIsValidCacheInitialized = true;
+        var validationFailures:Array = new Array();
+        var errorMessage:String;
+        var failure:Boolean;
+
+        var valRes:ValidationResult;
+        if (_model.isHierarchyAvailable && _internal_hierarchy == null)
+        {
+            validationFailures.push(new ValidationResult(true, "", "", "hierarchy is required"));
+        }
+
+        model_internal::_doValidationCacheOfHierarchy = validationFailures;
+        model_internal::_doValidationLastValOfHierarchy = value;
+
+        return validationFailures;
+    }
+    
     model_internal var _doValidationCacheOfNamen : Array = null;
     model_internal var _doValidationLastValOfNamen : String;
 
@@ -349,6 +572,33 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
 
         model_internal::_doValidationCacheOfNamen = validationFailures;
         model_internal::_doValidationLastValOfNamen = value;
+
+        return validationFailures;
+    }
+    
+    model_internal var _doValidationCacheOfComments : Array = null;
+    model_internal var _doValidationLastValOfComments : String;
+
+    model_internal function _doValidationForComments(valueIn:Object):Array
+    {
+        var value : String = valueIn as String;
+
+        if (model_internal::_doValidationCacheOfComments != null && model_internal::_doValidationLastValOfComments == value)
+           return model_internal::_doValidationCacheOfComments ;
+
+        _model.model_internal::_commentsIsValidCacheInitialized = true;
+        var validationFailures:Array = new Array();
+        var errorMessage:String;
+        var failure:Boolean;
+
+        var valRes:ValidationResult;
+        if (_model.isCommentsAvailable && _internal_comments == null)
+        {
+            validationFailures.push(new ValidationResult(true, "", "", "comments is required"));
+        }
+
+        model_internal::_doValidationCacheOfComments = validationFailures;
+        model_internal::_doValidationLastValOfComments = value;
 
         return validationFailures;
     }

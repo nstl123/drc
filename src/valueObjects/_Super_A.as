@@ -38,13 +38,6 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     /**
      * properties
      */
-    private var _internal_Y2004 : Number = Number(0);
-    private var _internal_indicatorID : int;
-    private var _internal_sessionID : int;
-    private var _internal_Y2006 : Number = Number(0);
-    private var _internal_countryID : int;
-    private var _internal_scenarioID : int;
-    private var _internal_Y2005 : Number = Number(0);
     private var _internal_id : int;
     private var _internal_unit : Object;
     private var _internal_isOutputIndicator : int;
@@ -54,6 +47,14 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     private var _internal_hasTimeSeries : int;
     private var _internal_namen : String;
     private var _internal_comments : String;
+    private var _internal_Y2004 : Number;
+    private var _internal_indicatorID : int;
+    private var _internal_sessionID : int;
+    private var _internal_Y2006 : Number;
+    private var _internal_countryID : int;
+    private var _internal_scenarioID : int;
+    private var _internal_Y2005 : Number;
+    private var _internal_deviceID : int;
 
     private static var emptyArray:Array = new Array();
 
@@ -82,48 +83,6 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     /**
      * data property getters
      */
-
-    [Bindable(event="propertyChange")]
-    public function get Y2004() : Number
-    {
-        return _internal_Y2004;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get indicatorID() : int
-    {
-        return _internal_indicatorID;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get sessionID() : int
-    {
-        return _internal_sessionID;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get Y2006() : Number
-    {
-        return _internal_Y2006;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get countryID() : int
-    {
-        return _internal_countryID;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get scenarioID() : int
-    {
-        return _internal_scenarioID;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get Y2005() : Number
-    {
-        return _internal_Y2005;
-    }
 
     [Bindable(event="propertyChange")]
     public function get id() : int
@@ -179,79 +138,57 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         return _internal_comments;
     }
 
+    [Bindable(event="propertyChange")]
+    public function get Y2004() : Number
+    {
+        return _internal_Y2004;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get indicatorID() : int
+    {
+        return _internal_indicatorID;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get sessionID() : int
+    {
+        return _internal_sessionID;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get Y2006() : Number
+    {
+        return _internal_Y2006;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get countryID() : int
+    {
+        return _internal_countryID;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get scenarioID() : int
+    {
+        return _internal_scenarioID;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get Y2005() : Number
+    {
+        return _internal_Y2005;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get deviceID() : int
+    {
+        return _internal_deviceID;
+    }
+
     /**
      * data property setters
      */
-
-    public function set Y2004(value:Number) : void
-    {
-        var oldValue:Number = _internal_Y2004;
-        if (isNaN(_internal_Y2004) == true || Math.abs(oldValue - value) > epsilon)
-        {
-            _internal_Y2004 = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2004", oldValue, _internal_Y2004));
-        }
-    }
-
-    public function set indicatorID(value:int) : void
-    {
-        var oldValue:int = _internal_indicatorID;
-        if (oldValue !== value)
-        {
-            _internal_indicatorID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "indicatorID", oldValue, _internal_indicatorID));
-        }
-    }
-
-    public function set sessionID(value:int) : void
-    {
-        var oldValue:int = _internal_sessionID;
-        if (oldValue !== value)
-        {
-            _internal_sessionID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "sessionID", oldValue, _internal_sessionID));
-        }
-    }
-
-    public function set Y2006(value:Number) : void
-    {
-        var oldValue:Number = _internal_Y2006;
-        if (isNaN(_internal_Y2006) == true || Math.abs(oldValue - value) > epsilon)
-        {
-            _internal_Y2006 = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2006", oldValue, _internal_Y2006));
-        }
-    }
-
-    public function set countryID(value:int) : void
-    {
-        var oldValue:int = _internal_countryID;
-        if (oldValue !== value)
-        {
-            _internal_countryID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "countryID", oldValue, _internal_countryID));
-        }
-    }
-
-    public function set scenarioID(value:int) : void
-    {
-        var oldValue:int = _internal_scenarioID;
-        if (oldValue !== value)
-        {
-            _internal_scenarioID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "scenarioID", oldValue, _internal_scenarioID));
-        }
-    }
-
-    public function set Y2005(value:Number) : void
-    {
-        var oldValue:Number = _internal_Y2005;
-        if (isNaN(_internal_Y2005) == true || Math.abs(oldValue - value) > epsilon)
-        {
-            _internal_Y2005 = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2005", oldValue, _internal_Y2005));
-        }
-    }
 
     public function set id(value:int) : void
     {
@@ -340,6 +277,86 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         {
             _internal_comments = value;
             this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "comments", oldValue, _internal_comments));
+        }
+    }
+
+    public function set Y2004(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2004;
+        if (isNaN(_internal_Y2004) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2004 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2004", oldValue, _internal_Y2004));
+        }
+    }
+
+    public function set indicatorID(value:int) : void
+    {
+        var oldValue:int = _internal_indicatorID;
+        if (oldValue !== value)
+        {
+            _internal_indicatorID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "indicatorID", oldValue, _internal_indicatorID));
+        }
+    }
+
+    public function set sessionID(value:int) : void
+    {
+        var oldValue:int = _internal_sessionID;
+        if (oldValue !== value)
+        {
+            _internal_sessionID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "sessionID", oldValue, _internal_sessionID));
+        }
+    }
+
+    public function set Y2006(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2006;
+        if (isNaN(_internal_Y2006) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2006 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2006", oldValue, _internal_Y2006));
+        }
+    }
+
+    public function set countryID(value:int) : void
+    {
+        var oldValue:int = _internal_countryID;
+        if (oldValue !== value)
+        {
+            _internal_countryID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "countryID", oldValue, _internal_countryID));
+        }
+    }
+
+    public function set scenarioID(value:int) : void
+    {
+        var oldValue:int = _internal_scenarioID;
+        if (oldValue !== value)
+        {
+            _internal_scenarioID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "scenarioID", oldValue, _internal_scenarioID));
+        }
+    }
+
+    public function set Y2005(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2005;
+        if (isNaN(_internal_Y2005) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2005 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2005", oldValue, _internal_Y2005));
+        }
+    }
+
+    public function set deviceID(value:int) : void
+    {
+        var oldValue:int = _internal_deviceID;
+        if (oldValue !== value)
+        {
+            _internal_deviceID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "deviceID", oldValue, _internal_deviceID));
         }
     }
 

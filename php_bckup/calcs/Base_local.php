@@ -127,10 +127,11 @@ class Base {
 	}	
 	
 	public function getOutputData($aggLevel, $scenarioID, $countryID, $indicatorID, $batTypeID, $pwrTypeID) {
-		$a = array('a'=>"");		
+		$a = array('a'=>"");
+		
 		$stmnt_begin = "SELECT scenarioID, sessionID, cntry.namen as cntryName, countryID, deviceID,  batTypeID, pwrTypeID,
-						indis.namen as indiName, indicatorID, Y2004, Y2005, Y2006";
-	
+							indis.namen as indiName, indicatorID, Y2004, Y2005, Y2006";
+		
 		if ($aggLevel == 0) { // aggergation on country level
 			$stmnt = "				
 				FROM (
@@ -143,19 +144,20 @@ class Base {
 					Y2004, Y2005, Y2006
 						FROM `Consulting`.`DC_demandAggregated` as dma
 						WHERE dma.scenarioID = ".$scenarioID."
-				) as base ";			
-		} else if ($aggLevel == 1) { // aggregation on device level		
+				) as base ";
+				
+		} else if ($aggLevel = 1) { // aggregation on device level		
 			$stmnt = " 
 			FROM (
-				SELECT sessionID, scenarioID, countryID, deviceID as deviceID, indicatorID,
+				SELECT sessionID, scenarioID, countryID, deviceID as deviceID, 
 						0 as batTypeID, 0 as pwrTypeID,	Y2004, Y2005, Y2006
 					FROM Consulting.DC_scenarioDataSplit sdp
 						WHERE countryID = ".$countryID." and indicatorID = ".$indicatorID." and scenarioID = ".$scenarioID."
 					UNION 
-				SELECT sessionID, scenarioID, countryID, deviceID as deviceID, indicatorID,
+				SELECT sessionID, scenarioID, countryID, deviceID as deviceID, 
 						0 as batTypeID, 0 as pwrTypeID, Y2004, Y2005, Y2006
 					FROM Consulting.DC_deviceBase as dvb
-					WHERE countryID = ".$countryID." and scenarioID = ".$scenarioID."
+					WHERE countryID = ".$countryID." and scenarioID = ".$scenarioID.";
 			) as base ";		
 		
 		} else if ($aggLevel > 1) { // aggregation on batery types level
@@ -173,21 +175,21 @@ class Base {
 					FROM `Consulting`.`DC_demand` dmd
 						JOIN Consulting.DC_namesCountries nc ON (nc.id = dmd.countryID)
 						WHERE	batTypeID = ".$batTypeID." AND pwrTypeID = ".$pwrTypeID." 
-							AND scenarioID = ".$scenarioID." AND nc.id = ".$countryID."
+							AND scenarioID = ".$scenarioID." AND nc.id = ".$countryID.";
 			) as base ";				
 		};
-		
+			
 		$stmnt_end = "
-				  JOIN `Consulting`.`DC_namesCountries`  as cntry ON cntry.id = base.countryID
-				  JOIN `Consulting`.`DC_namesIndicators` as indis ON indis.id = base.indicatorID;";
-	
+					  JOIN `Consulting`.`DC_namesCountries`  as cntry ON cntry.id = base.countryID
+				      JOIN `Consulting`.`DC_namesIndicators` as indis ON indis.id = base.indicatorID;";
+		
 		$stmnt_f = $stmnt_begin.$stmnt.$stmnt_end;
-	
+		
 		$result = $this->connection->fetchAll($stmnt_f);		
-		array_push($a, $result);							
-	
+		array_push($a, $result);		
 		return $result;
-	}	
+	}
+	
 }	
 	
 ?>

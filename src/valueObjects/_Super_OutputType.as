@@ -1,18 +1,14 @@
 /**
  * This is a generated class and is not intended for modification.  To customize behavior
- * of this value object you may modify the generated sub-class of this class - G.as.
+ * of this value object you may modify the generated sub-class of this class - OutputType.as.
  */
 
 package valueObjects
 {
 import com.adobe.fiber.services.IFiberManagingService;
-import com.adobe.fiber.util.FiberUtils;
 import com.adobe.fiber.valueobjects.IValueObject;
-import flash.events.Event;
 import flash.events.EventDispatcher;
-import mx.binding.utils.ChangeWatcher;
 import mx.events.PropertyChangeEvent;
-import mx.validators.ValidationResult;
 
 import flash.net.registerClassAlias;
 import flash.net.getClassByAlias;
@@ -23,7 +19,7 @@ import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
 use namespace model_internal;
 
 [ExcludeClass]
-public class _Super_G extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
+public class _Super_OutputType extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
 {
     model_internal static function initRemoteClassAliasSingle(cz:Class) : void
     {
@@ -33,22 +29,20 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
     {
     }
 
-    model_internal var _dminternal_model : _GEntityMetadata;
+    model_internal var _dminternal_model : _OutputTypeEntityMetadata;
 
     /**
      * properties
      */
-    private var _internal_Y2004 : Number;
-    private var _internal_indicatorID : int;
+    private var _internal_Y2004 : Number = Number(0);
     private var _internal_pwrTypeID : int;
-    private var _internal_indiName : String;
+    private var _internal_indiName : int;
     private var _internal_sessionID : int;
-    private var _internal_Y2006 : Number;
-    private var _internal_countryID : int;
+    private var _internal_Y2006 : Number = Number(0);
     private var _internal_scenarioID : int;
-    private var _internal_Y2005 : Number;
+    private var _internal_Y2005 : Number = Number(0);
     private var _internal_deviceID : int;
-    private var _internal_cntryName : String;
+    private var _internal_cntryName : int;
     private var _internal_batTypeID : int;
 
     private static var emptyArray:Array = new Array();
@@ -63,13 +57,11 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
 
     model_internal var _changeWatcherArray:Array = new Array();
 
-    public function _Super_G()
+    public function _Super_OutputType()
     {
-        _model = new _GEntityMetadata(this);
+        _model = new _OutputTypeEntityMetadata(this);
 
         // Bind to own data properties for cache invalidation triggering
-        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "indiName", model_internal::setterListenerIndiName));
-        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "cntryName", model_internal::setterListenerCntryName));
 
     }
 
@@ -84,19 +76,13 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
     }
 
     [Bindable(event="propertyChange")]
-    public function get indicatorID() : int
-    {
-        return _internal_indicatorID;
-    }
-
-    [Bindable(event="propertyChange")]
     public function get pwrTypeID() : int
     {
         return _internal_pwrTypeID;
     }
 
     [Bindable(event="propertyChange")]
-    public function get indiName() : String
+    public function get indiName() : int
     {
         return _internal_indiName;
     }
@@ -111,12 +97,6 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
     public function get Y2006() : Number
     {
         return _internal_Y2006;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get countryID() : int
-    {
-        return _internal_countryID;
     }
 
     [Bindable(event="propertyChange")]
@@ -138,7 +118,7 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
     }
 
     [Bindable(event="propertyChange")]
-    public function get cntryName() : String
+    public function get cntryName() : int
     {
         return _internal_cntryName;
     }
@@ -163,16 +143,6 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
-    public function set indicatorID(value:int) : void
-    {
-        var oldValue:int = _internal_indicatorID;
-        if (oldValue !== value)
-        {
-            _internal_indicatorID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "indicatorID", oldValue, _internal_indicatorID));
-        }
-    }
-
     public function set pwrTypeID(value:int) : void
     {
         var oldValue:int = _internal_pwrTypeID;
@@ -183,9 +153,9 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
-    public function set indiName(value:String) : void
+    public function set indiName(value:int) : void
     {
-        var oldValue:String = _internal_indiName;
+        var oldValue:int = _internal_indiName;
         if (oldValue !== value)
         {
             _internal_indiName = value;
@@ -210,16 +180,6 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
         {
             _internal_Y2006 = value;
             this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2006", oldValue, _internal_Y2006));
-        }
-    }
-
-    public function set countryID(value:int) : void
-    {
-        var oldValue:int = _internal_countryID;
-        if (oldValue !== value)
-        {
-            _internal_countryID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "countryID", oldValue, _internal_countryID));
         }
     }
 
@@ -253,9 +213,9 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
-    public function set cntryName(value:String) : void
+    public function set cntryName(value:int) : void
     {
-        var oldValue:String = _internal_cntryName;
+        var oldValue:int = _internal_cntryName;
         if (oldValue !== value)
         {
             _internal_cntryName = value;
@@ -285,16 +245,6 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
      *  - the validity of the property (and the containing entity) if the given data property is required.
      */
 
-    model_internal function setterListenerIndiName(value:flash.events.Event):void
-    {
-        _model.invalidateDependentOnIndiName();
-    }
-
-    model_internal function setterListenerCntryName(value:flash.events.Event):void
-    {
-        _model.invalidateDependentOnCntryName();
-    }
-
 
     /**
      * valid related derived properties
@@ -316,16 +266,6 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
         var validationFailureMessages:Array = new Array();
 
         var propertyValidity:Boolean = true;
-        if (!_model.indiNameIsValid)
-        {
-            propertyValidity = false;
-            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_indiNameValidationFailureMessages);
-        }
-        if (!_model.cntryNameIsValid)
-        {
-            propertyValidity = false;
-            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_cntryNameValidationFailureMessages);
-        }
 
         model_internal::_cacheInitialized_isValid = true;
         model_internal::invalidConstraints_der = violatedConsts;
@@ -353,14 +293,14 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
 
     [Transient]
     [Bindable(event="propertyChange")]
-    public function get _model() : _GEntityMetadata
+    public function get _model() : _OutputTypeEntityMetadata
     {
         return model_internal::_dminternal_model;
     }
 
-    public function set _model(value : _GEntityMetadata) : void
+    public function set _model(value : _OutputTypeEntityMetadata) : void
     {
-        var oldValue : _GEntityMetadata = model_internal::_dminternal_model;
+        var oldValue : _OutputTypeEntityMetadata = model_internal::_dminternal_model;
         if (oldValue !== value)
         {
             model_internal::_dminternal_model = value;
@@ -405,60 +345,6 @@ public class _Super_G extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
-    model_internal var _doValidationCacheOfIndiName : Array = null;
-    model_internal var _doValidationLastValOfIndiName : String;
-
-    model_internal function _doValidationForIndiName(valueIn:Object):Array
-    {
-        var value : String = valueIn as String;
-
-        if (model_internal::_doValidationCacheOfIndiName != null && model_internal::_doValidationLastValOfIndiName == value)
-           return model_internal::_doValidationCacheOfIndiName ;
-
-        _model.model_internal::_indiNameIsValidCacheInitialized = true;
-        var validationFailures:Array = new Array();
-        var errorMessage:String;
-        var failure:Boolean;
-
-        var valRes:ValidationResult;
-        if (_model.isIndiNameAvailable && _internal_indiName == null)
-        {
-            validationFailures.push(new ValidationResult(true, "", "", "indiName is required"));
-        }
-
-        model_internal::_doValidationCacheOfIndiName = validationFailures;
-        model_internal::_doValidationLastValOfIndiName = value;
-
-        return validationFailures;
-    }
-    
-    model_internal var _doValidationCacheOfCntryName : Array = null;
-    model_internal var _doValidationLastValOfCntryName : String;
-
-    model_internal function _doValidationForCntryName(valueIn:Object):Array
-    {
-        var value : String = valueIn as String;
-
-        if (model_internal::_doValidationCacheOfCntryName != null && model_internal::_doValidationLastValOfCntryName == value)
-           return model_internal::_doValidationCacheOfCntryName ;
-
-        _model.model_internal::_cntryNameIsValidCacheInitialized = true;
-        var validationFailures:Array = new Array();
-        var errorMessage:String;
-        var failure:Boolean;
-
-        var valRes:ValidationResult;
-        if (_model.isCntryNameAvailable && _internal_cntryName == null)
-        {
-            validationFailures.push(new ValidationResult(true, "", "", "cntryName is required"));
-        }
-
-        model_internal::_doValidationCacheOfCntryName = validationFailures;
-        model_internal::_doValidationLastValOfCntryName = value;
-
-        return validationFailures;
-    }
-    
 
 }
 

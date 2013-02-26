@@ -22,12 +22,12 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
 {
     private static var emptyArray:Array = new Array();
 
-    model_internal static var allProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments");
+    model_internal static var allProperties:Array = new Array("id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments", "Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "deviceID");
     model_internal static var allAssociationProperties:Array = new Array();
-    model_internal static var allRequiredProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments");
-    model_internal static var allAlwaysAvailableProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments");
+    model_internal static var allRequiredProperties:Array = new Array("id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments", "Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "deviceID");
+    model_internal static var allAlwaysAvailableProperties:Array = new Array("id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments", "Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "deviceID");
     model_internal static var guardedProperties:Array = new Array();
-    model_internal static var dataProperties:Array = new Array("Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments");
+    model_internal static var dataProperties:Array = new Array("id", "unit", "isOutputIndicator", "hasSplitByDevices", "hasSplitByTypes", "hierarchy", "hasTimeSeries", "namen", "comments", "Y2004", "indicatorID", "sessionID", "Y2006", "countryID", "scenarioID", "Y2005", "deviceID");
     model_internal static var derivedProperties:Array = new Array();
     model_internal static var collectionProperties:Array = new Array();
     model_internal static var collectionBaseMap:Object;
@@ -66,13 +66,6 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
         {
             // depenents map
             model_internal::dependentsOnMap = new Object();
-            model_internal::dependentsOnMap["Y2004"] = new Array();
-            model_internal::dependentsOnMap["indicatorID"] = new Array();
-            model_internal::dependentsOnMap["sessionID"] = new Array();
-            model_internal::dependentsOnMap["Y2006"] = new Array();
-            model_internal::dependentsOnMap["countryID"] = new Array();
-            model_internal::dependentsOnMap["scenarioID"] = new Array();
-            model_internal::dependentsOnMap["Y2005"] = new Array();
             model_internal::dependentsOnMap["id"] = new Array();
             model_internal::dependentsOnMap["unit"] = new Array();
             model_internal::dependentsOnMap["isOutputIndicator"] = new Array();
@@ -82,6 +75,14 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
             model_internal::dependentsOnMap["hasTimeSeries"] = new Array();
             model_internal::dependentsOnMap["namen"] = new Array();
             model_internal::dependentsOnMap["comments"] = new Array();
+            model_internal::dependentsOnMap["Y2004"] = new Array();
+            model_internal::dependentsOnMap["indicatorID"] = new Array();
+            model_internal::dependentsOnMap["sessionID"] = new Array();
+            model_internal::dependentsOnMap["Y2006"] = new Array();
+            model_internal::dependentsOnMap["countryID"] = new Array();
+            model_internal::dependentsOnMap["scenarioID"] = new Array();
+            model_internal::dependentsOnMap["Y2005"] = new Array();
+            model_internal::dependentsOnMap["deviceID"] = new Array();
 
             // collection base map
             model_internal::collectionBaseMap = new Object()
@@ -317,48 +318,6 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
     }
 
     [Bindable(event="propertyChange")]
-    public function get isY2004Available():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isIndicatorIDAvailable():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isSessionIDAvailable():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isY2006Available():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isCountryIDAvailable():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isScenarioIDAvailable():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isY2005Available():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
     public function get isIdAvailable():Boolean
     {
         return true;
@@ -412,6 +371,54 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
         return true;
     }
 
+    [Bindable(event="propertyChange")]
+    public function get isY2004Available():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isIndicatorIDAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isSessionIDAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isY2006Available():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isCountryIDAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isScenarioIDAvailable():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isY2005Available():Boolean
+    {
+        return true;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isDeviceIDAvailable():Boolean
+    {
+        return true;
+    }
+
 
     /**
      * derived property recalculation
@@ -452,48 +459,6 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
     model_internal function fireChangeEvent(propertyName:String, oldValue:Object, newValue:Object):void
     {
         this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, propertyName, oldValue, newValue));
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get Y2004Style():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get indicatorIDStyle():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get sessionIDStyle():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get Y2006Style():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get countryIDStyle():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get scenarioIDStyle():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get Y2005Style():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
     }
 
     [Bindable(event="propertyChange")]   
@@ -924,6 +889,54 @@ internal class _AEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEnt
                 model_internal::_instance.model_internal::isValid_der = model_internal::_instance.model_internal::calculateIsValid();
             }
         }
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get Y2004Style():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get indicatorIDStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get sessionIDStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get Y2006Style():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get countryIDStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get scenarioIDStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get Y2005Style():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
+    }
+
+    [Bindable(event="propertyChange")]   
+    public function get deviceIDStyle():com.adobe.fiber.styles.Style
+    {
+        return model_internal::_nullStyle;
     }
 
 

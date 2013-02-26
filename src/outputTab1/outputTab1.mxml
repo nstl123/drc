@@ -52,6 +52,8 @@
 			import mx.events.ListEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import utils.helper;
+			
 			[bindable] public var selectedCntry:int = 1;
 			[bindable] public var selectedIndiIn:int = 1;
 			[bindable] public var selectedIndiOut:int = 1;
@@ -63,6 +65,7 @@
 			[bindable] public var showSplitBySort:Boolean = false;
 			
 			[bindable] private var workingScenarioID:int = 0;
+			[bindable] private var aggType:int = 0;
 			
 			public function setScenarioID(id:int):void {
 				this.workingScenarioID = id;
@@ -78,18 +81,21 @@
 				this.getIndicatorNamesResult.token = base.getIndicatorNames();
 				
 				this.addEventListener("cntrySelectionChanged", refreshData);
-				// this.addEventListener("typesSelectionChanged", refreshDemandData);		
+				this.addEventListener("typesSelectionChanged", refreshData);		
 				this.addEventListener("indiSelectionChanged",  refreshData);
 			}
 			
 			[Bindable] private var isFirstCall:Boolean = true;
 			
 			protected function refreshData(evt:Event):void {
-				if (this.isFirstCall) {
-					// get all data
-					getOutputDataResult.token = base.getOutputData(this.selectedCntry, this.workingScenarioID);
+				if ((this.isFirstCall)||(aggType > 0)) { // only for aggType==0 we call for data once					
+					// $aggLevel, $scenarioID, $countryID, $indicatorID, $batTypeID, $pwrTypeID)
+					getOutputDataResult.token = base.getOutputData(
+						aggType, workingScenarioID, selectedCntry,
+						selectedIndiOut, selectedBatType, selectedPwrType);		
+					this.isFirstCall = false;
 				} else {	
-					filterCountries(); // filter funkction for viewing data										
+					filterCountries(); // filter funkction for viewing data					
 				};
 			}
 			
@@ -98,17 +104,17 @@
 				var rez:ArrayCollection = new ArrayCollection();
 				rez = ArrayCollection(this.getCountriesList.lastResult);
 				cntryGrid.dataProvider = rez;
-			}
-			
+			}			
 			// indicators array
 			[Bindable] protected var indiRezOut:ArrayCollection = new ArrayCollection();			
 			[Bindable] protected var indiRezIn:ArrayCollection = new ArrayCollection();
+			
 			protected function getIndicatorNamesResult_resultHandler(event:ResultEvent):void
-			{				
-				indiRezOut = ArrayCollection(this.getIndicatorNamesResult.lastResult);				
+			{
+				var hlp:helper = new helper();
+				hlp.splitIndisArray(getIndicatorNamesResult.lastResult, indiRezIn, indiRezOut);
+								
 				indiGridOutput.dataProvider = indiRezOut;
-				
-				indiRezIn = ArrayCollection(this.getIndicatorNamesResult.lastResult);				
 				indiGridInput.dataProvider = indiRezIn;
 				
 				filterIndicators();
@@ -140,14 +146,13 @@
 			
 			protected function indiGridIn_changeHandler(event:ListEvent):void
 			{				
-				selectedIndiIn = 	this.indiGridOutput.selectedItem.id;			
+				selectedIndiIn = 	this.indiGridInput.selectedItem.id;			
 				this.dispatchEvent(new Event("indiSelectionChanged"));							
 			}
 			
 			[Bindable] private var rez:ArrayCollection = new ArrayCollection();
 			protected function getOutputDataResult_resultHandler(event:ResultEvent):void
-			{		
-				this.isFirstCall = false;				
+			{									
 				rez = ArrayCollection(this.getOutputDataResult.lastResult)
 				rezGrid.dataProvider = rez;
 			}
@@ -206,13 +211,17 @@
 			{
 				this.showSplitByTypes = !this.showSplitByTypes;		
 				batTypes.enabled = this.showSplitByTypes;
-				pwrSource.enabled = this.showSplitByTypes;
+				pwrSource.enabled = this.showSplitByTypes;				
+				if (this.showSplitByTypes) aggType = 2 else aggType = 1;
 				filterIndicators();
 			}
 
 			protected function spDev_changeHandler(event:Event):void
 			{
-				this.showSplitByDevices = !this.showSplitByDevices;
+				this.showSplitByDevices = !this.showSplitByDevices;				
+				if (this.showSplitByDevices) aggType = 1 else { 
+					aggType = 0; this.isFirstCall = true;
+				};
 				filterIndicators();
 			}
 
@@ -304,14 +313,14 @@
 						 height="100%" width="32.5%" >
 				<mx:columns>
 					<mx:DataGridColumn headerText="id" dataField="id" width="10"/>
-					<mx:DataGridColumn headerText="IndiOut" dataField="namen" width="30"/>
+					<mx:DataGridColumn headerText="indiOut" dataField="namen" width="30"/>
 				</mx:columns>
 			</mx:DataGrid>
 			<mx:DataGrid id="indiGridInput" change="indiGridIn_changeHandler(event)" 
 						 height="100%" width="32.5%" >
 				<mx:columns>
 					<mx:DataGridColumn headerText="id" dataField="id" width="10"/>
-					<mx:DataGridColumn headerText="IndiIn" dataField="namen" width="30"/>
+					<mx:DataGridColumn headerText="indiIn" dataField="namen" width="30"/>
 				</mx:columns>
 			</mx:DataGrid>
 		</s:BorderContainer>
@@ -324,6 +333,7 @@
 					<mx:DataGridColumn headerText="scenario" dataField="scenarioID"/>
 					<mx:DataGridColumn headerText="country" dataField="cntryName"/>
 					<mx:DataGridColumn headerText="indicator" dataField="indiName"/>
+					<mx:DataGridColumn headerText="device" dataField="deviceID"/>
 					<mx:DataGridColumn headerText="Y2004" dataField="Y2004" labelFunction="format_numbers"/>
 					<mx:DataGridColumn headerText="Y2005" dataField="Y2005" labelFunction="format_numbers"/>
 					<mx:DataGridColumn headerText="Y2006" dataField="Y2006" labelFunction="format_numbers"/>

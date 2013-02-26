@@ -126,30 +126,58 @@ class Base {
 		return true;
 	}	
 	
-	public function getOutputData($countryID, $scenarioID) {
+	public function getOutputData($aggLevel, $scenarioID, $countryID, $indicatorID, $batTypeID, $pwrTypeID) {
 		$a = array('a'=>"");
 		
-		$stmnt = "
-		SELECT scenarioID, sessionID, cntry.namen as cntryName, countryID, 
-		indis.namen as indiName, indicatorID, 
-		Y2004, Y2005, Y2006 FROM (
-			SELECT sdm.scenarioID, sdm.sessionID, sdm.countryID, sdm.indicatorID, Y2004, Y2005, Y2006
-				FROM `Consulting`.`DC_scenarioDataMacro` as sdm
-				WHERE
-				-- sdm.countryID = ".$countryID." AND 
-				sdm.scenarioID = ".$scenarioID."
-			UNION
-			SELECT dma.scenarioID, dma.sessionID, dma.countryID, 2080 as indicatorID, Y2004, Y2005, Y2006
-				FROM `Consulting`.`DC_demandAggregated` as dma
-				WHERE 
-				-- dma.countryID = ".$countryID." AND
-				dma.scenarioID = ".$scenarioID."
-		) as base
-		JOIN `Consulting`.`DC_namesCountries` as cntry
-			on cntry.id = base.countryID
-		JOIN `Consulting`.`DC_namesIndicators` as indis
-			on indis.id = base.indicatorID;";
+		if ($aggLevel == 0) { // aggergation on country level
+			$stmnt = "
+				SELECT scenarioID, sessionID, cntry.namen as cntryName, countryID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
+					indis.namen as indiName, indicatorID, Y2004, Y2005, Y2006 
+				FROM (
+					SELECT sdm.scenarioID, sdm.sessionID, sdm.countryID, sdm.indicatorID, Y2004, Y2005, Y2006
+						FROM `Consulting`.`DC_scenarioDataMacro` as sdm
+						WHERE
+						-- sdm.countryID = ".$countryID." AND 
+						sdm.scenarioID = ".$scenarioID."
+					UNION
+					SELECT dma.scenarioID, dma.sessionID, dma.countryID, 2080 as indicatorID, Y2004, Y2005, Y2006
+						FROM `Consulting`.`DC_demandAggregated` as dma
+						WHERE 
+						-- dma.countryID = ".$countryID." AND
+						dma.scenarioID = ".$scenarioID."
+				) as base
+				JOIN `Consulting`.`DC_namesCountries` as cntry
+					on cntry.id = base.countryID
+				JOIN `Consulting`.`DC_namesIndicators` as indis
+					on indis.id = base.indicatorID;";
+		} else if ($aggLevel = 1) { // aggregation on device level
+		// add device id here!!!
+			$stmnt = " 
+				SELECT sdp.sessionID, sdp.scenarioID, sdp.countryID, sdp.countryID as cntryName, sdp.deviceID as deviceID, 
+						0 as batTypeID, 0 as pwrTypeID,	sdp.indicatorID as indiName, Y2004, Y2005, Y2006
+					FROM Consulting.DC_scenarioDataSplit sdp
+						WHERE countryID = ".$countryID." and indicatorID = ".$indicatorID." and scenarioID = ".$scenarioID."
+					UNION 
+				SELECT dvb.sessionID, dvb.scenarioID, dvb.countryID, dvb.countryID as cntryName, dvb.deviceID as deviceID, 
+						0 as batTypeID, 0 as pwrTypeID, dvb.indicatorID as indiName, Y2004, Y2005, Y2006
+					FROM Consulting.DC_deviceBase as dvb
+					WHERE countryID = ".$countryID." and scenarioID = ".$scenarioID.";";		
 		
+		} else if ($aggLevel > 1) { // aggregation on batery types level
+			$stmnt = "
+				SELECT sdp.sessionID, sdp.scenarioID, nc.id as countryID, nc.namen as cntryName, indicatorID, 's2024' as indiName, deviceID, typeID as batTypeID, 0 as pwrTypeID, Y2004, Y2005, Y2006
+					FROM `Consulting`.`DC_scenarioDataSplit` sdp
+						JOIN Consulting.DC_namesCountries nc ON (nc.battery_size = sdp.countryID)
+						WHERE indicatorID = 204 AND  
+							  typeID = ".$batTypeID." AND scenarioID = ".$scenarioID." AND nc.id = ".$countryID."
+				UNION 
+				SELECT dmd.sessionID, dmd.scenarioID, dmd.countryID, nc.namen as cntryName, 208 as indicatorID, '208ss' as indiName, dmd.deviceID, batTypeID, pwrTypeID,	Y2004, Y2005, Y2006
+					FROM `Consulting`.`DC_demand` dmd
+						JOIN Consulting.DC_namesCountries nc ON (nc.id = dmd.countryID)
+						WHERE	batTypeID = ".$batTypeID." AND
+							pwrTypeID = ".$pwrTypeID." AND scenarioID = ".$scenarioID." AND nc.id = ".$countryID.";";				
+		};
+			
 		$result = $this->connection->fetchAll($stmnt);		
 		array_push($a, $result);		
 		return $result;

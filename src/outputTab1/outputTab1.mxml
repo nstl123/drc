@@ -4,9 +4,10 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:outputTab1="outputTab1.*" 
 		 width="100%" height="100%"
-		 xmlns:base="services.base.*"  
-		 creationComplete="group1_creationCompleteHandler(event)" 
-	>
+		 xmlns:base="services.base.*"
+		 xmlns:base1="services.base1.*"
+		 creationComplete="group1_creationCompleteHandler(event)"	 
+		 >
 	
 	<s:layout>
 		<s:HorizontalLayout/>
@@ -24,12 +25,17 @@
 		<s:RadioButtonGroup id="batTypes"  enabled="false"/>
 		<s:RadioButtonGroup id="pwrSource" enabled="false"/>		
 		
-		<base:Base id="base" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"			    
-				   showBusyCursor="true"  />
+		<base:Base id="base" fault="Alert.show(event.fault.faultString + '\n' + 
+				   event.fault.faultDetail)"  showBusyCursor="true"  />
+		<base1:Base1 id="base1" fault="Alert.show(event.fault.faultString + '\n' + 
+					 event.fault.faultDetail)" showBusyCursor="true"/>
 		
 		<s:CallResponder id="getCountriesList" result="cntryList_resultHandler(event)"/>
 		<s:CallResponder id="getIndicatorNamesResult" result="getIndicatorNamesResult_resultHandler(event)"/>
 		<s:CallResponder id="getOutputDataResult" result="getOutputDataResult_resultHandler(event)"/>		
+		<s:CallResponder id="getDeviceNamesResult" result="getDeviceNamesResult_resultHandler(event)"/>
+		
+		
 		
 	</fx:Declarations>
 	
@@ -52,6 +58,8 @@
 			import mx.events.ListEvent;
 			import mx.rpc.events.ResultEvent;
 			
+			import spark.events.IndexChangeEvent;
+			
 			import utils.helper;
 			
 			[bindable] public var selectedCntry:int = 1;
@@ -60,6 +68,7 @@
 			[bindable] public var selectedDevice:int = 1;
 			[bindable] public var selectedBatType:int = 1;
 			[bindable] public var selectedPwrType:int = 1;		
+			
 			[bindable] public var showSplitByDevices:Boolean = false;
 			[bindable] public var showSplitByTypes:Boolean = false;
 			[bindable] public var showSplitBySort:Boolean = false;
@@ -77,12 +86,14 @@
 			
 			public function startApp(event:FlexEvent):void
 			{				
-				this.getCountriesList.token = this.base.getCountryList();
-				this.getIndicatorNamesResult.token = base.getIndicatorNames();
+				getCountriesList.token = this.base.getCountryList();
+				getIndicatorNamesResult.token = base.getIndicatorNames();				
+				this.getDeviceNamesResult.token = this.base1.getDeviceNames();
 				
-				this.addEventListener("cntrySelectionChanged", refreshData);
-				this.addEventListener("typesSelectionChanged", refreshData);		
-				this.addEventListener("indiSelectionChanged",  refreshData);
+				this.addEventListener("cntrySelectionChanged",  refreshData);
+				this.addEventListener("typesSelectionChanged",  refreshData);		
+				this.addEventListener("indiSelectionChanged",   refreshData);
+				this.addEventListener("deviceSelectionChanged", refreshData);
 			}
 			
 			[Bindable] private var isFirstCall:Boolean = true;
@@ -93,7 +104,8 @@
 					getOutputDataResult.token = base.getOutputData(
 						aggType, workingScenarioID, selectedCntry,
 						selectedIndiOut, selectedBatType, selectedPwrType);		
-					this.isFirstCall = false;
+					
+					this.isFirstCall = false;										
 				} else {	
 					filterCountries(); // filter funkction for viewing data					
 				};
@@ -157,6 +169,22 @@
 				rezGrid.dataProvider = rez;
 			}
 			
+			/*private function filterDevicesLabel(item:Object):Boolean {								
+				var fl:Boolean = false;
+				if ((item.countryID == this.selectedCntry) && 
+					( (item.indicatorID == this.selectedIndiIn) ||
+						(item.indicatorID == this.selectedIndiOut) )
+					&& (item.deviceID == this.selectedDevice))					
+					fl = true
+				else    fl = false;				
+				return fl;
+			}	*/
+
+			/*private function filterDevices():void {
+				rez.filterFunction = filterDevicesLabel;
+				rez.refresh();
+			}*/
+			
 			private function filterCountries():void {
 				rez.filterFunction = filterRezArrCol;
 				rez.refresh();
@@ -164,12 +192,20 @@
 			
 			private function filterRezArrCol(item:Object):Boolean {								
 				var fl:Boolean = false;
-				if ((item.countryID == this.selectedCntry) && 
+				if (this.showSplitByDevices) {
+					if( (item.countryID == this.selectedCntry)  &&		
+						(item.deviceID  == this.selectedDevice) &&
+					  ( (item.indicatorID == this.selectedIndiIn) ||
+						  (item.indicatorID == this.selectedIndiOut) ))					
+						fl = true
+					else   fl = false;
+				} else {
+					if ((item.countryID == this.selectedCntry) &&				
 				   ( (item.indicatorID == this.selectedIndiIn) ||
 					  (item.indicatorID == this.selectedIndiOut) ))					
 							fl = true
 				 	else    fl = false;
-				
+				}
 				return fl;
 			}	
 			
@@ -211,18 +247,35 @@
 			{
 				this.showSplitByTypes = !this.showSplitByTypes;		
 				batTypes.enabled = this.showSplitByTypes;
-				pwrSource.enabled = this.showSplitByTypes;				
+				pwrSource.enabled = this.showSplitByTypes;		
+				this.deviceList.enabled = this.showSplitByDevices;
+				
 				if (this.showSplitByTypes) aggType = 2 else aggType = 1;
 				filterIndicators();
 			}
 
 			protected function spDev_changeHandler(event:Event):void
 			{
-				this.showSplitByDevices = !this.showSplitByDevices;				
+				this.showSplitByDevices = !this.showSplitByDevices;
+				this.deviceList.enabled = this.showSplitByDevices;
 				if (this.showSplitByDevices) aggType = 1 else { 
 					aggType = 0; this.isFirstCall = true;
 				};
 				filterIndicators();
+			}
+			
+			protected function getDeviceNamesResult_resultHandler(event:ResultEvent):void
+			{
+				this.deviceList.dataProvider = this.getDeviceNamesResult.lastResult;
+			}
+
+
+			protected function deviceList_changeHandler(event:IndexChangeEvent):void
+			{
+				selectedDevice = this.deviceList.selectedItem.id;
+				this.devIDtext.text = this.deviceList.selectedItem.id;
+				
+				filterCountries();				
 			}
 
 		]]> 
@@ -245,7 +298,7 @@
 	</fx:Script>
 	
 	<mx:DataGrid id="cntryGrid" change="cntryGrid_changeHandler(event)" 
-				 left="0" top="0" bottom="289" right="623" height="100%" width="25%">
+				 left="0" top="0" bottom="289" right="623" height="100%" width="250">
 		<mx:columns>
 			<mx:DataGridColumn headerText="id" dataField="id"/>
 			<mx:DataGridColumn headerText="namen" dataField="namen"/>
@@ -259,54 +312,59 @@
 			<s:layout>
 				<s:HorizontalLayout/>
 			</s:layout>		
-			<s:BorderContainer width="35%" height="100%">
+			<s:BorderContainer width="250" height="100%">
 				
 				<s:layout>
 					<s:VerticalLayout/>
 				</s:layout>
-				<s:BorderContainer width="100%" height="50%">
+				<s:BorderContainer width="250" height="50%" id="borderContainer">
 					<s:layout>
 						<s:VerticalLayout/>
 					</s:layout>
 					<s:Label text="detail level" height="25%" width="100%" verticalAlign="middle"/>
 					<s:CheckBox label="Split by Devices?" height="25%" width="100%"
-								 change="spDev_changeHandler(event)"
-							  id="spDev"/>
+								change="spDev_changeHandler(event)"
+							  	id="spDev" />
 					
 					<s:CheckBox label="Split by BatTypes?" height="25%" width="100%"
 							    change="spTypes_changeHandler(event)"	 id="spTypes"/>
 				
 				</s:BorderContainer>
-				<s:BorderContainer width="100%" height="50%">
+				<s:BorderContainer width="250" height="50%">
 					<s:layout>
-						<s:TileLayout/>
+						<s:BasicLayout/>
 					</s:layout>
-					<s:Label text="BatteryTypes" width="30%" height="20%" verticalAlign="middle" 
+					<s:Label text="BatteryTypes" width="130" height="19" verticalAlign="middle" 
 							 textAlign="center"/>
 					
 					<s:RadioButton label="1C" groupName="batTypes" value="1" width="30%" height="20%" 
 								   click="batTypesChange_clickHandler(event)" selected="true" textAlign="center"
-								   />
+								    x="67" y="10"/>
 					<s:RadioButton label="1D" groupName="batTypes" value="2" width="30%" height="20%" 
 								   click="batTypesChange_clickHandler(event)" textAlign="center"
-								   />
+								    x="10" y="10"/>
 					<s:RadioButton label="3A" groupName="batTypes" value="3" width="30%" height="20%" 
 								   click="batTypesChange_clickHandler(event)" textAlign="center"
-								   />
+								    x="67" y="40"/>
 					<s:RadioButton label="9V" groupName="batTypes" value="4" width="30%" height="20%" 
 								   click="batTypesChange_clickHandler(event)" textAlign="center"
-								   />				
+								    x="124" y="40"/>				
 					<s:RadioButton label="AA" groupName="batTypes" value="5" width="30%" height="20%" 
 								   selected="false" 
 								   click="batTypesChange_clickHandler(event)" textAlign="center"
-								   />
+								    x="10" y="38"/>
 					
-					<s:Label text="PowerSource" width="30%" height="20%" verticalAlign="middle" textAlign="center"/>
+					<s:Label text="PowerSource" width="114" height="18" verticalAlign="middle" textAlign="center" x="-1" y="65"/>
+					<s:Label text="Devices" width="121" height="18" verticalAlign="middle" textAlign="center" x="-5" y="105"/>
 					
 					<s:RadioButton label="DPP" groupName="pwrSource" value="1" width="30%" height="20%" selected="true" 
-								   click="pwrTypes_clickHandler(event)" textAlign="center"/>
+								   click="pwrTypes_clickHandler(event)" textAlign="center" x="81" y="73"/>
 					<s:RadioButton label="RCH" groupName="pwrSource" value="2" width="30%" height="20%" 
-								   click="pwrTypes_clickHandler(event)" textAlign="center"/>
+								   click="pwrTypes_clickHandler(event)" textAlign="center" x="10" y="73"/>
+					<s:DropDownList y="128" width="100%" id="deviceList" labelField="namen" contentBackgroundAlpha="1.0" contentBackgroundColor="#FFFFFF"
+									dropShadowVisible="false" 
+									change="deviceList_changeHandler(event)" enabled="false" textAlign="left" fontSize="11"></s:DropDownList>
+					<s:Label x="147" y="105" text="dev id" width="96" height="17" id="devIDtext"/>
 				</s:BorderContainer>
 			</s:BorderContainer>
 			<mx:DataGrid id="indiGridOutput" change="indiGridOut_changeHandler(event)" 

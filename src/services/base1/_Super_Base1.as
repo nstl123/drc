@@ -11,6 +11,7 @@ import mx.rpc.AbstractOperation;
 import mx.rpc.AsyncToken;
 import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
+import valueObjects.A;
 import valueObjects.DeviceName;
 import valueObjects.IndicatorName;
 
@@ -30,6 +31,7 @@ internal class _Super_Base1 extends com.adobe.fiber.services.wrapper.RemoteObjec
         // initialize RemoteClass alias for all entities returned by functions of this service
         valueObjects.IndicatorName._initRemoteClassAlias();
         valueObjects.DeviceName._initRemoteClassAlias();
+        valueObjects.A._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -40,6 +42,9 @@ internal class _Super_Base1 extends com.adobe.fiber.services.wrapper.RemoteObjec
         operation = new mx.rpc.remoting.Operation(null, "getDeviceNames");
          operation.resultElementType = valueObjects.DeviceName;
         operations["getDeviceNames"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "getCountryList");
+         operation.resultElementType = valueObjects.A;
+        operations["getCountryList"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -85,6 +90,25 @@ internal class _Super_Base1 extends com.adobe.fiber.services.wrapper.RemoteObjec
     public function getDeviceNames() : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDeviceNames");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'getCountryList' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function getCountryList() : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getCountryList");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
 
         return _internal_token;

@@ -38,23 +38,45 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     /**
      * properties
      */
-    private var _internal_id : int;
     private var _internal_unit : Object;
     private var _internal_isOutputIndicator : int;
     private var _internal_hasSplitByDevices : int;
     private var _internal_hasSplitByTypes : int;
     private var _internal_hierarchy : Object;
     private var _internal_hasTimeSeries : int;
-    private var _internal_namen : String;
     private var _internal_comments : String;
+    private var _internal_region : int;
+    private var _internal_id : int;
+    private var _internal_pwr_RCR : int;
+    private var _internal_segment1 : int;
+    private var _internal_battery_size : int;
+    private var _internal_segment2 : int;
+    private var _internal_avg_number : int;
+    private var _internal_isRegion : int;
+    private var _internal_pwr_DPP : int;
+    private var _internal_shortName : String;
+    private var _internal_namen : String;
+    private var _internal_Y2013 : Number = Number(0);
     private var _internal_Y2004 : Number;
+    private var _internal_Y2012 : Number;
+    private var _internal_pwrTypeID : int;
     private var _internal_indicatorID : int;
-    private var _internal_sessionID : int;
-    private var _internal_Y2006 : Number;
+    private var _internal_Y2015 : Number = Number(0);
+    private var _internal_indiName : String;
+    private var _internal_Y2014 : Number = Number(0);
+    private var _internal_Y2008 : Number;
+    private var _internal_Y2007 : Number;
     private var _internal_countryID : int;
-    private var _internal_scenarioID : int;
-    private var _internal_Y2005 : Number;
+    private var _internal_Y2006 : Number;
     private var _internal_deviceID : int;
+    private var _internal_Y2005 : Number;
+    private var _internal_Y2011 : Number = Number(0);
+    private var _internal_Y2010 : Number;
+    private var _internal_sessionID : int;
+    private var _internal_scenarioID : int;
+    private var _internal_Y2009 : Number;
+    private var _internal_cntryName : String;
+    private var _internal_batTypeID : int;
 
     private static var emptyArray:Array = new Array();
 
@@ -75,20 +97,17 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         // Bind to own data properties for cache invalidation triggering
         model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "unit", model_internal::setterListenerUnit));
         model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "hierarchy", model_internal::setterListenerHierarchy));
-        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "namen", model_internal::setterListenerNamen));
         model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "comments", model_internal::setterListenerComments));
+        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "shortName", model_internal::setterListenerShortName));
+        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "namen", model_internal::setterListenerNamen));
+        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "indiName", model_internal::setterListenerIndiName));
+        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "cntryName", model_internal::setterListenerCntryName));
 
     }
 
     /**
      * data property getters
      */
-
-    [Bindable(event="propertyChange")]
-    public function get id() : int
-    {
-        return _internal_id;
-    }
 
     [Bindable(event="propertyChange")]
     public function get unit() : Object
@@ -127,15 +146,81 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     }
 
     [Bindable(event="propertyChange")]
+    public function get comments() : String
+    {
+        return _internal_comments;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get region() : int
+    {
+        return _internal_region;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get id() : int
+    {
+        return _internal_id;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get pwr_RCR() : int
+    {
+        return _internal_pwr_RCR;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get segment1() : int
+    {
+        return _internal_segment1;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get battery_size() : int
+    {
+        return _internal_battery_size;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get segment2() : int
+    {
+        return _internal_segment2;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get avg_number() : int
+    {
+        return _internal_avg_number;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get isRegion() : int
+    {
+        return _internal_isRegion;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get pwr_DPP() : int
+    {
+        return _internal_pwr_DPP;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get shortName() : String
+    {
+        return _internal_shortName;
+    }
+
+    [Bindable(event="propertyChange")]
     public function get namen() : String
     {
         return _internal_namen;
     }
 
     [Bindable(event="propertyChange")]
-    public function get comments() : String
+    public function get Y2013() : Number
     {
-        return _internal_comments;
+        return _internal_Y2013;
     }
 
     [Bindable(event="propertyChange")]
@@ -145,21 +230,51 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     }
 
     [Bindable(event="propertyChange")]
+    public function get Y2012() : Number
+    {
+        return _internal_Y2012;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get pwrTypeID() : int
+    {
+        return _internal_pwrTypeID;
+    }
+
+    [Bindable(event="propertyChange")]
     public function get indicatorID() : int
     {
         return _internal_indicatorID;
     }
 
     [Bindable(event="propertyChange")]
-    public function get sessionID() : int
+    public function get Y2015() : Number
     {
-        return _internal_sessionID;
+        return _internal_Y2015;
     }
 
     [Bindable(event="propertyChange")]
-    public function get Y2006() : Number
+    public function get indiName() : String
     {
-        return _internal_Y2006;
+        return _internal_indiName;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get Y2014() : Number
+    {
+        return _internal_Y2014;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get Y2008() : Number
+    {
+        return _internal_Y2008;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get Y2007() : Number
+    {
+        return _internal_Y2007;
     }
 
     [Bindable(event="propertyChange")]
@@ -169,9 +284,15 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     }
 
     [Bindable(event="propertyChange")]
-    public function get scenarioID() : int
+    public function get Y2006() : Number
     {
-        return _internal_scenarioID;
+        return _internal_Y2006;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get deviceID() : int
+    {
+        return _internal_deviceID;
     }
 
     [Bindable(event="propertyChange")]
@@ -181,24 +302,50 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
     }
 
     [Bindable(event="propertyChange")]
-    public function get deviceID() : int
+    public function get Y2011() : Number
     {
-        return _internal_deviceID;
+        return _internal_Y2011;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get Y2010() : Number
+    {
+        return _internal_Y2010;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get sessionID() : int
+    {
+        return _internal_sessionID;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get scenarioID() : int
+    {
+        return _internal_scenarioID;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get Y2009() : Number
+    {
+        return _internal_Y2009;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get cntryName() : String
+    {
+        return _internal_cntryName;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get batTypeID() : int
+    {
+        return _internal_batTypeID;
     }
 
     /**
      * data property setters
      */
-
-    public function set id(value:int) : void
-    {
-        var oldValue:int = _internal_id;
-        if (oldValue !== value)
-        {
-            _internal_id = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "id", oldValue, _internal_id));
-        }
-    }
 
     public function set unit(value:Object) : void
     {
@@ -260,6 +407,116 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
+    public function set comments(value:String) : void
+    {
+        var oldValue:String = _internal_comments;
+        if (oldValue !== value)
+        {
+            _internal_comments = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "comments", oldValue, _internal_comments));
+        }
+    }
+
+    public function set region(value:int) : void
+    {
+        var oldValue:int = _internal_region;
+        if (oldValue !== value)
+        {
+            _internal_region = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "region", oldValue, _internal_region));
+        }
+    }
+
+    public function set id(value:int) : void
+    {
+        var oldValue:int = _internal_id;
+        if (oldValue !== value)
+        {
+            _internal_id = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "id", oldValue, _internal_id));
+        }
+    }
+
+    public function set pwr_RCR(value:int) : void
+    {
+        var oldValue:int = _internal_pwr_RCR;
+        if (oldValue !== value)
+        {
+            _internal_pwr_RCR = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "pwr_RCR", oldValue, _internal_pwr_RCR));
+        }
+    }
+
+    public function set segment1(value:int) : void
+    {
+        var oldValue:int = _internal_segment1;
+        if (oldValue !== value)
+        {
+            _internal_segment1 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "segment1", oldValue, _internal_segment1));
+        }
+    }
+
+    public function set battery_size(value:int) : void
+    {
+        var oldValue:int = _internal_battery_size;
+        if (oldValue !== value)
+        {
+            _internal_battery_size = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "battery_size", oldValue, _internal_battery_size));
+        }
+    }
+
+    public function set segment2(value:int) : void
+    {
+        var oldValue:int = _internal_segment2;
+        if (oldValue !== value)
+        {
+            _internal_segment2 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "segment2", oldValue, _internal_segment2));
+        }
+    }
+
+    public function set avg_number(value:int) : void
+    {
+        var oldValue:int = _internal_avg_number;
+        if (oldValue !== value)
+        {
+            _internal_avg_number = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "avg_number", oldValue, _internal_avg_number));
+        }
+    }
+
+    public function set isRegion(value:int) : void
+    {
+        var oldValue:int = _internal_isRegion;
+        if (oldValue !== value)
+        {
+            _internal_isRegion = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "isRegion", oldValue, _internal_isRegion));
+        }
+    }
+
+    public function set pwr_DPP(value:int) : void
+    {
+        var oldValue:int = _internal_pwr_DPP;
+        if (oldValue !== value)
+        {
+            _internal_pwr_DPP = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "pwr_DPP", oldValue, _internal_pwr_DPP));
+        }
+    }
+
+    public function set shortName(value:String) : void
+    {
+        var oldValue:String = _internal_shortName;
+        if (oldValue !== value)
+        {
+            _internal_shortName = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "shortName", oldValue, _internal_shortName));
+        }
+    }
+
     public function set namen(value:String) : void
     {
         var oldValue:String = _internal_namen;
@@ -270,13 +527,13 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
-    public function set comments(value:String) : void
+    public function set Y2013(value:Number) : void
     {
-        var oldValue:String = _internal_comments;
-        if (oldValue !== value)
+        var oldValue:Number = _internal_Y2013;
+        if (isNaN(_internal_Y2013) == true || Math.abs(oldValue - value) > epsilon)
         {
-            _internal_comments = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "comments", oldValue, _internal_comments));
+            _internal_Y2013 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2013", oldValue, _internal_Y2013));
         }
     }
 
@@ -290,6 +547,26 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
+    public function set Y2012(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2012;
+        if (isNaN(_internal_Y2012) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2012 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2012", oldValue, _internal_Y2012));
+        }
+    }
+
+    public function set pwrTypeID(value:int) : void
+    {
+        var oldValue:int = _internal_pwrTypeID;
+        if (oldValue !== value)
+        {
+            _internal_pwrTypeID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "pwrTypeID", oldValue, _internal_pwrTypeID));
+        }
+    }
+
     public function set indicatorID(value:int) : void
     {
         var oldValue:int = _internal_indicatorID;
@@ -300,23 +577,53 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
-    public function set sessionID(value:int) : void
+    public function set Y2015(value:Number) : void
     {
-        var oldValue:int = _internal_sessionID;
-        if (oldValue !== value)
+        var oldValue:Number = _internal_Y2015;
+        if (isNaN(_internal_Y2015) == true || Math.abs(oldValue - value) > epsilon)
         {
-            _internal_sessionID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "sessionID", oldValue, _internal_sessionID));
+            _internal_Y2015 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2015", oldValue, _internal_Y2015));
         }
     }
 
-    public function set Y2006(value:Number) : void
+    public function set indiName(value:String) : void
     {
-        var oldValue:Number = _internal_Y2006;
-        if (isNaN(_internal_Y2006) == true || Math.abs(oldValue - value) > epsilon)
+        var oldValue:String = _internal_indiName;
+        if (oldValue !== value)
         {
-            _internal_Y2006 = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2006", oldValue, _internal_Y2006));
+            _internal_indiName = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "indiName", oldValue, _internal_indiName));
+        }
+    }
+
+    public function set Y2014(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2014;
+        if (isNaN(_internal_Y2014) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2014 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2014", oldValue, _internal_Y2014));
+        }
+    }
+
+    public function set Y2008(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2008;
+        if (isNaN(_internal_Y2008) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2008 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2008", oldValue, _internal_Y2008));
+        }
+    }
+
+    public function set Y2007(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2007;
+        if (isNaN(_internal_Y2007) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2007 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2007", oldValue, _internal_Y2007));
         }
     }
 
@@ -330,13 +637,23 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
-    public function set scenarioID(value:int) : void
+    public function set Y2006(value:Number) : void
     {
-        var oldValue:int = _internal_scenarioID;
+        var oldValue:Number = _internal_Y2006;
+        if (isNaN(_internal_Y2006) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2006 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2006", oldValue, _internal_Y2006));
+        }
+    }
+
+    public function set deviceID(value:int) : void
+    {
+        var oldValue:int = _internal_deviceID;
         if (oldValue !== value)
         {
-            _internal_scenarioID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "scenarioID", oldValue, _internal_scenarioID));
+            _internal_deviceID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "deviceID", oldValue, _internal_deviceID));
         }
     }
 
@@ -350,13 +667,73 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         }
     }
 
-    public function set deviceID(value:int) : void
+    public function set Y2011(value:Number) : void
     {
-        var oldValue:int = _internal_deviceID;
+        var oldValue:Number = _internal_Y2011;
+        if (isNaN(_internal_Y2011) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2011 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2011", oldValue, _internal_Y2011));
+        }
+    }
+
+    public function set Y2010(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2010;
+        if (isNaN(_internal_Y2010) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2010 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2010", oldValue, _internal_Y2010));
+        }
+    }
+
+    public function set sessionID(value:int) : void
+    {
+        var oldValue:int = _internal_sessionID;
         if (oldValue !== value)
         {
-            _internal_deviceID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "deviceID", oldValue, _internal_deviceID));
+            _internal_sessionID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "sessionID", oldValue, _internal_sessionID));
+        }
+    }
+
+    public function set scenarioID(value:int) : void
+    {
+        var oldValue:int = _internal_scenarioID;
+        if (oldValue !== value)
+        {
+            _internal_scenarioID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "scenarioID", oldValue, _internal_scenarioID));
+        }
+    }
+
+    public function set Y2009(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2009;
+        if (isNaN(_internal_Y2009) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2009 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2009", oldValue, _internal_Y2009));
+        }
+    }
+
+    public function set cntryName(value:String) : void
+    {
+        var oldValue:String = _internal_cntryName;
+        if (oldValue !== value)
+        {
+            _internal_cntryName = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "cntryName", oldValue, _internal_cntryName));
+        }
+    }
+
+    public function set batTypeID(value:int) : void
+    {
+        var oldValue:int = _internal_batTypeID;
+        if (oldValue !== value)
+        {
+            _internal_batTypeID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "batTypeID", oldValue, _internal_batTypeID));
         }
     }
 
@@ -382,14 +759,29 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         _model.invalidateDependentOnHierarchy();
     }
 
+    model_internal function setterListenerComments(value:flash.events.Event):void
+    {
+        _model.invalidateDependentOnComments();
+    }
+
+    model_internal function setterListenerShortName(value:flash.events.Event):void
+    {
+        _model.invalidateDependentOnShortName();
+    }
+
     model_internal function setterListenerNamen(value:flash.events.Event):void
     {
         _model.invalidateDependentOnNamen();
     }
 
-    model_internal function setterListenerComments(value:flash.events.Event):void
+    model_internal function setterListenerIndiName(value:flash.events.Event):void
     {
-        _model.invalidateDependentOnComments();
+        _model.invalidateDependentOnIndiName();
+    }
+
+    model_internal function setterListenerCntryName(value:flash.events.Event):void
+    {
+        _model.invalidateDependentOnCntryName();
     }
 
 
@@ -423,15 +815,30 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
             propertyValidity = false;
             com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_hierarchyValidationFailureMessages);
         }
+        if (!_model.commentsIsValid)
+        {
+            propertyValidity = false;
+            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_commentsValidationFailureMessages);
+        }
+        if (!_model.shortNameIsValid)
+        {
+            propertyValidity = false;
+            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_shortNameValidationFailureMessages);
+        }
         if (!_model.namenIsValid)
         {
             propertyValidity = false;
             com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_namenValidationFailureMessages);
         }
-        if (!_model.commentsIsValid)
+        if (!_model.indiNameIsValid)
         {
             propertyValidity = false;
-            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_commentsValidationFailureMessages);
+            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_indiNameValidationFailureMessages);
+        }
+        if (!_model.cntryNameIsValid)
+        {
+            propertyValidity = false;
+            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_cntryNameValidationFailureMessages);
         }
 
         model_internal::_cacheInitialized_isValid = true;
@@ -566,6 +973,60 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         return validationFailures;
     }
     
+    model_internal var _doValidationCacheOfComments : Array = null;
+    model_internal var _doValidationLastValOfComments : String;
+
+    model_internal function _doValidationForComments(valueIn:Object):Array
+    {
+        var value : String = valueIn as String;
+
+        if (model_internal::_doValidationCacheOfComments != null && model_internal::_doValidationLastValOfComments == value)
+           return model_internal::_doValidationCacheOfComments ;
+
+        _model.model_internal::_commentsIsValidCacheInitialized = true;
+        var validationFailures:Array = new Array();
+        var errorMessage:String;
+        var failure:Boolean;
+
+        var valRes:ValidationResult;
+        if (_model.isCommentsAvailable && _internal_comments == null)
+        {
+            validationFailures.push(new ValidationResult(true, "", "", "comments is required"));
+        }
+
+        model_internal::_doValidationCacheOfComments = validationFailures;
+        model_internal::_doValidationLastValOfComments = value;
+
+        return validationFailures;
+    }
+    
+    model_internal var _doValidationCacheOfShortName : Array = null;
+    model_internal var _doValidationLastValOfShortName : String;
+
+    model_internal function _doValidationForShortName(valueIn:Object):Array
+    {
+        var value : String = valueIn as String;
+
+        if (model_internal::_doValidationCacheOfShortName != null && model_internal::_doValidationLastValOfShortName == value)
+           return model_internal::_doValidationCacheOfShortName ;
+
+        _model.model_internal::_shortNameIsValidCacheInitialized = true;
+        var validationFailures:Array = new Array();
+        var errorMessage:String;
+        var failure:Boolean;
+
+        var valRes:ValidationResult;
+        if (_model.isShortNameAvailable && _internal_shortName == null)
+        {
+            validationFailures.push(new ValidationResult(true, "", "", "shortName is required"));
+        }
+
+        model_internal::_doValidationCacheOfShortName = validationFailures;
+        model_internal::_doValidationLastValOfShortName = value;
+
+        return validationFailures;
+    }
+    
     model_internal var _doValidationCacheOfNamen : Array = null;
     model_internal var _doValidationLastValOfNamen : String;
 
@@ -593,29 +1054,56 @@ public class _Super_A extends flash.events.EventDispatcher implements com.adobe.
         return validationFailures;
     }
     
-    model_internal var _doValidationCacheOfComments : Array = null;
-    model_internal var _doValidationLastValOfComments : String;
+    model_internal var _doValidationCacheOfIndiName : Array = null;
+    model_internal var _doValidationLastValOfIndiName : String;
 
-    model_internal function _doValidationForComments(valueIn:Object):Array
+    model_internal function _doValidationForIndiName(valueIn:Object):Array
     {
         var value : String = valueIn as String;
 
-        if (model_internal::_doValidationCacheOfComments != null && model_internal::_doValidationLastValOfComments == value)
-           return model_internal::_doValidationCacheOfComments ;
+        if (model_internal::_doValidationCacheOfIndiName != null && model_internal::_doValidationLastValOfIndiName == value)
+           return model_internal::_doValidationCacheOfIndiName ;
 
-        _model.model_internal::_commentsIsValidCacheInitialized = true;
+        _model.model_internal::_indiNameIsValidCacheInitialized = true;
         var validationFailures:Array = new Array();
         var errorMessage:String;
         var failure:Boolean;
 
         var valRes:ValidationResult;
-        if (_model.isCommentsAvailable && _internal_comments == null)
+        if (_model.isIndiNameAvailable && _internal_indiName == null)
         {
-            validationFailures.push(new ValidationResult(true, "", "", "comments is required"));
+            validationFailures.push(new ValidationResult(true, "", "", "indiName is required"));
         }
 
-        model_internal::_doValidationCacheOfComments = validationFailures;
-        model_internal::_doValidationLastValOfComments = value;
+        model_internal::_doValidationCacheOfIndiName = validationFailures;
+        model_internal::_doValidationLastValOfIndiName = value;
+
+        return validationFailures;
+    }
+    
+    model_internal var _doValidationCacheOfCntryName : Array = null;
+    model_internal var _doValidationLastValOfCntryName : String;
+
+    model_internal function _doValidationForCntryName(valueIn:Object):Array
+    {
+        var value : String = valueIn as String;
+
+        if (model_internal::_doValidationCacheOfCntryName != null && model_internal::_doValidationLastValOfCntryName == value)
+           return model_internal::_doValidationCacheOfCntryName ;
+
+        _model.model_internal::_cntryNameIsValidCacheInitialized = true;
+        var validationFailures:Array = new Array();
+        var errorMessage:String;
+        var failure:Boolean;
+
+        var valRes:ValidationResult;
+        if (_model.isCntryNameAvailable && _internal_cntryName == null)
+        {
+            validationFailures.push(new ValidationResult(true, "", "", "cntryName is required"));
+        }
+
+        model_internal::_doValidationCacheOfCntryName = validationFailures;
+        model_internal::_doValidationLastValOfCntryName = value;
 
         return validationFailures;
     }

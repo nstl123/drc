@@ -4,7 +4,8 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"		 
 		 xmlns:inputTabas="inputTabas.*"
 		 width="100%" height="100%" 
-		 xmlns:base="services.base.*" >
+		 xmlns:base="services.base.*"
+		 xmlns:base1="services.base1.*" >
 	
 	<s:layout>
 		<s:HorizontalLayout/>
@@ -16,6 +17,9 @@
 		
 		<base:Base id="base" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"			    
 				   showBusyCursor="true"  />
+		
+		<base1:Base1 id="base1" fault="Alert.show(event.fault.faultString + '\n' + 
+					 event.fault.faultDetail)" showBusyCursor="true"/>
 		
 		<s:CallResponder id="getCountriesList" result="base_resultHandler(event)"/>	
 		<s:CallResponder id="getDeviceBaseResult" result="getDeviceBaseResult_resultHandler(event)"/>
@@ -58,8 +62,8 @@
 			/* monitoring change events */
 			
 			public function startApp(event:Event):void
-			{				
-				this.getCountriesList.token = this.base.getCountryList();
+			{					
+				this.getCountriesList.token = this.base1.getCountryList();	
 				
 				this.addEventListener("cntrySelectionChanged", refreshDemandData);
 				this.addEventListener("typesSelectionChanged", refreshDemandData);				

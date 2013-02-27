@@ -92,24 +92,26 @@
 				
 				this.addEventListener("cntrySelectionChanged",  refreshData);
 				this.addEventListener("typesSelectionChanged",  refreshData);		
-				this.addEventListener("indiSelectionChanged",   refreshData);
-				this.addEventListener("deviceSelectionChanged", refreshData);
+				this.addEventListener("indiSelectionChanged",   refreshData); 
+				
+				this.addEventListener("deviceSelectionChanged", filterDevices);				
+				
+				this.addEventListener("indicatorsSelectionChanged", filterIndicators);
+				this.addEventListener("splitByDevicesChanged",      filterIndicators);
 			}
 			
 			[Bindable] private var isFirstCall:Boolean = true;
 			
 			protected function refreshData(evt:Event):void {
-				if ((this.isFirstCall)||(aggType > 0)) { // only for aggType==0 we call for data once					
-					// $aggLevel, $scenarioID, $countryID, $indicatorID, $batTypeID, $pwrTypeID)
-					getOutputDataResult.token = base.getOutputData(
-						aggType, workingScenarioID, selectedCntry,
-						selectedIndiOut, selectedBatType, selectedPwrType);		
-					
-					this.isFirstCall = false;										
-				} else {	
-					filterCountries(); // filter funkction for viewing data					
-				};
-			}
+				if ((this.aggType > 0) || (this.isFirstCall)) {
+						getOutputDataResult.token = base.getOutputData(
+							aggType, workingScenarioID, selectedCntry,
+							selectedIndiOut, selectedBatType, selectedPwrType);					
+						this.isFirstCall = false;						
+					} else {
+						this.filterCountries();
+					}			
+			};
 			
 			protected function cntryList_resultHandler(event:ResultEvent):void
 			{
@@ -129,7 +131,7 @@
 				indiGridOutput.dataProvider = indiRezOut;
 				indiGridInput.dataProvider = indiRezIn;
 				
-				filterIndicators();
+				this.dispatchEvent(new Event("indicatorsSelectionChanged"));				
 			}
 			
 			protected function batTypesChange_clickHandler(event:MouseEvent):void
@@ -163,27 +165,30 @@
 			}
 			
 			[Bindable] private var rez:ArrayCollection = new ArrayCollection();
+			
 			protected function getOutputDataResult_resultHandler(event:ResultEvent):void
 			{									
 				rez = ArrayCollection(this.getOutputDataResult.lastResult)
 				rezGrid.dataProvider = rez;
+				
+				if (this.aggType > 0) filterDevices(event);
 			}
 			
-			/*private function filterDevicesLabel(item:Object):Boolean {								
+			private function filterDevicesLabel(item:Object):Boolean {								
 				var fl:Boolean = false;
 				if ((item.countryID == this.selectedCntry) && 
 					( (item.indicatorID == this.selectedIndiIn) ||
-						(item.indicatorID == this.selectedIndiOut) )
-					&& (item.deviceID == this.selectedDevice))					
-					fl = true
+						(item.indicatorID == this.selectedIndiOut)) &&
+					 (item.deviceID == this.selectedDevice))					
+						fl = true
 				else    fl = false;				
 				return fl;
-			}	*/
+			}	
 
-			/*private function filterDevices():void {
+			private function filterDevices(evt:Event):void {
 				rez.filterFunction = filterDevicesLabel;
 				rez.refresh();
-			}*/
+			}
 			
 			private function filterCountries():void {
 				rez.filterFunction = filterRezArrCol;
@@ -191,25 +196,17 @@
 			}
 			
 			private function filterRezArrCol(item:Object):Boolean {								
-				var fl:Boolean = false;
-				if (this.showSplitByDevices) {
-					if( (item.countryID == this.selectedCntry)  &&		
-						(item.deviceID  == this.selectedDevice) &&
-					  ( (item.indicatorID == this.selectedIndiIn) ||
-						  (item.indicatorID == this.selectedIndiOut) ))					
+				var fl:Boolean = false;				
+				if ((item.countryID == this.selectedCntry) &&				
+			   	   ((item.indicatorID == this.selectedIndiIn) ||
+				    (item.indicatorID == this.selectedIndiOut) ))					
 						fl = true
-					else   fl = false;
-				} else {
-					if ((item.countryID == this.selectedCntry) &&				
-				   ( (item.indicatorID == this.selectedIndiIn) ||
-					  (item.indicatorID == this.selectedIndiOut) ))					
-							fl = true
-				 	else    fl = false;
-				}
+			 	else    fl = false;
+			
 				return fl;
 			}	
 			
-			private function filterIndicators():void {				
+			private function filterIndicators(evt:Event):void {				
 				this.indiRezOut.filterFunction = filterIndisArrColOut;
 				this.indiRezOut.refresh();
 				
@@ -250,8 +247,9 @@
 				pwrSource.enabled = this.showSplitByTypes;		
 				this.deviceList.enabled = this.showSplitByDevices;
 				
-				if (this.showSplitByTypes) aggType = 2 else aggType = 1;
-				filterIndicators();
+				if (this.showSplitByTypes) aggType = 2 else aggType = 1;		
+				
+				this.dispatchEvent(new Event("splitByDevicesChanged"));				
 			}
 
 			protected function spDev_changeHandler(event:Event):void
@@ -259,9 +257,9 @@
 				this.showSplitByDevices = !this.showSplitByDevices;
 				this.deviceList.enabled = this.showSplitByDevices;
 				if (this.showSplitByDevices) aggType = 1 else { 
-					aggType = 0; this.isFirstCall = true;
-				};
-				filterIndicators();
+					aggType = 0; isFirstCall = true;
+				};	
+				this.dispatchEvent(new Event("splitByDevicesChanged"));
 			}
 			
 			protected function getDeviceNamesResult_resultHandler(event:ResultEvent):void
@@ -273,9 +271,8 @@
 			protected function deviceList_changeHandler(event:IndexChangeEvent):void
 			{
 				selectedDevice = this.deviceList.selectedItem.id;
-				this.devIDtext.text = this.deviceList.selectedItem.id;
-				
-				filterCountries();				
+				this.devIDtext.text = this.deviceList.selectedItem.id;				
+				this.dispatchEvent(new Event("deviceSelectionChanged"));			
 			}
 
 		]]> 
@@ -313,24 +310,24 @@
 				<s:HorizontalLayout/>
 			</s:layout>		
 			<s:BorderContainer width="250" height="100%">
-				
 				<s:layout>
-					<s:VerticalLayout/>
+					<s:BasicLayout/>
 				</s:layout>
-				<s:BorderContainer width="250" height="50%" id="borderContainer">
+				
+				<s:BorderContainer width="250" height="81" id="borderContainer">
 					<s:layout>
-						<s:VerticalLayout/>
+						<s:BasicLayout/>
 					</s:layout>
-					<s:Label text="detail level" height="25%" width="100%" verticalAlign="middle"/>
-					<s:CheckBox label="Split by Devices?" height="25%" width="100%"
+					<s:Label text="detail level" height="27" width="147" verticalAlign="middle" x="-1" y="-2"/>
+					<s:CheckBox label="Split by Devices?" height="25" width="159"
 								change="spDev_changeHandler(event)"
-							  	id="spDev" />
+							  	id="spDev"  x="10" y="22"/>
 					
-					<s:CheckBox label="Split by BatTypes?" height="25%" width="100%"
-							    change="spTypes_changeHandler(event)"	 id="spTypes"/>
+					<s:CheckBox label="Split by BatTypes?" height="26" width="150"
+							    change="spTypes_changeHandler(event)"	 id="spTypes" x="10" y="47"/>
 				
 				</s:BorderContainer>
-				<s:BorderContainer width="250" height="50%">
+				<s:BorderContainer width="250" height="165" x="-1" y="85">
 					<s:layout>
 						<s:BasicLayout/>
 					</s:layout>
@@ -355,16 +352,16 @@
 								    x="10" y="38"/>
 					
 					<s:Label text="PowerSource" width="114" height="18" verticalAlign="middle" textAlign="center" x="-1" y="65"/>
-					<s:Label text="Devices" width="121" height="18" verticalAlign="middle" textAlign="center" x="-5" y="105"/>
+					<s:Label text="Devices" width="121" height="18" verticalAlign="middle" textAlign="center" x="3" y="108"/>
 					
 					<s:RadioButton label="DPP" groupName="pwrSource" value="1" width="30%" height="20%" selected="true" 
 								   click="pwrTypes_clickHandler(event)" textAlign="center" x="81" y="73"/>
 					<s:RadioButton label="RCH" groupName="pwrSource" value="2" width="30%" height="20%" 
 								   click="pwrTypes_clickHandler(event)" textAlign="center" x="10" y="73"/>
-					<s:DropDownList y="128" width="100%" id="deviceList" labelField="namen" contentBackgroundAlpha="1.0" contentBackgroundColor="#FFFFFF"
+					<s:Label x="152" y="109" text="dev id" width="96" height="17" id="devIDtext"/>
+					<s:DropDownList y="132" width="100%" id="deviceList" labelField="namen" contentBackgroundAlpha="1.0" contentBackgroundColor="#FFFFFF"
 									dropShadowVisible="false" 
-									change="deviceList_changeHandler(event)" enabled="false" textAlign="left" fontSize="11"></s:DropDownList>
-					<s:Label x="147" y="105" text="dev id" width="96" height="17" id="devIDtext"/>
+									change="deviceList_changeHandler(event)" enabled="false" textAlign="left" fontSize="11" x="-1"></s:DropDownList>
 				</s:BorderContainer>
 			</s:BorderContainer>
 			<mx:DataGrid id="indiGridOutput" change="indiGridOut_changeHandler(event)" 

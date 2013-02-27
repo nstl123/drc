@@ -119,6 +119,15 @@ class Base {
 		array_push($a, $result);		
 		return $result;
 	}
+
+	public function getDeviceNames() {
+		$a = array('a'=>"");
+		$stmnt = "
+			SELECT * FROM `Consulting`.`DC_namesDevices`;";
+		$result = $this->connection->fetchAll($stmnt);		
+		array_push($a, $result);		
+		return $result;
+	}
 	
 	public function updateDeviceBase() {
 		$this->deleteDeviceBase();
@@ -187,7 +196,7 @@ class Base {
 		array_push($a, $result);							
 	
 		return $result;
-	}	
-}	
+	}		
 	
+}		
 ?>

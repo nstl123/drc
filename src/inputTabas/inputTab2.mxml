@@ -5,7 +5,8 @@
 		 width="835" height="545"
 		 xmlns:inputTab2 = "inputTabas.inputTab2"
 		 xmlns:base1="services.base1.*"
-		 creationComplete="group1_creationCompleteHandler(event)" xmlns:base="services.base.*">
+		 creationComplete="group1_creationCompleteHandler(event)" 
+		 xmlns:base="services.base.*">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -13,6 +14,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
+			import mx.events.DataGridEvent;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
 			import mx.rpc.events.ResultEvent;
@@ -25,8 +27,7 @@
 			protected function dataGrid_creationCompleteHandler(event:FlexEvent):void
 			{
 				getCountryListResult.token = base1.getCountryList();
-			}
-			
+			}			
 			
 			protected function indisList_creationCompleteHandler(event:FlexEvent):void
 			{
@@ -96,6 +97,19 @@
 				this.rezaiGrid.dataProvider = rezai;
 				// add some filter function??? for country and device???
 			}
+			
+			//??
+			private function disableEditing(event:DataGridEvent):void {
+				if(event.columnIndex < 3)
+				{  
+					event.preventDefault(); 
+				}
+			}   
+			
+			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
+			private function saveDataFromGrid(event:DataGridEvent):void {
+				this.alteredData = 	ArrayCollection(this.rezaiGrid.dataProvider);				
+			}   
 
 		]]>
 	</fx:Script>
@@ -112,16 +126,19 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<mx:DataGrid x="10" y="9" width="195" height="523" id="dataGrid" 
-				 creationComplete="dataGrid_creationCompleteHandler(event)" dataProvider="{getCountryListResult.lastResult}"
+				 creationComplete="dataGrid_creationCompleteHandler(event)" 
+				 dataProvider="{getCountryListResult.lastResult}"
 				 change="dataGrid_changeHandler(event)" >
 		<mx:columns>			
-			<mx:DataGridColumn headerText="id" dataField="id" width="50"/>			
+			<mx:DataGridColumn headerText="id" dataField="id" width="50" 
+							   itemRenderer="someComps.testRenderer"/>			
 			<mx:DataGridColumn headerText="namen" dataField="namen" width="300"/>
 		</mx:columns>
 	</mx:DataGrid>
 	<s:BorderContainer x="210" y="321" width="597" height="211">
 		<s:Label text="Preview of New Scenario" width="95%" height="17" textAlign="left" horizontalCenter="0" top="5" fontStyle="italic"/>
-		<mx:DataGrid y="24" width="95%" height="179" horizontalCenter="0" id="rezaiGrid">
+		<mx:DataGrid y="20" width="95%" height="179" horizontalCenter="3" id="rezaiGrid"
+					 editable="true"  itemEditBegin="{this.disableEditing(event)}">
 			<mx:columns>
 				<mx:DataGridColumn headerText="countryID" dataField="countryID"/>
 				<mx:DataGridColumn headerText="indicatorID" dataField="indicatorID"/>
@@ -131,7 +148,7 @@
 			</mx:columns>
 		</mx:DataGrid>
 	</s:BorderContainer>
-	<s:Button x="209" y="294" label="Confirm Inputs"/>
+	<s:Button x="209" y="294" label="Confirm Inputs" click="saveDataFromGrid(null)"/>
 	<s:Button x="493" y="294" label="Reset to Baseline"/>
 	<s:BorderContainer x="213" y="187" width="386" height="98">
 		<s:Label text="Schock" width="95%" height="17" textAlign="left" horizontalCenter="0" top="5" fontStyle="italic"/>

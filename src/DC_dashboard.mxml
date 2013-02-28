@@ -2,10 +2,12 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" 
-			   xmlns:base="services.base.*" 
-			   xmlns:inputTabas="inputTabas.*"			    
-			   creationComplete="application1_creationCompleteHandler(event)" 
+			   xmlns:base="services.base.*"			  			    
+			   creationComplete="application1_creationCompleteHandler(event)"
+			   
 			   xmlns:outputTab1="outputTab1.*"
+			   xmlns:inputTabas="inputTabas.*"
+			   xmlns:inputTab2 = "inputTabas.inputTab2"
 			>
 	
 	<fx:Style source="stilistika.css"/>
@@ -66,10 +68,14 @@
 	</fx:Declarations>	
 	<mx:TabNavigator id="inputTabai" width="99%" height="98%" horizontalCenter="0" verticalCenter="0" 
 					 change="tabNavigator_change(event)">
-		<s:NavigatorContent label="InputTabs" width="100%" height="80%" creationComplete="{this.inpTab.startApp(event)}" >												
+		<!-- <s:NavigatorContent label="InputTabs" width="100%" height="80%" creationComplete="{this.inpTab.startApp(event)}" >												
 			 <inputTabas:inputTabas id="inpTab">			 
-			 </inputTabas:inputTabas>		
+			 </inputTabas:inputTabas> 		
+		</s:NavigatorContent> !-->		
 		
+		<s:NavigatorContent label="tab3" width="100%" height="100%">
+			<inputTabas:inputTab2 id="test3" workingScenarioID="{this.workingScenarioID}">				
+			</inputTabas:inputTab2>
 		</s:NavigatorContent>
 		
 		<s:NavigatorContent label="outputTab1" width="100%" height="100%">

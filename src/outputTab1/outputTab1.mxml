@@ -2,6 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 
 		 xmlns:outputTab1="outputTab1.*" 
 		 width="100%" height="100%"
 		 xmlns:base="services.base.*"
@@ -9,17 +10,8 @@
 		 creationComplete="group1_creationCompleteHandler(event)"	 
 		 >
 	<s:layout>
-		<s:BasicLayout/>
+		<s:HorizontalLayout/>
 	</s:layout>
-	
-	<!-- for data efficiency, 
-	
-		 get all data at initial stage & store it locally,
-	 	 then just query with selections; query time awfull for aggregated demand!!
-		
-		 however, for demand split, use query instead.
-	!-->
-	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="batTypes"  enabled="false"/>
 		<s:RadioButtonGroup id="pwrSource" enabled="false"/>		
@@ -112,7 +104,7 @@
 				if ((this.aggType > 0) || (this.isFirstCall)) {
 						getOutputDataResult.token = base.getOutputData(
 							aggType, workingScenarioID, selectedCntry,
-							selectedIndiOut, selectedBatType, selectedPwrType);					
+							selectedIndiOut, selectedBatType, selectedPwrType, true);					
 						this.isFirstCall = false;						
 					} else {
 						this.filterCountries();
@@ -277,7 +269,6 @@
 				this.deviceList.dataProvider = this.getDeviceNamesResult.lastResult;
 			}
 
-
 			protected function deviceList_changeHandler(event:IndexChangeEvent):void
 			{
 				selectedDevice = this.deviceList.selectedItem.id;
@@ -306,15 +297,22 @@
 				vaxis2 = new LinearAxis;
 				var hAxis:CategoryAxis = new CategoryAxis();
 				mySeries.splice(0, mySeries.length);
+				var counter:int = 0;
+				
 				
 				for (var i:int = 0; i < someData.length; i++) {
 					series2 = new LineSeries();
 					series2.dataProvider = someData.getItemAt(i);			
 					series2.xField="yrs";
 					series2.yField="data";
-					if ( i == 0 ) series2.verticalAxis = vaxis1;
+					
+					var tmp:Object = someData.getItemAt(i)[0]; 
+					
+					if (tmp.indicatorID == someData.getItemAt(0)[0].indicatorID) series2.verticalAxis = vaxis1
 					else series2.verticalAxis = vaxis2;
-					series2.displayName = someData.getItemAt(i)[0].countryID + "\n" + someData.getItemAt(i)[0].indicatorID;
+					
+					series2.displayName = tmp.countryID + "|" + tmp.indicatorID + "\n" + tmp.scenarioID;
+					
 					hAxis.dataProvider = someData.getItemAt(i);
 					vaxis1.baseAtZero = false;
 					vaxis2.baseAtZero = false;

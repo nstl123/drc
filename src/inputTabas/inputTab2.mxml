@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="835" height="545"
+		 xmlns:inputTab2 = "inputTabas.inputTab2"
+		 xmlns:base1="services.base1.*"
+		 creationComplete="group1_creationCompleteHandler(event)" xmlns:base="services.base.*">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;			
+			
+			[bindable] public var workingScenarioID:int;
+			[bindable] private var aggLevel:int = 0;
+			
+			protected function dataGrid_creationCompleteHandler(event:FlexEvent):void
+			{
+				getCountryListResult.token = base1.getCountryList();
+			}
+			
+			
+			protected function indisList_creationCompleteHandler(event:FlexEvent):void
+			{
+				getIndicatorNamesResult.token = base1.getIndicatorNames();
+			}
+			
+			[bindable] private var selectedIndicator:int = 0; 
+			protected function indisList_changeHandler(event:IndexChangeEvent):void
+			{
+				this.selectedIndicator = this.indisList.selectedItem.id;
+				this.indicatorsLabel.text = "Selected: " + this.indisList.selectedItem.namen;
+			}
+
+			private function filterIndicators(evt:Event):void {				
+				this.indiNamesArr.filterFunction = filterIndisArrColOut;
+				this.indiNamesArr.refresh();
+			}
+			
+			[bindable] private var showSplitByDevices:Boolean = false;
+			private function filterIndisArrColOut(item:Object):Boolean {			
+				var fl:Boolean = false;
+				if ((item.hasSplitByDevices == this.showSplitByDevices)&&					
+					(!item.isOutputIndicator && item.hasTimeSeries)&&
+					(!item.hasSplitByTypes)) {					
+					fl = true
+				}  else fl = false;				
+				return fl;
+			}
+			
+			[Bindable] private var indiNamesArr:ArrayCollection = new ArrayCollection();
+			protected function getIndicatorNamesResult_resultHandler(event:ResultEvent):void
+			{
+				this.indiNamesArr = ArrayCollection(this.getIndicatorNamesResult.lastResult);
+				filterIndicators(event);
+			}
+
+			protected function checkbox1_changeHandler(event:Event):void
+			{
+				this.showSplitByDevices = !this.showSplitByDevices;
+				this.dispatchEvent(new Event("splitByDevicesChanged"));
+				if (this.showSplitByDevices) aggLevel = 1
+				else aggLevel = 0;
+			}
+
+
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.addEventListener("splitByDevicesChanged", filterIndicators);
+			}
+
+			protected function test_clickHandler(event:MouseEvent):void
+			{				
+				getOutputDataResult.token = base.getOutputData(
+					aggLevel, this.workingScenarioID, this.selectedCountry, this.selectedIndicator, 0, 0, false);
+			}
+
+			[Bindable] private var selectedCountry:int = 0;
+			protected function dataGrid_changeHandler(event:ListEvent):void
+			{
+				this.selectedCountry = this.dataGrid.selectedItem.id;
+			}
+
+			[bindable] private var rezai:ArrayCollection = new ArrayCollection();
+			protected function getOutputDataResult_resultHandler(event:ResultEvent):void
+			{
+				rezai = ArrayCollection(this.getOutputDataResult.lastResult);
+				this.rezaiGrid.dataProvider = rezai;
+				// add some filter function??? for country and device???
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="demandMethodGroup"/>
+		
+		<base1:Base1 id="base1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<base:Base id="base" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		
+		<s:CallResponder id="getCountryListResult"/>
+		<s:CallResponder id="getIndicatorNamesResult" result="getIndicatorNamesResult_resultHandler(event)"/>
+		<s:CallResponder id="getOutputDataResult" result="getOutputDataResult_resultHandler(event)"/>
+		
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:DataGrid x="10" y="9" width="195" height="523" id="dataGrid" 
+				 creationComplete="dataGrid_creationCompleteHandler(event)" dataProvider="{getCountryListResult.lastResult}"
+				 change="dataGrid_changeHandler(event)" >
+		<mx:columns>			
+			<mx:DataGridColumn headerText="id" dataField="id" width="50"/>			
+			<mx:DataGridColumn headerText="namen" dataField="namen" width="300"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<s:BorderContainer x="210" y="321" width="597" height="211">
+		<s:Label text="Preview of New Scenario" width="95%" height="17" textAlign="left" horizontalCenter="0" top="5" fontStyle="italic"/>
+		<mx:DataGrid y="24" width="95%" height="179" horizontalCenter="0" id="rezaiGrid">
+			<mx:columns>
+				<mx:DataGridColumn headerText="countryID" dataField="countryID"/>
+				<mx:DataGridColumn headerText="indicatorID" dataField="indicatorID"/>
+				<mx:DataGridColumn headerText="deviceID" dataField="deviceID"/>
+				<mx:DataGridColumn headerText="Y2005" dataField="Y2005"/>
+				<mx:DataGridColumn headerText="Y2010" dataField="Y2010"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</s:BorderContainer>
+	<s:Button x="209" y="294" label="Confirm Inputs"/>
+	<s:Button x="493" y="294" label="Reset to Baseline"/>
+	<s:BorderContainer x="213" y="187" width="386" height="98">
+		<s:Label text="Schock" width="95%" height="17" textAlign="left" horizontalCenter="0" top="5" fontStyle="italic"/>
+		<s:Label x="81" y="10" text="When, Magnitude, Where?" width="124" height="45" textAlign="left" verticalAlign="middle" color="#2D8D1D"/>
+	</s:BorderContainer>
+	<s:BorderContainer x="213" y="91" width="386" height="92">
+		<s:Label text="Calculation Method:" width="95%" height="17" textAlign="left" top="5" horizontalCenter="0" fontStyle="italic"/>
+		<s:RadioButton label="Macro" groupName="demandMethodGroup" right="139" top="26" width="45%" enabled="false"/>
+		<s:RadioButton label="Deterministic" groupName="demandMethodGroup" right="15" top="26" width="45%" selected="true"/>
+		<s:Label text="Aggregation Level:" width="95%" textAlign="left" top="48" horizontalCenter="0" fontStyle="italic"/>
+		<s:CheckBox x="135" y="62" label="Split Device Base?" width="152"
+					selected="false" change="checkbox1_changeHandler(event)"
+					enabled="true" />
+	</s:BorderContainer>
+	<s:List x="607" y="33" width="200" height="280" contentBackgroundColor="#C4D5F7" 
+			id="indisList" enabled="true" 
+			creationComplete="indisList_creationCompleteHandler(event)" 
+			labelField="namen" change="indisList_changeHandler(event)">
+		<s:AsyncListView list="{this.indiNamesArr}"/>
+	</s:List>
+	<s:Label x="609" y="13" text="Available Indicators (choose one)" width="244" textAlign="left" fontStyle="italic" id="indicatorsLabel"/>
+	<s:Button x="213" y="35" label="Upload Historic/Baseline" width="187" height="33" enabled="false"/>
+	<s:Button x="408" y="35" label="Upload New Scenario" width="191" height="33"/>
+	<s:Label x="214" y="76" text="Last Update was on : 2013-02-28" fontStyle="italic" color="#FF5A09" width="385"/>
+	<s:Label x="213" y="9" text="Scenario Construction" fontSize="16" fontStyle="italic" width="387" height="18" textAlign="left" color="#585858" fontWeight="bold"/>
+	<s:Button x="329" y="294" label="getSomeData" width="138" id="test" click="test_clickHandler(event)"/>
+</s:Group>

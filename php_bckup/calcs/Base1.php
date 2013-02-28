@@ -12,6 +12,14 @@ class Base1 {
 		));
 	}	
 	
+	public function getCountryList() {	
+		$a = array('a'=>"");
+		$sqlSr = "SELECT * FROM `Consulting`.`DC_namesCountries` cntr where cntr.isRegion = 0";
+		$result = $this->connection->fetchAll($sqlSr);
+		array_push($a, $result);		
+	    return $result;
+	}	
+	
 	public function getIndicatorNames() {
 	// $splitByDevices, $splitByTypes - this is done locally
 	// form query depending on detail level needed
@@ -19,8 +27,7 @@ class Base1 {
 		$stmnt = "
 			SELECT * 
 			FROM `Consulting`.`DC_namesIndicators`
-				WHERE 				 
-				-- AND isOutputIndicator = 0 AND
+				WHERE -- AND isOutputIndicator = 0 AND
 				hasTimeSeries = 1";
 		$result = $this->connection->fetchAll($stmnt);		
 		array_push($a, $result);		
@@ -34,7 +41,6 @@ class Base1 {
 		$result = $this->connection->fetchAll($stmnt);		
 		array_push($a, $result);		
 		return $result;
-	}
-	
+	}	
 }		
 ?>

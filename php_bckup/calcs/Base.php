@@ -18,15 +18,7 @@ class Base {
 		} else {
 			return 0;			
 		};
-	}			
-	
-	public function getCountryList() {	
-		$a = array('a'=>"");
-		$sqlSr = "SELECT * FROM `Consulting`.`DC_namesCountries` cntr where cntr.isRegion = 0";
-		$result = $this->connection->fetchAll($sqlSr);
-		array_push($a, $result);		
-	    return $result;
-	}
+	}				
 	
 	public function getDeviceBase($cntryID) {	
 		$a = array('a'=>"");
@@ -103,31 +95,7 @@ class Base {
 		$stmnt = "SELECT count(*) as num FROM `Consulting`.`DC_deviceBaseTable`;";
 		$result = $this->connection->fetchAll($stmnt);
 		return $result[0]['num']; // need to catch an error here
-	}	
-	
-	public function getIndicatorNames() {
-	// $splitByDevices, $splitByTypes - this is done locally
-	// form query depending on detail level needed
-		$a = array('a'=>"");
-		$stmnt = "
-			SELECT * 
-			FROM `Consulting`.`DC_namesIndicators`
-				WHERE 				 
-				-- AND isOutputIndicator = 0 AND
-				hasTimeSeries = 1";
-		$result = $this->connection->fetchAll($stmnt);		
-		array_push($a, $result);		
-		return $result;
-	}
-
-	public function getDeviceNames() {
-		$a = array('a'=>"");
-		$stmnt = "
-			SELECT * FROM `Consulting`.`DC_namesDevices`;";
-		$result = $this->connection->fetchAll($stmnt);		
-		array_push($a, $result);		
-		return $result;
-	}
+	}		
 	
 	public function updateDeviceBase() {
 		$this->deleteDeviceBase();
@@ -135,58 +103,67 @@ class Base {
 		return true;
 	}	
 	
-	public function getOutputData($aggLevel, $scenarioID, $countryID, $indicatorID, $batTypeID, $pwrTypeID) {
+	public function getOutputData($aggLevel, $scenarioID, $countryID, $indicatorID, $batTypeID, $pwrTypeID, $useUnion) {
 		$a = array('a'=>"");		
-		$stmnt_begin = "SELECT scenarioID, sessionID, cntry.namen as cntryName, countryID, deviceID,  batTypeID, pwrTypeID,
-						indis.namen as indiName, indicatorID, Y2004, Y2005, Y2006";
+		
+			$stmnt_begin = "SELECT scenarioID, sessionID, cntry.namen as cntryName, countryID, deviceID,  batTypeID, pwrTypeID,
+						indis.namen as indiName, indicatorID, Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015 ";
 	
 		if ($aggLevel == 0) { // aggergation on country level
 			$stmnt = "				
 				FROM (
 					SELECT sdm.scenarioID, sdm.sessionID, sdm.countryID, sdm.indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
-						Y2004, Y2005, Y2006
+						Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
 						FROM `Consulting`.`DC_scenarioDataMacro` as sdm
-						WHERE sdm.scenarioID = ".$scenarioID."
+						WHERE sdm.scenarioID IN (".$scenarioID.", 10001) 
+							AND indicatorID = 1001 \n";
+			if ($useUnion)	{ $stmnt = $stmnt."
 					UNION
 					SELECT dma.scenarioID, dma.sessionID, dma.countryID, 2080 as indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
-					Y2004, Y2005, Y2006
+						Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011,  Y2012, Y2013, Y2014, Y2015
 						FROM `Consulting`.`DC_demandAggregated` as dma
-						WHERE dma.scenarioID = ".$scenarioID."
-				) as base ";			
+							WHERE dma.scenarioID IN (".$scenarioID.", 10001) ";	};
+				// ") as base ";			
 		} else if ($aggLevel == 1) { // aggregation on device level		
 			$stmnt = " 
-			FROM (
-				SELECT sessionID, scenarioID, countryID, deviceID as deviceID, indicatorID,
-						0 as batTypeID, 0 as pwrTypeID,	Y2004, Y2005, Y2006
-					FROM Consulting.DC_scenarioDataSplit sdp
-						WHERE countryID = ".$countryID." and indicatorID = ".$indicatorID." and scenarioID = ".$scenarioID."
+				FROM (
+					SELECT sessionID, scenarioID, countryID, deviceID as deviceID, indicatorID,
+							0 as batTypeID, 0 as pwrTypeID,	Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
+						FROM Consulting.DC_scenarioDataSplit sdp
+							WHERE countryID = ".$countryID." and indicatorID = ".$indicatorID." 
+							AND scenarioID IN (".$scenarioID.", 10001) ";
+			if ($useUnion) { $stmnt = $stmnt."
 					UNION 
-				SELECT sessionID, scenarioID, countryID, deviceID as deviceID, indicatorID,
-						0 as batTypeID, 0 as pwrTypeID, Y2004, Y2005, Y2006
-					FROM Consulting.DC_deviceBase as dvb
-					WHERE countryID = ".$countryID." and scenarioID = ".$scenarioID."
-			) as base ";		
-		
+					SELECT sessionID, scenarioID, countryID, deviceID as deviceID, indicatorID,
+							0 as batTypeID, 0 as pwrTypeID, Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
+						FROM Consulting.DC_deviceBase as dvb
+							WHERE countryID = ".$countryID." 
+							AND scenarioID IN (".$scenarioID." , 10001) "; };
+				//) as base ";				
 		} else if ($aggLevel > 1) { // aggregation on batery types level
 			$stmnt = "
 			FROM (
 				SELECT sessionID, scenarioID, nc.id as countryID, indicatorID, deviceID, typeID as batTypeID, 0 as pwrTypeID, 
-					Y2004, Y2005, Y2006
+					Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
 					FROM `Consulting`.`DC_scenarioDataSplit` sdp
 						JOIN Consulting.DC_namesCountries nc ON (nc.battery_size = sdp.countryID)
 						WHERE indicatorID = 204 AND  typeID = ".$batTypeID." 
-							AND scenarioID = ".$scenarioID." AND nc.id = ".$countryID."
+							AND scenarioID IN(".$scenarioID.", 10001) 
+							AND nc.id = ".$countryID;
+			if ($useUnion)	{ $stmnt = $stmnt."
 				UNION 
 				SELECT sessionID, scenarioID, countryID, 208 as indicatorID, deviceID, batTypeID, pwrTypeID, 
-					Y2004, Y2005, Y2006
+					Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
 					FROM `Consulting`.`DC_demand` dmd
 						JOIN Consulting.DC_namesCountries nc ON (nc.id = dmd.countryID)
 						WHERE	batTypeID = ".$batTypeID." AND pwrTypeID = ".$pwrTypeID." 
-							AND scenarioID = ".$scenarioID." AND nc.id = ".$countryID."
-			) as base ";				
+							AND scenarioID IN(".$scenarioID.", 10001)
+							AND nc.id = ".$countryID; };
+			//) as base ";				
 		};
 		
-		$stmnt_end = "
+		$stmnt_end = 
+				") as base 	\n		
 				  JOIN `Consulting`.`DC_namesCountries`  as cntry ON cntry.id = base.countryID
 				  JOIN `Consulting`.`DC_namesIndicators` as indis ON indis.id = base.indicatorID;";
 	

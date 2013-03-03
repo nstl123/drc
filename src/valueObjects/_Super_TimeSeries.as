@@ -1,6 +1,6 @@
 /**
  * This is a generated class and is not intended for modification.  To customize behavior
- * of this value object you may modify the generated sub-class of this class - TestData.as.
+ * of this value object you may modify the generated sub-class of this class - TimeSeries.as.
  */
 
 package valueObjects
@@ -19,7 +19,7 @@ import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
 use namespace model_internal;
 
 [ExcludeClass]
-public class _Super_TestData extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
+public class _Super_TimeSeries extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
 {
     model_internal static function initRemoteClassAliasSingle(cz:Class) : void
     {
@@ -29,17 +29,18 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
     {
     }
 
-    model_internal var _dminternal_model : _TestDataEntityMetadata;
+    model_internal var _dminternal_model : _TimeSeriesEntityMetadata;
 
     /**
      * properties
      */
-    private var _internal_Y2004 : Number = Number(0);
-    private var _internal_sessionID : int;
-    private var _internal_scenarioID : int;
-    private var _internal_Y2005 : Number = Number(0);
     private var _internal_indicatorID : int;
+    private var _internal_sessionID : int;
     private var _internal_countryID : int;
+    private var _internal_scenarioID : int;
+    private var _internal_Y2005 : Number;
+    private var _internal_unitID : int;
+    private var _internal_Y2010 : Number;
 
     private static var emptyArray:Array = new Array();
 
@@ -53,9 +54,9 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
 
     model_internal var _changeWatcherArray:Array = new Array();
 
-    public function _Super_TestData()
+    public function _Super_TimeSeries()
     {
-        _model = new _TestDataEntityMetadata(this);
+        _model = new _TimeSeriesEntityMetadata(this);
 
         // Bind to own data properties for cache invalidation triggering
 
@@ -66,15 +67,21 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
      */
 
     [Bindable(event="propertyChange")]
-    public function get Y2004() : Number
+    public function get indicatorID() : int
     {
-        return _internal_Y2004;
+        return _internal_indicatorID;
     }
 
     [Bindable(event="propertyChange")]
     public function get sessionID() : int
     {
         return _internal_sessionID;
+    }
+
+    [Bindable(event="propertyChange")]
+    public function get countryID() : int
+    {
+        return _internal_countryID;
     }
 
     [Bindable(event="propertyChange")]
@@ -90,28 +97,28 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
     }
 
     [Bindable(event="propertyChange")]
-    public function get indicatorID() : int
+    public function get unitID() : int
     {
-        return _internal_indicatorID;
+        return _internal_unitID;
     }
 
     [Bindable(event="propertyChange")]
-    public function get countryID() : int
+    public function get Y2010() : Number
     {
-        return _internal_countryID;
+        return _internal_Y2010;
     }
 
     /**
      * data property setters
      */
 
-    public function set Y2004(value:Number) : void
+    public function set indicatorID(value:int) : void
     {
-        var oldValue:Number = _internal_Y2004;
-        if (isNaN(_internal_Y2004) == true || Math.abs(oldValue - value) > epsilon)
+        var oldValue:int = _internal_indicatorID;
+        if (oldValue !== value)
         {
-            _internal_Y2004 = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2004", oldValue, _internal_Y2004));
+            _internal_indicatorID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "indicatorID", oldValue, _internal_indicatorID));
         }
     }
 
@@ -122,6 +129,16 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
         {
             _internal_sessionID = value;
             this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "sessionID", oldValue, _internal_sessionID));
+        }
+    }
+
+    public function set countryID(value:int) : void
+    {
+        var oldValue:int = _internal_countryID;
+        if (oldValue !== value)
+        {
+            _internal_countryID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "countryID", oldValue, _internal_countryID));
         }
     }
 
@@ -145,23 +162,23 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
         }
     }
 
-    public function set indicatorID(value:int) : void
+    public function set unitID(value:int) : void
     {
-        var oldValue:int = _internal_indicatorID;
+        var oldValue:int = _internal_unitID;
         if (oldValue !== value)
         {
-            _internal_indicatorID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "indicatorID", oldValue, _internal_indicatorID));
+            _internal_unitID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "unitID", oldValue, _internal_unitID));
         }
     }
 
-    public function set countryID(value:int) : void
+    public function set Y2010(value:Number) : void
     {
-        var oldValue:int = _internal_countryID;
-        if (oldValue !== value)
+        var oldValue:Number = _internal_Y2010;
+        if (isNaN(_internal_Y2010) == true || Math.abs(oldValue - value) > epsilon)
         {
-            _internal_countryID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "countryID", oldValue, _internal_countryID));
+            _internal_Y2010 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2010", oldValue, _internal_Y2010));
         }
     }
 
@@ -225,14 +242,14 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
 
     [Transient]
     [Bindable(event="propertyChange")]
-    public function get _model() : _TestDataEntityMetadata
+    public function get _model() : _TimeSeriesEntityMetadata
     {
         return model_internal::_dminternal_model;
     }
 
-    public function set _model(value : _TestDataEntityMetadata) : void
+    public function set _model(value : _TimeSeriesEntityMetadata) : void
     {
-        var oldValue : _TestDataEntityMetadata = model_internal::_dminternal_model;
+        var oldValue : _TimeSeriesEntityMetadata = model_internal::_dminternal_model;
         if (oldValue !== value)
         {
             model_internal::_dminternal_model = value;

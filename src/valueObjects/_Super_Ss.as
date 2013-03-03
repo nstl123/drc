@@ -1,6 +1,6 @@
 /**
  * This is a generated class and is not intended for modification.  To customize behavior
- * of this value object you may modify the generated sub-class of this class - TestData.as.
+ * of this value object you may modify the generated sub-class of this class - Ss.as.
  */
 
 package valueObjects
@@ -19,7 +19,7 @@ import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
 use namespace model_internal;
 
 [ExcludeClass]
-public class _Super_TestData extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
+public class _Super_Ss extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
 {
     model_internal static function initRemoteClassAliasSingle(cz:Class) : void
     {
@@ -29,17 +29,13 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
     {
     }
 
-    model_internal var _dminternal_model : _TestDataEntityMetadata;
+    model_internal var _dminternal_model : _SsEntityMetadata;
 
     /**
      * properties
      */
-    private var _internal_Y2004 : Number = Number(0);
-    private var _internal_sessionID : int;
-    private var _internal_scenarioID : int;
     private var _internal_Y2005 : Number = Number(0);
-    private var _internal_indicatorID : int;
-    private var _internal_countryID : int;
+    private var _internal_Y2010 : Number = Number(0);
 
     private static var emptyArray:Array = new Array();
 
@@ -53,9 +49,9 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
 
     model_internal var _changeWatcherArray:Array = new Array();
 
-    public function _Super_TestData()
+    public function _Super_Ss()
     {
-        _model = new _TestDataEntityMetadata(this);
+        _model = new _SsEntityMetadata(this);
 
         // Bind to own data properties for cache invalidation triggering
 
@@ -66,74 +62,20 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
      */
 
     [Bindable(event="propertyChange")]
-    public function get Y2004() : Number
-    {
-        return _internal_Y2004;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get sessionID() : int
-    {
-        return _internal_sessionID;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get scenarioID() : int
-    {
-        return _internal_scenarioID;
-    }
-
-    [Bindable(event="propertyChange")]
     public function get Y2005() : Number
     {
         return _internal_Y2005;
     }
 
     [Bindable(event="propertyChange")]
-    public function get indicatorID() : int
+    public function get Y2010() : Number
     {
-        return _internal_indicatorID;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get countryID() : int
-    {
-        return _internal_countryID;
+        return _internal_Y2010;
     }
 
     /**
      * data property setters
      */
-
-    public function set Y2004(value:Number) : void
-    {
-        var oldValue:Number = _internal_Y2004;
-        if (isNaN(_internal_Y2004) == true || Math.abs(oldValue - value) > epsilon)
-        {
-            _internal_Y2004 = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2004", oldValue, _internal_Y2004));
-        }
-    }
-
-    public function set sessionID(value:int) : void
-    {
-        var oldValue:int = _internal_sessionID;
-        if (oldValue !== value)
-        {
-            _internal_sessionID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "sessionID", oldValue, _internal_sessionID));
-        }
-    }
-
-    public function set scenarioID(value:int) : void
-    {
-        var oldValue:int = _internal_scenarioID;
-        if (oldValue !== value)
-        {
-            _internal_scenarioID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "scenarioID", oldValue, _internal_scenarioID));
-        }
-    }
 
     public function set Y2005(value:Number) : void
     {
@@ -145,23 +87,13 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
         }
     }
 
-    public function set indicatorID(value:int) : void
+    public function set Y2010(value:Number) : void
     {
-        var oldValue:int = _internal_indicatorID;
-        if (oldValue !== value)
+        var oldValue:Number = _internal_Y2010;
+        if (isNaN(_internal_Y2010) == true || Math.abs(oldValue - value) > epsilon)
         {
-            _internal_indicatorID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "indicatorID", oldValue, _internal_indicatorID));
-        }
-    }
-
-    public function set countryID(value:int) : void
-    {
-        var oldValue:int = _internal_countryID;
-        if (oldValue !== value)
-        {
-            _internal_countryID = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "countryID", oldValue, _internal_countryID));
+            _internal_Y2010 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2010", oldValue, _internal_Y2010));
         }
     }
 
@@ -225,14 +157,14 @@ public class _Super_TestData extends flash.events.EventDispatcher implements com
 
     [Transient]
     [Bindable(event="propertyChange")]
-    public function get _model() : _TestDataEntityMetadata
+    public function get _model() : _SsEntityMetadata
     {
         return model_internal::_dminternal_model;
     }
 
-    public function set _model(value : _TestDataEntityMetadata) : void
+    public function set _model(value : _SsEntityMetadata) : void
     {
-        var oldValue : _TestDataEntityMetadata = model_internal::_dminternal_model;
+        var oldValue : _SsEntityMetadata = model_internal::_dminternal_model;
         if (oldValue !== value)
         {
             model_internal::_dminternal_model = value;

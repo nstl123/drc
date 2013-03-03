@@ -16,38 +16,34 @@ import mx.events.PropertyChangeEvent;
 use namespace model_internal;
 
 [ExcludeClass]
-internal class _TestDataEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEntityMetadata
+internal class _TestDataReturnEntityMetadata extends com.adobe.fiber.valueobjects.AbstractEntityMetadata
 {
     private static var emptyArray:Array = new Array();
 
-    model_internal static var allProperties:Array = new Array("Y2004", "sessionID", "scenarioID", "Y2005", "indicatorID", "countryID");
+    model_internal static var allProperties:Array = new Array("indicatorID", "countryID");
     model_internal static var allAssociationProperties:Array = new Array();
-    model_internal static var allRequiredProperties:Array = new Array("Y2004", "sessionID", "scenarioID", "Y2005", "indicatorID", "countryID");
-    model_internal static var allAlwaysAvailableProperties:Array = new Array("Y2004", "sessionID", "scenarioID", "Y2005", "indicatorID", "countryID");
+    model_internal static var allRequiredProperties:Array = new Array("indicatorID", "countryID");
+    model_internal static var allAlwaysAvailableProperties:Array = new Array("indicatorID", "countryID");
     model_internal static var guardedProperties:Array = new Array();
-    model_internal static var dataProperties:Array = new Array("Y2004", "sessionID", "scenarioID", "Y2005", "indicatorID", "countryID");
+    model_internal static var dataProperties:Array = new Array("indicatorID", "countryID");
     model_internal static var derivedProperties:Array = new Array();
     model_internal static var collectionProperties:Array = new Array();
     model_internal static var collectionBaseMap:Object;
-    model_internal static var entityName:String = "TestData";
+    model_internal static var entityName:String = "TestDataReturn";
     model_internal static var dependentsOnMap:Object;
     model_internal static var dependedOnServices:Array = new Array();
 
 
-    model_internal var _instance:_Super_TestData;
+    model_internal var _instance:_Super_TestDataReturn;
     model_internal static var _nullStyle:com.adobe.fiber.styles.Style = new com.adobe.fiber.styles.Style();
 
-    public function _TestDataEntityMetadata(value : _Super_TestData)
+    public function _TestDataReturnEntityMetadata(value : _Super_TestDataReturn)
     {
         // initialize property maps
         if (model_internal::dependentsOnMap == null)
         {
             // depenents map
             model_internal::dependentsOnMap = new Object();
-            model_internal::dependentsOnMap["Y2004"] = new Array();
-            model_internal::dependentsOnMap["sessionID"] = new Array();
-            model_internal::dependentsOnMap["scenarioID"] = new Array();
-            model_internal::dependentsOnMap["Y2005"] = new Array();
             model_internal::dependentsOnMap["indicatorID"] = new Array();
             model_internal::dependentsOnMap["countryID"] = new Array();
 
@@ -96,7 +92,7 @@ internal class _TestDataEntityMetadata extends com.adobe.fiber.valueobjects.Abst
     override public function getDependants(propertyName:String):Array
     {
        if (model_internal::dataProperties.indexOf(propertyName) == -1)
-            throw new Error(propertyName + " is not a data property of entity TestData");  
+            throw new Error(propertyName + " is not a data property of entity TestDataReturn");  
             
        return model_internal::dependentsOnMap[propertyName] as Array;  
     }
@@ -114,7 +110,7 @@ internal class _TestDataEntityMetadata extends com.adobe.fiber.valueobjects.Abst
     override public function getCollectionBase(propertyName:String):String
     {
         if (model_internal::collectionProperties.indexOf(propertyName) == -1)
-            throw new Error(propertyName + " is not a collection property of entity TestData");  
+            throw new Error(propertyName + " is not a collection property of entity TestDataReturn");  
 
         return model_internal::collectionBaseMap[propertyName];
     }
@@ -128,7 +124,7 @@ internal class _TestDataEntityMetadata extends com.adobe.fiber.valueobjects.Abst
     {
         if (model_internal::allProperties.indexOf(propertyName) == -1)
         {
-            throw new Error(propertyName + " does not exist for entity TestData");
+            throw new Error(propertyName + " does not exist for entity TestDataReturn");
         }
 
         return model_internal::_instance[propertyName];
@@ -138,7 +134,7 @@ internal class _TestDataEntityMetadata extends com.adobe.fiber.valueobjects.Abst
     {
         if (model_internal::dataProperties.indexOf(propertyName) == -1)
         {
-            throw new Error(propertyName + " is not a data property of entity TestData");
+            throw new Error(propertyName + " is not a data property of entity TestDataReturn");
         }
 
         model_internal::_instance[propertyName] = value;
@@ -170,7 +166,7 @@ internal class _TestDataEntityMetadata extends com.adobe.fiber.valueobjects.Abst
     {
         if (model_internal::allProperties.indexOf(propertyName) == -1)
         {
-            throw new Error(propertyName + " does not exist for entity TestData");
+            throw new Error(propertyName + " does not exist for entity TestDataReturn");
         }
 
         if (model_internal::allAlwaysAvailableProperties.indexOf(propertyName) != -1)
@@ -265,30 +261,6 @@ internal class _TestDataEntityMetadata extends com.adobe.fiber.valueobjects.Abst
     }
 
     [Bindable(event="propertyChange")]
-    public function get isY2004Available():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isSessionIDAvailable():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isScenarioIDAvailable():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
-    public function get isY2005Available():Boolean
-    {
-        return true;
-    }
-
-    [Bindable(event="propertyChange")]
     public function get isIndicatorIDAvailable():Boolean
     {
         return true;
@@ -308,30 +280,6 @@ internal class _TestDataEntityMetadata extends com.adobe.fiber.valueobjects.Abst
     model_internal function fireChangeEvent(propertyName:String, oldValue:Object, newValue:Object):void
     {
         this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, propertyName, oldValue, newValue));
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get Y2004Style():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get sessionIDStyle():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get scenarioIDStyle():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
-    }
-
-    [Bindable(event="propertyChange")]   
-    public function get Y2005Style():com.adobe.fiber.styles.Style
-    {
-        return model_internal::_nullStyle;
     }
 
     [Bindable(event="propertyChange")]   

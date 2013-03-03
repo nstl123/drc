@@ -5,7 +5,7 @@
 		 width="835" height="545"
 		 xmlns:inputTab2 = "inputTabas.inputTab2"
 		 xmlns:base1="services.base1.*"
-		 creationComplete="group1_creationCompleteHandler(event)" 
+		 creationComplete="appStart(event)" 
 		 xmlns:base="services.base.*">
 	<s:layout>
 		<s:BasicLayout/>
@@ -14,6 +14,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
+			import mx.controls.TextInput;
 			import mx.events.DataGridEvent;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
@@ -23,6 +24,18 @@
 			
 			[bindable] public var workingScenarioID:int;
 			[bindable] private var aggLevel:int = 0;
+			
+			protected function appStart(event:FlexEvent):void
+			{
+				this.addEventListener("splitByDevicesChanged", filterIndicators);
+				this.addEventListener("scenarioDataChanged",   updateScenarioData);				
+			}
+			
+			protected function updateScenarioData(evt:Event):void {
+				// clean the old value
+				alteredMacroData.splice(0, this.alteredMacroData.length);
+				//send some php calls here mit alteredData			
+			}
 			
 			protected function dataGrid_creationCompleteHandler(event:FlexEvent):void
 			{
@@ -71,13 +84,7 @@
 				if (this.showSplitByDevices) aggLevel = 1
 				else aggLevel = 0;
 			}
-
-
-			protected function group1_creationCompleteHandler(event:FlexEvent):void
-			{
-				this.addEventListener("splitByDevicesChanged", filterIndicators);
-			}
-
+			
 			protected function test_clickHandler(event:MouseEvent):void
 			{				
 				getOutputDataResult.token = base.getOutputData(
@@ -91,10 +98,15 @@
 			}
 
 			[bindable] private var rezai:ArrayCollection = new ArrayCollection();
+			[bindable] private var rezaiBckup:Object = new Object();
+			
 			protected function getOutputDataResult_resultHandler(event:ResultEvent):void
 			{
 				rezai = ArrayCollection(this.getOutputDataResult.lastResult);
 				this.rezaiGrid.dataProvider = rezai;
+				// need to make a copy of array
+				var z:Array = rezai.source.slice()
+				this.rezaiBckup = z;				
 				// add some filter function??? for country and device???
 			}
 			
@@ -106,10 +118,68 @@
 				}
 			}   
 			
-			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
+			[bindable] public var alteredData:Array = new Array();
+			[bindable] public var scenarioDataChanged : Boolean = false;
+			
 			private function saveDataFromGrid(event:DataGridEvent):void {
-				this.alteredData = 	ArrayCollection(this.rezaiGrid.dataProvider);				
+				this.scenarioDataChanged = false;
+				// here data is collected form rezaigrod by a list of IDs from alteredMacroData
+				if (this.alteredMacroData.length > 0) {
+					this.scenarioDataChanged = true;
+					for (var i:int = 0; i < this.alteredMacroData.length; i++) {
+						var al:Object = this.alteredMacroData[i];
+						for (var jj:int = 0; jj < this.rezaiGrid.dataProvider.length; jj++) {						
+							var fin:Object = this.rezaiGrid.dataProvider[jj];							
+							if ((fin.countryID == al.countryID) && (fin.indicatorID == al.indicatorID)) {
+								this.alteredData.push({
+									"countryID" : fin.countryID, "indicatorID" : fin.indicatorID,
+									"Y2005" : fin.Y2005, "Y2010" : fin.Y2010 // all time series should go here
+								});
+							};
+						};
+					};				
+				};
+				
+				if (this.scenarioDataChanged) this.dispatchEvent(new Event("scenarioDataChanged"));
 			}   
+			
+			private function checkForNewValues(event:DataGridEvent):void {
+				var myEditor:TextInput = TextInput(event.currentTarget.itemEditorInstance);
+				var newVal:String = myEditor.text;				
+				var oldVal:String = event.currentTarget.editedItemRenderer.data[event.dataField];				
+				
+				if (Number(newVal) != Number(oldVal)) {
+					var s:Object = DataGrid(event.target).editedItemRenderer.data;
+					this.recordChanges(s);	
+				}
+			}                               
+			
+			[bindable] public var alteredMacroData:Array = new Array();
+			[bindable] public var alteredSplitData:Array = new Array();
+			
+			private function recordChanges(selectedItem:Object):void {
+				// data will be added later on saveInputs() by IDs
+				if (!this.showSplitByDevices) {
+					this.alteredMacroData.push({
+						"countryID" : selectedItem.countryID, "indicatorID" : selectedItem.indicatorID						
+					});
+				} else {
+					this.alteredSplitData.push({
+						"countryID" : selectedItem.countryID, "indicatorID" : selectedItem.indicatorID,
+						"deviceID" : selectedItem.deviceID						
+					});
+				};
+			}
+			
+			import mx.events.DataGridEventReason;			
+
+
+			protected function button1_clickHandler(event:MouseEvent):void			
+			{
+				// revert back to last result of dataservice
+				getOutputDataResult.token = base.getOutputData(
+					aggLevel, this.workingScenarioID, this.selectedCountry, this.selectedIndicator, 0, 0, false);
+			}
 
 		]]>
 	</fx:Script>
@@ -138,7 +208,8 @@
 	<s:BorderContainer x="210" y="321" width="597" height="211">
 		<s:Label text="Preview of New Scenario" width="95%" height="17" textAlign="left" horizontalCenter="0" top="5" fontStyle="italic"/>
 		<mx:DataGrid y="20" width="95%" height="179" horizontalCenter="3" id="rezaiGrid"
-					 editable="true"  itemEditBegin="{this.disableEditing(event)}">
+					 editable="true" itemEditBegin="{this.disableEditing(event)}"
+				     itemEditEnd="checkForNewValues(event)">
 			<mx:columns>
 				<mx:DataGridColumn headerText="countryID" dataField="countryID"/>
 				<mx:DataGridColumn headerText="indicatorID" dataField="indicatorID"/>
@@ -149,7 +220,7 @@
 		</mx:DataGrid>
 	</s:BorderContainer>
 	<s:Button x="209" y="294" label="Confirm Inputs" click="saveDataFromGrid(null)"/>
-	<s:Button x="493" y="294" label="Reset to Baseline"/>
+	<s:Button x="493" y="294" label="Reset to Baseline" click="button1_clickHandler(event)"/>
 	<s:BorderContainer x="213" y="187" width="386" height="98">
 		<s:Label text="Schock" width="95%" height="17" textAlign="left" horizontalCenter="0" top="5" fontStyle="italic"/>
 		<s:Label x="81" y="10" text="When, Magnitude, Where?" width="124" height="45" textAlign="left" verticalAlign="middle" color="#2D8D1D"/>

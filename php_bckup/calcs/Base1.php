@@ -1,4 +1,5 @@
 <?php
+
 require_once 'Zend/Db/Adapter/Mysqli.php';
 
 class Base1 {

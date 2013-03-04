@@ -2,11 +2,13 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 width="835" height="545"
+		 width="850" height="100%"
 		 xmlns:inputTab2 = "inputTabas.inputTab2"
 		 xmlns:base1="services.base1.*"
 		 creationComplete="appStart(event)" 
-		 xmlns:base="services.base.*" xmlns:baseinsdel="services.baseinsdel.*">
+		 xmlns:base="services.base.*" 
+		 xmlns:baseinsdel="services.baseinsdel.*" 
+		 xmlns:base3="services.base3.*">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -22,7 +24,7 @@
 			
 			import spark.events.IndexChangeEvent;
 			
-			import valueObjects.TimeSeries;			
+			// import valueObjects.TimeSeries;			
 			
 			[bindable] public var workingScenarioID:int;
 			[bindable] private var aggLevel:int = 0;
@@ -253,23 +255,23 @@
 		<s:CallResponder id="getIndicatorNamesResult" result="getIndicatorNamesResult_resultHandler(event)"/>
 		<s:CallResponder id="getOutputDataResult" result="getOutputDataResult_resultHandler(event)"/>
 		<s:CallResponder id="updateMacroIndisResult" result="updateMacroIndisResult_resultHandler(event)"/>
-		<baseinsdel:BaseInsDel id="baseInsDel" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		
+		<base3:Base3 id="baseInsDel" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
 		
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<mx:DataGrid x="10" y="9" width="195" height="523" id="dataGrid" 
+	<mx:DataGrid x="10" y="9" width="195" height="605" id="dataGrid" 
 				 creationComplete="dataGrid_creationCompleteHandler(event)" 
 				 dataProvider="{getCountryListResult.lastResult}"
 				 change="dataGrid_changeHandler(event)" >
 		<mx:columns>			
-			<mx:DataGridColumn headerText="id" dataField="id" width="50" 
-							   itemRenderer="someComps.testRenderer"/>			
+			<mx:DataGridColumn headerText="id" dataField="id" width="50"  />			
 			<mx:DataGridColumn headerText="namen" dataField="namen" width="300"/>
 		</mx:columns>
 	</mx:DataGrid>
-	<s:BorderContainer x="210" y="321" width="597" height="211">
+	<s:BorderContainer x="210" y="321" width="597" height="293">
 		<s:Label text="Preview of New Scenario" width="95%" height="17" textAlign="left" horizontalCenter="0" top="5" fontStyle="italic"/>
-		<mx:DataGrid y="20" width="95%" height="179" horizontalCenter="3" id="rezaiGrid"
+		<mx:DataGrid y="20" width="95%" height="261" horizontalCenter="0" id="rezaiGrid"
 					 editable="true" itemEditBegin="{this.disableEditing(event)}"
 				     itemEditEnd="checkForNewValues(event)">
 			<mx:columns>

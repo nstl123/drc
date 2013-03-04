@@ -6,7 +6,7 @@ package utils
 	** ID = String(Unix-style timestamp) + String(4 random digits).
 	*/
 	
-		public static function generateID() :String {
+		public static function generateID() :Number {
 			var sid:String = '';
 			var now:Date = new Date();
 			var timePart:Number = now.getTime();
@@ -20,9 +20,9 @@ package utils
 				}
 			}
 			
-			sid = String(timePart)+rP;
+			sid = rP;//String(timePart)+rP;
 			
-			return sid;
+			return Number(sid);
 		}
 	}
 }

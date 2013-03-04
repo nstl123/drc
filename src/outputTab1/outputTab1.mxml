@@ -347,7 +347,7 @@
 	</fx:Script>
 	
 	
-		<s:BorderContainer width="1000" height="600" horizontalCenter="-1" verticalCenter="-8">
+		<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0">
 			<s:layout>
 				<s:BasicLayout/>
 			</s:layout>
@@ -397,7 +397,7 @@
 			
 			</s:BorderContainer>
 			<mx:DataGrid id="cntryGrid" change="cntryGrid_changeHandler(event)" 
-						 width="218" x="10" height="578" y="10">
+						 width="218" height="615" left="10" top="10">
 				<mx:columns>
 					<mx:DataGridColumn headerText="id" dataField="id"/>
 					<mx:DataGridColumn headerText="namen" dataField="namen"/>
@@ -459,7 +459,7 @@
 				
 			</s:BorderContainer>
 			<s:Button x="761" y="201" label="testChart" width="97" click="drawChart(event)"/>
-			<mx:DataGrid width="652" height="109" id="rezGrid" dataProvider="{rez}" x="239" y="483">
+			<mx:DataGrid width="652" height="145" id="rezGrid" dataProvider="{rez}" x="239" y="483">
 				<mx:columns>
 					<mx:DataGridColumn headerText="scenario" dataField="scenarioID"/>
 					<mx:DataGridColumn headerText="country" dataField="cntryName"/>

@@ -3,31 +3,42 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" 
 			   xmlns:base="services.base.*"			  			    
-			   creationComplete="application1_creationCompleteHandler(event)"
+			   creationComplete="main_start(event)"
 			   
 			   xmlns:outputTab1="outputTab1.*"
 			   xmlns:inputTabas="inputTabas.*"
 			   xmlns:inputTab2 = "inputTabas.inputTab2"
-			>
+			 xmlns:base3="services.base3.*">
 	
 	<fx:Style source="stilistika.css"/>
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import utils.*;
 
-			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			protected function main_start(event:FlexEvent):void
 			{				
 				this.workingScenarioID = this.genWorkingScenarioID();	
 				this.test3.setScenarioID(this.workingScenarioID);
+				
+				// need to delete all scenarios which are older then 20 mins form DB
+				// for this reason, need a separate table for scenario IDs saving with timestamp 
+				
+				createNewWorkingScenarioResult.token = base3.createNewWorkingScenario(this.workingScenarioID);
 			}
 			
 			protected var isInitialized:Boolean = false; 
 			
-			private var workingScenarioID:int = -1;
+			private var workingScenarioID:int = -1;		
 			
 			private function genWorkingScenarioID():int {
 				// here should go scenarioID generator call in utils for unique id
-				this.workingScenarioID = 10002;
+				var z:Number = IDgenerator.generateID();
+				this.workingScenarioID = z;
+				// this.workingScenarioID = z
 				return this.workingScenarioID;
 			}
 			
@@ -39,12 +50,19 @@
 						this.inpTab.startApp(event);
 					}
 					else*/ 
-					if (this.inputTabai.selectedIndex == 1) {
+					if (this.inputTabai.selectedIndex == 2) {
 						this.outTab1.startApp(new FlexEvent("start"));
 						this.isInitialized = true;
 						this.outTab1.setScenarioID(this.workingScenarioID);
+					} else if (this.inputTabai.selectedIndex == 1) {
+						this.someTab.startApp(new FlexEvent("start"));
 					}
 				}
+			}
+
+			protected function createNewWorkingScenarioResult_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
 			}
 
 		]]>
@@ -58,14 +76,14 @@
 								thousandsSeparatorTo=","
 								useThousandsSeparator="true"
 								currencySymbol=""
-								useNegativeSign="true"                  
-		/>
-
+								useNegativeSign="true" />	
 	</fx:Declarations>
 		
 	<fx:Declarations>
-    	
-				
+		<base3:Base3 id="base3" fault="Alert.show(event.fault.faultString + '\n' + 
+					 event.fault.faultDetail)" showBusyCursor="true"/>   	
+			
+		<s:CallResponder id="createNewWorkingScenarioResult" result="createNewWorkingScenarioResult_resultHandler(event)"/>
 	</fx:Declarations>	
 	<mx:TabNavigator id="inputTabai" width="99%" height="98%" horizontalCenter="0" verticalCenter="0" 
 					 change="tabNavigator_change(event)">
@@ -74,12 +92,17 @@
 			 </inputTabas:inputTabas> 		
 		</s:NavigatorContent> !-->		
 		
-		<s:NavigatorContent label="tab3" width="100%" height="100%" >
+		<s:NavigatorContent label="input scenario" width="100%" height="100%" >
 			<inputTabas:inputTab2 id="test3">				
 			</inputTabas:inputTab2>
 		</s:NavigatorContent>
 		
-		<s:NavigatorContent label="outputTab1" width="100%" height="100%">
+		<s:NavigatorContent label="test_view" width="100%" height="100%">
+			<inputTabas:inputTabas id="someTab" >				
+			</inputTabas:inputTabas>
+		</s:NavigatorContent>
+		
+		<s:NavigatorContent label="outputTab_1" width="100%" height="100%">
 			<outputTab1:outputTab1 id="outTab1">				
 			</outputTab1:outputTab1>
 		</s:NavigatorContent>

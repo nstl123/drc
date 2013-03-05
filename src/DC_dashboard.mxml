@@ -8,7 +8,7 @@
 			   xmlns:outputTab1="outputTab1.*"
 			   xmlns:inputTabas="inputTabas.*"
 			   xmlns:inputTab2 = "inputTabas.inputTab2"
-			 xmlns:base3="services.base3.*">
+			   xmlns:base3="services.base3.*">
 	
 	<fx:Style source="stilistika.css"/>
 	<fx:Script>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="200" height="250" 
+		 creationComplete="startApp(event)"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.layouts.ColumnAlign;
+			
+			public static const UNCHECKED:String = 'unchecked';
+			public static const CHECKED:String = 'checked';
+						
+			//data provider (label, data, active)
+			[Bindable]
+			private var selectionList:ArrayCollection;
+			
+			//the count of checked elements
+			private var checkedCount:uint;
+			public function get count():uint
+			{
+				return checkedCount;
+			}
+			
+			//the text of lblName
+			public var labelText:String;
+			
+			//collect checked data
+			public function get dataList():ArrayCollection
+			{
+				var res:ArrayCollection = new ArrayCollection();
+				
+				var i:uint;				
+				for (i = 0; i < selectionList.length; i++) {					
+					if (selectionList[i].active) res.addItem({
+						"namen":selectionList[i].namen, "id":selectionList[i].id, 
+						"isRegion":selectionList[i].isRegion });
+				};
+					
+				return res;
+			}
+			
+			//assign new data
+			public function set dataList(data:ArrayCollection):void
+			{			
+				selectionList = new ArrayCollection();
+				var res:ArrayCollection = data as ArrayCollection;				
+				
+				if (res.length > 0) {
+					var i:uint;						
+					for (i=0; i < res.length; i++) {							
+						selectionList.addItem({
+							"namen":res[i].namen, "id" : res[i].id, 
+							"isRegion" : res[i].isRegion, "active":false });
+					}	
+				}			
+			}			
+		
+			//reset
+			public function reset():void
+			{
+				var i:uint;
+				for (i=0; i<selectionList.length; i++)
+					selectionList[i].active = false;
+				
+				dgrData.dataProvider = selectionList;
+			}
+
+			import mx.controls.Alert;
+			//events
+			//when the component is created, set label name
+			protected function startApp(event:FlexEvent):void
+			{
+				trace("creation complete in checkBox component");
+				
+				lblName.text = labelText;
+				checkedCount = 0;
+				
+				addEventListener(CCheckBoxRenderer.INCR_COUNT, onIncrValue);
+				addEventListener(CCheckBoxRenderer.DECR_COUNT, onDecrValue);
+			}
+			
+			//increment number of checked elements
+			private function onIncrValue(e:Event):void
+			{
+				checkedCount++;
+				
+				if (checkedCount == 1)
+					dispatchEvent(new Event(CCheckBoxGrid.CHECKED, true));
+			}
+			
+			//decrement number of checked elements
+			private function onDecrValue(e:Event):void
+			{
+				checkedCount--;
+				
+				if (checkedCount == 0)
+					dispatchEvent(new Event(CCheckBoxGrid.UNCHECKED, true));
+			}
+
+			//when the link button is clicked, select all checkboxes
+			protected function lnkAll_clickHandler(event:MouseEvent):void
+			{
+				var i:uint;
+				for (i = 0; i < selectionList.length; i++)
+					selectionList[i].active = true;
+				checkedCount = selectionList.length;
+				
+				dgrData.dataProvider = selectionList;
+				
+				dispatchEvent(new Event(CCheckBoxGrid.CHECKED, true));
+			}		
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>	
+	</fx:Declarations>	
+
+	<s:HGroup height="10%" top="0" left="0" right="0" verticalAlign="middle">
+		<s:Label text="Label" width="50%" fontWeight="bold" fontSize="12" id="lblName"/>
+		<mx:LinkButton label="Select all" width="50%" textAlign="right" id="lnkAll" 
+					   click="lnkAll_clickHandler(event)" color="#1A69D5" fontWeight="bold"/>
+	</s:HGroup>
+		
+	<mx:DataGrid bottom="0" left="0" right="0" height="90%" showHeaders="false" id="dgrData"
+				 dataProvider="{selectionList}" textAlign="center">
+		<mx:columns>
+			<mx:DataGridColumn dataField="namen" resizable="false" width="150"/>
+			<mx:DataGridColumn dataField="id" resizable="false" width="50"/>
+			<mx:DataGridColumn dataField="active" resizable="false" width="50" 
+							   itemRenderer="utils.CCheckBoxRenderer"/>
+		</mx:columns>
+	</mx:DataGrid>
+</s:Group>

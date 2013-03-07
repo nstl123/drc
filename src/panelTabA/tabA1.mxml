@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="400"
+		 xmlns:utils="utils.*"
+		 creationComplete="startApp(event)">
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import controls.*;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import services.depot1.Depot1;					
+			public var dataService:Depot1;		
+			
+			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
+			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"		
+
+			protected function startApp(event:FlexEvent):void
+			{
+				trace("start panelTab");
+			}
+
+			protected function testBtn_clickHandler(event:MouseEvent):void
+			{
+				this.countryListNames.token = this.dataService.getCountryList();
+			}
+			
+			protected function countryListNames_resultHandler(event:ResultEvent):void
+			{
+				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
+			}
+			
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				var selCntries:Object = this.countryListGrid.dataList;
+				this.dispatchEvent(new Event(tabA1.CNTRYCHANGED, true));
+			}
+
+			// ----- COMMUNICATION PART ---------------/////			
+			public function getDataList():ArrayCollection {
+				//turn this.countryListGrid
+				return this.countryListGrid.dataList;			
+			}
+			
+			public function setDataList(data:ArrayCollection):void {
+				this.countryListGrid.dataList = data;
+			}
+			
+		]]>
+	</fx:Script>	
+	
+	
+	<fx:Declarations>
+		<s:CallResponder id="countryListNames" result="countryListNames_resultHandler(event)"/>		
+	</fx:Declarations>
+	
+	<s:Button label="getSomeData" id="testBtn" width="250" height="5%" horizontalCenter="0"
+			  click="testBtn_clickHandler(event)" top="10"/>
+	<utils:CCheckBoxGrid id="countryListGrid" width="250" height="95%" horizontalCenter="0" top="45">
+		<utils:layout>
+			<s:BasicLayout/>
+		</utils:layout>
+	</utils:CCheckBoxGrid>
+	<s:Label text="Tab - A" width="143" height="35" left="5" top="5"/>
+	<s:Button label="notify A"  click="button2_clickHandler(event)" left="0" top="20"/>
+
+</s:Group>

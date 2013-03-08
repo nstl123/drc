@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)">
 	
@@ -11,7 +11,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import controls.*;
 			
 			import mx.collections.ArrayCollection;
@@ -23,15 +22,15 @@
 			
 			import services.depot1.Depot1;					
 			public var dataService:Depot1;		
-			
+				
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
-			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"		
-
+			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
+				
 			protected function startApp(event:FlexEvent):void
 			{
 				trace("start panelTab");
 			}
-
+			
 			protected function testBtn_clickHandler(event:MouseEvent):void
 			{
 				this.countryListNames.token = this.dataService.getCountryList();
@@ -41,43 +40,42 @@
 			{
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
 			}
-			
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				this.countryListNames.token = this.dataService.getCountryList();
+			}
+
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabA1.CNTRYCHANGED, true));
+				this.dispatchEvent(new Event(tabC1.CNTRYCHANGED, true));
 			}
-
-			// ----- COMMUNICATION PART ---------------/////			
-			public function getDataList():ArrayCollection {				
+ // ----- COMMUNICATION PART ---------------/////			
+			public function getDataList():ArrayCollection {
 				return this.countryListGrid.dataList;			
 			}
-			
+
 			public function setDataList(data:ArrayCollection):void {
 				this.countryListGrid.dataList = data;
-			}
+			}		
 			
 		]]>
-	</fx:Script>	
-	
+	</fx:Script>
 	
 	<fx:Declarations>
-		<s:CallResponder id="countryListNames" result="countryListNames_resultHandler(event)"/>		
+		<s:CallResponder id="countryListNames" result="countryListNames_resultHandler(event)"/>
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="100%" top="50" height="95%" horizontalCenter="0">
-		<utils:layout>
-			<s:BasicLayout/>
-		</utils:layout>
+	<utils:CCheckBoxGrid id="countryListGrid" horizontalCenter="0" width="100%" height="95%" top="50">
 	</utils:CCheckBoxGrid>
 	<s:BorderContainer width="100%" height="25" top="0" horizontalCenter="0">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-		<s:Label text="Tab - A" width="30%" height="75%" x="15" y="10"/>
-		<s:Button label="notify A"  click="button2_clickHandler(event)" width="30%" height="75%" x="63" y="10"/>
-		<s:Button label="getSomeData" id="testBtn" width="30%" height="75%"
-				  click="testBtn_clickHandler(event)" x="251" y="17"/>
+		<s:Label text="Tab - C" width="33%" height="100%" x="36" y="30"/>
+		<s:Button label="notify C" click="button2_clickHandler(event)" width="33%" height="100%" x="51" y="70"/>
+		<s:Button label="getMoreData" width="33%" height="100%"
+				   click="button1_clickHandler(event)" x="55" y="136"/>
 	</s:BorderContainer>
-
 </s:Group>

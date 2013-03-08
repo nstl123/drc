@@ -4,7 +4,11 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="500" minHeight="400" 
 			   xmlns:panelTabA="panelTabA.*" 
 			   xmlns:depot1="services.depot1.*"
-			   creationComplete="startApp(event)" xmlns:panelTabB="panelTabB.*">
+			   creationComplete="startApp(event)" 
+			   xmlns:panelTabB="panelTabB.*" xmlns:panelTabC="panelTabC.*">
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
 	<fx:Script>
 		<![CDATA[		
 			import controls.FlowManager;
@@ -24,17 +28,16 @@
 				dataService = new Depot1();
 				trace("init Depot1");
 				
-				this.panelTest1.dataService = this.dataService;	
-				trace("assign dataService to panelTab - A");
-				
+				this.panelTest1.dataService = this.dataService;
 				this.panelTest2.dataService = this.dataService;
-				trace("assign dataService to panelTab - B");
+				this.panelTest3.dataService = this.dataService;
 				
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);			
 			
 				masterTab = new FlowManager();
 				masterTab.addTab(this.panelTest1);
 				masterTab.addTab(this.panelTest2);
+				masterTab.addTab(this.panelTest3);
 				
 			}		
 
@@ -50,11 +53,28 @@
 					   showBusyCursor="true"/>
 		
 	</fx:Declarations>
+	<s:BorderContainer width="100%" height="500">	
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
 	
-	<panelTabA:tabA1 id="panelTest1" width="50%" height="100%" x="2" top="0">
-	</panelTabA:tabA1>
-	
-	<panelTabB:tabB1 id="panelTest2" x="421" width="50%" height="100%" top="0">
-	</panelTabB:tabB1>
-
+		<panelTabA:tabA1 id="panelTest1" width="33%" height="100%" x="0" top="0">
+			<panelTabA:layout>
+				<s:BasicLayout/>
+			</panelTabA:layout>
+		</panelTabA:tabA1>
+		
+		<panelTabB:tabB1 id="panelTest2" x="421" width="33%" height="100%" top="0">
+			<panelTabB:layout>
+				<s:BasicLayout/>
+			</panelTabB:layout>
+		</panelTabB:tabB1>
+		
+		<panelTabC:tabC1 id="panelTest3" x="233" width="33%" height="100%" top="0">
+			<panelTabC:layout>
+				<s:BasicLayout/>
+			</panelTabC:layout>
+			
+		</panelTabC:tabC1>
+	</s:BorderContainer>
 </s:Application>

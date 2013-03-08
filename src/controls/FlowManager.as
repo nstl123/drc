@@ -40,7 +40,9 @@ package controls
 			} else 
 			if (className == "tabB1") {				
 				tmp = this.tabList[1].getDataList();
-			};
+			} else 
+			if (className == "tabC1")	
+				tmp = this.tabList[2].getDataList();
 			
 			this.setDataList(tmp);			
 			this.notifyAll();

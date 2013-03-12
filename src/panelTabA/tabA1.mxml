@@ -26,27 +26,35 @@
 			
 			import spark.events.IndexChangeEvent;
 			
-			import utils.helper;					
+			import utils.helper;
+			
 			public var dataService:Depot1;		
 			private var hlp:helper;
+			[bindable] private var selectedIndi:int = 0;
+			[bindable] private var currentData:ArrayCollection;
+			[bindable] private var workingScenarioID:int;
+			
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"		
-
-			protected function startApp(event:FlexEvent):void
-			{
+			
+			public function setWorkingScenario(nv:int):void {
+				this.workingScenarioID = nv;
+				this.testGrid.setWorkingScenario(this.workingScenarioID);
+				this.testGrid2.setWorkingScenario(this.workingScenarioID);
+			}
+				
+			protected function startApp(event:FlexEvent):void {
 				trace("start panelTab");
 				getIndicatorNamesResult.token = depot1.getIndicatorNames();
 				hlp = new helper();
 			}
 
-			protected function testBtn_clickHandler(event:MouseEvent):void
-			{
+			protected function testBtn_clickHandler(event:MouseEvent):void {
 				this.countryListNames.token = this.dataService.getCountryList();
 			}			
 			
-			protected function button2_clickHandler(event:MouseEvent):void
-			{
+			protected function button2_clickHandler(event:MouseEvent):void {
 				var selCntries:Object = this.countryListGrid.dataList;
 				this.dispatchEvent(new Event(tabA1.CNTRYCHANGED, true));
 			}
@@ -60,45 +68,45 @@
 				this.countryListGrid.dataList = data;
 			}
 			
-			protected function countryListNames_resultHandler(event:ResultEvent):void
-			{
+			protected function countryListNames_resultHandler(event:ResultEvent):void {
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
 			}
 
-			protected function getIndicatorNamesResult_resultHandler(event:ResultEvent):void
-			{
+			protected function getIndicatorNamesResult_resultHandler(event:ResultEvent):void {
 				this.indiListDrop.dataProvider = this.getIndicatorNamesResult.lastResult;
 			}
-
-			[bindable] private var selectedIndi:int = 0;
-			protected function indiListDrop_changeHandler(event:IndexChangeEvent):void
-			{
+			
+			protected function indiListDrop_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indiListDrop.selectedItem.id;
 			}
 
-
-			protected function testChartBtn_clickHandler(event:MouseEvent):void
-			{
+			protected function testChartBtn_clickHandler(event:MouseEvent):void {
 				//send query to DB mit countryIDs and IndiID
-				var countryIDs:Array = this.countryListGrid.dataList.source;
+				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
 				
-				var z:Array = this.hlp.formStringFromIDs(countryIDs);
-				getMacroDataResult.token = depot21.getMacroData(z, this.selectedIndi);
+				getMacroDataResult.token = depot21.getMacroData(tmp, this.selectedIndi, this.workingScenarioID);
+			}
+	
+			protected function getMacroDataResult_resultHandler(event:ResultEvent):void {
+				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
+				this.testChart.setData(currentData); // transformation is performed inside chart component
 			}
 
-
-			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
-			{
-				var tmp:ArrayCollection = this.getMacroDataResult.lastResult as ArrayCollection;	
-				
-				this.testChart.setData(tmp); // transformation is performed inside chart component
-			}
-
-
-			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
-			{
+			protected function getMacroDataResult_faultHandler(event:FaultEvent):void {
 				var z:Object = event.message;
 				Alert.show("error in query");				
+			}
+
+			protected function testGridBtn_clickHandler(event:MouseEvent):void {
+				this.testGrid.setData(this.currentData);
+			}
+
+			[bindable] public var za:ArrayCollection = new ArrayCollection();
+			protected function testNewData_clickHandler(event:MouseEvent):void
+			{
+				za = this.testGrid.getData();
+				this.testGrid2.setData(za);
 			}
 
 		]]>
@@ -129,13 +137,21 @@
 				  click="testBtn_clickHandler(event)" x="251" y="17"/>
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="304" y="102" id="testChart">
+	<utils:CTwoAxisChart x="304" y="102" id="testChart" height="205">
 	</utils:CTwoAxisChart>
 	
 	<s:DropDownList x="303" y="33" width="409" height="24" id="indiListDrop"
 				     labelField="namen" change="indiListDrop_changeHandler(event)">
 	</s:DropDownList>
-	<s:Button x="303" y="65" label="refresh chart" width="136" id="testChartBtn"
+	<s:Button x="303" y="65" label="refresh chart" width="168" id="testChartBtn"
 			  click="testChartBtn_clickHandler(event)"/>
+	<utils:CInteractiveGrid id="testGrid" x="303" y="315" height="108">
+	</utils:CInteractiveGrid>
+	<s:Button x="520" y="65" label="refresh Grid" width="192" id="testGridBtn"
+			  click="testGridBtn_clickHandler(event)"/>
+	<s:Button x="303" y="431" label="getNewData" width="100" id="testNewData" 
+			  click="testNewData_clickHandler(event)"/>
+	<utils:CInteractiveGrid x="303" y="459" height="145" id="testGrid2">
+	</utils:CInteractiveGrid>
 
 </s:Group>

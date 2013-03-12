@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="722" height="100%"
 		 xmlns:utils="utils.*"
-		 creationComplete="startApp(event)">
+		 creationComplete="startApp(event)" 
+		 xmlns:depot1="services.depot1.*" 
+		 xmlns:depot21="services.depot21.*">
 	
 	<s:layout>
 		<s:BasicLayout/>
@@ -11,7 +13,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import controls.*;
 			
 			import mx.collections.ArrayCollection;
@@ -21,8 +22,13 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import services.depot1.Depot1;					
+			import services.depot1.Depot1;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import utils.helper;					
 			public var dataService:Depot1;		
+			private var hlp:helper;
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"		
@@ -30,17 +36,14 @@
 			protected function startApp(event:FlexEvent):void
 			{
 				trace("start panelTab");
+				getIndicatorNamesResult.token = depot1.getIndicatorNames();
+				hlp = new helper();
 			}
 
 			protected function testBtn_clickHandler(event:MouseEvent):void
 			{
 				this.countryListNames.token = this.dataService.getCountryList();
-			}
-			
-			protected function countryListNames_resultHandler(event:ResultEvent):void
-			{
-				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
-			}
+			}			
 			
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
@@ -57,20 +60,66 @@
 				this.countryListGrid.dataList = data;
 			}
 			
+			protected function countryListNames_resultHandler(event:ResultEvent):void
+			{
+				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
+			}
+
+			protected function getIndicatorNamesResult_resultHandler(event:ResultEvent):void
+			{
+				this.indiListDrop.dataProvider = this.getIndicatorNamesResult.lastResult;
+			}
+
+			[bindable] private var selectedIndi:int = 0;
+			protected function indiListDrop_changeHandler(event:IndexChangeEvent):void
+			{
+				this.selectedIndi = this.indiListDrop.selectedItem.id;
+			}
+
+
+			protected function testChartBtn_clickHandler(event:MouseEvent):void
+			{
+				//send query to DB mit countryIDs and IndiID
+				var countryIDs:Array = this.countryListGrid.dataList.source;
+				
+				var z:Array = this.hlp.formStringFromIDs(countryIDs);
+				getMacroDataResult.token = depot21.getMacroData(z, this.selectedIndi);
+			}
+
+
+			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
+			{
+				var tmp:ArrayCollection = this.getMacroDataResult.lastResult as ArrayCollection;	
+				
+				this.testChart.setData(tmp); // transformation is performed inside chart component
+			}
+
+
+			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
+			{
+				var z:Object = event.message;
+				Alert.show("error in query");				
+			}
+
 		]]>
 	</fx:Script>	
 	
 	
 	<fx:Declarations>
 		<s:CallResponder id="countryListNames" result="countryListNames_resultHandler(event)"/>		
+		<s:CallResponder id="getIndicatorNamesResult" result="getIndicatorNamesResult_resultHandler(event)"/>
+		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
+		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="100%" top="50" height="95%" horizontalCenter="0">
+	<utils:CCheckBoxGrid id="countryListGrid" width="289" height="95%" left="6" top="33">
 		<utils:layout>
 			<s:BasicLayout/>
 		</utils:layout>
 	</utils:CCheckBoxGrid>
-	<s:BorderContainer width="100%" height="25" top="0" horizontalCenter="0">
+	
+	<s:BorderContainer width="295" height="25" top="0" x="0">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
@@ -79,5 +128,14 @@
 		<s:Button label="getSomeData" id="testBtn" width="30%" height="75%"
 				  click="testBtn_clickHandler(event)" x="251" y="17"/>
 	</s:BorderContainer>
+	
+	<utils:CTwoAxisChart x="304" y="102" id="testChart">
+	</utils:CTwoAxisChart>
+	
+	<s:DropDownList x="303" y="33" width="409" height="24" id="indiListDrop"
+				     labelField="namen" change="indiListDrop_changeHandler(event)">
+	</s:DropDownList>
+	<s:Button x="303" y="65" label="refresh chart" width="136" id="testChartBtn"
+			  click="testChartBtn_clickHandler(event)"/>
 
 </s:Group>

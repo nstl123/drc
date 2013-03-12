@@ -29,15 +29,15 @@
 				trace("init Depot1");
 				
 				this.panelTest1.dataService = this.dataService;
-				this.panelTest2.dataService = this.dataService;
-				this.panelTest3.dataService = this.dataService;
+				/*this.panelTest2.dataService = this.dataService;
+				this.panelTest3.dataService = this.dataService;*/
 				
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);			
 			
 				masterTab = new FlowManager();
 				masterTab.addTab(this.panelTest1);
-				masterTab.addTab(this.panelTest2);
-				masterTab.addTab(this.panelTest3);
+				/*masterTab.addTab(this.panelTest2);
+				masterTab.addTab(this.panelTest3);*/
 				
 			}		
 
@@ -64,7 +64,7 @@
 			</panelTabA:layout>
 		</panelTabA:tabA1>
 		
-		<panelTabB:tabB1 id="panelTest2" x="421" width="33%" height="100%" top="0">
+		<!-- <panelTabB:tabB1 id="panelTest2" x="421" width="33%" height="100%" top="0">
 			<panelTabB:layout>
 				<s:BasicLayout/>
 			</panelTabB:layout>
@@ -73,8 +73,8 @@
 		<panelTabC:tabC1 id="panelTest3" x="233" width="33%" height="100%" top="0">
 			<panelTabC:layout>
 				<s:BasicLayout/>
-			</panelTabC:layout>
-			
+			</panelTabC:layout>			
 		</panelTabC:tabC1>
+		!-->
 	</s:BorderContainer>
 </s:Application>

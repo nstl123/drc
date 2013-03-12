@@ -1,8 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
+		  creationComplete="startApp(event)">
+	
+	<fx:Declarations>		
+		<mx:CurrencyFormatter   id="stilius2" precision="2"
+								rounding="nearest"
+								decimalSeparatorTo="."
+								thousandsSeparatorTo=","
+								useThousandsSeparator="true"
+								currencySymbol=""
+								useNegativeSign="true"                  
+								/>
 	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.events.FlexEvent;
+			/* some text/numbers formatting tasks go here */
+			
+			public function format_numbers(item:Object, column:DataGridColumn):String { 
+				var a:Object = item[column.dataField]				
+				return this.stilius2.format(a);	
+			}		
+			
+			public function format_text(item:Object, column:DataGridColumn):String { 
+				var a:Object = item[column.dataField]				
+				return a.toString();	
+			}		
+
+		]]>
+	</fx:Script>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.series.LineSeries;
+			import mx.charts.LinearAxis;
+			import mx.charts.CategoryAxis;
+			
+			[bindable] public var selectedCntry:int = 1;
+			[bindable] public var selectedIndiIn:int = 1;
+			[bindable] public var selectedIndiOut:int = 1;
+			[bindable] public var selectedDevice:int = 1;
+			[bindable] public var selectedBatType:int = 1;
+			[bindable] public var selectedPwrType:int = 1;
+			
+			[bindable] private var dataSet:ArrayCollection = new ArrayCollection();		
+			private var hlp:helper;
+			
+			import mx.collections.ArrayCollection;			
+			import utils.helper;			
+			
+			protected function startApp(event:FlexEvent):void
+			{
+				hlp = new helper();
+			}
+			
+			public function setData(data:ArrayCollection):void {
+				this.dataSet = data;	
+				drawChart();
+			}
+			
+			public function getData():ArrayCollection {
+				return this.dataSet;			
+			}
+			
+			public function prepareDataForChart(raw:ArrayCollection):ArrayCollection {
+				// iterate to change Y200x to yrs field
+				return raw;
+			}
+			
+			protected function drawChart():void {
+				var tmp:ArrayCollection = hlp.transformArrCol(this.dataSet);
+				createSeries(tmp);
+				// some transformation of arrColl here
+			}
+			
+			[Bindable] private var vaxis1:LinearAxis = new LinearAxis;
+			[Bindable] private var vaxis2:LinearAxis = new LinearAxis;
+			private var series2:Object;
+			private var mySeries:Array=new Array(); 
+			
+			public function createSeries(someData:ArrayCollection):void {
+				vaxis1 = new LinearAxis;
+				vaxis2 = new LinearAxis;
+				var hAxis:CategoryAxis = new CategoryAxis();
+				mySeries.splice(0, mySeries.length);
+				var counter:int = 0;				
+				
+				for (var i:int = 0; i < someData.length; i++) {
+					series2 = new LineSeries();
+					series2.dataProvider = someData.getItemAt(i);			
+					series2.xField="yrs";
+					series2.yField="data";
+					
+					var tmp:Object = someData.getItemAt(i)[0]; 
+					
+					/*if (tmp.indicatorID == someData.getItemAt(0)[0].indicatorID)
+							series2.verticalAxis = vaxis1
+					else series2.verticalAxis = vaxis2;*/
+					series2.verticalAxis = vaxis1;					
+					
+					series2.displayName = tmp.countryID + "|" + tmp.indicatorID + "\n" + tmp.scenarioID;
+					
+					hAxis.dataProvider = someData.getItemAt(i);
+					vaxis1.baseAtZero = false;
+					vaxis2.baseAtZero = false;
+					// vaxis1.labelFunction = defineLabel;
+					mySeries.push(series2);
+				};	
+				
+				hAxis.categoryField = "yrs";						
+				this.lineChart.horizontalAxis  = hAxis;				     
+				this.lineChart.series = mySeries;			
+				this.lineChart.dataProvider = mySeries;
+				//this.testChart.dataTipFunction = show_label;				
+				this.lineChart.invalidateDisplayList();
+			}
+			
+		]]>
+	</fx:Script>
+		
+	
+	<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		
+		<mx:LineChart id="lineChart" width="90%" height="100%" 
+					  horizontalCenter="0" verticalCenter="0"
+					  seriesFilters="[]">
+			<!-- <mx:verticalAxisRenderers>
+				<mx:AxisRenderer placement="left" axis="{this.vaxis1}"/>
+				<mx:AxisRenderer placement="right" axis="{this.vaxis2}"/>
+			</mx:verticalAxisRenderers> !-->
+		</mx:LineChart>
+	
+		<mx:Legend dataProvider="{lineChart}" width="10%" height="100%">
+			<s:DataGroup width="100%" height="100%">
+				<s:layout>
+					<s:HorizontalLayout/>
+				</s:layout>
+			</s:DataGroup>		
+		</mx:Legend>
+		
+	</s:BorderContainer>
 </s:Group>

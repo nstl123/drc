@@ -7,46 +7,47 @@
 			   creationComplete="startApp(event)" 
 			   xmlns:panelTabB="panelTabB.*" 
 			   xmlns:panelTabC="panelTabC.*" 
-			   xmlns:depot3="services.depot3.*">
+			   xmlns:depot3="services.depot3.*" 
+			   xmlns:panelTab0="panelTab0.*" xmlns:panelTabs="panelTabs.*">
 	<s:layout>
-		<s:HorizontalLayout/>
+		<s:BasicLayout/>
 	</s:layout>
-	<fx:Script>
+	<fx:Declarations>	
+		
+		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
+					   showBusyCursor="true"/>
+		<s:CallResponder id="createNewWorkingScenarioResult" result="createNewWorkingScenarioResult_resultHandler(event)"
+						  fault="createNewWorkingScenarioResult_faultHandler(event)"/>
+		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		
+	</fx:Declarations>
+	
+		<fx:Script>
 		<![CDATA[		
-			import controls.FlowManager;
-			
+			import controls.FlowManager;			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import services.depot1.*;
-			
-			import utils.IDgenerator;	
-			
+			import services.depot1.*;			
+			import utils.IDgenerator;			
 			private var dataService:Depot1;			
-			private var masterTab:FlowManager;
-			
+			private var masterTab:FlowManager;			
 			private var workingScenarioID:int;			
 			protected var IDgen:IDgenerator = new IDgenerator();
 			
 			protected function startApp(event:FlexEvent):void
 			{
 				dataService = new Depot1();
-				trace("init Depot1");	
-				this.panelTest1.flagTextA = "no data yet";
+				trace("init Depot1");
 				
-				this.workingScenarioID = this.IDgen.generateID();
-				this.panelTest1.setWorkingScenario(this.workingScenarioID);
+				this.workingScenarioID = this.IDgen.generateID();				
 				initScenarioDB(this.workingScenarioID);
 				
-				this.panelTest1.dataService = this.dataService;
-				/*this.panelTest2.dataService = this.dataService;
-				this.panelTest3.dataService = this.dataService;*/
-				
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);			
-				this.addEventListener("scenarioCreated", proceedFurther);
+				//this.addEventListener("scenarioCreated", proceedFurther);
 				
 				masterTab = new FlowManager();
 				masterTab.addTab(this.panelTest1);
@@ -67,52 +68,51 @@
 			{ 
 				scenarioCreatedFlag = true;	
 				dispatchEvent(new Event("scenarioCreated", true));
-			}
-			
-			public function proceedFurther(evt:Event):void {
-				this.panelTest1.flagTextA = "data loaded";
-			}
-
+			}		
 
 			protected function createNewWorkingScenarioResult_faultHandler(event:FaultEvent):void
 			{
 				this.panelTest1.flagTextA = "data error";
 			}
 
+			protected function panelTest1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.panelTest1.flagTextA = "no data yet";
+				this.panelTest1.setWorkingScenario(this.workingScenarioID);
+				this.panelTest1.dataService = this.dataService;
+			}			
+
 		]]>
 	</fx:Script>
-	<fx:Declarations>	
 		
-		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
-					   showBusyCursor="true"/>
-		<s:CallResponder id="createNewWorkingScenarioResult" result="createNewWorkingScenarioResult_resultHandler(event)"
-						  fault="
-"/>
-		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
-		
-	</fx:Declarations>
-	<s:BorderContainer width="100%" height="100%">	
+	<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0">	
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-	
-		<panelTabA:tabA1 id="panelTest1" width="100%" height="100%" x="0" top="0" >
-			<panelTabA:layout>
-				<s:BasicLayout/>
-			</panelTabA:layout>
-		</panelTabA:tabA1>
 		
-		<!-- <panelTabB:tabB1 id="panelTest2" x="421" width="33%" height="100%" top="0">
-			<panelTabB:layout>
-				<s:BasicLayout/>
-			</panelTabB:layout>
-		</panelTabB:tabB1>
-		
-		<panelTabC:tabC1 id="panelTest3" x="233" width="33%" height="100%" top="0">
-			<panelTabC:layout>
-				<s:BasicLayout/>
-		</panelTabC:layout>			
-		</panelTabC:tabC1>
-		!-->
+		<mx:TabNavigator width="100%" height="100%">
+
+			<s:NavigatorContent label="Path selection" width="100%" height="100%">
+				<panelTabs:tabPathSelection x="10" y="10">
+				</panelTabs:tabPathSelection>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="MacroIndicators (A1 + A2)" width="100%" height="100%">
+			</s:NavigatorContent>
+			<s:NavigatorContent label="B. Factors" width="100%" height="100%">
+			</s:NavigatorContent>
+			<s:NavigatorContent label="C. Device Base" width="100%" height="100%">
+			</s:NavigatorContent>
+			<s:NavigatorContent label="D. Market Size" width="100%" height="100%">
+			</s:NavigatorContent>
+			<s:NavigatorContent label="E. Demand" width="100%" height="100%">
+			</s:NavigatorContent>
+			
+			<s:NavigatorContent label="Tab1" width="100%" height="100%">
+				<panelTabs:tabA1 id="panelTest1" width="100%" height="100%" top="0"
+								 creationComplete="panelTest1_creationCompleteHandler(event)">					
+				</panelTabs:tabA1>
+			</s:NavigatorContent>			
+			
+		</mx:TabNavigator>		
 	</s:BorderContainer>
 </s:Application>

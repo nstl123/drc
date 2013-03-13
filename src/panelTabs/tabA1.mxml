@@ -202,7 +202,7 @@
 	
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="289" height="95%" left="6" top="33">
+	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" left="6" top="33">
 		<utils:layout>
 			<s:BasicLayout/>
 		</utils:layout>
@@ -221,33 +221,33 @@
 	<utils:CTwoAxisChart x="304" y="102" id="testChart" height="205">
 	</utils:CTwoAxisChart>
 	
-	<s:DropDownList x="303" y="33" width="409" height="24" id="indiListDrop"
+	<s:DropDownList x="303" y="33" width="412" height="24" id="indiListDrop"
 				     labelField="namen" change="indiListDrop_changeHandler(event)">
 	</s:DropDownList>
 	<s:Button x="303" y="65" label="refreshChart1" width="168" id="testChartBtn"
 			  click="testChartBtn_clickHandler(event)"/>
-	<utils:CInteractiveGrid id="testGrid" x="303" y="315" height="108">
+	<utils:CInteractiveGrid id="testGrid" x="303" y="315" height="123">
 	</utils:CInteractiveGrid>
 	<s:Button x="507" y="65" label="refresh Grid" width="192" id="testGridBtn"
 			  click="testGridBtn_clickHandler(event)"/>
-	<s:Button x="303" y="431" label="getNewData" width="100" id="testData" 
+	<s:Button x="304" y="446" label="getNewData" width="110" id="testData" 
 			  click="testNewData_clickHandler(event)"/>
-	<utils:CInteractiveGrid x="303" y="455" height="145" id="testGrid2">
+	<utils:CInteractiveGrid x="303" y="473" height="136" id="testGrid2">
 	</utils:CInteractiveGrid>
-	<s:Label x="303" y="0" width="168" height="25" fontSize="14" 
+	<s:Label x="823" y="14" width="168" height="25" fontSize="14" 
 			 verticalAlign="middle" textAlign="center" id="flags" text="label"/>
-	<s:Button x="411" y="431" label="sendToPHP" width="87" id="sendToPHP" 
+	<s:Button x="422" y="446" label="sendToPHP" width="87" id="sendToPHP" 
 			  click="sendToPHP_clickHandler(event)"/>
-	<utils:CInteractiveGrid x="710" y="455" height="155" id="testGrid3">
+	<utils:CInteractiveGrid x="710" y="474" height="136" id="testGrid3">
 	</utils:CInteractiveGrid>
-	<s:Button x="709" y="430" label="getDataBack" width="192" id="testDataBackBtn" 
+	<s:Button x="712" y="451" label="getChangedData" width="192" id="testDataBackBtn" 
 			  click="testDataBackBtn_clickHandler(event)"/>
-	<utils:CTwoAxisChart x="711" y="102" height="211" id="testChartDemand">
+	<utils:CTwoAxisChart x="711" y="102" height="206" id="testChartDemand">
 	</utils:CTwoAxisChart>
-	<s:Button x="720" y="65" label="refreshChart2" width="200" id="button" 
+	<s:Button x="712" y="65" label="refreshDemand" width="200" id="button" 
 			  click="button_clickHandler(event)"/>
-	<s:Label x="713" y="375" text="Label" width="278" height="41" id="white"/>
-	<s:Button x="711" y="316" label="testuojam" width="118" id="testuojam" 
+	<s:Label x="712" y="340" text="Label" width="278" height="41" id="white"/>
+	<s:Button x="711" y="316" label="testIfCalculationsOK" width="193" id="testuojam" 
 			  click="testuojam_clickHandler(event)"/>
 
 </s:Group>

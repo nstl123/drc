@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Declarations>
+		<s:RadioButtonGroup id="radiogroup1"/>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BorderContainer width="358" height="200" horizontalCenter="0" verticalCenter="0">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<s:RadioButton x="89" y="59" label="A1 (macro) + # of HHs" groupName="radiogroup1"/>
+		<s:RadioButton x="89" y="85" label="B (HH pen rate + dev. per HH)" groupName="radiogroup1" selected="true"/>
+		<s:RadioButton x="89" y="85" label="C (device base)" groupName="radiogroup1"/>
+		<s:RadioButton x="89" y="85" label="D (market size + depreciation)" groupName="radiogroup1"/>
+		<s:RadioButton x="89" y="85" label="D though A2 ((market size + depreciation) through macro)" groupName="radiogroup1"/>
+		
+	</s:BorderContainer>
+	<s:Label x="15" y="30" text="Possible Paths"/>
+</s:Group>

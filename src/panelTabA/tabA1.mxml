@@ -33,11 +33,15 @@
 			[bindable] private var selectedIndi:int = 0;
 			[bindable] private var currentData:ArrayCollection;
 			[bindable] private var workingScenarioID:int;
-			
+			[bindable] private var flagText:String = "";
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"		
 			
+			public function set flagTextA(s:String):void {
+				this.flags.text = s;
+			}
+				
 			public function setWorkingScenario(nv:int):void {
 				this.workingScenarioID = nv;
 				this.testGrid.setWorkingScenario(this.workingScenarioID);
@@ -153,5 +157,7 @@
 			  click="testNewData_clickHandler(event)"/>
 	<utils:CInteractiveGrid x="303" y="459" height="145" id="testGrid2">
 	</utils:CInteractiveGrid>
+	<s:Label x="303" y="0" width="168" height="25" fontSize="14" 
+			 verticalAlign="middle" textAlign="center" id="flags" text="label"/>
 
 </s:Group>

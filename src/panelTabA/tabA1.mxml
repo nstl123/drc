@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="722" height="100%"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1000" height="100%"
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
-		 xmlns:depot21="services.depot21.*">
+		 xmlns:depot21="services.depot21.*" xmlns:depot3="services.depot3.*">
 	
 	<s:layout>
 		<s:BasicLayout/>
@@ -46,6 +46,7 @@
 				this.workingScenarioID = nv;
 				this.testGrid.setWorkingScenario(this.workingScenarioID);
 				this.testGrid2.setWorkingScenario(this.workingScenarioID);
+				this.testGrid3.setWorkingScenario(this.workingScenarioID);
 			}
 				
 			protected function startApp(event:FlexEvent):void {
@@ -60,7 +61,7 @@
 			
 			protected function button2_clickHandler(event:MouseEvent):void {
 				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabA1.CNTRYCHANGED, true));
+				this.dispatchEvent(new Event(tabA1.CNTRYCHANGED, true));				
 			}
 
 			// ----- COMMUNICATION PART ---------------/////			
@@ -106,11 +107,77 @@
 				this.testGrid.setData(this.currentData);
 			}
 
-			[bindable] public var za:ArrayCollection = new ArrayCollection();
+			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			protected function testNewData_clickHandler(event:MouseEvent):void
 			{
-				za = this.testGrid.getData();
-				this.testGrid2.setData(za);
+				alteredData = this.testGrid.getData();
+				this.testGrid2.setData(alteredData);
+			}
+
+
+			protected function sendToPHP_clickHandler(event:MouseEvent):void
+			{	
+				var temp:Object = new Object();
+				temp = ({'id':1, data:this.alteredData});
+				
+				updateSplitIndisResult.token = depot3.updateSplitIndis(temp);
+			}
+			
+			protected function updateSplitIndisResult_resultHandler(event:ResultEvent):void
+			{
+				var rez:Object = this.updateSplitIndisResult.lastResult;
+			}
+
+			protected function testDataBackBtn_clickHandler(event:MouseEvent):void
+			{
+				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+				
+				getMacroDataResult2.token = depot21.getMacroData(tmp, this.selectedIndi, this.workingScenarioID);
+			}
+
+			protected function getMacroDataResult2_resultHandler(event:ResultEvent):void
+			{
+				var tmp:ArrayCollection = this.getMacroDataResult2.lastResult as ArrayCollection;
+				this.testGrid3.setData(tmp);
+			}
+
+			
+			protected function button_clickHandler(event:MouseEvent):void
+			{
+				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+				
+				getDemandDataResult.token = depot21.getDemandData(tmp, this.workingScenarioID);
+			}
+			
+
+			protected function getDemandDataResult_resultHandler(event:ResultEvent):void
+			{
+				//currentData = this.getMacroDataResult.lastResult as ArrayCollection;
+				var tmp:ArrayCollection = this.getDemandDataResult.lastResult as ArrayCollection;
+				this.testChartDemand.setData(tmp);
+			}
+
+			
+			protected function testuojam_clickHandler(event:MouseEvent):void
+			{
+				var temp:Object = new Object();
+				temp = ({'id':1, data:this.alteredData});
+				
+				updateMacroIndisResult.token = depot3.updateMacroIndis(temp);
+			}		
+
+
+			protected function updateMacroIndisResult_resultHandler(event:ResultEvent):void
+			{
+				this.white.text = "data received";
+			}
+
+
+			protected function updateMacroIndisResult_faultHandler(event:FaultEvent):void
+			{
+				this.white.text = "somefockin error";
 			}
 
 		]]>
@@ -118,11 +185,21 @@
 	
 	
 	<fx:Declarations>
+		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		
 		<s:CallResponder id="countryListNames" result="countryListNames_resultHandler(event)"/>		
 		<s:CallResponder id="getIndicatorNamesResult" result="getIndicatorNamesResult_resultHandler(event)"/>
-		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
-		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+
+		<s:CallResponder id="updateSplitIndisResult" result="updateSplitIndisResult_resultHandler(event)"/>		
+		<s:CallResponder id="getMacroDataResult2" result="getMacroDataResult2_resultHandler(event)"/>
+		<s:CallResponder id="getDemandDataResult" result="getDemandDataResult_resultHandler(event)"/>
+		<s:CallResponder id="updateMacroIndisResult" result="updateMacroIndisResult_resultHandler(event)"
+						  fault="updateMacroIndisResult_faultHandler(event)"/>
+		
+	
 	</fx:Declarations>
 	
 	<utils:CCheckBoxGrid id="countryListGrid" width="289" height="95%" left="6" top="33">
@@ -147,17 +224,30 @@
 	<s:DropDownList x="303" y="33" width="409" height="24" id="indiListDrop"
 				     labelField="namen" change="indiListDrop_changeHandler(event)">
 	</s:DropDownList>
-	<s:Button x="303" y="65" label="refresh chart" width="168" id="testChartBtn"
+	<s:Button x="303" y="65" label="refreshChart1" width="168" id="testChartBtn"
 			  click="testChartBtn_clickHandler(event)"/>
 	<utils:CInteractiveGrid id="testGrid" x="303" y="315" height="108">
 	</utils:CInteractiveGrid>
-	<s:Button x="520" y="65" label="refresh Grid" width="192" id="testGridBtn"
+	<s:Button x="507" y="65" label="refresh Grid" width="192" id="testGridBtn"
 			  click="testGridBtn_clickHandler(event)"/>
-	<s:Button x="303" y="431" label="getNewData" width="100" id="testNewData" 
+	<s:Button x="303" y="431" label="getNewData" width="100" id="testData" 
 			  click="testNewData_clickHandler(event)"/>
-	<utils:CInteractiveGrid x="303" y="459" height="145" id="testGrid2">
+	<utils:CInteractiveGrid x="303" y="455" height="145" id="testGrid2">
 	</utils:CInteractiveGrid>
 	<s:Label x="303" y="0" width="168" height="25" fontSize="14" 
 			 verticalAlign="middle" textAlign="center" id="flags" text="label"/>
+	<s:Button x="411" y="431" label="sendToPHP" width="87" id="sendToPHP" 
+			  click="sendToPHP_clickHandler(event)"/>
+	<utils:CInteractiveGrid x="710" y="455" height="155" id="testGrid3">
+	</utils:CInteractiveGrid>
+	<s:Button x="709" y="430" label="getDataBack" width="192" id="testDataBackBtn" 
+			  click="testDataBackBtn_clickHandler(event)"/>
+	<utils:CTwoAxisChart x="711" y="102" height="211" id="testChartDemand">
+	</utils:CTwoAxisChart>
+	<s:Button x="720" y="65" label="refreshChart2" width="200" id="button" 
+			  click="button_clickHandler(event)"/>
+	<s:Label x="713" y="375" text="Label" width="278" height="41" id="white"/>
+	<s:Button x="711" y="316" label="testuojam" width="118" id="testuojam" 
+			  click="testuojam_clickHandler(event)"/>
 
 </s:Group>

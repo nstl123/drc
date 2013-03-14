@@ -34,23 +34,23 @@ public class _Super_CustomDatatype1 extends flash.events.EventDispatcher impleme
     /**
      * properties
      */
-    private var _internal_Y2013 : Number = Number(0);
-    private var _internal_Y2004 : Number = Number(0);
-    private var _internal_Y2012 : Number = Number(0);
+    private var _internal_Y2013 : Number;
+    private var _internal_Y2004 : Number;
+    private var _internal_Y2012 : Number;
     private var _internal_indicatorID : int;
-    private var _internal_Y2015 : Number = Number(0);
-    private var _internal_Y2014 : Number = Number(0);
-    private var _internal_Y2008 : Number = Number(0);
-    private var _internal_Y2007 : Number = Number(0);
+    private var _internal_Y2015 : Number;
+    private var _internal_Y2014 : Number;
+    private var _internal_Y2008 : Number;
+    private var _internal_Y2007 : Number;
     private var _internal_countryID : int;
-    private var _internal_Y2006 : Number = Number(0);
+    private var _internal_Y2006 : Number;
     private var _internal_deviceID : int;
-    private var _internal_Y2005 : Number = Number(0);
-    private var _internal_Y2011 : Number = Number(0);
-    private var _internal_Y2010 : Number = Number(0);
+    private var _internal_Y2005 : Number;
+    private var _internal_Y2011 : Number;
+    private var _internal_Y2010 : Number;
     private var _internal_sessionID : int;
     private var _internal_scenarioID : int;
-    private var _internal_Y2009 : Number = Number(0);
+    private var _internal_Y2009 : Number;
 
     private static var emptyArray:Array = new Array();
 

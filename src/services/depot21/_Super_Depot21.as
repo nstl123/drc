@@ -28,14 +28,14 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         _serviceControl = new mx.rpc.remoting.RemoteObject();
 
         // initialize RemoteClass alias for all entities returned by functions of this service
-        valueObjects.CountryName._initRemoteClassAlias();
         valueObjects.CustomDatatype1._initRemoteClassAlias();
+        valueObjects.CountryName._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
 
         operation = new mx.rpc.remoting.Operation(null, "getMacroData");
-         operation.resultType = Object;
+         operation.resultElementType = valueObjects.CustomDatatype1;
         operations["getMacroData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getMacroDataFormat");
          operation.resultElementType = valueObjects.CountryName;
@@ -66,10 +66,10 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getMacroData(countryIDs:Object, indicatorID:Number, scenarioID:Number) : mx.rpc.AsyncToken
+    public function getMacroData(countryIDs:Object, indicatorID:Number, scenarioID:Number, hasSplit:Boolean) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getMacroData");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,indicatorID,scenarioID) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,indicatorID,scenarioID,hasSplit) ;
 
         return _internal_token;
     }

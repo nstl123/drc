@@ -31,6 +31,7 @@
 			public var dataService:Depot1;		
 			private var hlp:helper;
 			[bindable] private var selectedIndi:int = 0;
+			[bindable] private var indiHasSplit:Boolean = false;
 			[bindable] private var currentData:ArrayCollection;
 			[bindable] private var workingScenarioID:int;
 			[bindable] private var flagText:String = "";
@@ -83,6 +84,7 @@
 			
 			protected function indiListDrop_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indiListDrop.selectedItem.id;
+				this.indiHasSplit = this.indiListDrop.selectedItem.hasSplitByDevices;
 			}
 
 			protected function testChartBtn_clickHandler(event:MouseEvent):void {
@@ -90,7 +92,7 @@
 				var countryIDs:Array = this.countryListGrid.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
 				
-				getMacroDataResult.token = depot21.getMacroData(tmp, this.selectedIndi, this.workingScenarioID);
+				getMacroDataResult.token = depot21.getMacroData(tmp, selectedIndi, workingScenarioID, indiHasSplit);
 			}
 	
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void {
@@ -133,7 +135,7 @@
 				var countryIDs:Array = this.countryListGrid.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
 				
-				getMacroDataResult2.token = depot21.getMacroData(tmp, this.selectedIndi, this.workingScenarioID);
+				getMacroDataResult2.token = depot21.getMacroData(tmp, selectedIndi, workingScenarioID, indiHasSplit);
 			}
 
 			protected function getMacroDataResult2_resultHandler(event:ResultEvent):void
@@ -180,6 +182,8 @@
 				this.white.text = "somefockin error";
 			}
 
+			
+			
 		]]>
 	</fx:Script>	
 	

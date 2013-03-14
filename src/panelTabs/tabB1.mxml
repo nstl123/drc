@@ -3,7 +3,9 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 		 xmlns:utils="utils.*"
-		 creationComplete="startApp(event)">
+		 creationComplete="startApp(event)" 
+		 xmlns:depot1="services.depot1.*" 
+		 xmlns:depot21="services.depot21.*">
 	
 	<s:layout>
 		<s:BasicLayout/>
@@ -16,25 +18,43 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
 			import mx.events.ListEvent;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import services.depot1.Depot1;					
-			public var dataService:Depot1;		
-				
+			import services.depot1.Depot1;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import utils.helper;
+			
+			public var dataServiceNames:Depot1;
+			public var dataServiceData:Depot21;
+			
+			[bindable] private var workingScenarioID:int;
+			private var hlp:helper;
+			[bindable] private var indicatorsList:ArrayCollection;
+			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
 				
-			protected function startApp(event:FlexEvent):void
-			{
-				trace("start panelTab");
+				
+			protected function startApp(event:FlexEvent):void {
+				trace("app start panelTab B");			
+				hlp = new helper();				
 			}
 			
-			protected function testBtn_clickHandler(event:MouseEvent):void
-			{
-				this.countryListNames.token = this.dataService.getCountryList();
+			public function initNames():void {
+				trace("init names inside panel B");				
+				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
+				countryListNames.token = this.dataServiceNames.getCountryList();
 			}
+			
+			public function setWorkingScenario(nv:int):void {
+				this.workingScenarioID = nv;
+				this.testGrid.setWorkingScenario(this.workingScenarioID);				
+			}					
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void
 			{
@@ -43,7 +63,7 @@
 
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
-				this.countryListNames.token = this.dataService.getCountryList();
+				//this.countryListNames.token = this.dataService.getCountryList();
 			}
 
 			protected function button2_clickHandler(event:MouseEvent):void
@@ -60,27 +80,78 @@
 				this.countryListGrid.dataList = data;
 			}		
 			
+			public function setIndicatorsList(evt:ResultEvent):void {
+				this.indicatorsList = this.indicatorsNamesList.lastResult;
+				this.indicatorsList.filterFunction = filterB;
+				this.indicatorsBox.dataProvider = this.indicatorsList;			
+			}
+			
+			private function filterB(item:Object):Boolean {			
+				// here should be all indis within ID range
+				var fl:Boolean = true;				
+				/*if (item.scenarioID == this.workingScenarioID) {					
+					fl = true
+				}  else fl = false;*/				
+				return fl;
+			}					
+			
+			protected function button3_clickHandler(event:MouseEvent):void
+			{
+				//send query to DB mit countryIDs and IndiID
+				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+				trace("calling macro data token");
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected);
+			}
+
+			[bindable] private var selectedIndi:int;
+			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
+			
+			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
+				this.selectedIndi = this.indicatorsBox.selectedItem.id;
+				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
+			}			
+			
+			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
+			{
+				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
+				this.testChart.setData(currentData); // transformation is performed inside chart component
+				this.testGrid.setData(currentData);
+			}
+
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		<s:CallResponder id="countryListNames" result="countryListNames_resultHandler(event)"/>
+		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
+					   showBusyCursor="true"/>
+		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
+						 showBusyCursor="true"/>
+		
+		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
+		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
+		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
+		
+		
 	</fx:Declarations>
 	
 	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
 	</utils:CCheckBoxGrid>
-	<s:BorderContainer width="290" height="25" top="0" left="0">
+	<s:BorderContainer width="450" height="25" top="0" left="0">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-		<s:Label text="Tab - B" height="100%" width="33%" x="61" y="38"/>
+		<s:Label text="Tab - B. HH related factors" height="100%" width="33%" x="61" y="38"/>
 		<s:Button label="notify B" click="button2_clickHandler(event)" width="33%" height="100%" x="56" y="66"/>
 		<s:Button label="getMoreData" width="33%" height="100%"
 				   click="button1_clickHandler(event)" x="115" y="124"/>
 	</s:BorderContainer>
-	<utils:CTwoAxisChart x="298" y="76" width="561" height="258">
+	<utils:CTwoAxisChart x="298" y="76" width="561" height="258" id="testChart">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="297" y="338" width="557" height="267">
+	<utils:CInteractiveGrid x="297" y="338" width="557" height="267" id="testGrid">
 	</utils:CInteractiveGrid>
-	<s:DropDownList x="305" y="49" width="300" height="18"></s:DropDownList>
+	<s:DropDownList x="305" y="49" width="300" height="18" id="indicatorsBox" 
+					change="indicatorsBox_changeHandler(event)" labelField="namen"/>
+	<s:Button x="499" y="10" label="getSomeData" click="button3_clickHandler(event)" id="button"/>
+	<s:CheckBox x="621" y="50" label="hasSplit" enabled="false" id="hasSplitFlag"/>
 </s:Group>

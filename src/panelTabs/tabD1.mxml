@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 width="100%" height="100%" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 		 xmlns:utils="utils.*"
-		 creationComplete="startApp(event)" 
+		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
-		 xmlns:depot21="services.depot21.*" 
+		 xmlns:depot21="services.depot21.*"
 		 >
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
 	
 	<fx:Script>
 		<![CDATA[
@@ -39,12 +42,12 @@
 			
 			
 			protected function startApp(event:FlexEvent):void {
-				trace("app start panelTab A1");			
+				trace("app start panelTab B");			
 				hlp = new helper();				
 			}
 			
 			public function initNames():void {
-				trace("init names inside panel A1");				
+				trace("init names inside panel B");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				countryListNames.token = this.dataServiceNames.getCountryList();
 			}
@@ -81,16 +84,15 @@
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
 				this.indicatorsList.filterFunction = filterB;
-				this.indicatorsList.refresh();
-				this.indicatorsBox.dataProvider = this.indicatorsList;				
+				this.indicatorsBox.dataProvider = this.indicatorsList;			
 			}
 			
 			private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
 				var fl:Boolean = true;				
-				if (item.hasSplitByDevices == 0) {					
-					fl = true
-				}  else fl = false;				
+				/*if (item.scenarioID == this.workingScenarioID) {					
+				fl = true
+				}  else fl = false;*/				
 				return fl;
 			}					
 			
@@ -100,7 +102,7 @@
 				var countryIDs:Array = this.countryListGrid.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, true);
 			}
 			
 			[bindable] private var selectedIndi:int;
@@ -135,19 +137,20 @@
 		
 	</fx:Declarations>
 	
-	<utils:CInteractiveGrid x="242" y="396" width="436" height="232" id="testGrid">
-	</utils:CInteractiveGrid>
-	<utils:CTwoAxisChart x="241" y="97" width="437" height="262" id="testChart">
-	</utils:CTwoAxisChart>
-	<utils:CCheckBoxGrid x="10" y="39" width="220" height="586" id="countryListGrid">
+	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
 	</utils:CCheckBoxGrid>
-	<s:Button x="8" y="10" label="getSOmeCountries" width="202"/>
-	<s:Button x="378" y="10" label="getSomeData" width="300" click="button3_clickHandler(event)"/>
-	<s:DropDownList x="238" y="39" width="440" id="indicatorsBox" labelField="namen"
-					 change="indicatorsBox_changeHandler(event)"></s:DropDownList>
-	<s:Button x="238" y="367" label="sentToPhp" width="188"/>
-	<s:Label x="218" y="10" text="Macro Indis" width="152" height="21"/>
-	
-
+	<s:BorderContainer width="465" height="25" top="0" left="0">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Label text="Tab D. Market Size" width="33%" height="100%" x="36" y="30"/>
+		<s:Button label="notify D" click="button2_clickHandler(event)" width="33%" height="100%" x="51" y="70"/>
+		<s:Button label="getMoreData" width="33%" height="100%"
+				   click="button1_clickHandler(event)" x="55" y="136"/>
+	</s:BorderContainer>
+	<utils:CTwoAxisChart x="298" y="87" width="556" height="260" id="testChart">
+	</utils:CTwoAxisChart>
+	<utils:CInteractiveGrid x="297" y="355" width="557" height="250" id="testGrid">
+	</utils:CInteractiveGrid>
+	<s:DropDownList x="304" y="50" width="300" id="indicatorsBox"></s:DropDownList>
 </s:Group>
-

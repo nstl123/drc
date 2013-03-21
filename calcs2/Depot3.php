@@ -13,44 +13,43 @@ class Depot3 {
 		));
 	}	
 	
-	public function updateMacroIndis($data) { // access testData	
+	public function updateData($data, $hasSplit) { // id indicator hasSplit by batTypes
 		$arr0 = (array)$data;
 		$arr = $arr0['data'];
-		for ($j = 0; $j < count($arr); $j++) {		
+		if ($hasSplit) {		
+			for ($j = 0; $j < count($arr); $j++) {		
+				$b =(array) $arr0['data'][$j];
+				$stmnt = "
+					UPDATE Consulting.DC_scenarioDataProxy SET						
+						Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
+					WHERE   scenarioID = ".$b['scenarioID']."			
+						AND countryID = ".$b['countryID']."
+						AND indicatorID = ".$b['indicatorID']."
+						AND deviceID = 1
+						AND typeID = 1;";
+				
+				$result = $this->connection->prepare($stmnt);
+				$result->execute();			
+			}			
+		} else {		
+			for ($j = 0; $j < count($arr); $j++) {		
 			$b =(array) $arr0['data'][$j];
 			$stmnt = "
-				UPDATE Consulting.DC_scenarioDataMacro SET						
-					Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
-				WHERE scenarioID = ".$b['scenarioID']."			
-					AND countryID = ".$b['countryID']."
-					AND indicatorID = ".$b['indicatorID'].";";
-			
-			$result = $this->connection->prepare($stmnt);
-			$result->execute();			
-		}			
-		
-		return  $j;
-	}	
-	
-	public function updateSplitIndis($data) { 
-		$arr0 = (array) $data;
-		$arr = $arr0['data'];
-		for ($j = 0; $j < count($arr); $j++) {		
-			$b =(array) $arr0['data'][$j];
-			$stmnt = "
-				UPDATE Consulting.DC_scenarioDataSplit SET						
+				UPDATE Consulting.DC_scenarioData SET						
 					Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
 				WHERE scenarioID = ".$b['scenarioID']."			
 					AND countryID = ".$b['countryID']."
 					AND indicatorID = ".$b['indicatorID']."
-					AND deviceID = 1 ;";
+					AND deviceID = 1 
+					AND typeID in (0, 1);";
 			
 				$result = $this->connection->prepare($stmnt);
 				$result->execute();	
-		}					
+			}					
+		}
 		
 		return  $j;
-	}	
+	}		
 	
 	public function createNewWorkingScenario($scenarioID) {
 		$this -> deleteWorkingScenario($scenarioID);
@@ -58,55 +57,65 @@ class Depot3 {
 		return $scenarioID;
 	}
 	
-	public function deleteWorkingScenario($scenarioID) {
-		$stmntMacro = "DELETE FROM `Consulting`.`DC_scenarioDataMacro` WHERE scenarioID = ".$scenarioID;
-		$result = $this->connection->prepare($stmntMacro);		
+	public function deleteAllScenarios() {
+		$stmntData = "DELETE FROM `Consulting`.`DC_scenarioData`
+							WHERE scenarioID < 9999";
+		$result = $this->connection->prepare($stmntData);		
 		$result->execute();	
 		
-		$stmntSplit = "DELETE FROM `Consulting`.`DC_scenarioDataSplit` WHERE scenarioID = ".$scenarioID;
-		$result = $this->connection->prepare($stmntSplit);
+		$stmntProxy = "DELETE FROM `Consulting`.`DC_scenarioDataProxy`
+							WHERE scenarioID < 9999";
+		$result = $this->connection->prepare($stmntProxy);
+		$result->execute();	
+	}	
+	
+	public function deleteWorkingScenario($scenarioID) {
+		$stmntData = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE scenarioID = ".$scenarioID;
+		$result = $this->connection->prepare($stmntData);		
+		$result->execute();	
+		
+		$stmntProxy = "DELETE FROM `Consulting`.`DC_scenarioDataProxy` WHERE scenarioID = ".$scenarioID;
+		$result = $this->connection->prepare($stmntProxy);
 		$result->execute();	
 	}	
 	
 	public function insertWorkingScenario($scenarioID) {
 
 		$stmntMacro = "
-			INSERT INTO `Consulting`.`DC_scenarioDataMacro`
-				(`sessionID`,`scenarioID`,`countryID`,`indicatorID`, `unitID`,
+			INSERT INTO `Consulting`.`DC_scenarioData`
+				(`scenarioID`,`countryID`,`indicatorID`, `deviceID`, typeID, `unitID`,
 				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,
 				`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,
 				`Y2018`,`Y2019`,`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`)
 			SELECT
-				".$scenarioID." as `sessionID`, ".$scenarioID." as `scenarioID`,`countryID`,`indicatorID`,`unitID`,
+				".$scenarioID." as `scenarioID`,`countryID`,`indicatorID`, `deviceID`, `typeID`, `unitID`,
 				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,
 				`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,
 				`Y2018`,`Y2019`,`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`
-			FROM `Consulting`.`DC_scenarioDataMacro`
+			FROM `Consulting`.`DC_scenarioData`
 				WHERE scenarioID = 10001;";
 		
 		$result = $this->connection->prepare($stmntMacro);
 		$result->execute();	
 		
-		$stmntSplit = "
-			INSERT INTO `Consulting`.`DC_scenarioDataSplit`
-				(`sessionID`,`scenarioID`,`countryID`,`indicatorID`,`deviceID`,
-				`typeID`,`chemistryID`,`unitID`,
+		$stmntProxy = "
+			INSERT INTO `Consulting`.`DC_scenarioDataProxy`
+				(`scenarioID`,`countryID`,`indicatorID`,`deviceID`,	`typeID`,`unitID`,
 				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,
 				`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,
 				`Y2018`,`Y2019`,`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`)
 			SELECT
-				".$scenarioID." as `sessionID`, ".$scenarioID." as `scenarioID`,`countryID`,`indicatorID`,`deviceID`,
-				`typeID`,`chemistryID`,`unitID`,
+				".$scenarioID." as `scenarioID`,`countryID`,`indicatorID`,`deviceID`, `typeID`, `unitID`,
 				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,
 				`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,
 				`Y2018`,`Y2019`,`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`
-			FROM `Consulting`.`DC_scenarioDataSplit`
+			FROM `Consulting`.`DC_scenarioDataProxy`
 				WHERE scenarioID = 10001;"; // get the base scenario
 		
-		$result = $this->connection->prepare($stmntSplit);
+		$result = $this->connection->prepare($stmntProxy);
 		$result->execute();			
 		
-		$stmntTest = "SELECT count(*) FROM `Consulting`.`DC_scenarioDataMacro` where scenarioID = ".$scenarioID.";";		
+		$stmntTest = "SELECT count(*) FROM `Consulting`.`DC_scenarioData` where scenarioID = ".$scenarioID.";";		
 		$result = $this->connection->prepare($stmntTest);
 		$result->execute();			
 		

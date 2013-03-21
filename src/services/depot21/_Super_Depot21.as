@@ -12,7 +12,8 @@ import mx.rpc.AsyncToken;
 import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
-import valueObjects.CustomDatatype1;
+import valueObjects.CustomDatatype2;
+import valueObjects.CustomDatatype3;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -28,20 +29,21 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         _serviceControl = new mx.rpc.remoting.RemoteObject();
 
         // initialize RemoteClass alias for all entities returned by functions of this service
-        valueObjects.CustomDatatype1._initRemoteClassAlias();
+        valueObjects.CustomDatatype2._initRemoteClassAlias();
         valueObjects.CountryName._initRemoteClassAlias();
+        valueObjects.CustomDatatype3._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
 
         operation = new mx.rpc.remoting.Operation(null, "getMacroData");
-         operation.resultElementType = valueObjects.CustomDatatype1;
+         operation.resultElementType = valueObjects.CustomDatatype2;
         operations["getMacroData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getMacroDataFormat");
          operation.resultElementType = valueObjects.CountryName;
         operations["getMacroDataFormat"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandData");
-         operation.resultElementType = valueObjects.CustomDatatype1;
+         operation.resultElementType = valueObjects.CustomDatatype3;
         operations["getDemandData"] = operation;
 
         _serviceControl.operations = operations;

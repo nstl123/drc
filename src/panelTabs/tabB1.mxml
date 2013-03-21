@@ -109,7 +109,8 @@
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
-				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
+				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
+				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
@@ -137,21 +138,30 @@
 	
 	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
 	</utils:CCheckBoxGrid>
+	
 	<s:BorderContainer width="450" height="25" top="0" left="0">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
+		
 		<s:Label text="Tab - B. HH related factors" height="100%" width="33%" x="61" y="38"/>
+		
 		<s:Button label="notify B" click="button2_clickHandler(event)" width="33%" height="100%" x="56" y="66"/>
 		<s:Button label="getMoreData" width="33%" height="100%"
 				   click="button1_clickHandler(event)" x="115" y="124"/>
+	
 	</s:BorderContainer>
+	
 	<utils:CTwoAxisChart x="298" y="76" width="561" height="258" id="testChart">
 	</utils:CTwoAxisChart>
+	
 	<utils:CInteractiveGrid x="297" y="338" width="557" height="267" id="testGrid">
 	</utils:CInteractiveGrid>
+	
 	<s:DropDownList x="305" y="49" width="300" height="18" id="indicatorsBox" 
 					change="indicatorsBox_changeHandler(event)" labelField="namen"/>
+	
 	<s:Button x="499" y="10" label="getSomeData" click="button3_clickHandler(event)" id="button"/>
+	
 	<s:CheckBox x="621" y="50" label="hasSplit" enabled="false" id="hasSplitFlag"/>
 </s:Group>

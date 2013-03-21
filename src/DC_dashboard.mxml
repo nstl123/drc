@@ -11,15 +11,17 @@
 			   xmlns:panelTab0="panelTab0.*" 
 			   xmlns:panelTabs="panelTabs.*">
 	<s:layout>
-		<s:BasicLayout/>
+		<s:HorizontalLayout/>
 	</s:layout>
 	<fx:Declarations>	
 		
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
-					   showBusyCursor="true"/>
-		<s:CallResponder id="createNewWorkingScenarioResult" result="createNewWorkingScenarioResult_resultHandler(event)"
-						  fault="createNewWorkingScenarioResult_faultHandler(event)"/>
+					   showBusyCursor="true"/>		
 		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		
+		<s:CallResponder id="createNewWorkingScenarioResult" result="createNewWorkingScenarioResult_resultHandler(event)"
+						 fault="createNewWorkingScenarioResult_faultHandler(event)"/>		
+		<s:CallResponder id="deleteAllScenariosResult" result="deleteAllScenariosResult_resultHandler(event)"/>
 		
 	</fx:Declarations>
 	
@@ -57,13 +59,18 @@
 				//this.addEventListener("scenarioCreated", proceedFurther);
 				
 				masterTab = new FlowManager();
-				masterTab.addTab(this.panelTest1);
+				//masterTab.addTab(this.panelTest1);
 				/*masterTab.addTab(this.panelTest2);
 				masterTab.addTab(this.panelTest3);*/				
 			}		
 
 			public function digestUpdate(event:Event):void {				
 				this.masterTab.manageUpdate(event.target.className);
+			}
+
+			public function cleanOldScenarios():void {
+				this.statusLabel.text = "cleaning DB...";
+				deleteAllScenariosResult.token = depot3.deleteAllScenarios();		
 			}
 			
 			public function initScenarioDB(scenarioID:int):void {
@@ -75,21 +82,16 @@
 			{ 
 				scenarioCreatedFlag = true;	
 				dispatchEvent(new Event("scenarioCreated", true));
+				this.statusLabel.text = "new scenario created"
 			}		
 
 			protected function createNewWorkingScenarioResult_faultHandler(event:FaultEvent):void
-			{
-				this.panelTest1.flagTextA = "data error";
-			}
-
-			protected function panelTest1_creationCompleteHandler(event:FlexEvent):void
-			{
-				this.panelTest1.flagTextA = "no data yet";
-				this.panelTest1.setWorkingScenario(this.workingScenarioID);
-				this.panelTest1.dataService = this.dataServiceNames;
-			}			
-
-
+			{ 
+				scenarioCreatedFlag = false;	
+				dispatchEvent(new Event("scenarioCreationFailed", true));
+				this.statusLabel.text = "new scenario not created"
+			}	
+			
 			protected function tabb11_creationCompleteHandler(event:FlexEvent):void
 			{
 				trace("creation complete of tab B1");
@@ -97,7 +99,52 @@
 								
 				this.panelTabB.dataServiceNames = this.dataServiceNames;
 				this.panelTabB.dataServiceData = this.dataServiceData;
-				this.panelTabB.initNames();
+				this.panelTabB.initNames();				
+			}
+
+			protected function tabc11_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("creation complete of tab C1");
+				this.panelTabC.setWorkingScenario(this.workingScenarioID);
+				this.panelTabC.dataServiceData = this.dataServiceData;				
+				this.panelTabC.dataServiceNames = this.dataServiceNames;
+				
+				this.panelTabC.initNames();
+			}
+
+			protected function tabd11_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("creation complete of tab D1");
+				this.panelTabD.setWorkingScenario(this.workingScenarioID);
+				
+				this.panelTabD.dataServiceNames = this.dataServiceNames;
+				this.panelTabD.dataServiceData = this.dataServiceData;
+				this.panelTabD.initNames();				
+			}
+
+			protected function tabe11_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("creation complete of tab E1");
+				this.panelTabE.setWorkingScenario(this.workingScenarioID);
+				
+				this.panelTabE.dataServiceNames = this.dataServiceNames;
+				this.panelTabE.dataServiceData = this.dataServiceData;
+				this.panelTabE.initNames();				
+			}			
+			
+			protected function deleteAllScenariosResult_resultHandler(event:ResultEvent):void
+			{
+			     this.statusLabel.text = "data cleaned from DB";
+			}
+
+			protected function taba11_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("creation complete of tab initTab");
+				this.panelTabA1.setWorkingScenario(this.workingScenarioID);
+				
+				this.panelTabA1.dataServiceNames = this.dataServiceNames;
+				this.panelTabA1.dataServiceData =  this.dataServiceData;
+				this.panelTabA1.initNames();
 			}
 
 		]]>
@@ -105,9 +152,9 @@
 		
 	<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0">	
 		<s:layout>
-			<s:HorizontalLayout/>
+			<s:VerticalLayout/>
 		</s:layout>
-		
+		<s:Label x="115" y="0" text="empty" id="statusLabel" width="100%" textAlign="right"/>
 		<mx:TabNavigator width="100%" height="100%">
 
 			<s:NavigatorContent label="Path selection" width="100%" height="100%">
@@ -115,24 +162,35 @@
 				</panelTabs:tabPathSelection>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="MacroIndicators (A1 + A2)" width="100%" height="100%">
+				<panelTabs:tabA1 id="panelTabA1" horizontalCenter="0" verticalCenter="0" width="100%" height="100%"
+								 creationComplete="taba11_creationCompleteHandler(event)" >
+				</panelTabs:tabA1>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="B. Factors" width="100%" height="100%">
 				<panelTabs:tabB1 id="panelTabB" horizontalCenter="0" verticalCenter="0" width="100%" height="100%"
-								 creationComplete="tabb11_creationCompleteHandler(event)" >
+								 creationComplete="tabb11_creationCompleteHandler(event)" >					
 				</panelTabs:tabB1>
+				
 			</s:NavigatorContent>
 			<s:NavigatorContent label="C. Device Base" width="100%" height="100%">
+				<panelTabs:tabC1 id = "panelTabC" width="100%" height="100%" 
+								 creationComplete="tabc11_creationCompleteHandler(event)">					
+				</panelTabs:tabC1>
 			</s:NavigatorContent>
-			<s:NavigatorContent label="D. Market Size" width="100%" height="100%">
+			<s:NavigatorContent label="D. Market Size" width="100%" height="100%"								>
+				<panelTabs:tabD1 id="panelTabD" creationComplete="tabd11_creationCompleteHandler(event)">					
+				</panelTabs:tabD1>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="E. Demand" width="100%" height="100%">
+				<panelTabs:tabE1 id="panelTabE" creationComplete="tabe11_creationCompleteHandler(event)">					
+				</panelTabs:tabE1>
 			</s:NavigatorContent>
 			
-			<s:NavigatorContent label="Tab1" width="100%" height="100%">
-				<panelTabs:tabA1 id="panelTest1" width="100%" height="100%" top="0"
-								 creationComplete="panelTest1_creationCompleteHandler(event)">					
-				</panelTabs:tabA1>
-			</s:NavigatorContent>			
+			<!-- <s:NavigatorContent label="Tab1" width="100%" height="100%">
+				<panelTabs:tab_initial id="panelTest1" width="100%" height="100%" top="0"
+								 creationComplete="panelTest1_creationCompleteHandler(event)">				
+				</panelTabs:tab_initial>
+			</s:NavigatorContent> !-->	
 			
 		</mx:TabNavigator>		
 	</s:BorderContainer>

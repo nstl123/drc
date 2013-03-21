@@ -30,9 +30,6 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
 
-        operation = new mx.rpc.remoting.Operation(null, "updateMacroIndis");
-         operation.resultType = Object;
-        operations["updateMacroIndis"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "createNewWorkingScenario");
          operation.resultType = Object;
         operations["createNewWorkingScenario"] = operation;
@@ -42,9 +39,12 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
         operation = new mx.rpc.remoting.Operation(null, "insertWorkingScenario");
          operation.resultType = Object;
         operations["insertWorkingScenario"] = operation;
-        operation = new mx.rpc.remoting.Operation(null, "updateSplitIndis");
+        operation = new mx.rpc.remoting.Operation(null, "updateData");
          operation.resultType = Object;
-        operations["updateSplitIndis"] = operation;
+        operations["updateData"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "deleteAllScenarios");
+         operation.resultType = Object;
+        operations["deleteAllScenarios"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -57,25 +57,6 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
          model_internal::initialize();
     }
 
-    /**
-      * This method is a generated wrapper used to call the 'updateMacroIndis' operation. It returns an mx.rpc.AsyncToken whose 
-      * result property will be populated with the result of the operation when the server response is received. 
-      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
-      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
-      *
-      * @see mx.rpc.AsyncToken
-      * @see mx.rpc.CallResponder 
-      *
-      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
-      */
-    public function updateMacroIndis(data:Object) : mx.rpc.AsyncToken
-    {
-        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateMacroIndis");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data) ;
-
-        return _internal_token;
-    }
-     
     /**
       * This method is a generated wrapper used to call the 'createNewWorkingScenario' operation. It returns an mx.rpc.AsyncToken whose 
       * result property will be populated with the result of the operation when the server response is received. 
@@ -134,7 +115,7 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
     }
      
     /**
-      * This method is a generated wrapper used to call the 'updateSplitIndis' operation. It returns an mx.rpc.AsyncToken whose 
+      * This method is a generated wrapper used to call the 'updateData' operation. It returns an mx.rpc.AsyncToken whose 
       * result property will be populated with the result of the operation when the server response is received. 
       * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
       * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
@@ -144,10 +125,29 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function updateSplitIndis(data:Object) : mx.rpc.AsyncToken
+    public function updateData(data:Object, hasSplit:Object) : mx.rpc.AsyncToken
     {
-        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateSplitIndis");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data) ;
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateData");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,hasSplit) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'deleteAllScenarios' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function deleteAllScenarios() : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("deleteAllScenarios");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
 
         return _internal_token;
     }

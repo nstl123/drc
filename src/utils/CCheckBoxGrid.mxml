@@ -118,6 +118,20 @@
 				};
 			}		
 
+			//when the link button is clicked, de-select all checkboxes
+			protected function delnkAll_clickHandler(event:MouseEvent):void
+			{
+				var i:uint;
+				if (this.selectionList != null) {
+					for (i = 0; i < selectionList.length; i++)
+						selectionList[i].active = false;
+					checkedCount = 0;
+					
+					dgrData.dataProvider = selectionList;				
+					dispatchEvent(new Event(CCheckBoxGrid.UNCHECKED, true));
+				};
+			}			
+			
 		]]>
 	</fx:Script>
 	
@@ -128,6 +142,8 @@
 		<s:Label text="Label" width="50%" fontWeight="bold" fontSize="12" id="lblName"/>
 		<mx:LinkButton label="Select all" width="50%" textAlign="right" id="lnkAll" 
 					   click="lnkAll_clickHandler(event)" color="#1A69D5" fontWeight="bold"/>
+		<mx:LinkButton label="deSelect" width="50%" textAlign="right" id="rmAll" 
+					   click="delnkAll_clickHandler(event)" color="#1A69D5" fontWeight="bold"/>
 	</s:HGroup>
 		
 	<mx:DataGrid bottom="0" left="0" right="0" height="90%" showHeaders="false" id="dgrData"

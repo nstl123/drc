@@ -22,7 +22,7 @@ class Depot21 {
 		return $a;
 	}
 	
-	public function getMacroData($countryIDs, $indicatorID, $scenarioID) {
+	public function getMacroData($countryIDs, $indicatorID, $scenarioID, $hasSplit) {
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
 		$countryList = " (";
@@ -32,18 +32,43 @@ class Depot21 {
 		}
 		$countryList = $countryList." )";
 		
-		$stmnt = "SELECT scenarioID, sessionID, countryID, indicatorID, deviceID, 
-			Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
-			FROM Consulting.DC_scenarioDataSplit 
-			WHERE scenarioID IN (".$scenarioID.", 10001) 				
-				AND countryID IN ".$countryList."
-				AND indicatorID = ".$indicatorID."
-				AND deviceID = 1;";
+		if (!$hasSplit) { // hasSplitByTypes
+			$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, typeID, unitID,
+				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
+				FROM Consulting.DC_scenarioData
+				WHERE scenarioID IN (".$scenarioID.", 10001) 				
+					AND countryID IN ".$countryList."
+					AND indicatorID = ".$indicatorID."
+					AND deviceID in (0, 1);";			
+		} else {					
+			$joinOn = "";
+			switch($indicatorID) {
+				case '204': 
+					$joinOn = 'battery_size'; break;
+				case '205': 
+					$joinOn = 'pwr_DPP'; break;
+				case '206': 
+					$joinOn = 'avg_number'; break;
+			};
+			
+			$stmnt = "SELECT sdp.scenarioID, nc.id as countryID, sdp.indicatorID, sdp.deviceID, 
+				sdp.Y2004, sdp.Y2005, sdp.Y2006, sdp.Y2007, sdp.Y2008, sdp.Y2009, sdp.Y2010, sdp.Y2011, sdp.Y2012, 
+				sdp.Y2013, sdp.Y2014, sdp.Y2015
+				FROM `Consulting`.`DC_scenarioDataProxy` sdp
+					JOIN `Consulting`.`DC_namesCountries` nc
+				ON sdp.countryID = nc.".$joinOn."
+				WHERE 
+					nc.id IN ".$countryList." 
+					AND sdp.indicatorID = ".$indicatorID." 
+					AND deviceID = 1
+					AND typeID = 1
+					AND scenarioID IN (".$scenarioID.", 10001)";
+		}		
 		
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		
 		return $result;
-		//return $countryList;
+		//return $stmnt;
 	}
 	
 	public function getDemandData($countryIDs, $scenarioID) {
@@ -56,7 +81,7 @@ class Depot21 {
 		}
 		$countryList = $countryList." )";
 		
-		$stmnt = "SELECT scenarioID, sessionID, countryID, 208 AS indicatorID, deviceID, 
+		$stmnt = "SELECT scenarioID, countryID, 208 AS indicatorID, deviceID, batTypeID, pwrTypeID,
 			Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
 			FROM Consulting.DC_demand
 			WHERE scenarioID IN (".$scenarioID.", 10001) 				

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1000" height="100%"
+		 xmlns:utils="utils.*"
+		 creationComplete="startApp(event)" 
+		 xmlns:depot1="services.depot1.*" 
+		 xmlns:depot21="services.depot21.*" xmlns:depot3="services.depot3.*">
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import controls.*;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import services.depot1.Depot1;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import utils.helper;
+			
+			public var dataService:Depot1;		
+			private var hlp:helper;
+			[bindable] private var selectedIndi:int = 0;
+			[bindable] private var indiHasSplit:Boolean = false;
+			[bindable] private var currentData:ArrayCollection;
+			[bindable] private var workingScenarioID:int;
+			[bindable] private var flagText:String = "";
+			
+			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
+			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"		
+			
+			public function set flagTextA(s:String):void {
+				this.flags.text = s;
+			}
+				
+			public function setWorkingScenario(nv:int):void {
+				this.workingScenarioID = nv;
+				this.testGrid.setWorkingScenario(this.workingScenarioID);
+				this.testGrid2.setWorkingScenario(this.workingScenarioID);
+				this.testGrid3.setWorkingScenario(this.workingScenarioID);
+			}
+				
+			protected function startApp(event:FlexEvent):void {
+				trace("start panelTab");
+				getIndicatorNamesResult.token = depot1.getIndicatorNames();
+				hlp = new helper();
+			}
+
+			protected function testBtn_clickHandler(event:MouseEvent):void {
+				this.countryListNames.token = this.dataService.getCountryList();
+			}			
+			
+			protected function button2_clickHandler(event:MouseEvent):void {
+				var selCntries:Object = this.countryListGrid.dataList;
+				this.dispatchEvent(new Event(tab_initial.CNTRYCHANGED, true));				
+			}
+
+			// ----- COMMUNICATION PART ---------------/////			
+			public function getDataList():ArrayCollection {				
+				return this.countryListGrid.dataList;			
+			}
+			
+			public function setDataList(data:ArrayCollection):void {
+				this.countryListGrid.dataList = data;
+			}
+			
+			protected function countryListNames_resultHandler(event:ResultEvent):void {
+				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
+			}
+
+			protected function getIndicatorNamesResult_resultHandler(event:ResultEvent):void {
+				this.indiListDrop.dataProvider = this.getIndicatorNamesResult.lastResult;
+			}
+			
+			protected function indiListDrop_changeHandler(event:IndexChangeEvent):void {
+				this.selectedIndi = this.indiListDrop.selectedItem.id;
+				this.indiHasSplit = this.indiListDrop.selectedItem.hasSplitByTypes;
+			}
+
+			protected function testChartBtn_clickHandler(event:MouseEvent):void {
+				//send query to DB mit countryIDs and IndiID
+				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+				
+				getMacroDataResult.token = depot21.getMacroData(tmp, selectedIndi, workingScenarioID, indiHasSplit);
+			}
+	
+			protected function getMacroDataResult_resultHandler(event:ResultEvent):void {
+				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
+				this.testChart.setData(currentData); // transformation is performed inside chart component
+			}
+
+			protected function getMacroDataResult_faultHandler(event:FaultEvent):void {
+				var z:Object = event.message;
+				Alert.show("error in query");				
+			}
+
+			protected function testGridBtn_clickHandler(event:MouseEvent):void {
+				this.testGrid.setData(this.currentData);
+			}
+
+			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
+			protected function testNewData_clickHandler(event:MouseEvent):void
+			{
+				alteredData = this.testGrid.getData();
+				this.testGrid2.setData(alteredData);
+			}
+
+
+			protected function sendToPHP_clickHandler(event:MouseEvent):void
+			{	
+				var temp:Object = new Object();
+				temp = ({'id':1, data:this.alteredData});
+				
+				updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
+			}
+			
+			protected function updateSplitIndisResult_resultHandler(event:ResultEvent):void
+			{
+				var rez:Object = this.updateSplitIndisResult.lastResult;
+			}
+
+			protected function testDataBackBtn_clickHandler(event:MouseEvent):void
+			{
+				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+				
+				getMacroDataResult2.token = depot21.getMacroData(tmp, selectedIndi, workingScenarioID, indiHasSplit);
+			}
+
+			protected function getMacroDataResult2_resultHandler(event:ResultEvent):void
+			{
+				var tmp:ArrayCollection = this.getMacroDataResult2.lastResult as ArrayCollection;
+				this.testGrid3.setData(tmp);
+			}
+
+			
+			protected function button_clickHandler(event:MouseEvent):void
+			{
+				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+				
+				getDemandDataResult.token = depot21.getDemandData(tmp, this.workingScenarioID);
+			}
+			
+
+			protected function getDemandDataResult_resultHandler(event:ResultEvent):void
+			{
+				//currentData = this.getMacroDataResult.lastResult as ArrayCollection;
+				var tmp:ArrayCollection = this.getDemandDataResult.lastResult as ArrayCollection;
+				this.testChartDemand.setData(tmp);
+			}
+
+			
+			protected function testuojam_clickHandler(event:MouseEvent):void
+			{
+				var temp:Object = new Object();
+				temp = ({'id':1, data:this.alteredData});
+				
+				updateMacroIndisResult.token = depot3.updateData(temp, indiHasSplit);
+			}		
+
+			protected function updateMacroIndisResult_resultHandler(event:ResultEvent):void
+			{
+				this.white.text = "data received";
+			}
+
+
+			protected function updateMacroIndisResult_faultHandler(event:FaultEvent):void
+			{
+				this.white.text = "somefockin error";
+			}
+
+			
+			
+		]]>
+	</fx:Script>	
+	
+	
+	<fx:Declarations>
+		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		
+		<s:CallResponder id="countryListNames" result="countryListNames_resultHandler(event)"/>		
+		<s:CallResponder id="getIndicatorNamesResult" result="getIndicatorNamesResult_resultHandler(event)"/>
+		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
+
+		<s:CallResponder id="updateSplitIndisResult" result="updateSplitIndisResult_resultHandler(event)"/>		
+		<s:CallResponder id="getMacroDataResult2" result="getMacroDataResult2_resultHandler(event)"/>
+		<s:CallResponder id="getDemandDataResult" result="getDemandDataResult_resultHandler(event)"/>
+		<s:CallResponder id="updateMacroIndisResult" result="updateMacroIndisResult_resultHandler(event)"
+						  fault="updateMacroIndisResult_faultHandler(event)"/>
+		
+	
+	</fx:Declarations>
+	
+	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" left="6" top="33">
+		<utils:layout>
+			<s:BasicLayout/>
+		</utils:layout>
+	</utils:CCheckBoxGrid>
+	
+	<s:BorderContainer width="295" height="25" top="0" x="0">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Label text="Tab - A" width="30%" height="75%" x="15" y="10"/>
+		<s:Button label="notify A"  click="button2_clickHandler(event)" width="30%" height="75%" x="63" y="10"/>
+		<s:Button label="getSomeData" id="testBtn" width="30%" height="75%"
+				  click="testBtn_clickHandler(event)" x="251" y="17"/>
+	</s:BorderContainer>
+	
+	<utils:CTwoAxisChart x="304" y="102" id="testChart" height="205">
+	</utils:CTwoAxisChart>
+	
+	<s:DropDownList x="303" y="33" width="412" height="24" id="indiListDrop"
+				     labelField="namen" change="indiListDrop_changeHandler(event)">
+	</s:DropDownList>
+	<s:Button x="303" y="65" label="refreshChart1" width="168" id="testChartBtn"
+			  click="testChartBtn_clickHandler(event)"/>
+	<utils:CInteractiveGrid id="testGrid" x="303" y="315" height="123">
+	</utils:CInteractiveGrid>
+	<s:Button x="507" y="65" label="refresh Grid" width="192" id="testGridBtn"
+			  click="testGridBtn_clickHandler(event)"/>
+	<s:Button x="304" y="446" label="getNewData" width="110" id="testData" 
+			  click="testNewData_clickHandler(event)"/>
+	<utils:CInteractiveGrid x="303" y="473" height="136" id="testGrid2">
+	</utils:CInteractiveGrid>
+	<s:Label x="823" y="14" width="168" height="25" fontSize="14" 
+			 verticalAlign="middle" textAlign="center" id="flags" text="label"/>
+	<s:Button x="422" y="446" label="sendToPHP" width="87" id="sendToPHP" 
+			  click="sendToPHP_clickHandler(event)"/>
+	<utils:CInteractiveGrid x="710" y="474" height="136" id="testGrid3">
+	</utils:CInteractiveGrid>
+	<s:Button x="712" y="451" label="getChangedData" width="192" id="testDataBackBtn" 
+			  click="testDataBackBtn_clickHandler(event)"/>
+	<utils:CTwoAxisChart x="711" y="102" height="206" id="testChartDemand">
+	</utils:CTwoAxisChart>
+	<s:Button x="712" y="65" label="refreshDemand" width="200" id="button" 
+			  click="button_clickHandler(event)"/>
+	<s:Label x="712" y="340" text="Label" width="278" height="41" id="white"/>
+	<s:Button x="711" y="316" label="testIfCalculationsOK" width="193" id="testuojam" 
+			  click="testuojam_clickHandler(event)"/>
+
+</s:Group>

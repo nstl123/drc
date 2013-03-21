@@ -14,6 +14,7 @@ import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
 import valueObjects.CustomDatatype2;
 import valueObjects.CustomDatatype3;
+import valueObjects.CustomDatatype4;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -31,6 +32,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         // initialize RemoteClass alias for all entities returned by functions of this service
         valueObjects.CustomDatatype2._initRemoteClassAlias();
         valueObjects.CountryName._initRemoteClassAlias();
+        valueObjects.CustomDatatype4._initRemoteClassAlias();
         valueObjects.CustomDatatype3._initRemoteClassAlias();
 
         var operations:Object = new Object();
@@ -43,8 +45,11 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CountryName;
         operations["getMacroDataFormat"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandData");
-         operation.resultElementType = valueObjects.CustomDatatype3;
+         operation.resultElementType = valueObjects.CustomDatatype4;
         operations["getDemandData"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "getDeviceBase");
+         operation.resultElementType = valueObjects.CustomDatatype3;
+        operations["getDeviceBase"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -106,9 +111,28 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getDemandData(countryIDs:Object, scenarioID:Object) : mx.rpc.AsyncToken
+    public function getDemandData(countryIDs:Object, scenarioID:Object, aggType:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDemandData");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,aggType) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'getDeviceBase' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function getDeviceBase(countryIDs:Object, scenarioID:Object) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDeviceBase");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID) ;
 
         return _internal_token;

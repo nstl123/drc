@@ -35,14 +35,23 @@ package controls
 		private var tmp:ArrayCollection;
 		public function manageUpdate(className:String):void {
 			
-			if (className == "tabA1") {				
-				tmp = this.tabList[0].getDataList();
-			} else 
-			if (className == "tabB1") {				
-				tmp = this.tabList[1].getDataList();
-			} else 
-			if (className == "tabC1")	
-				tmp = this.tabList[2].getDataList();
+			switch(className) {
+				case "tabA2":
+					tmp = this.tabList[0].getDataList();
+					break;
+				case "tabB3":
+					tmp = this.tabList[1].getDataList();
+					break;
+				case "tabC4":
+					tmp = this.tabList[2].getDataList();
+					break;
+				case "tabD5":
+					tmp = this.tabList[2].getDataList();
+					break;
+				case "tabE6":
+					tmp = this.tabList[4].getDataList();
+					break;				
+			};			
 			
 			this.setDataList(tmp);			
 			this.notifyAll();
@@ -50,9 +59,9 @@ package controls
 		
 		public function notifyAll():void {
 			for (var i:int; i < tabList.length; i++) {
-				tabList[i].setDataList(dataList);
+				//tabList[i].setDataList(dataList);
+				tabList[i].setDataListActive(dataList);
 			};		
-		}
-		
+		}		
 	}
 }

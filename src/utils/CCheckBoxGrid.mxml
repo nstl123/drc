@@ -38,11 +38,34 @@
 				
 				var i:uint;				
 				for (i = 0; i < selectionList.length; i++) {					
-					if (selectionList[i].active) res.addItem({
-						"namen":selectionList[i].namen, "id":selectionList[i].id, 
-						"isRegion":selectionList[i].isRegion });
+					//if (selectionList[i].active) 
+					res.addItem({
+						"namen":selectionList[i].namen, 
+						"id":selectionList[i].id, 
+						"isRegion":selectionList[i].isRegion,
+						"active":selectionList[i].active
+					});
 				};
 					
+				return res;
+			}
+			
+			public function getActiveDataList():ArrayCollection
+			{
+				var res:ArrayCollection = new ArrayCollection();
+				
+				var i:uint;				
+				for (i = 0; i < selectionList.length; i++) {					
+					if (selectionList[i].active) { 
+						res.addItem({
+							"namen":selectionList[i].namen, 
+							"id":selectionList[i].id, 
+							"isRegion":selectionList[i].isRegion,
+							"active":selectionList[i].active
+						});
+					};
+				};
+				
 				return res;
 			}
 			
@@ -129,6 +152,19 @@
 					
 					dgrData.dataProvider = selectionList;				
 					dispatchEvent(new Event(CCheckBoxGrid.UNCHECKED, true));
+				};
+			}		
+			
+			//used to override active selections
+			public function activateSelections(data:ArrayCollection):void
+			{
+				var i:uint;
+				if (this.selectionList != null) {
+					for (i = 0; i < selectionList.length; i++)
+						selectionList[i].active = data.getItemAt(i).active;		
+					
+					dgrData.dataProvider = selectionList;				
+					dispatchEvent(new Event(CCheckBoxGrid.CHECKED, true));
 				};
 			}			
 			

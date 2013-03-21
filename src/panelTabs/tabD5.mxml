@@ -70,7 +70,7 @@
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabB1.CNTRYCHANGED, true));
+				this.dispatchEvent(new Event(tabD5.CNTRYCHANGED, true));
 			}
 			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():ArrayCollection {
@@ -81,18 +81,24 @@
 				this.countryListGrid.dataList = data;
 			}		
 			
+			public function setDataListActive(data:ArrayCollection):void {				
+				this.countryListGrid.activateSelections(data);
+			}
+			
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
 				this.indicatorsList.filterFunction = filterB;
+				this.indicatorsList.refresh();
 				this.indicatorsBox.dataProvider = this.indicatorsList;			
 			}
 			
 			private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
 				var fl:Boolean = true;				
-				/*if (item.scenarioID == this.workingScenarioID) {					
-				fl = true
-				}  else fl = false;*/				
+				if ((item.hasSplitByDevices == 1)&&(item.hasSplitByTypes == 0)&&
+					(item.isOutputIndicator == 0)&&(item.id >= 210)) {					
+					fl = true
+				}  else fl = false;				
 				return fl;
 			}					
 			
@@ -136,20 +142,21 @@
 		
 		
 	</fx:Declarations>
+	
 	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
 	</utils:CCheckBoxGrid>
-	<s:BorderContainer width="416" height="25" top="0" left="0">
+	
+	<s:BorderContainer width="300" height="25" top="0" x="0">
 		<s:layout>
 			<s:HorizontalLayout/>
-		</s:layout>
-		<s:Label text="Tab E. Demand" width="33%" height="100%" x="36" y="30"/>
-		<s:Button label="notify E" click="button2_clickHandler(event)" width="33%" height="100%" x="51" y="70"/>
-		<s:Button label="getMoreData" width="33%" height="100%"
-				   click="button1_clickHandler(event)" x="55" y="136"/>
+		</s:layout>		
+		<s:Label text="Tab D. Market Size" height="100%" width="50%" x="61" y="38"/>		
+		<s:Button label="notify D" click="button2_clickHandler(event)" width="50%" height="100%"/>			
 	</s:BorderContainer>
+	
 	<utils:CTwoAxisChart x="298" y="87" width="556" height="260" id="testChart">
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid x="297" y="355" width="557" height="250" id="testGrid">
 	</utils:CInteractiveGrid>
-	<s:DropDownList x="304" y="50" width="300" id="indicatorsBox"></s:DropDownList>
+	<s:DropDownList x="304" y="50" width="300" id="indicatorsBox"  labelField="namen"></s:DropDownList>
 </s:Group>

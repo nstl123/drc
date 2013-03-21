@@ -71,7 +71,42 @@ class Depot21 {
 		//return $stmnt;
 	}
 	
-	public function getDemandData($countryIDs, $scenarioID) {
+	public function getDemandData($countryIDs, $scenarioID, $aggType) { // aggType = 0 for device level, 1 - for country level
+		$a = array('a'=>"");		
+		$countryArray = (array)($countryIDs);		
+		$countryList = " (";
+		
+		for ($i = 0; $i < count($countryArray); $i++) {
+			if ($i > 0) { $countryList = $countryList.", ".$countryArray[$i]; }			
+			else $countryList = $countryList.$countryArray[$i];
+		}
+		$countryList = $countryList." )";
+		
+		if ($aggType == 0) {
+			$stmnt = "SELECT scenarioID, countryID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID,
+				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
+				FROM Consulting.DC_demand
+				WHERE scenarioID IN (".$scenarioID.", 10001) 				
+					AND countryID IN ".$countryList."				
+					AND deviceID = 1 AND batTypeID = 1 AND pwrTypeID = 1;";
+		} else if ($aggType == 1) {
+			$stmnt = "SELECT scenarioID, countryID, 302 AS indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
+				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
+				FROM Consulting.DC_demandAggregated
+				WHERE scenarioID IN (".$scenarioID.", 10001) 				
+					AND countryID IN ".$countryList.";";
+		} else {
+			return "error in  aggType parameters";
+			exit;
+		}
+		
+		$result = $this->connection->fetchAll($stmnt); 
+		array_push($a, $result);		
+		return $result;
+		//return $countryList;
+	}
+	
+	public function getDeviceBase($countryIDs, $scenarioID) {
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
 		$countryList = " (";
@@ -81,12 +116,12 @@ class Depot21 {
 		}
 		$countryList = $countryList." )";
 		
-		$stmnt = "SELECT scenarioID, countryID, 208 AS indicatorID, deviceID, batTypeID, pwrTypeID,
+		$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, 
 			Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
-			FROM Consulting.DC_demand
+			FROM Consulting.DC_deviceBase
 			WHERE scenarioID IN (".$scenarioID.", 10001) 				
 				AND countryID IN ".$countryList."				
-				AND deviceID = 1 AND batTypeID = 1 AND pwrTypeID = 1;";
+				AND deviceID = 1;";
 		
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		

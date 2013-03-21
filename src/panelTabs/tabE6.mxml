@@ -11,6 +11,12 @@
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
+
+	<fx:Script>
+		<![CDATA[
+		]]>
+	</fx:Script>
+
 	
 	<fx:Script>
 		<![CDATA[
@@ -70,7 +76,7 @@
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabB1.CNTRYCHANGED, true));
+				this.dispatchEvent(new Event(tabE6.CNTRYCHANGED, true));
 			}
 			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():ArrayCollection {
@@ -81,45 +87,57 @@
 				this.countryListGrid.dataList = data;
 			}		
 			
+			public function setDataListActive(data:ArrayCollection):void {				
+				this.countryListGrid.activateSelections(data);
+			}
+			
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
 				this.indicatorsList.filterFunction = filterB;
+				this.indicatorsList.refresh();
 				this.indicatorsBox.dataProvider = this.indicatorsList;			
 			}
 			
 			private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
 				var fl:Boolean = true;				
-				/*if (item.scenarioID == this.workingScenarioID) {					
-				fl = true
-				}  else fl = false;*/				
+				if ((item.id == 301) || (item.id == 302)) {					
+					fl = true
+				}  else fl = false;				
 				return fl;
 			}					
 			
-			protected function button3_clickHandler(event:MouseEvent):void
+			protected function getSomeData_clickHandler(event:MouseEvent):void
 			{
 				//send query to DB mit countryIDs and IndiID
-				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
-				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, true);
+				trace("calling demand token");
+				this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, aggType);
+				this.cursorManager.setBusyCursor();
 			}
 			
 			[bindable] private var selectedIndi:int;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
+			[bindable] private var aggType:int = 0;
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
+				if (this.indicatorsBox.selectedItem.hasSplitByDevices == 1) {
+					aggType = 0;
+				} else {
+					aggType = 1;
+				};				
 			}			
 			
-			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
+			protected function getDemandData_resultHandler(event:ResultEvent):void
 			{
-				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
+				currentData = this.getDemandData.lastResult as ArrayCollection;				
 				this.testChart.setData(currentData); // transformation is performed inside chart component
 				this.testGrid.setData(currentData);
+				this.cursorManager.removeBusyCursor();
 			}
+
 			
 		]]>
 	</fx:Script>
@@ -132,25 +150,25 @@
 		
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
-		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
-		
+		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" />
 		
 	</fx:Declarations>
-	
 	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
 	</utils:CCheckBoxGrid>
-	<s:BorderContainer width="465" height="25" top="0" left="0">
+	
+	<s:BorderContainer width="300" height="25" top="0" x="0">
 		<s:layout>
 			<s:HorizontalLayout/>
-		</s:layout>
-		<s:Label text="Tab D. Market Size" width="33%" height="100%" x="36" y="30"/>
-		<s:Button label="notify D" click="button2_clickHandler(event)" width="33%" height="100%" x="51" y="70"/>
-		<s:Button label="getMoreData" width="33%" height="100%"
-				   click="button1_clickHandler(event)" x="55" y="136"/>
-	</s:BorderContainer>
+		</s:layout>		
+		<s:Label text="Tab E. Demand" height="100%" width="50%" x="61" y="38"/>		
+		<s:Button label="notify E" click="button2_clickHandler(event)" width="50%" height="100%"/>			
+	</s:BorderContainer>	
+	
 	<utils:CTwoAxisChart x="298" y="87" width="556" height="260" id="testChart">
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid x="297" y="355" width="557" height="250" id="testGrid">
 	</utils:CInteractiveGrid>
-	<s:DropDownList x="304" y="50" width="300" id="indicatorsBox"></s:DropDownList>
+	<s:DropDownList x="304" y="50" width="300" id="indicatorsBox"
+					labelField="namen" change="indicatorsBox_changeHandler(event)"></s:DropDownList>
+	<s:Button x="660" y="36" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)"/>
 </s:Group>

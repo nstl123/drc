@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 width="100%" height="100%" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
-		 xmlns:depot21="services.depot21.*" 
-		 >
+		 xmlns:depot21="services.depot21.*">
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
 	
 	<fx:Script>
 		<![CDATA[
@@ -36,15 +38,15 @@
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
-			
-			
+				
+				
 			protected function startApp(event:FlexEvent):void {
-				trace("app start panelTab A1");			
+				trace("app start panelTab B");			
 				hlp = new helper();				
 			}
 			
 			public function initNames():void {
-				trace("init names inside panel A1");				
+				trace("init names inside panel B");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				countryListNames.token = this.dataServiceNames.getCountryList();
 			}
@@ -58,37 +60,42 @@
 			{
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
 			}
-			
+
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
 				//this.countryListNames.token = this.dataService.getCountryList();
 			}
-			
+
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabB1.CNTRYCHANGED, true));
+				this.dispatchEvent(new Event(tabB3.CNTRYCHANGED, true));
 			}
-			// ----- COMMUNICATION PART ---------------/////			
+ // ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():ArrayCollection {
 				return this.countryListGrid.dataList;			
 			}
-			
+
 			public function setDataList(data:ArrayCollection):void {
 				this.countryListGrid.dataList = data;
 			}		
+			
+			public function setDataListActive(data:ArrayCollection):void {				
+				this.countryListGrid.activateSelections(data);
+			}			
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
-				this.indicatorsBox.dataProvider = this.indicatorsList;				
+				this.indicatorsBox.dataProvider = this.indicatorsList;			
 			}
 			
 			private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
 				var fl:Boolean = true;				
-				if (item.hasSplitByDevices == 0) {					
+				if ((item.hasSplitByDevices == 1)&&(item.hasSplitByTypes == 0)&&
+					(item.isOutputIndicator == 0)&&(item.id < 210)) {					
 					fl = true
 				}  else fl = false;				
 				return fl;
@@ -97,19 +104,19 @@
 			protected function button3_clickHandler(event:MouseEvent):void
 			{
 				//send query to DB mit countryIDs and IndiID
-				var countryIDs:Array = this.countryListGrid.dataList.source;				
+				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected);
 			}
-			
+
 			[bindable] private var selectedIndi:int;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
 				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
+				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
@@ -118,7 +125,7 @@
 				this.testChart.setData(currentData); // transformation is performed inside chart component
 				this.testGrid.setData(currentData);
 			}
-			
+
 		]]>
 	</fx:Script>
 	
@@ -135,19 +142,27 @@
 		
 	</fx:Declarations>
 	
-	<utils:CInteractiveGrid x="242" y="396" width="436" height="232" id="testGrid">
-	</utils:CInteractiveGrid>
-	<utils:CTwoAxisChart x="241" y="97" width="437" height="262" id="testChart">
-	</utils:CTwoAxisChart>
-	<utils:CCheckBoxGrid x="10" y="39" width="220" height="586" id="countryListGrid">
+	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
 	</utils:CCheckBoxGrid>
-	<s:Button x="8" y="10" label="getSOmeCountries" width="202"/>
-	<s:Button x="378" y="10" label="getSomeData" width="300" click="button3_clickHandler(event)"/>
-	<s:DropDownList x="238" y="39" width="440" id="indicatorsBox" labelField="namen"
-					 change="indicatorsBox_changeHandler(event)"></s:DropDownList>
-	<s:Button x="238" y="367" label="sentToPhp" width="188"/>
-	<s:Label x="218" y="10" text="Macro Indis" width="152" height="21"/>
 	
-
+	<s:BorderContainer width="300" height="25" top="0" left="0">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>		
+		<s:Label text="Tab - B. HH related factors" height="100%" width="50%" x="61" y="38"/>		
+		<s:Button label="notify B" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
+	</s:BorderContainer>
+	
+	<utils:CTwoAxisChart x="298" y="76" width="561" height="258" id="testChart">
+	</utils:CTwoAxisChart>
+	
+	<utils:CInteractiveGrid x="297" y="338" width="557" height="267" id="testGrid">
+	</utils:CInteractiveGrid>
+	
+	<s:DropDownList x="305" y="49" width="300" height="18" id="indicatorsBox" 
+					change="indicatorsBox_changeHandler(event)" labelField="namen"/>
+	
+	<s:Button x="499" y="10" label="getSomeData" click="button3_clickHandler(event)" id="button"/>
+	
+	<s:CheckBox x="621" y="50" label="hasSplit" enabled="false" id="hasSplitFlag"/>
 </s:Group>
-

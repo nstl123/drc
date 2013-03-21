@@ -33,15 +33,18 @@ class Depot3 {
 			}			
 		} else {		
 			for ($j = 0; $j < count($arr); $j++) {		
-			$b =(array) $arr0['data'][$j];
-			$stmnt = "
-				UPDATE Consulting.DC_scenarioData SET						
-					Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
-				WHERE scenarioID = ".$b['scenarioID']."			
-					AND countryID = ".$b['countryID']."
-					AND indicatorID = ".$b['indicatorID']."
-					AND deviceID = 1 
-					AND typeID in (0, 1);";
+				$b =(array) $arr0['data'][$j];
+				$stmnt = "
+					UPDATE Consulting.DC_scenarioData SET						
+						Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
+					WHERE scenarioID = ".$b['scenarioID']."			
+						AND countryID = ".$b['countryID']."
+						AND indicatorID = ".$b['indicatorID'];
+				if ($b['indicatorID'] > 200) { // means not macro
+						$stmnt = $stmnt."
+							AND deviceID = 1 
+						    AND typeID = 1;";
+				};
 			
 				$result = $this->connection->prepare($stmnt);
 				$result->execute();	

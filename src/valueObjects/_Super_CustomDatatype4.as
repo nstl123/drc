@@ -1,6 +1,6 @@
 /**
  * This is a generated class and is not intended for modification.  To customize behavior
- * of this value object you may modify the generated sub-class of this class - CustomDatatype3.as.
+ * of this value object you may modify the generated sub-class of this class - CustomDatatype4.as.
  */
 
 package valueObjects
@@ -19,7 +19,7 @@ import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
 use namespace model_internal;
 
 [ExcludeClass]
-public class _Super_CustomDatatype3 extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
+public class _Super_CustomDatatype4 extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
 {
     model_internal static function initRemoteClassAliasSingle(cz:Class) : void
     {
@@ -29,15 +29,16 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
     {
     }
 
-    model_internal var _dminternal_model : _CustomDatatype3EntityMetadata;
+    model_internal var _dminternal_model : _CustomDatatype4EntityMetadata;
 
     /**
      * properties
      */
     private var _internal_Y2013 : Number;
     private var _internal_Y2004 : Number;
-    private var _internal_indicatorID : int;
     private var _internal_Y2012 : Number;
+    private var _internal_indicatorID : int;
+    private var _internal_pwrTypeID : int;
     private var _internal_Y2015 : Number;
     private var _internal_Y2014 : Number;
     private var _internal_Y2008 : Number;
@@ -50,6 +51,7 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
     private var _internal_Y2010 : Number;
     private var _internal_scenarioID : int;
     private var _internal_Y2009 : Number;
+    private var _internal_batTypeID : int;
 
     private static var emptyArray:Array = new Array();
 
@@ -63,9 +65,9 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
 
     model_internal var _changeWatcherArray:Array = new Array();
 
-    public function _Super_CustomDatatype3()
+    public function _Super_CustomDatatype4()
     {
-        _model = new _CustomDatatype3EntityMetadata(this);
+        _model = new _CustomDatatype4EntityMetadata(this);
 
         // Bind to own data properties for cache invalidation triggering
 
@@ -88,15 +90,21 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
     }
 
     [Bindable(event="propertyChange")]
+    public function get Y2012() : Number
+    {
+        return _internal_Y2012;
+    }
+
+    [Bindable(event="propertyChange")]
     public function get indicatorID() : int
     {
         return _internal_indicatorID;
     }
 
     [Bindable(event="propertyChange")]
-    public function get Y2012() : Number
+    public function get pwrTypeID() : int
     {
-        return _internal_Y2012;
+        return _internal_pwrTypeID;
     }
 
     [Bindable(event="propertyChange")]
@@ -171,6 +179,12 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
         return _internal_Y2009;
     }
 
+    [Bindable(event="propertyChange")]
+    public function get batTypeID() : int
+    {
+        return _internal_batTypeID;
+    }
+
     /**
      * data property setters
      */
@@ -195,6 +209,16 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
         }
     }
 
+    public function set Y2012(value:Number) : void
+    {
+        var oldValue:Number = _internal_Y2012;
+        if (isNaN(_internal_Y2012) == true || Math.abs(oldValue - value) > epsilon)
+        {
+            _internal_Y2012 = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2012", oldValue, _internal_Y2012));
+        }
+    }
+
     public function set indicatorID(value:int) : void
     {
         var oldValue:int = _internal_indicatorID;
@@ -205,13 +229,13 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
         }
     }
 
-    public function set Y2012(value:Number) : void
+    public function set pwrTypeID(value:int) : void
     {
-        var oldValue:Number = _internal_Y2012;
-        if (isNaN(_internal_Y2012) == true || Math.abs(oldValue - value) > epsilon)
+        var oldValue:int = _internal_pwrTypeID;
+        if (oldValue !== value)
         {
-            _internal_Y2012 = value;
-            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2012", oldValue, _internal_Y2012));
+            _internal_pwrTypeID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "pwrTypeID", oldValue, _internal_pwrTypeID));
         }
     }
 
@@ -335,6 +359,16 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
         }
     }
 
+    public function set batTypeID(value:int) : void
+    {
+        var oldValue:int = _internal_batTypeID;
+        if (oldValue !== value)
+        {
+            _internal_batTypeID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "batTypeID", oldValue, _internal_batTypeID));
+        }
+    }
+
     /**
      * Data property setter listeners
      *
@@ -395,14 +429,14 @@ public class _Super_CustomDatatype3 extends flash.events.EventDispatcher impleme
 
     [Transient]
     [Bindable(event="propertyChange")]
-    public function get _model() : _CustomDatatype3EntityMetadata
+    public function get _model() : _CustomDatatype4EntityMetadata
     {
         return model_internal::_dminternal_model;
     }
 
-    public function set _model(value : _CustomDatatype3EntityMetadata) : void
+    public function set _model(value : _CustomDatatype4EntityMetadata) : void
     {
-        var oldValue : _CustomDatatype3EntityMetadata = model_internal::_dminternal_model;
+        var oldValue : _CustomDatatype4EntityMetadata = model_internal::_dminternal_model;
         if (oldValue !== value)
         {
             model_internal::_dminternal_model = value;

@@ -8,6 +8,9 @@
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*" 
 		 >
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
 	
 	<fx:Script>
 		<![CDATA[
@@ -102,7 +105,7 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 0);
 			}
 			
 			[bindable] private var selectedIndi:int;
@@ -124,11 +127,10 @@
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
 				alteredData = this.testGrid.getData();
-
 				var temp:Object = new Object();
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false);
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, 0, 0);
 				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
 			}
 			
@@ -159,11 +161,11 @@
 		
 	</fx:Declarations>
 	
-	<utils:CInteractiveGrid x="242" y="396" width="436" height="232" id="testGrid">
+	<utils:CInteractiveGrid x="242" width="436" height="232" id="testGrid" top="396">
 	</utils:CInteractiveGrid>
-	<utils:CTwoAxisChart x="241" y="97" width="437" height="262" id="testChart">
+	<utils:CTwoAxisChart x="241" width="437" height="262" id="testChart" top="97">
 	</utils:CTwoAxisChart>
-	<utils:CCheckBoxGrid x="10" y="39" width="220" height="586" id="countryListGrid">
+	<utils:CCheckBoxGrid x="10" width="220" height="586" id="countryListGrid" top="39">
 	</utils:CCheckBoxGrid>
 	
 	<s:BorderContainer width="300" height="25" top="0" x="0">
@@ -174,10 +176,10 @@
 		<s:Button label="notify A" click="button2_clickHandler(event)" width="50%" height="100%"/>			
 	</s:BorderContainer>
 	
-	<s:DropDownList x="238" y="39" width="440" id="indicatorsBox" labelField="namen"
-					 change="indicatorsBox_changeHandler(event)"></s:DropDownList>
-	<s:Button x="238" y="367" label="sentToPhp" width="188" click="digestChanges(event)"/>
-	<s:Button x="461" y="9" label=" gimme some data" click="button3_clickHandler(event)"/>
+	<s:DropDownList x="238" width="440" id="indicatorsBox" labelField="namen"
+					 change="indicatorsBox_changeHandler(event)" top="39"></s:DropDownList>
+	<s:Button x="238" label="sendToPhp" width="188" click="digestChanges(event)" top="367"/>
+	<s:Button x="461" label=" gimme some data" click="button3_clickHandler(event)" top="9"/>
 	
 
 </s:Group>

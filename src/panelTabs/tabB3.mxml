@@ -10,6 +10,16 @@
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
+
+	<fx:Script>
+		<![CDATA[
+			protected function updateData_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+		]]>
+	</fx:Script>
+
 	
 	<fx:Script>
 		<![CDATA[
@@ -24,6 +34,7 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import services.depot1.Depot1;
+			import services.depot3.Depot3;
 			
 			import spark.events.IndexChangeEvent;
 			
@@ -31,6 +42,7 @@
 			
 			public var dataServiceNames:Depot1;
 			public var dataServiceData:Depot21;
+			public var dataServiceUpdate:Depot3;
 			
 			[bindable] private var workingScenarioID:int;
 			private var hlp:helper;
@@ -107,7 +119,7 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected, 1, 0);
 			}
 
 			[bindable] private var selectedIndi:int;
@@ -126,6 +138,19 @@
 				this.testGrid.setData(currentData);
 			}
 
+
+			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
+			public function digestChanges(evt:Event):void {
+				alteredData = this.testGrid.getData();
+				var temp:Object = new Object();
+				temp = ({'id':1, data:this.alteredData});
+				//hasSplit by batteryTypes = false
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, 1, 0);
+				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
+			}
+			
+
+
 		]]>
 	</fx:Script>
 	
@@ -138,11 +163,11 @@
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
-		
+		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
 		
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
+	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" x="0">
 	</utils:CCheckBoxGrid>
 	
 	<s:BorderContainer width="300" height="25" top="0" left="0">
@@ -153,16 +178,17 @@
 		<s:Button label="notify B" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="298" y="76" width="561" height="258" id="testChart">
+	<utils:CTwoAxisChart x="298" width="561" height="258" id="testChart" top="76">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid x="297" y="338" width="557" height="267" id="testGrid">
+	<utils:CInteractiveGrid x="297" width="557" height="215" id="testGrid" top="390">
 	</utils:CInteractiveGrid>
 	
-	<s:DropDownList x="305" y="49" width="300" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen"/>
+	<s:DropDownList x="305" width="300" height="18" id="indicatorsBox" 
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="49"/>
 	
-	<s:Button x="499" y="10" label="getSomeData" click="button3_clickHandler(event)" id="button"/>
+	<s:Button x="499" label="getSomeData" click="button3_clickHandler(event)" id="button" top="10"/>
 	
 	<s:CheckBox x="621" y="50" label="hasSplit" enabled="false" id="hasSplitFlag"/>
+	<s:Button x="298" y="342" label="updateDB" width="143" click="digestChanges(event)"/>
 </s:Group>

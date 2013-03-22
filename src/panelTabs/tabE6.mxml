@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1000" height="800" 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
@@ -14,6 +14,92 @@
 
 	<fx:Script>
 		<![CDATA[
+
+			protected function radiobutton1_clickHandler(event:MouseEvent):void
+			{							
+				this.selectedIndi = int(this.demandTypes.selectedValue);
+				if (this.selectedIndi== 301) { // has split
+					aggType = 0;					
+				} else { // has not, is aggregated
+					aggType = 1;
+				};			
+				activateSplits(aggType == 0);
+			}
+
+			private function activateSplits(on:Boolean):void {
+				this.batTypes.enabled = on;
+				this.pwrTypes.enabled = on;
+				deviceListDrop.enabled = on;				
+			}
+			
+			protected function dropdownlist1_changeHandler(event:IndexChangeEvent):void
+			{
+				this.selDevice = this.deviceListDrop.selectedItem.id;
+				this.selDeviceLabel.text = this.deviceListDrop.selectedItem.namen;
+			}
+
+			protected function deviceNamesList_resultHandler(event:ResultEvent):void
+			{
+				this.deviceListDrop.dataProvider = this.deviceNamesList.lastResult as ArrayCollection;
+			}
+
+			[bindable] private var selBatType:int = 1;
+			[bindable] private var selPwrType:int = 1;
+			protected function batTypes_clickHandler(event:MouseEvent):void
+			{
+				this.selBatType = int(this.batTypes.selectedValue);
+			}
+			
+			protected function pwrTypes_clickHandler(event:MouseEvent):void
+			{
+				this.selPwrType = int(this.pwrTypes.selectedValue);
+			}
+
+			protected function getIndicatorNames_resultHandler(event:ResultEvent):void
+			{
+				this.exoListDrop.dataProvider = this.getIndicatorNames.lastResult as ArrayCollection;
+			}
+
+			[bindable] private var selExoIndi:int = 0;
+			protected function exoListDrop_changeHandler(event:IndexChangeEvent):void
+			{
+				this.selExoIndi = this.exoListDrop.selectedItem.id;
+			}
+
+			protected function button3_clickHandler(event:MouseEvent):void
+			{					
+				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+				var typeID:int = 0;
+				var tmpDev:int = 0;
+				var tmpSplit:int = 0;
+				
+				if ((this.selExoIndi == 204)||(this.selExoIndi == 206)) typeID = this.selBatType;
+				else 
+				if ((this.selExoIndi == 205)||(this.selExoIndi == 207)) typeID = this.selPwrType; 
+				if ( this.selExoIndi == 101 ) tmpDev = 0; else tmpDev = this.selDevice;
+				if ((this.selExoIndi >= 204) && (this.selExoIndi <= 206)) tmpSplit = 1; else tmpSplit = aggType; 
+				
+				
+				getMacroData.token = this.dataServiceData.getMacroData(tmp, this.selExoIndi, this.workingScenarioID, 
+					tmpSplit, tmpDev, typeID); 
+				//getMacroDataResult.token = this.dataServiceData.getMacroData(tmp, indicatorID, scenarioID, hasSplit, deviceID, typeID);
+			}
+
+			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
+			{
+				currentDataExo = this.getMacroData.lastResult as ArrayCollection;				
+				this.testChartExo.setData(currentDataExo); // transformation is performed inside chart component
+				this.testGridExo.setData(this.currentDataExo);
+				this.cursorManager.removeBusyCursor();
+			}
+
+
+			protected function getMacroData_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("some fockin err in SQL query");
+			}
+
 		]]>
 	</fx:Script>
 
@@ -42,6 +128,8 @@
 			[bindable] private var workingScenarioID:int;
 			private var hlp:helper;
 			[bindable] private var indicatorsList:ArrayCollection;
+			[bindable] private var deviceList:ArrayCollection;
+			[bindable] public var selDevice:int; 
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
@@ -54,25 +142,23 @@
 			
 			public function initNames():void {
 				trace("init names inside panel B");				
-				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
+				//indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
+				this.deviceNamesList.token = this.dataServiceNames.getDeviceNames();
 				countryListNames.token = this.dataServiceNames.getCountryList();
+				this.getIndicatorNames.token = this.dataServiceNames.getIndicatorNames();
 			}
 			
 			public function setWorkingScenario(nv:int):void {
 				this.workingScenarioID = nv;
-				this.testGrid.setWorkingScenario(this.workingScenarioID);				
+				this.testGrid.setWorkingScenario(this.workingScenarioID);	
+				this.testGridExo.setWorkingScenario(this.workingScenarioID);
 			}					
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void
 			{
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
 			}
-			
-			protected function button1_clickHandler(event:MouseEvent):void
-			{
-				//this.countryListNames.token = this.dataService.getCountryList();
-			}
-			
+		
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
@@ -91,21 +177,21 @@
 				this.countryListGrid.activateSelections(data);
 			}
 			
-			public function setIndicatorsList(evt:ResultEvent):void {
+			/*public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
-				this.indicatorsBox.dataProvider = this.indicatorsList;			
-			}
+				// this.indicatorsBox.dataProvider = this.indicatorsList;			
+			}*/
 			
-			private function filterB(item:Object):Boolean {			
+			/*private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
 				var fl:Boolean = true;				
 				if ((item.id == 301) || (item.id == 302)) {					
 					fl = true
 				}  else fl = false;				
 				return fl;
-			}					
+			}*/					
 			
 			protected function getSomeData_clickHandler(event:MouseEvent):void
 			{
@@ -113,22 +199,15 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling demand token");
-				this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, aggType);
+				this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
+								aggType, this.selDevice, this.selBatType, this.selPwrType);
 				this.cursorManager.setBusyCursor();
 			}
 			
 			[bindable] private var selectedIndi:int;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
-			[bindable] private var aggType:int = 0;
-			
-			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
-				this.selectedIndi = this.indicatorsBox.selectedItem.id;
-				if (this.indicatorsBox.selectedItem.hasSplitByDevices == 1) {
-					aggType = 0;
-				} else {
-					aggType = 1;
-				};				
-			}			
+			[bindable] private var currentDataExo:ArrayCollection = new ArrayCollection();
+			[bindable] private var aggType:int = 0;				
 			
 			protected function getDemandData_resultHandler(event:ResultEvent):void
 			{
@@ -149,14 +228,21 @@
 						 showBusyCursor="true"/>
 		
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
-		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
+		<s:CallResponder id="deviceNamesList" result="deviceNamesList_resultHandler(event)" />		
 		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" />
+		<s:CallResponder id="getIndicatorNames" result="getIndicatorNames_resultHandler(event)" />		
+		
+		<s:RadioButtonGroup id="demandTypes"/>
+		<s:RadioButtonGroup id="batTypes"/>
+		<s:RadioButtonGroup id="pwrTypes"/>
+		<s:CallResponder id="getMacroData" result="getMacroDataResult_resultHandler(event)" 
+						 fault="getMacroData_faultHandler(event)"/>
 		
 	</fx:Declarations>
-	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
+	<utils:CCheckBoxGrid id="countryListGrid" width="225" height="95%" left="0" y="50">
 	</utils:CCheckBoxGrid>
 	
-	<s:BorderContainer width="300" height="25" top="0" x="0">
+	<s:BorderContainer width="300" height="25" x="0" y="0">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
@@ -164,11 +250,44 @@
 		<s:Button label="notify E" click="button2_clickHandler(event)" width="50%" height="100%"/>			
 	</s:BorderContainer>	
 	
-	<utils:CTwoAxisChart x="298" y="87" width="556" height="260" id="testChart">
+	<utils:CTwoAxisChart x="235" width="373" height="278" id="testChart" y="181">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="297" y="355" width="557" height="250" id="testGrid">
+	<utils:CInteractiveGrid x="240" width="369" height="213" id="testGrid" y="467">
 	</utils:CInteractiveGrid>
-	<s:DropDownList x="304" y="50" width="300" id="indicatorsBox"
-					labelField="namen" change="indicatorsBox_changeHandler(event)"></s:DropDownList>
-	<s:Button x="660" y="36" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)"/>
+	<s:Button x="468" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="9" width="171"/>
+	<s:Label x="262" y="45" text="Selected Device" width="361" id="selDeviceLabel"/>
+	<s:Label x="377" y="94" text="Bat Type" width="112" id="selDeviceLabel0"/>
+	<s:Label x="377" y="132" text="Pwr Type" width="112" id="selDeviceLabel1"/>
+	<s:RadioButton x="244" y="118" label="Demand" groupName="demandTypes"  value="301"
+				   click="radiobutton1_clickHandler(event)" id="dem0" selected="true"/>
+	<s:RadioButton x="244" y="144" label="DemandAggegated" groupName="demandTypes" value="302"
+				   click="radiobutton1_clickHandler(event)" id="dem1"/>
+	<s:DropDownList x="322" y="62" width="353" id="deviceListDrop"
+					change="dropdownlist1_changeHandler(event)" labelField="namen"/>
+	<s:BorderContainer x="391" y="109" width="208" height="21">
+		<s:layout>
+			<s:HorizontalLayout paddingLeft="5"/>
+		</s:layout>
+		<s:RadioButton x="14" y="10" label="1C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="36" label="1D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="62" label="3A"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="88" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="114" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+	</s:BorderContainer>
+	<s:BorderContainer width="116" height="21" x="395" y="145">
+		<s:layout>
+			<s:HorizontalLayout paddingLeft="5"/>
+		</s:layout>
+		<s:RadioButton x="14" y="10" label="DPP" value="1" groupName="pwrTypes" selected="true"
+					    click="pwrTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="36" label="RCR" value="2" groupName="pwrTypes"
+					    click="pwrTypes_clickHandler(event)"/>			
+	</s:BorderContainer>
+	<s:Label x="689" y="45" text="some exogenous var" width="193"/>
+	<s:DropDownList x="759" y="62" width="231" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)"/>
+	<s:Button x="759" y="10" label="getSomeExo" width="207" click="button3_clickHandler(event)" id="button"/>
+	<utils:CTwoAxisChart x="614" y="181" height="278" id="testChartExo">
+	</utils:CTwoAxisChart>
+	<utils:CInteractiveGrid x="617" y="467" height="216" id="testGridExo" width="397">
+	</utils:CInteractiveGrid>
 </s:Group>

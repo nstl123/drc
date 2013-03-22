@@ -6,7 +6,7 @@
 		 creationComplete="startApp(event)"		  
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*"
-		 >
+		  xmlns:depot3="services.depot3.*">
 	
 	<s:layout>
 		<s:BasicLayout/>
@@ -14,7 +14,22 @@
 
 	<fx:Script>
 		<![CDATA[
+			protected function updateData_resultHandler(event:ResultEvent):void
+			{
+				Alert.show("data updated");
+			}	
 			
+			protected function button_clickHandler(event:MouseEvent):void
+			{
+				writeViewToTableResult.token = depot3.writeViewToTable();
+			}			
+
+			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void
+			{
+				if (event.message.body == "ok") this.someLabel.text = "view written successfully";
+				else this.someLabel.text = "view was not written";
+			}
+
 		]]>
 	</fx:Script>
 
@@ -39,6 +54,7 @@
 			
 			public var dataServiceNames:Depot1;
 			public var dataServiceData:Depot21;
+			public var dataServiceUpdate:Depot3;
 			
 			[bindable] private var workingScenarioID:int;
 			private var hlp:helper;
@@ -49,12 +65,12 @@
 			
 			
 			protected function startApp(event:FlexEvent):void {
-				trace("app start panelTab B");			
+				trace("app start panelTab C");			
 				hlp = new helper();				
 			}
 			
 			public function initNames():void {
-				trace("init names inside panel B");				
+				trace("init names inside panel C");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				countryListNames.token = this.dataServiceNames.getCountryList();
 			}
@@ -77,8 +93,21 @@
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabC4.CNTRYCHANGED, true));
+				this.dispatchEvent(new Event(tabC4.CNTRYCHANGED, true));				
 			}
+			
+			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
+			public function digestChanges(evt:Event):void {
+				alteredData = this.testGrid.getData();
+				
+				var temp:Object = new Object();
+				temp = ({'id':1, data:this.alteredData});
+				//hasSplit by batteryTypes = false
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, true, 1, 0);
+				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
+			}
+			
+			
 			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():ArrayCollection {
 				return this.countryListGrid.dataList;			
@@ -147,6 +176,11 @@
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>		
 		<s:CallResponder id="getDeviceBase" result="getDeviceBase_resultHandler(event)" />		
+		<s:CallResponder id="writeViewToTableResult" result="writeViewToTableResult_resultHandler(event)"/>
+		
+		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
+		
 		
 	</fx:Declarations>
 	
@@ -161,11 +195,16 @@
 		<s:Button label="notify C" click="button2_clickHandler(event)" width="50%" height="100%"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="298" y="87" width="556" height="260" id="testChart">
+	<utils:CTwoAxisChart x="298" width="556" height="260" id="testChart" top="87">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="297" y="355" width="557" height="250" id="testGrid">
+	<utils:CInteractiveGrid x="297" width="557" height="221" id="testGrid" top="384">
 	</utils:CInteractiveGrid>
-	<s:DropDownList x="304" y="50" width="300" id="indicatorsBox"
-					labelField="namen"	></s:DropDownList>
-	<s:Button x="600" y="10" label="getSomeData" id="getSomeData" click="button3_clickHandler(event)"/>
+	<s:DropDownList x="304" width="300" id="indicatorsBox"
+					labelField="namen"	 top="50"></s:DropDownList>
+	<s:Button x="353" label="getSomeData" id="getSomeData" click="button3_clickHandler(event)" top="11"/>
+	<s:Button x="294" y="355" label="writeViewToDB" width="148" id="button"
+			  click="button_clickHandler(event)"/>
+	<s:Button x="477" y="355" label="updateDB" width="136" id="button2"
+			  click="digestChanges(event)"/>
+	<s:Label x="601" y="10" text="Label" width="153" id="someLabel" textAlign="right"/>
 </s:Group> 

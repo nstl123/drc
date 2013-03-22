@@ -108,7 +108,7 @@
 				var countryIDs:Array = this.countryListGrid.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, true);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, true, 1, 0);
 			}
 			
 			[bindable] private var selectedIndi:int;
@@ -154,9 +154,9 @@
 		<s:Button label="notify D" click="button2_clickHandler(event)" width="50%" height="100%"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="298" y="87" width="556" height="260" id="testChart">
+	<utils:CTwoAxisChart x="298" width="556" height="260" id="testChart" top="87">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="297" y="355" width="557" height="250" id="testGrid">
+	<utils:CInteractiveGrid x="297" width="557" height="250" id="testGrid" top="355">
 	</utils:CInteractiveGrid>
-	<s:DropDownList x="304" y="50" width="300" id="indicatorsBox"  labelField="namen"></s:DropDownList>
+	<s:DropDownList x="304" width="300" id="indicatorsBox"  labelField="namen" top="50"></s:DropDownList>
 </s:Group>

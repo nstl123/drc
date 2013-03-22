@@ -22,7 +22,7 @@ class Depot21 {
 		return $a;
 	}
 	
-	public function getMacroData($countryIDs, $indicatorID, $scenarioID, $hasSplit) {
+	public function getMacroData($countryIDs, $indicatorID, $scenarioID, $hasSplit, $deviceID, $typeID) {
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
 		$countryList = " (";
@@ -32,15 +32,20 @@ class Depot21 {
 		}
 		$countryList = $countryList." )";
 		
-		if (!$hasSplit) { // hasSplitByTypes
+		if ($hasSplit == 0) { // hasSplitByTypes
+		
 			$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, typeID, unitID,
 				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
 				FROM Consulting.DC_scenarioData
 				WHERE scenarioID IN (".$scenarioID.", 10001) 				
 					AND countryID IN ".$countryList."
 					AND indicatorID = ".$indicatorID."
-					AND deviceID in (0, 1);";			
-		} else {					
+					AND deviceID = ".$deviceID; // for macro should be zero				
+			if ($indicatorID == 207) {
+				$stmnt = $stmnt." AND typeID = ".$typeID;
+			};					
+		} else { 
+					
 			$joinOn = "";
 			switch($indicatorID) {
 				case '204': 
@@ -60,18 +65,18 @@ class Depot21 {
 				WHERE 
 					nc.id IN ".$countryList." 
 					AND sdp.indicatorID = ".$indicatorID." 
-					AND deviceID = 1
-					AND typeID = 1
+					AND deviceID = ".$deviceID."
+					AND typeID = ".$typeID."
 					AND scenarioID IN (".$scenarioID.", 10001)";
 		}		
 		
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		
 		return $result;
-		//return $stmnt;
+		//return ($stmnt);
 	}
 	
-	public function getDemandData($countryIDs, $scenarioID, $aggType) { // aggType = 0 for device level, 1 - for country level
+	public function getDemandData($countryIDs, $scenarioID, $aggType, $deviceID, $typeID, $pwrID) { // aggType = 0 for device level, 1 - for country level
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
 		$countryList = " (";
@@ -88,7 +93,9 @@ class Depot21 {
 				FROM Consulting.DC_demand
 				WHERE scenarioID IN (".$scenarioID.", 10001) 				
 					AND countryID IN ".$countryList."				
-					AND deviceID = 1 AND batTypeID = 1 AND pwrTypeID = 1;";
+					AND deviceID = ".$deviceID."
+					AND batTypeID = ".$typeID."
+					AND pwrTypeID = ".$pwrID;
 		} else if ($aggType == 1) {
 			$stmnt = "SELECT scenarioID, countryID, 302 AS indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
 				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
@@ -118,7 +125,7 @@ class Depot21 {
 		
 		$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, 
 			Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
-			FROM Consulting.DC_deviceBase
+			FROM Consulting.DC_deviceBaseTable
 			WHERE scenarioID IN (".$scenarioID.", 10001) 				
 				AND countryID IN ".$countryList."				
 				AND deviceID = 1;";

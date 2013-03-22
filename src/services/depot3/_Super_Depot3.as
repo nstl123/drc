@@ -45,6 +45,9 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
         operation = new mx.rpc.remoting.Operation(null, "deleteAllScenarios");
          operation.resultType = Object;
         operations["deleteAllScenarios"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "writeViewToTable");
+         operation.resultType = Object;
+        operations["writeViewToTable"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -125,10 +128,10 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function updateData(data:Object, hasSplit:Object) : mx.rpc.AsyncToken
+    public function updateData(data:Object, hasSplit:Object, isDeviceBase:Object, deviceID:Object, typeID:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateData");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,hasSplit) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,hasSplit,isDeviceBase,deviceID,typeID) ;
 
         return _internal_token;
     }
@@ -147,6 +150,25 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
     public function deleteAllScenarios() : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("deleteAllScenarios");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'writeViewToTable' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function writeViewToTable() : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("writeViewToTable");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
 
         return _internal_token;

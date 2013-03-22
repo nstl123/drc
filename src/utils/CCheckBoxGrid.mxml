@@ -183,7 +183,7 @@
 	</s:HGroup>
 		
 	<mx:DataGrid bottom="0" left="0" right="0" height="90%" showHeaders="false" id="dgrData"
-				 dataProvider="{selectionList}" textAlign="center">
+				 dataProvider="{selectionList}" textAlign="left">
 		<mx:columns>
 			<mx:DataGridColumn dataField="namen" resizable="false" width="150"/>
 			<mx:DataGridColumn dataField="id" resizable="false" width="50"/>

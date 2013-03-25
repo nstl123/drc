@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"		  
-		  creationComplete="appStart(event)">
+		 creationComplete="appStart(event)">
 	
 	<fx:Declarations>
 		<!-- some dataservice calls here !--> 
@@ -24,10 +24,13 @@
 			[bindable] private var dataSet:ArrayCollection = new ArrayCollection();
 			
 			[bindable] private var workingScenarioID:int;
+			
+			[bindable] public var isEditable:Boolean = false;
 			// data getters			
 			// data setters			
-			public function setWorkingScenario(nv:int):void {
+			public function setWorkingScenario(nv:int, isEditable:Boolean):void {
 				this.workingScenarioID = nv;
+				this.testGrid.editable = isEditable;
 			}
 			
 			public function setData(data:ArrayCollection):void {
@@ -146,7 +149,7 @@
 
 			protected function appStart(event:FlexEvent):void
 			{
-				this.addEventListener("scenarioDataChanged", updateScenarioData);
+				this.addEventListener("scenarioDataChanged", updateScenarioData);				
 			}
 
 			protected function updateScenarioData(evt:Event):void {
@@ -160,7 +163,7 @@
 	
 	<mx:DataGrid id="testGrid" 
 				 horizontalCenter="0" verticalCenter="0" width="100%" height="100%"
-				 editable="true" itemEditBegin="{this.disableEditing(event)}"
+				 editable="false" itemEditBegin="{this.disableEditing(event)}"
 				 itemEditEnd="{this.checkForNewValues(event)}" >
 		<mx:columns>
 			<mx:DataGridColumn headerText="countryID" dataField="countryID"/>

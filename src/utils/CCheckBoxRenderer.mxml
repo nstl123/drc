@@ -21,6 +21,7 @@
 					dispatchEvent(new Event(CCheckBoxRenderer.INCR_COUNT, true));
 				else
 					dispatchEvent(new Event(CCheckBoxRenderer.DECR_COUNT, true));
+				
 			}
 		]]>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" height="100%" 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
@@ -65,7 +65,7 @@
 			
 			public function setWorkingScenario(nv:int):void {
 				this.workingScenarioID = nv;
-				this.testGrid.setWorkingScenario(this.workingScenarioID);				
+				this.testGrid.setWorkingScenario(this.workingScenarioID, true);				
 			}					
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void
@@ -167,10 +167,11 @@
 		
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" x="0">
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="555" top="6" x="10"
+						  >
 	</utils:CCheckBoxGrid>
 	
-	<s:BorderContainer width="300" height="25" top="0" left="0">
+	<s:BorderContainer width="221" height="25" top="570" left="5">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
@@ -178,17 +179,17 @@
 		<s:Button label="notify B" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="298" width="561" height="258" id="testChart" top="76">
+	<utils:CTwoAxisChart x="243" width="540" height="258" id="testChart" top="68">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid x="297" width="557" height="215" id="testGrid" top="390">
+	<utils:CInteractiveGrid x="239" width="544" height="232" id="testGrid" top="362">
 	</utils:CInteractiveGrid>
 	
-	<s:DropDownList x="305" width="300" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="49"/>
+	<s:DropDownList x="483" width="300" height="18" id="indicatorsBox" 
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="10"/>
 	
-	<s:Button x="499" label="getSomeData" click="button3_clickHandler(event)" id="button" top="10"/>
+	<s:Button x="609" label="getSomeData" click="button3_clickHandler(event)" id="button" top="39" width="174"/>
 	
-	<s:CheckBox x="621" y="50" label="hasSplit" enabled="false" id="hasSplitFlag"/>
-	<s:Button x="298" y="342" label="updateDB" width="143" click="digestChanges(event)"/>
+	<s:CheckBox x="393" y="10" label="hasSplit" enabled="false" id="hasSplitFlag"/>
+	<s:Button x="238" y="334" label="updateDB" width="215" click="digestChanges(event)"/>
 </s:Group>

@@ -126,25 +126,24 @@
 	
 	<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0">
 		<s:layout>
-			<s:HorizontalLayout/>
+			<s:VerticalLayout/>
 		</s:layout>
-		
-		<mx:LineChart id="lineChart" width="90%" height="100%" 
+		<mx:LineChart id="lineChart" width="100%" height="90%" 
 					  horizontalCenter="0" verticalCenter="0"
 					  seriesFilters="[]">
 			<!-- <mx:verticalAxisRenderers>
 				<mx:AxisRenderer placement="left" axis="{this.vaxis1}"/>
 				<mx:AxisRenderer placement="right" axis="{this.vaxis2}"/>
 			</mx:verticalAxisRenderers> !-->
-		</mx:LineChart>
+		</mx:LineChart>		
 	
-		<mx:Legend dataProvider="{lineChart}" width="10%" height="100%">
-			<s:DataGroup width="100%" height="100%">
-				<s:layout>
-					<s:HorizontalLayout/>
-				</s:layout>
-			</s:DataGroup>		
-		</mx:Legend>
+	<mx:Legend dataProvider="{lineChart}" width="100%" height="10%" horizontalCenter="0" verticalCenter="139">
+		<s:DataGroup width="100%" height="100%">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+		</s:DataGroup>		
+	</mx:Legend>
 		
 	</s:BorderContainer>
 </s:Group>

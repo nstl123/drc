@@ -48,7 +48,7 @@ package controls
 				case "tabD5":
 					tmp = this.tabList[2].getDataList();
 					break;
-				case "tabE6":
+				case "tabE61":
 					tmp = this.tabList[4].getDataList();
 					break;				
 			};			

@@ -174,16 +174,16 @@
 	<fx:Declarations>	
 	</fx:Declarations>	
 
-	<s:HGroup height="10%" top="0" left="0" right="0" verticalAlign="middle">
-		<s:Label text="Label" width="50%" fontWeight="bold" fontSize="12" id="lblName"/>
+	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle">
+		<s:Label text="Label" width="50%" fontWeight="bold" fontSize="12" id="lblName" height="100%" verticalAlign="middle"/>
 		<mx:LinkButton label="Select all" width="50%" textAlign="right" id="lnkAll" 
-					   click="lnkAll_clickHandler(event)" color="#1A69D5" fontWeight="bold"/>
-		<mx:LinkButton label="deSelect" width="50%" textAlign="right" id="rmAll" 
-					   click="delnkAll_clickHandler(event)" color="#1A69D5" fontWeight="bold"/>
+					   click="lnkAll_clickHandler(event)" color="#1A69D5" fontWeight="bold" height="100%"/>
+		<mx:LinkButton label="deSelectAll" width="50%" textAlign="right" id="rmAll" 
+					   click="delnkAll_clickHandler(event)" color="#1A69D5" fontWeight="bold" height="100%"/>
 	</s:HGroup>
 		
-	<mx:DataGrid bottom="0" left="0" right="0" height="90%" showHeaders="false" id="dgrData"
-				 dataProvider="{selectionList}" textAlign="left">
+	<mx:DataGrid bottom="0" left="0" right="0" showHeaders="false" id="dgrData"
+				 dataProvider="{selectionList}" textAlign="left" fontSize="11" verticalAlign="middle" top="20">
 		<mx:columns>
 			<mx:DataGridColumn dataField="namen" resizable="false" width="150"/>
 			<mx:DataGridColumn dataField="id" resizable="false" width="50"/>

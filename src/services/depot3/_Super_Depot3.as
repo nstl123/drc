@@ -31,10 +31,8 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
         var operation:mx.rpc.remoting.Operation;
 
         operation = new mx.rpc.remoting.Operation(null, "createNewWorkingScenario");
-         operation.resultType = Object;
         operations["createNewWorkingScenario"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "deleteWorkingScenario");
-         operation.resultType = Object;
         operations["deleteWorkingScenario"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "insertWorkingScenario");
          operation.resultType = Object;
@@ -43,10 +41,8 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
          operation.resultType = Object;
         operations["updateData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "deleteAllScenarios");
-         operation.resultType = Object;
         operations["deleteAllScenarios"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "writeViewToTable");
-         operation.resultType = Object;
         operations["writeViewToTable"] = operation;
 
         _serviceControl.operations = operations;

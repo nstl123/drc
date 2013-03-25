@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 width="900" height="800"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="600"
 		 
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*"
 		 xmlns:utils="utils.*"
-		 >	
-	<s:layout>
-		<s:BasicLayout/>
-	</s:layout>
+		 >
 
 	<fx:Declarations>
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
@@ -31,7 +27,7 @@
 						 fault="getMacroData_faultHandler(event)"/>
 		
 	</fx:Declarations>
-	
+
 	<fx:Script>
 		<![CDATA[	
 			
@@ -56,7 +52,7 @@
 			public var dataServiceData:Depot21;
 			
 			[bindable] private var workingScenarioID:int;
-						
+			
 			[bindable] private var indicatorsList:ArrayCollection;
 			[bindable] private var deviceList:ArrayCollection;
 			[bindable] public var selDevice:int; 
@@ -88,7 +84,7 @@
 			{
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
 			}
-		
+			
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
@@ -114,7 +110,7 @@
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling demand token");
 				this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-								aggType, this.selDevice, this.selBatType, this.selPwrType);
+					aggType, this.selDevice, this.selBatType, this.selPwrType);
 				this.cursorManager.setBusyCursor();
 			}
 			
@@ -225,7 +221,7 @@
 			}			
 		]]>
 	</fx:Script>
-		
+	
 	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="642" left="5" y="10">
 	</utils:CCheckBoxGrid>
 	
@@ -266,9 +262,9 @@
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
 		<s:RadioButton x="14" y="10" label="DPP" value="1" groupName="pwrTypes" selected="true"
-					    click="pwrTypes_clickHandler(event)"/>
+					   click="pwrTypes_clickHandler(event)"/>
 		<s:RadioButton x="14" y="36" label="RCR" value="2" groupName="pwrTypes"
-					    click="pwrTypes_clickHandler(event)"/>			
+					   click="pwrTypes_clickHandler(event)"/>			
 	</s:BorderContainer>
 	<s:Label x="682" y="58" text="some exogenous var" width="193"/>
 	<s:DropDownList x="682" y="73" width="208" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)"/>
@@ -278,4 +274,5 @@
 	<utils:CInteractiveGrid x="590" y="438" height="213" id="testGridExo" width="300">
 	</utils:CInteractiveGrid>
 
-	</s:Group>
+
+</s:Group>

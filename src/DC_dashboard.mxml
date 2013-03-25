@@ -11,7 +11,7 @@
 			   xmlns:panelTab0="panelTab0.*" 
 			   xmlns:panelTabs="panelTabs.*">
 	<s:layout>
-		<s:HorizontalLayout/>
+		<s:VerticalLayout/>
 	</s:layout>
 	<fx:Declarations>	
 		
@@ -133,12 +133,12 @@
 			protected function tabe11_creationCompleteHandler(event:FlexEvent):void
 			{
 				trace("creation complete of tab E6");
-				this.panelTabE6.setWorkingScenario(this.workingScenarioID);				
-				this.panelTabE6.dataServiceNames = this.dataServiceNames;
-				this.panelTabE6.dataServiceData = this.dataServiceData;
-				this.panelTabE6.initNames();
+				this.panelTabE61.setWorkingScenario(this.workingScenarioID);				
+				this.panelTabE61.dataServiceNames = this.dataServiceNames;
+				this.panelTabE61.dataServiceData = this.dataServiceData;
+				this.panelTabE61.initNames();
 				
-				this.masterTab.addTab(this.panelTabE6);
+				this.masterTab.addTab(this.panelTabE61);
 			}			
 			
 			protected function deleteAllScenariosResult_resultHandler(event:ResultEvent):void
@@ -150,7 +150,7 @@
 
 			protected function taba11_creationCompleteHandler(event:FlexEvent):void
 			{
-				trace("creation complete of tab initTab");
+				trace("creation complete of tab A1");
 				this.panelTabA2.setWorkingScenario(this.workingScenarioID);
 				
 				this.panelTabA2.dataServiceNames = this.dataServiceNames;
@@ -164,19 +164,27 @@
 		]]>
 	</fx:Script>
 		
+	<s:BorderContainer width="100%" height="15">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Label text="Battery Dermand Analysis Tool" width="50%" height="100%"/>
+		<s:Label text="info bar" id="statusLabel" width="50%" textAlign="right" height="100%"/>
+	</s:BorderContainer>
+	
+	<mx:HRule width="100%" height="1%"/>
 	<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0">	
 		<s:layout>
 			<s:VerticalLayout/>
-		</s:layout>
-		<s:Label x="115" y="0" text="empty" id="statusLabel" width="100%" textAlign="right"/>
-		<mx:TabNavigator width="100%" height="100%" fontFamily="Georgia">
+		</s:layout>		
+		<mx:TabNavigator width="900" height="100%" fontFamily="Georgia">
 
 			<s:NavigatorContent label="Path selection" width="100%" height="100%">
-				<panelTabs:tabPathSelection top="10" left="10">
+				<panelTabs:tabPathSelection top="10" left="15" width="499">
 				</panelTabs:tabPathSelection>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="MacroIndicators (A1 + A2)" width="100%" height="100%">
-				<panelTabs:tabA2 id="panelTabA2" width="100%" height="100%"
+				<panelTabs:tabA2 id="panelTabA2" width="100%" height="100%" 
 								 creationComplete="taba11_creationCompleteHandler(event)"  top="0" left="0">
 				</panelTabs:tabA2>
 			</s:NavigatorContent>
@@ -196,11 +204,16 @@
 								  enabled="false" left="0" top="0">					
 				</panelTabs:tabD5>
 			</s:NavigatorContent>
+			
 			<s:NavigatorContent label="E. Demand" width="100%" height="100%">
-				<panelTabs:tabE6 id="panelTabE6" creationComplete="tabe11_creationCompleteHandler(event)" left="0" top="0">					
-				</panelTabs:tabE6>
+				<panelTabs:tabE61 id="panelTabE61" creationComplete="tabe11_creationCompleteHandler(event)" left="0" top="0">
+					
+				</panelTabs:tabE61>
+				<!-- <panelTabs:tabE6 id="panelTabE6" creationComplete="tabe11_creationCompleteHandler(event)" left="0" top="0">					
+				</panelTabs:tabE6> !-->
 			</s:NavigatorContent>			
 			
 		</mx:TabNavigator>		
 	</s:BorderContainer>
+	
 </s:Application>

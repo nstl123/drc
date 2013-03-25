@@ -13,6 +13,7 @@ import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
 import valueObjects.CustomDatatype3;
+import valueObjects.CustomDatatype4;
 import valueObjects.CustomDatatype5;
 
 import mx.collections.ItemResponder;
@@ -31,6 +32,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         // initialize RemoteClass alias for all entities returned by functions of this service
         valueObjects.CustomDatatype5._initRemoteClassAlias();
         valueObjects.CountryName._initRemoteClassAlias();
+        valueObjects.CustomDatatype4._initRemoteClassAlias();
         valueObjects.CustomDatatype3._initRemoteClassAlias();
 
         var operations:Object = new Object();
@@ -43,7 +45,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CountryName;
         operations["getMacroDataFormat"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandData");
-         operation.resultType = Object;
+         operation.resultElementType = valueObjects.CustomDatatype4;
         operations["getDemandData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDeviceBase");
          operation.resultElementType = valueObjects.CustomDatatype3;

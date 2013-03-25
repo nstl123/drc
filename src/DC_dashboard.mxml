@@ -132,7 +132,7 @@
 
 			protected function tabe11_creationCompleteHandler(event:FlexEvent):void
 			{
-				trace("creation complete of tab E6");
+				trace("creation complete of tab E61");
 				this.panelTabE61.setWorkingScenario(this.workingScenarioID);				
 				this.panelTabE61.dataServiceNames = this.dataServiceNames;
 				this.panelTabE61.dataServiceData = this.dataServiceData;

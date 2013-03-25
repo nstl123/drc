@@ -180,11 +180,11 @@
 	</utils:CInteractiveGrid>
 	<utils:CTwoAxisChart x="237" width="450" height="293" id="testChart" top="66">
 	</utils:CTwoAxisChart>
-	<utils:CCheckBoxGrid x="10" width="220" height="587" id="countryListGrid" top="5"
+	<utils:CCheckBoxGrid x="11" width="220" height="587" id="countryListGrid" top="37"
 						  >
 	</utils:CCheckBoxGrid>
 	
-	<s:BorderContainer width="224" height="25" top="603" x="6">
+	<s:BorderContainer width="224" height="25" top="7" x="10">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		

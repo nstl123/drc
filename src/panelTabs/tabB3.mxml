@@ -167,11 +167,11 @@
 		
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="555" top="6" x="10"
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="556" top="38" x="13"
 						  >
 	</utils:CCheckBoxGrid>
 	
-	<s:BorderContainer width="221" height="25" top="570" left="5">
+	<s:BorderContainer width="221" height="25" top="6" left="12">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		

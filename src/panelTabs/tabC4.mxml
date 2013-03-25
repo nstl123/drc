@@ -184,10 +184,10 @@
 		
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="532" top="10" left="10">
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="532" top="43" left="11">
 	</utils:CCheckBoxGrid>
 	
-	<s:BorderContainer width="224" height="25" top="550" x="10">
+	<s:BorderContainer width="224" height="25" top="10" x="6">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="600"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1000" height="600"
 		 
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
@@ -88,7 +88,7 @@
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabE6.CNTRYCHANGED, true));
+				this.dispatchEvent(new Event(tabE61.CNTRYCHANGED, true));
 			}
 			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():ArrayCollection {
@@ -174,8 +174,20 @@
 			
 			protected function getIndicatorNames_resultHandler(event:ResultEvent):void
 			{
-				this.exoListDrop.dataProvider = this.getIndicatorNames.lastResult as ArrayCollection;
+				this.indicatorsList = this.getIndicatorNames.lastResult;
+				this.indicatorsList.filterFunction = filterB;
+				this.indicatorsList.refresh();
+				this.exoListDrop.dataProvider = this.indicatorsList;				
 			}
+			
+			private function filterB(item:Object):Boolean {			
+				// here should be all indis within ID range
+				var fl:Boolean = true;				
+				if ((item.isOutputIndicator == 0)) {					
+					fl = true
+				}  else fl = false;				
+				return fl;
+			}					
 			
 			[bindable] private var selExoIndi:int = 0;
 			protected function exoListDrop_changeHandler(event:IndexChangeEvent):void
@@ -193,11 +205,13 @@
 				
 				if ((this.selExoIndi == 204)||(this.selExoIndi == 206)) typeID = this.selBatType;
 				else 
-					if ((this.selExoIndi == 205)||(this.selExoIndi == 207)) typeID = this.selPwrType; 
+					if ((this.selExoIndi == 205)||(this.selExoIndi == 207)) typeID = this.selPwrType;
+				
+				if ((this.selExoIndi >= 204) && (this.selExoIndi <= 206)) tmpSplit = 1; else tmpSplit = aggType;
+				
 				if ( this.selExoIndi == 101 ) { 
 					tmpDev = 0; tmpSplit = 0; 
 				} else tmpDev = this.selDevice; 
-				if ((this.selExoIndi >= 204) && (this.selExoIndi <= 206)) tmpSplit = 1; else tmpSplit = aggType; 
 				
 				
 				getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
@@ -221,17 +235,18 @@
 			}			
 		]]>
 	</fx:Script>
-	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="642" left="5" y="10">
-	</utils:CCheckBoxGrid>
-	
-	<s:BorderContainer width="220" height="26" x="10" y="654">
+	<s:BorderContainer width="220" height="26" left="5" top="10">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
 		<s:Label text="Tab E. Demand" height="100%" width="50%" x="61" y="38"/>		
 		<s:Button label="notify E" click="button2_clickHandler(event)" width="50%" height="100%"/>			
 	</s:BorderContainer>	
+	
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="597" left="5" y="44">
+	</utils:CCheckBoxGrid>
+	
+	
 	
 	<utils:CTwoAxisChart x="233" width="349" height="283" id="testChart" y="147">
 	</utils:CTwoAxisChart>

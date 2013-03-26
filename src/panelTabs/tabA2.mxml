@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 width="900" height="100%" 
+		 width="900" height="670" 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
@@ -15,6 +15,8 @@
 	<fx:Script>
 		<![CDATA[
 			import controls.*;
+			
+			import flashx.textLayout.formats.Float;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
@@ -48,6 +50,19 @@
 				hlp = new helper();				
 				this.addEventListener(CCheckBoxGrid.CHECKED, updateCountries);
 				this.addEventListener(CCheckBoxGrid.UNCHECKED, updateCountriesRM);
+				
+				initShockControls();
+			}
+			
+			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
+			protected function initShockControls():void {
+				for (var i:int = 2006; i < 2025; i++) {
+					yrsList.addItem({"yrs":i});
+				};
+				this.shockYears.dataProvider = yrsList;
+				this.shockYears.labelField = "yrs";
+				
+				this.shockValue.value = 10;
 			}
 			
 			protected function updateCountries(evt:Event):void	{
@@ -65,7 +80,9 @@
 			public function initNames():void {
 				trace("init names inside panel A1");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
-				countryListNames.token = this.dataServiceNames.getCountryList();
+				/*var z:ArrayCollection = this.countryListGrid.dataList();
+				if (z.length == 0)*/				
+				countryListNames.token = this.dataServiceNames.getCountryList(0);
 			}
 			
 			public function setWorkingScenario(nv:int):void {
@@ -76,6 +93,7 @@
 			protected function countryListNames_resultHandler(event:ResultEvent):void
 			{
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
+				this.dispatchEvent(new Event("countryListLoaded", true));
 			}				
 			
 			protected function button2_clickHandler(event:MouseEvent):void
@@ -106,8 +124,7 @@
 			private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
 				var fl:Boolean = true;				
-				if ((item.hasSplitByDevices == 0)&&(item.hasSplitByTypes == 0)&&
-					(item.isOutputIndicator == 0)) {					
+				if (item.id == 101) {					
 						fl = true
 				}  else fl = false;				
 				return fl;
@@ -145,7 +162,10 @@
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
 				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, 0, 0);
-				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
+				
+				//var yrs:int = this.shockYears.selectedItem.yrs;
+				//var val:Number = this.shockValue.value;
+				// loop over bunch of countries for certain indicator (tmp)
 			}
 			
 
@@ -173,12 +193,14 @@
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" 
 						 fault="updateData_faultHandler(event)" />
 		<s:RadioButtonGroup id="growthType"/>
+		<s:RadioButtonGroup id="shockType"/>
 		
 	</fx:Declarations>
 	
-	<utils:CInteractiveGrid x="238" width="450" height="200" id="testGrid" top="392">
+	<utils:CInteractiveGrid x="238" width="652" height="198" id="testGrid" top="426">
 	</utils:CInteractiveGrid>
-	<utils:CTwoAxisChart x="237" width="450" height="293" id="testChart" top="66">
+	<utils:CTwoAxisChart x="237" width="653" height="293" id="testChart" top="66"
+						  isLineSeries="true">
 	</utils:CTwoAxisChart>
 	<utils:CCheckBoxGrid x="11" width="220" height="587" id="countryListGrid" top="37"
 						  >
@@ -194,12 +216,22 @@
 	
 	<s:DropDownList x="374" width="301" id="indicatorsBox" labelField="namen"
 					 change="indicatorsBox_changeHandler(event)" top="9"></s:DropDownList>
-	<s:Button x="238" label="send changes to PHP" width="188" click="digestChanges(event)" top="367"/>
+	<s:Button x="239" label="send changes to PHP" width="202" click="digestChanges(event)" top="396" height="22"/>
 	<s:Button x="550" label="refresh data" click="button3_clickHandler(event)" top="38" width="125"/>
 	<s:Label x="238" y="6" text="Select Indicator" width="128" height="17"/>
 	<s:Label x="238" y="41" text="Data in:" width="65" height="19" verticalAlign="middle"/>
-	<s:RadioButton x="286" y="40" label="Levels" groupName="growthType" enabled="false" selected="true" height="19"/>
-	<s:RadioButton x="348" y="40" label="Growths" groupName="growthType" enabled="false" height="19"/>
+	<s:RadioButton x="294" y="40" label="Levels" groupName="growthType" enabled="false" selected="true" height="19"/>
+	<s:RadioButton x="356" y="40" label="Growths" groupName="growthType" enabled="false" height="19"/>
+	<s:BorderContainer x="472" y="366" width="416" height="51">
+		<s:Label x="-1" y="0" text="Shock Mechanism" fontStyle="italic"/>
+		<s:Label x="10" y="17" text="When (Year)" width="103" height="18" verticalAlign="middle"/>
+		<s:Label x="249" y="16" text="Value (in % points)" width="87" height="27" verticalAlign="middle"/>
+		<s:DropDownList id="shockYears" x="137" y="19" width="100">					
+		</s:DropDownList>
+		<s:NumericStepper x="351" y="17" id="shockValue"/>
+	</s:BorderContainer>
+	<s:RadioButton x="276" y="371" label="SingleGeo" groupName="shockType" enabled="true" selected="true"/>
+	<s:RadioButton x="374" y="370" label="MultiGeo" groupName="shockType" enabled="false"/>
 	
 
 </s:Group>

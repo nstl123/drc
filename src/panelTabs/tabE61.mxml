@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1000" height="600"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1005" height="100%"
 		 
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
@@ -16,8 +16,11 @@
 						 showBusyCursor="true"/>
 		
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
+		<s:CallResponder id="regionListNames" result="regionsListNames_resultHandler(event)" />
+		
 		<s:CallResponder id="deviceNamesList" result="deviceNamesList_resultHandler(event)" />		
 		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" />
+		<s:CallResponder id="getDemandRegions" result="getDemandRegions_resultHandler(event)" />
 		<s:CallResponder id="getIndicatorNames" result="getIndicatorNames_resultHandler(event)" />		
 		
 		<s:RadioButtonGroup id="demandTypes"/>
@@ -31,7 +34,8 @@
 	<fx:Script>
 		<![CDATA[	
 			
-			import controls.*;			
+			import controls.*;
+			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
@@ -57,6 +61,10 @@
 			[bindable] private var deviceList:ArrayCollection;
 			[bindable] public var selDevice:int; 
 			
+			[bindable] private var batTypesActiveFlag:Boolean = true;
+			[bindable] private var pwrTypesActiveFlag:Boolean = true;
+			[bindable] private var devicesActiveFlag:Boolean = true;
+			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
 			
@@ -67,10 +75,13 @@
 			}
 			
 			public function initNames():void {
-				trace("init names inside panel B");				
-				//indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
+				trace("init names inside panel B");			
+				
 				this.deviceNamesList.token = this.dataServiceNames.getDeviceNames();
-				countryListNames.token = this.dataServiceNames.getCountryList();
+				//this.countryListNames.token = this.dataServiceNames.getCountryList(0);
+				
+				this.regionListNames.token = this.dataServiceNames.getCountryList(1);
+				// here we get regions names				
 				this.getIndicatorNames.token = this.dataServiceNames.getIndicatorNames();
 			}
 			
@@ -103,17 +114,80 @@
 				this.countryListGrid.activateSelections(data);
 			}						
 			
+			private var tmpDevices:int  = 0;
+			private var tmpPwrTypes:int = 0;
+			private var tmpBatTypes:int = 0;
 			protected function getSomeData_clickHandler(event:MouseEvent):void
 			{
 				//send query to DB mit countryIDs and IndiID
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
-				trace("calling demand token");
-				this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-					aggType, this.selDevice, this.selBatType, this.selPwrType);
+				
+				var regionIDs:Array = this.regionsListGrid.getActiveDataList().source;
+				var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);			
+				
+				this.devicesActiveFlag ? this.tmpDevices = this.selDevice : this.tmpDevices = -1; 
+				this.pwrTypesActiveFlag ? this.tmpPwrTypes = this.selPwrType : this.tmpPwrTypes = -1; 
+				this.batTypesActiveFlag ? this.tmpBatTypes = this.selBatType : this.tmpBatTypes = -1;
+				
+				trace("calling demand token");				
+				
+				if (tmp2.length > 0) {
+					this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
+						aggType, this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1); 
+				} else if (tmp.length > 0) {				
+					this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
+						aggType, this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0);
+				} else {
+					Alert.show("select some countries and/or regions", "Info");
+				};
+				
 				this.cursorManager.setBusyCursor();
 			}
 			
+			[bindable] private var regList:ArrayCollection = new ArrayCollection();
+			protected function regionsListNames_resultHandler(event:ResultEvent):void
+			{
+				regList = this.regionListNames.lastResult as ArrayCollection;
+				regList.filterFunction = filterRegions;
+				regList.refresh();
+				this.regionsListGrid.dataList = this.regList;				
+			}
+
+			private function filterRegions(item:Object):Boolean {								
+				return (item.id < 108);			
+			}
+
+			protected function getDemandRegions_resultHandler(event:ResultEvent):void
+			{
+				currentData = this.getDemandRegions.lastResult as ArrayCollection;				
+				this.testChart.setData(currentData); // transformation is performed inside chart component
+				this.testGrid.setData(currentData);
+				
+				this.cursorManager.removeBusyCursor();
+			}
+
+
+			protected function pwrTypesActive_clickHandler(event:MouseEvent):void
+			{
+				this.pwrTypesActiveFlag = !this.pwrTypesActiveFlag;
+				this.pwrTypes.enabled = this.pwrTypesActiveFlag;
+			}
+
+
+			protected function batTypesActive_clickHandler(event:MouseEvent):void
+			{
+				this.batTypesActiveFlag = !this.batTypesActiveFlag;
+				this.batTypes.enabled = this.batTypesActiveFlag;
+			}
+
+
+			protected function devicesActive_clickHandler(event:MouseEvent):void
+			{
+				this.devicesActiveFlag = !this.devicesActiveFlag;
+				this.deviceListDrop.enabled = this.devicesActiveFlag;
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -144,9 +218,13 @@
 			}
 			
 			private function activateSplits(on:Boolean):void {
-				this.batTypes.enabled = on;
-				this.pwrTypes.enabled = on;
-				deviceListDrop.enabled = on;				
+				this.batTypes.enabled = on && this.batTypesActiveFlag;
+				this.pwrTypes.enabled = on && this.pwrTypesActiveFlag;
+				this.deviceListDrop.enabled = on && this.devicesActiveFlag;
+				
+				this.batTypesActive.enabled = on;
+				this.pwrTypesActive.enabled = on;
+				this.devicesActive.enabled = on;
 			}
 			
 			protected function dropdownlist1_changeHandler(event:IndexChangeEvent):void
@@ -235,7 +313,7 @@
 			}			
 		]]>
 	</fx:Script>
-	<s:BorderContainer width="220" height="26" left="5" top="10">
+	<s:BorderContainer width="220" height="26" left="10" top="10">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
@@ -243,26 +321,22 @@
 		<s:Button label="notify E" click="button2_clickHandler(event)" width="50%" height="100%"/>			
 	</s:BorderContainer>	
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="597" left="5" y="44">
-	</utils:CCheckBoxGrid>
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="332" left="8" y="36"
+						 labelText="Countries">
+	</utils:CCheckBoxGrid>	
 	
 	
-	
-	<utils:CTwoAxisChart x="233" width="349" height="283" id="testChart" y="147">
+	<utils:CTwoAxisChart x="232" width="383" height="283" id="testChart" y="147">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="233" width="349" height="213" id="testGrid" y="438">
+	<utils:CInteractiveGrid x="232" width="383" height="203" id="testGrid" y="438">
 	</utils:CInteractiveGrid>
-	<s:Button x="444" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="61" width="171"/>
-	<s:Label x="397" y="10" text="Selected Device" width="389" id="selDeviceLabel"/>
+	<s:Button x="605" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="83" width="171"/>
+	<s:Label x="422" y="9" text="Selected Device" width="344" id="selDeviceLabel"/>
 	<s:Label x="393" y="103" text="Bat Type" width="112" id="selDeviceLabel0"/>
-	<s:Label x="246" y="105" text="Pwr Type" width="112" id="selDeviceLabel1"/>
-	<s:RadioButton x="244" y="37" label="Demand" groupName="demandTypes"  value="301"
-				   click="radiobutton1_clickHandler(event)" id="dem0" selected="true" fontSize="13" fontFamily="Georgia"/>
-	<s:RadioButton x="244" y="63" label="DemandAggegated" groupName="demandTypes" value="302"
-				   click="radiobutton1_clickHandler(event)" id="dem1" fontSize="13" fontFamily="Georgia"/>
-	<s:DropDownList x="441" y="29" width="353" id="deviceListDrop"
+	<s:Label x="230" y="103" text="Pwr Type" width="112" id="selDeviceLabel1"/>
+	<s:DropDownList x="485" y="30" width="281" id="deviceListDrop"
 					change="dropdownlist1_changeHandler(event)" labelField="namen"/>
-	<s:BorderContainer x="407" y="118" width="208" height="21" fontSize="11">
+	<s:BorderContainer x="408" y="118" width="208" height="21" fontSize="11">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -272,7 +346,7 @@
 		<s:RadioButton x="14" y="88" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 		<s:RadioButton x="14" y="114" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 	</s:BorderContainer>
-	<s:BorderContainer width="116" height="21" x="264" y="118" fontSize="11">
+	<s:BorderContainer width="116" height="21" x="248" y="118" fontSize="11">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -281,13 +355,34 @@
 		<s:RadioButton x="14" y="36" label="RCR" value="2" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)"/>			
 	</s:BorderContainer>
-	<s:Label x="682" y="58" text="some exogenous var" width="193"/>
-	<s:DropDownList x="682" y="73" width="208" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)"/>
-	<s:Button x="718" y="119" label="getSomeExo" width="171" click="button3_clickHandler(event)" id="button"/>
-	<utils:CTwoAxisChart x="590" y="147" height="283" id="testChartExo" width="300">
+	<s:Label x="778" y="10" text="some exogenous var" width="193"/>
+	<s:DropDownList x="789" y="29" width="201" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)"/>
+	<s:Button x="823" y="58" label="getSomeExo" width="171" click="button3_clickHandler(event)" id="button"/>
+	<utils:CTwoAxisChart x="620" y="147" height="283" id="testChartExo" width="383">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="590" y="438" height="213" id="testGridExo" width="300">
+	<utils:CInteractiveGrid x="618" y="438" height="203" id="testGridExo" width="383">
 	</utils:CInteractiveGrid>
+	<utils:CCheckBoxGrid x="10" y="383" height="268" width="220" id="regionsListGrid"
+						 labelText="Regions" >
+	</utils:CCheckBoxGrid>
+	<s:BorderContainer x="246" y="25" width="153" height="56">
+		<s:layout>
+			<s:VerticalLayout paddingLeft="5" paddingTop="5"/>
+		</s:layout>
+		<s:RadioButton x="41" y="9" label="Demand" groupName="demandTypes"  value="301"
+					   click="radiobutton1_clickHandler(event)" id="dem0" selected="true" fontSize="13" fontFamily="Georgia"/>
+		<s:RadioButton label="DemandAggegated" groupName="demandTypes" value="302"
+					   click="radiobutton1_clickHandler(event)" id="dem1" fontSize="13" fontFamily="Georgia"/>
+	</s:BorderContainer>
+	<s:CheckBox x="305" y="98" label="Use?" fontSize="11" fontStyle="italic" 
+				id="pwrTypesActive" enabled="true" selected="true" 
+				 click="pwrTypesActive_clickHandler(event)"/>
+	<s:CheckBox x="463" y="98" label="Use?" fontSize="11" fontStyle="italic" 
+				id="batTypesActive" enabled="true" selected="true" 
+			 	click="batTypesActive_clickHandler(event)"	/>
+	<s:CheckBox x="423" y="27" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
+				enabled="true" selected="true" height="23"
+			     click="devicesActive_clickHandler(event)"/>
 
 
 </s:Group>

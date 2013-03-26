@@ -44,6 +44,9 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
         operations["deleteAllScenarios"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "writeViewToTable");
         operations["writeViewToTable"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "updateDataCycle");
+         operation.resultType = Object;
+        operations["updateDataCycle"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -166,6 +169,25 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("writeViewToTable");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'updateDataCycle' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function updateDataCycle(data:Object, hasSplit:Object, isDeviceBase:Object, deviceID:Object, typeID:Object, yr:Object, shockVal:Object) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateDataCycle");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,hasSplit,isDeviceBase,deviceID,typeID,yr,shockVal) ;
 
         return _internal_token;
     }

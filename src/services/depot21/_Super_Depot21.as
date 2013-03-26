@@ -111,10 +111,10 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getDemandData(countryIDs:Object, scenarioID:Object, aggType:Object, deviceID:Object, typeID:Object, pwrID:Object) : mx.rpc.AsyncToken
+    public function getDemandData(countryIDs:Object, scenarioID:Object, aggType:Object, deviceID:Object, typeID:Object, pwrID:Object, isRegion:int) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDemandData");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,aggType,deviceID,typeID,pwrID) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,aggType,deviceID,typeID,pwrID,isRegion) ;
 
         return _internal_token;
     }

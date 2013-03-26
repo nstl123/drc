@@ -76,32 +76,80 @@ class Depot21 {
 		//return ($stmnt);
 	}
 	
-	public function getDemandData($countryIDs, $scenarioID, $aggType, $deviceID, $typeID, $pwrID) { // aggType = 0 for device level, 1 - for country level
+	public function getDemandData($countryIDs, $scenarioID, $aggType, $deviceID, $typeID, $pwrID, $isRegion) { 
+	// aggType = 0 for device level, 1 - for country level
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
-		$countryList = " (";
+		$countryList = " (";		
 		
 		for ($i = 0; $i < count($countryArray); $i++) {
-			if ($i > 0) { $countryList = $countryList.", ".$countryArray[$i]; }			
+			if ($i > 0) { 
+				$countryList = $countryList.", ".$countryArray[$i]; 
+			}			
 			else $countryList = $countryList.$countryArray[$i];
 		}
 		$countryList = $countryList." )";
 		
-		if ($aggType == 0) {
-			$stmnt = "SELECT scenarioID, countryID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID,
-				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
-				FROM Consulting.DC_demand
-				WHERE scenarioID IN (".$scenarioID.", 10001) 				
-					AND countryID IN ".$countryList."				
-					AND deviceID = ".$deviceID."
-					AND batTypeID = ".$typeID."
-					AND pwrTypeID = ".$pwrID;
-		} else if ($aggType == 1) {
-			$stmnt = "SELECT scenarioID, countryID, 302 AS indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
-				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
-				FROM Consulting.DC_demandAggregated
-				WHERE scenarioID IN (".$scenarioID.", 10001) 				
-					AND countryID IN ".$countryList.";";
+		$stmnt = "";
+		
+		if ($aggType == 0) {			
+			if ($isRegion == 0) {
+					$stmnt = $stmnt."
+						SELECT scenarioID, countryID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID,
+							sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
+							sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
+							sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015
+						FROM Consulting.DC_demand
+						WHERE scenarioID IN (".$scenarioID.", 10001)".
+							($deviceID > 0 ? " AND deviceID = ".$deviceID : "").							
+							($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").
+							($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "")."
+							AND countryID IN ".$countryList."
+						GROUP BY scenarioID, countryID".
+							($deviceID > 0 ? ", deviceID" : "").
+							($typeID   > 0 ? ", batTypeID": "").
+							($pwrID    > 0 ? ", pwrTypeID": "");							
+			} else {
+					$stmnt = $stmnt."
+						SELECT scenarioID,  nc.region as countryID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID,
+							sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
+							sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
+							sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015
+						FROM Consulting.DC_demand AS dm
+						JOIN Consulting.DC_namesCountries as nc ON (dm.countryID = nc.id)                    
+						WHERE scenarioID IN (".$scenarioID.", 10001)".
+							($deviceID > 0 ? " AND deviceID  = ".$deviceID : "").
+							($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").
+							($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "")."
+							AND region IN ".$countryList."
+						GROUP BY scenarioID, region".
+							($deviceID > 0 ? ", deviceID" : "").
+							($typeID   > 0 ? ", batTypeID": "").
+							($pwrID    > 0 ? ", pwrTypeID": "");
+			};						
+		} else if ($aggType == 1) {			
+			if ($isRegion == 0) {
+				$stmnt = "
+					SELECT scenarioID, countryID, 302 AS indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
+						sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
+						sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
+						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015
+					FROM Consulting.DC_demandAggregated
+					WHERE scenarioID IN (".$scenarioID.", 10001) 				
+						AND countryID IN ".$countryList."
+						GROUP BY countryID, scenarioID";
+			} else {
+				$stmnt = "
+					SELECT scenarioID,  nc.region as countryID, 302 AS indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
+						sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
+						sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
+						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015
+					FROM Consulting.DC_demandAggregated AS dma
+					JOIN Consulting.DC_namesCountries as nc ON (dma.countryID = nc.id)                    
+					WHERE scenarioID IN (".$scenarioID.", 10001) 				
+						AND region IN ".$countryList." 
+						GROUP BY region, scenarioID";			
+			}						
 		} else {
 			return "error in  aggType parameters";
 			exit;
@@ -110,7 +158,7 @@ class Depot21 {
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		
 		return $result;
-		//return $countryList;
+		//return $stmnt;
 	}
 	
 	public function getDeviceBase($countryIDs, $scenarioID) {

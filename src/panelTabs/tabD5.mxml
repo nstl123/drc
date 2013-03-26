@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 		 
-		 width="900" height="100%" 
+		 width="900" height="670" 
 		 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)"
@@ -51,7 +51,7 @@
 			public function initNames():void {
 				trace("init names inside panel B");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
-				countryListNames.token = this.dataServiceNames.getCountryList();
+				//countryListNames.token = this.dataServiceNames.getCountryList(0);
 			}
 			
 			public function setWorkingScenario(nv:int):void {
@@ -158,7 +158,7 @@
 	
 	<utils:CTwoAxisChart x="298" width="556" height="260" id="testChart" top="87">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="297" width="557" height="250" id="testGrid" top="355">
+	<utils:CInteractiveGrid x="296" width="557" height="250" id="testGrid" top="389">
 	</utils:CInteractiveGrid>
 	<s:DropDownList x="304" width="300" id="indicatorsBox"  labelField="namen" top="50"></s:DropDownList>
 </s:Group>

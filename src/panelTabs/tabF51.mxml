@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" height="670" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="600" 
 		 xmlns:utils="utils.*"
-		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
-		 xmlns:depot21="services.depot21.*">
-	
-	<s:layout>
-		<s:BasicLayout/>
-	</s:layout>
+		 xmlns:depot21="services.depot21.*"
+		 creationComplete="startApp(event)"
+		 >
 
+	
+	<fx:Declarations>
+		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
+					   showBusyCursor="true"/>
+		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
+						 showBusyCursor="true"/>
+		
+		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
+		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
+		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
+		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
+		
+	</fx:Declarations>
+	
 	<fx:Script>
 		<![CDATA[
+			protected function updateData_resultHandler(event:ResultEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
 			
 			import controls.*;
 			
@@ -41,23 +56,17 @@
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
-				
-			protected function updateData_resultHandler(event:ResultEvent):void
-			{
-				// TODO Auto-generated method stub
-			}				
-				
+			
+			
 			protected function startApp(event:FlexEvent):void {
-				trace("app start panelTab B");			
+				trace("app start panelTab F");			
 				hlp = new helper();				
 			}
 			
 			public function initNames():void {
-				trace("init names inside panel B");				
+				trace("init names inside panel F");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				//countryListNames.token = this.dataServiceNames.getCountryList(0);
-				
-				//get some data from master slide;
 			}
 			
 			public function setWorkingScenario(nv:int):void {
@@ -69,22 +78,22 @@
 			{
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
 			}
-
+			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
 				//this.countryListNames.token = this.dataService.getCountryList();
 			}
-
+			
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var selCntries:Object = this.countryListGrid.dataList;
 				this.dispatchEvent(new Event(tabB3.CNTRYCHANGED, true));
 			}
- // ----- COMMUNICATION PART ---------------/////			
+			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():ArrayCollection {
 				return this.countryListGrid.dataList;			
 			}
-
+			
 			public function setDataList(data:ArrayCollection):void {
 				this.countryListGrid.dataList = data;
 			}		
@@ -103,7 +112,7 @@
 			private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
 				var fl:Boolean = true;				
-				if ((item.id == 201)||(item.id == 202)) {					
+				if ( (item.id >= 204)&&(item.id <= 207) ) {					
 					fl = true
 				}  else fl = false;				
 				return fl;
@@ -117,7 +126,7 @@
 				trace("calling macro data token");
 				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected, 1, 0);
 			}
-
+			
 			[bindable] private var selectedIndi:int;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			
@@ -133,8 +142,8 @@
 				this.testChart.setData(currentData); // transformation is performed inside chart component
 				this.testGrid.setData(currentData);
 			}
-
-
+			
+			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
 				alteredData = this.testGrid.getData();
@@ -143,36 +152,21 @@
 				//hasSplit by batteryTypes = false
 				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, 1, 0);
 				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
-			}
+			}			
 			
-
-
+			
 		]]>
 	</fx:Script>
+
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="556" top="38" x="13" />
 	
-	<fx:Declarations>
-		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
-					   showBusyCursor="true"/>
-		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
-						 showBusyCursor="true"/>
-		
-		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
-		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
-		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
-		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
-		
-	</fx:Declarations>
-	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="556" top="38" x="13"
-						  >
-	</utils:CCheckBoxGrid>
 	
 	<s:BorderContainer width="221" height="25" top="6" left="12">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
-		<s:Label text="Tab - B. HH related factors" height="100%" width="50%" x="61" y="38"/>		
-		<s:Button label="notify B" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
+		<s:Label text="Tab - F. bat types rel factors" height="100%" width="50%" x="61" y="38"/>		
+		<s:Button label="notify F" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
 	</s:BorderContainer>
 	
 	<utils:CTwoAxisChart x="243" width="540" height="258" id="testChart" top="68">
@@ -188,4 +182,5 @@
 	
 	<s:CheckBox x="393" y="10" label="hasSplit" enabled="false" id="hasSplitFlag"/>
 	<s:Button x="238" y="334" label="updateDB" width="215" click="digestChanges(event)"/>
+
 </s:Group>

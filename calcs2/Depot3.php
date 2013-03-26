@@ -23,10 +23,14 @@ class Depot3 {
 		
 		if ($isDeviceBase) $srcTable = "Consulting.DC_deviceBaseTable"; 		
 		
+		// loop to select
+		// loop to select all country-indi pairs		
+		
 		for ($j = 0; $j < count($arr); $j++) {		
 			$b =(array) $arr0['data'][$j];
 			$stmnt = "
-				UPDATE ".$srcTable." SET						
+				UPDATE ".$srcTable." 
+				SET						
 					Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
 				WHERE scenarioID = ".$b['scenarioID']."			
 					AND countryID = ".$b['countryID']."
@@ -45,6 +49,44 @@ class Depot3 {
 		}		
 		return  $j;
 	}		
+	
+		
+	public function updateDataCycle($data, $hasSplit, $isDeviceBase, $deviceID, $typeID, $yr, $shockVal) { // id indicator hasSplit by batTypes
+		$arr0 = (array)$data;
+		$arr = $arr0['data'];
+		
+		$srcTable = "";
+		if ($hasSplit) $srcTable = "Consulting.DC_scenarioDataProxy";
+		else           $srcTable = "Consulting.DC_scenarioData";
+		
+		if ($isDeviceBase) $srcTable = "Consulting.DC_deviceBaseTable"; 		
+		
+		// loop to select
+		// loop to select all country-indi pairs		
+		
+		for ($j = 0; $j < count($arr); $j++) {		
+			$b =(array) $arr0['data'][$j];
+			$stmnt = "
+				UPDATE ".$srcTable." 
+				SET						
+					Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
+				WHERE scenarioID = ".$b['scenarioID']."			
+					AND countryID = ".$b['countryID']."
+					AND indicatorID = ".$b['indicatorID'];
+			
+			if ($b['indicatorID'] == 203) { // means device base
+					$stmnt = $stmnt." AND deviceID = ".$deviceID;
+			} else 			
+			if ($b['indicatorID'] > 200) { // means not macro
+					$stmnt = $stmnt."
+						AND deviceID = ".$deviceID." AND typeID = ".$typeID.";";
+			};
+		
+			$result = $this->connection->prepare($stmnt);
+			$result->execute();	
+		}		
+		return  $j;
+	}	
 	
 	public function createNewWorkingScenario($scenarioID) {
 		$this -> deleteWorkingScenario($scenarioID);

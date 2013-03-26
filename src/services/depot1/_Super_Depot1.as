@@ -11,7 +11,6 @@ import mx.rpc.AbstractOperation;
 import mx.rpc.AsyncToken;
 import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
-import valueObjects.CountryNameObject;
 import valueObjects.DeviceNameObject;
 import valueObjects.IndicatorNameObject;
 
@@ -29,7 +28,6 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
         _serviceControl = new mx.rpc.remoting.RemoteObject();
 
         // initialize RemoteClass alias for all entities returned by functions of this service
-        valueObjects.CountryNameObject._initRemoteClassAlias();
         valueObjects.IndicatorNameObject._initRemoteClassAlias();
         valueObjects.DeviceNameObject._initRemoteClassAlias();
 
@@ -37,7 +35,7 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
         var operation:mx.rpc.remoting.Operation;
 
         operation = new mx.rpc.remoting.Operation(null, "getCountryList");
-         operation.resultElementType = valueObjects.CountryNameObject;
+         operation.resultType = Object;
         operations["getCountryList"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getIndicatorNames");
          operation.resultElementType = valueObjects.IndicatorNameObject;
@@ -68,10 +66,10 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getCountryList() : mx.rpc.AsyncToken
+    public function getCountryList(isRegion:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getCountryList");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(isRegion) ;
 
         return _internal_token;
     }

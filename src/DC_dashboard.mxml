@@ -2,14 +2,14 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
-			   xmlns:panelTabA="panelTabA.*" 
+			    
 			   xmlns:depot1="services.depot1.*"
-			   creationComplete="startApp(event)" 
-			   xmlns:panelTabB2="panelTabB2.*" 
-			   xmlns:panelTabC3="panelTabC3.*" 
-			   xmlns:depot3="services.depot3.*" 
-			   xmlns:panelTab0="panelTab0.*" 
-			   xmlns:panelTabs="panelTabs.*">
+			   xmlns:depot3="services.depot3.*"
+			   
+			   creationComplete="startApp(event)"		   
+			   
+			   xmlns:panelTabs="panelTabs.*" 
+			   width="1000" height="750">
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
@@ -58,7 +58,8 @@
 				cleanOldScenarios(); // this should be removed later				
 				this.addEventListener("dbCleaned", initScenarioDB);
 				
-				this.addEventListener("CNTRY_CHANGED", digestUpdate);			
+				this.addEventListener("CNTRY_CHANGED", digestUpdate);		
+				this.addEventListener("countryListLoaded", digestUpdate);
 				//this.addEventListener("scenarioCreated", proceedFurther);
 				
 				masterTab = new FlowManager();
@@ -67,8 +68,12 @@
 				masterTab.addTab(this.panelTest3);*/				
 			}		
 
-			public function digestUpdate(event:Event):void {				
-				this.masterTab.manageUpdate(event.target.className);
+			public function digestUpdate(event:Event):void {	
+				if (event)	{
+					this.masterTab.manageUpdate(event.target.className);
+				} else {
+					this.masterTab.manageUpdate("tabA2");
+				};
 			}
 
 			public function cleanOldScenarios():void {
@@ -102,21 +107,25 @@
 				this.panelTabB3.dataServiceNames = this.dataServiceNames;
 				this.panelTabB3.dataServiceData = this.dataServiceData;
 				this.panelTabB3.dataServiceUpdate = this.dataServiceUpdate;
-				this.panelTabB3.initNames();	
 				
-				this.masterTab.addTab(this.panelTabB3);
+				this.panelTabB3.initNames();				
+				this.panelTabB3.countryListGrid.dataList = this.masterTab.getDataList();			
+				
+				this.masterTab.addTab(this.panelTabB3, 1);
 			}
 
 			protected function tabc11_creationCompleteHandler(event:FlexEvent):void
 			{
-				trace("creation complete of tab C1");
+				trace("creation complete of tab C4");
 				this.panelTabC4.setWorkingScenario(this.workingScenarioID);
 				this.panelTabC4.dataServiceData = this.dataServiceData;				
 				this.panelTabC4.dataServiceNames = this.dataServiceNames;	
 				this.panelTabC4.dataServiceUpdate = this.dataServiceUpdate;
-				this.panelTabC4.initNames();
 				
-				this.masterTab.addTab(this.panelTabC4);
+				this.panelTabC4.initNames();
+				this.panelTabC4.countryListGrid.dataList = this.masterTab.getDataList();
+				
+				this.masterTab.addTab(this.panelTabC4, 2);
 			}
 
 			protected function tabd11_creationCompleteHandler(event:FlexEvent):void
@@ -125,22 +134,13 @@
 				this.panelTabD5.setWorkingScenario(this.workingScenarioID);				
 				this.panelTabD5.dataServiceNames = this.dataServiceNames;
 				this.panelTabD5.dataServiceData = this.dataServiceData;
-				this.panelTabD5.initNames();				
 				
-				this.masterTab.addTab(this.panelTabD5);
+				this.panelTabD5.initNames();				
+				this.panelTabD5.countryListGrid.dataList = this.masterTab.getDataList();
+				this.masterTab.addTab(this.panelTabD5, 3);
 			}
 
-			protected function tabe11_creationCompleteHandler(event:FlexEvent):void
-			{
-				trace("creation complete of tab E61");
-				this.panelTabE61.setWorkingScenario(this.workingScenarioID);				
-				this.panelTabE61.dataServiceNames = this.dataServiceNames;
-				this.panelTabE61.dataServiceData = this.dataServiceData;
-				this.panelTabE61.initNames();
-				
-				this.masterTab.addTab(this.panelTabE61);
-			}			
-			
+		
 			protected function deleteAllScenariosResult_resultHandler(event:ResultEvent):void
 			{
 			     this.statusLabel.text = "data cleaned from DB";
@@ -158,8 +158,36 @@
 				this.panelTabA2.dataServiceUpdate = this.dataServiceUpdate;
 				this.panelTabA2.initNames();
 				
-				this.masterTab.addTab(this.panelTabA2);
+		
+				this.masterTab.addTab(this.panelTabA2, 0);
 			}
+
+
+			protected function tabf511_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("creation complete of tab F5");
+				this.panelTabF51.setWorkingScenario(this.workingScenarioID);
+				
+				this.panelTabF51.dataServiceNames = this.dataServiceNames;
+				this.panelTabF51.dataServiceData =  this.dataServiceData;
+				this.panelTabF51.dataServiceUpdate = this.dataServiceUpdate;
+				
+				this.panelTabF51.initNames();
+				this.panelTabF51.countryListGrid.dataList = this.masterTab.getDataList();
+				this.masterTab.addTab(this.panelTabF51, 4);
+			}
+
+			protected function tabe11_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("creation complete of tab E61");
+				this.panelTabE61.setWorkingScenario(this.workingScenarioID);				
+				this.panelTabE61.dataServiceNames = this.dataServiceNames;
+				this.panelTabE61.dataServiceData = this.dataServiceData;
+				
+				this.panelTabE61.initNames();
+				this.panelTabE61.countryListGrid.dataList = this.masterTab.getDataList();				
+				this.masterTab.addTab(this.panelTabE61, 5);
+			}			
 
 		]]>
 	</fx:Script>
@@ -173,16 +201,18 @@
 	</s:BorderContainer>
 	
 	<mx:HRule width="100%" height="1%"/>
-	<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0">	
+	<s:BorderContainer width="1000" height="700" horizontalCenter="0" verticalCenter="0">	
 		<s:layout>
 			<s:VerticalLayout/>
 		</s:layout>		
-		<mx:TabNavigator width="900" height="100%" fontFamily="Georgia">
+		<mx:TabNavigator width="100%" height="100%" fontFamily="Georgia" 
+					>
 
 			<s:NavigatorContent label="Path selection" width="100%" height="100%">
 				<panelTabs:tabPathSelection top="10" left="15" width="499">
 				</panelTabs:tabPathSelection>
 			</s:NavigatorContent>
+			
 			<s:NavigatorContent label="MacroIndicators (A1 + A2)" width="100%" height="100%">
 				<panelTabs:tabA2 id="panelTabA2" width="100%" height="100%" 
 								 creationComplete="taba11_creationCompleteHandler(event)"  top="0" left="0">
@@ -205,13 +235,21 @@
 				</panelTabs:tabD5>
 			</s:NavigatorContent>
 			
+			<s:NavigatorContent label="F. batFactors" width="100%" height="100%">
+				<panelTabs:tabF51 id="panelTabF51" horizontalCenter="0" verticalCenter="0" width="100%" height="100%"
+								  creationComplete="tabf511_creationCompleteHandler(event)" >
+				</panelTabs:tabF51>
+			</s:NavigatorContent>
+			
 			<s:NavigatorContent label="E. Demand" width="100%" height="100%">
 				<panelTabs:tabE61 id="panelTabE61" creationComplete="tabe11_creationCompleteHandler(event)" left="0" top="0">
 					
 				</panelTabs:tabE61>
 				<!-- <panelTabs:tabE6 id="panelTabE6" creationComplete="tabe11_creationCompleteHandler(event)" left="0" top="0">					
 				</panelTabs:tabE6> !-->
-			</s:NavigatorContent>			
+			</s:NavigatorContent>		
+			
+			
 			
 		</mx:TabNavigator>		
 	</s:BorderContainer>

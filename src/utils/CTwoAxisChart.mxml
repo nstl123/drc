@@ -36,9 +36,12 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.charts.series.ColumnSeries;
 			import mx.charts.series.LineSeries;
 			import mx.charts.LinearAxis;
 			import mx.charts.CategoryAxis;
+			
+			[bindable] public var isLineSeries:Boolean = true;
 			
 			[bindable] public var selectedCntry:int = 1;
 			[bindable] public var selectedIndiIn:int = 1;
@@ -91,7 +94,9 @@
 				var counter:int = 0;				
 				
 				for (var i:int = 0; i < someData.length; i++) {
-					series2 = new LineSeries();
+					if (isLineSeries) series2 = new LineSeries();
+					else series2 = new ColumnSeries();
+					
 					series2.dataProvider = someData.getItemAt(i);			
 					series2.xField="yrs";
 					series2.yField="data";
@@ -116,8 +121,9 @@
 				this.lineChart.horizontalAxis  = hAxis;				     
 				this.lineChart.series = mySeries;			
 				this.lineChart.dataProvider = mySeries;
+				this.lineChart.showDataTips = true;
 				//this.testChart.dataTipFunction = show_label;				
-				this.lineChart.invalidateDisplayList();
+				this.lineChart.invalidateDisplayList();				
 			}
 			
 		]]>

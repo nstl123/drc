@@ -6,7 +6,7 @@ package controls
 	public class FlowManager
 	{
 		private static var dataList:ArrayCollection = new ArrayCollection();
-		private var tabList:Array = new Array();
+		private var tabList:ArrayCollection = new ArrayCollection();
 		
 		private var countSelf:int = 0; 
 			
@@ -24,12 +24,12 @@ package controls
 			return dataList;
 		}
 		
-		public function addTab(A:Object):void {
-			tabList.push(A);		
+		public function addTab(A:Object, jk:int):void {
+			tabList.addItemAt(A, jk);
 		}
 		
-		public function removeLastTab(A:Object):void {
-			tabList.pop();		
+		public function removeLastTab(jk:int):void {
+			tabList.removeItemAt(jk);
 		}
 		
 		private var tmp:ArrayCollection;
@@ -46,11 +46,15 @@ package controls
 					tmp = this.tabList[2].getDataList();
 					break;
 				case "tabD5":
-					tmp = this.tabList[2].getDataList();
+					tmp = this.tabList[3].getDataList();
 					break;
-				case "tabE61":
+				case "tabF51": // bat factors
 					tmp = this.tabList[4].getDataList();
-					break;				
+					break;			
+				case "tabE61": // demand view
+					tmp = this.tabList[5].getDataList();
+					break;
+					
 			};			
 			
 			this.setDataList(tmp);			

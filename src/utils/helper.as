@@ -8,6 +8,35 @@ package utils
 		{
 		}
 		
+		public function formShockArray(selectedIndi:int, workingScenarioID:int, yrs:int, 
+									   val:Number, rawData:ArrayCollection):ArrayCollection {
+			var rez:ArrayCollection = new ArrayCollection();
+			var mult:Number = 1 + (val/100);
+			
+			for (var i:int = 0; i < rawData.length; i++) {
+				var fin:Object = rawData.getItemAt(i);
+				rez.addItem({
+					"scenarioID" : workingScenarioID,
+					"countryID"  : fin.countryID, "indicatorID" : selectedIndi, 
+					//"Y2000":fin.Y2000,
+					//"Y2001":fin.Y2001, "Y2002":fin.Y2002, "Y2003":fin.Y2003,					
+					"Y2005": (yrs <= 2005) ? (fin.Y2005 * mult) : fin.Y2005,
+					"Y2006": (yrs <= 2006) ? (fin.Y2006 * mult) : fin.Y2006,
+					"Y2007": (yrs <= 2007) ? (fin.Y2007 * mult) : fin.Y2007,
+					"Y2008": (yrs <= 2008) ? (fin.Y2008 * mult) : fin.Y2008,
+					"Y2009": (yrs <= 2009) ? (fin.Y2009 * mult) : fin.Y2009,					
+					"Y2010": (yrs <= 2010) ? (fin.Y2010 * mult) : fin.Y2010
+					/*, "Y2011":fin.Y2011, "Y2012":fin.Y2012,
+					/*"Y2013":fin.Y2013, "Y2014":fin.Y2014, "Y2015":fin.Y2015, "Y2016":fin.Y2016,
+					"Y2017":fin.Y2017, "Y2017":fin.Y2017, "Y2018":fin.Y2018, "Y2019":fin.Y2019,
+					"Y2020":fin.Y2020, "Y2021":fin.Y2021, "Y2022":fin.Y2022, "Y2023":fin.Y2023,
+					"Y2024":fin.Y2024, "Y2025":fin.Y2025*/
+				});
+			
+			};
+			return rez;
+		}
+		
 		// split is made on ?isOuptutIndicator
 		public function splitIndisArray(data:ArrayCollection, partIn:ArrayCollection, partOut:ArrayCollection):void {
 			

@@ -27,11 +27,13 @@ class Depot3 {
 		// loop to select all country-indi pairs		
 		
 		for ($j = 0; $j < count($arr); $j++) {		
-			$b =(array) $arr0['data'][$j];
+			$b =(array) $arr0['data'][$j]; // need to extend to more data points
 			$stmnt = "
 				UPDATE ".$srcTable." 
 				SET						
-					Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
+					Y2005 = ".$b['Y2005'].", Y2006 = ".$b['Y2006'].", Y2007 = ".$b['Y2007'].",
+					Y2008 = ".$b['Y2008'].", Y2009 = ".$b['Y2009'].", Y2010 = ".$b['Y2010'].",
+					Y2010 = ".$b['Y2010']." 
 				WHERE scenarioID = ".$b['scenarioID']."			
 					AND countryID = ".$b['countryID']."
 					AND indicatorID = ".$b['indicatorID'];

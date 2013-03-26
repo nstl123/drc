@@ -157,15 +157,22 @@
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
-				alteredData = this.testGrid.getData();
 				var temp:Object = new Object();
+				
+				if (this.isSingleGeo) { 				
+					alteredData = this.testGrid.getData();					
+				} else {
+					var yrs:int = 2010;
+					if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
+					var val:Number = this.shockValue.value;					
+					//get selected Data
+					var rawData:ArrayCollection = this.testGrid.getAllData();
+					alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);					
+				};
+				
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
 				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, 0, 0);
-				
-				//var yrs:int = this.shockYears.selectedItem.yrs;
-				//var val:Number = this.shockValue.value;
-				// loop over bunch of countries for certain indicator (tmp)
 			}
 			
 
@@ -178,6 +185,14 @@
 			{
 				Alert.show("data update error");
 			}
+
+			[bindable] private var isSingleGeo:Boolean = true;
+			protected function radiobutton1_clickHandler(event:MouseEvent):void
+			{
+				this.isSingleGeo = this.shockType.selectedValue;
+				this.shockControls.enabled = !this.isSingleGeo;
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -222,16 +237,18 @@
 	<s:Label x="238" y="41" text="Data in:" width="65" height="19" verticalAlign="middle"/>
 	<s:RadioButton x="294" y="40" label="Levels" groupName="growthType" enabled="false" selected="true" height="19"/>
 	<s:RadioButton x="356" y="40" label="Growths" groupName="growthType" enabled="false" height="19"/>
-	<s:BorderContainer x="472" y="366" width="416" height="51">
+	<s:BorderContainer x="472" y="366" width="416" height="51" id="shockControls" enabled="false">
 		<s:Label x="-1" y="0" text="Shock Mechanism" fontStyle="italic"/>
 		<s:Label x="10" y="17" text="When (Year)" width="103" height="18" verticalAlign="middle"/>
 		<s:Label x="249" y="16" text="Value (in % points)" width="87" height="27" verticalAlign="middle"/>
 		<s:DropDownList id="shockYears" x="137" y="19" width="100">					
 		</s:DropDownList>
-		<s:NumericStepper x="351" y="17" id="shockValue"/>
+		<s:NumericStepper x="351" y="17" id="shockValue" minimum="-20" maximum="20" stepSize="1"/>
 	</s:BorderContainer>
-	<s:RadioButton x="276" y="371" label="SingleGeo" groupName="shockType" enabled="true" selected="true"/>
-	<s:RadioButton x="374" y="370" label="MultiGeo" groupName="shockType" enabled="false"/>
+	<s:RadioButton x="276" y="371" label="SingleGeo" groupName="shockType" enabled="true" value="1"
+				   selected="true" click="radiobutton1_clickHandler(event)"/>
+	<s:RadioButton x="374" y="370" label="MultiGeo" groupName="shockType" enabled="true" value="0"
+				   click="radiobutton1_clickHandler(event)"/>
 	
 
 </s:Group>

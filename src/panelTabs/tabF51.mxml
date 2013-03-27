@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="600" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="800" 
 		 xmlns:utils="utils.*"
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*"
@@ -15,10 +15,15 @@
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 						 showBusyCursor="true"/>
 		
+		<s:CallResponder id="getDeviceList" result="getDeviceList_resultHandler(event)" />		
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
-		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
-		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
+		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>		
+		
+		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
+		
+		<s:RadioButtonGroup id="batTypes"/>		
+		<s:RadioButtonGroup id="pwrTypes"/>
 		
 	</fx:Declarations>
 	
@@ -67,12 +72,18 @@
 				trace("init names inside panel F");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				//countryListNames.token = this.dataServiceNames.getCountryList(0);
+				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
 			public function setWorkingScenario(nv:int):void {
 				this.workingScenarioID = nv;
 				this.testGrid.setWorkingScenario(this.workingScenarioID, true);				
 			}					
+			
+			protected function getDeviceList_resultHandler(event:ResultEvent):void
+			{
+				this.deviceListDrop.dataProvider = this.getDeviceList.lastResult as ArrayCollection;
+			}
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void
 			{
@@ -124,7 +135,18 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected, 1, 0);
+				
+				var tmpType:int = 0;
+				switch (this.selectedIndi) {
+					case 204: 
+						tmpType = this.selBatType; break;
+					case 205: 
+						tmpType = this.selPwrType; break;
+					case 206: 
+						tmpType = this.selBatType; break;				
+				};				
+				
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected, tmpType);
 			}
 			
 			[bindable] private var selectedIndi:int;
@@ -139,10 +161,21 @@
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
+				
+				this.currentData.filterFunction = filterDevBase;
+				this.currentData.refresh();				
 				this.testChart.setData(currentData); // transformation is performed inside chart component
 				this.testGrid.setData(currentData);
 			}
 			
+			private function filterDevBase(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if ((item.deviceID == this.selDevice)
+					&&(item.scenarioID == this.workingScenarioID)) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}		
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
@@ -155,10 +188,45 @@
 			}			
 			
 			
+
+			protected function button4_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event("scenarioResetRequested", true));
+			}
+
+			[bindable] private var selDevice:int = 0;			
+			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
+			{
+				this.selDevice = this.deviceListDrop.selectedItem.id;		
+
+				//this.currentData.filterFunction = filterDevBase;
+				this.currentData.refresh();				
+				this.testChart.setData(currentData); // transformation is performed inside chart component
+				//this.testGrid.setData(currentData);
+			}
+
+
+			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.message.body.toString());
+			}
+
+			[bindable] private var selBatType:int = 1;
+			[bindable] private var selPwrType:int = 1;
+			protected function batTypes_clickHandler(event:MouseEvent):void
+			{
+				this.selBatType = int(this.batTypes.selectedValue);
+			}
+			
+			protected function pwrTypes_clickHandler(event:MouseEvent):void
+			{
+				this.selPwrType = int(this.pwrTypes.selectedValue);
+			}
+			
 		]]>
 	</fx:Script>
 
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="556" top="38" x="13" />
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="594" top="38" x="13" />
 	
 	
 	<s:BorderContainer width="221" height="25" top="6" left="12">
@@ -169,18 +237,46 @@
 		<s:Button label="notify F" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="243" width="540" height="258" id="testChart" top="68">
+	<utils:CTwoAxisChart x="243" width="540" height="287" id="testChart" top="108">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid x="239" width="544" height="232" id="testGrid" top="362">
+	<utils:CInteractiveGrid x="241" width="544" height="185" id="testGrid" top="451">
 	</utils:CInteractiveGrid>
 	
-	<s:DropDownList x="483" width="300" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="10"/>
+	<s:DropDownList x="270" width="189" height="18" id="indicatorsBox" 
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="22"/>
 	
-	<s:Button x="609" label="getSomeData" click="button3_clickHandler(event)" id="button" top="39" width="174"/>
+	<s:Button x="629" label="getSomeData" click="button3_clickHandler(event)" id="button" top="50" width="153"/>
 	
-	<s:CheckBox x="393" y="10" label="hasSplit" enabled="false" id="hasSplitFlag"/>
-	<s:Button x="238" y="334" label="updateDB" width="215" click="digestChanges(event)"/>
+	<s:CheckBox x="394" y="3" label="hasSplit" enabled="false" id="hasSplitFlag"/>
+	<s:Button x="241" y="426" label="updateDB" width="215" click="digestChanges(event)"/>
+	<s:Button x="486" y="426" label="Reset" width="94" click="button4_clickHandler(event)"/>
+	<s:DropDownList x="483" y="22" width="300" id="deviceListDrop"
+					 labelField="namen" change="deviceListDrop_changeHandler(event)"></s:DropDownList>
+	<s:Label x="243" y="6" text="Indicators"/>
+	<s:Label x="468" y="6" text="Devices"/>
+	
+	<s:BorderContainer width="116" height="21" x="266" y="78" fontSize="11">
+		<s:layout>
+			<s:HorizontalLayout paddingLeft="5"/>
+		</s:layout>
+		<s:RadioButton x="14" y="10" label="DPP" value="1" groupName="pwrTypes" selected="true"
+					   click="pwrTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="36" label="RCR" value="2" groupName="pwrTypes"
+					   click="pwrTypes_clickHandler(event)"/>			
+	</s:BorderContainer>
+	
+	<s:BorderContainer x="398" y="78" width="208" height="21" fontSize="11">
+		<s:layout>
+			<s:HorizontalLayout paddingLeft="5"/>
+		</s:layout>
+		<s:RadioButton x="14" y="10" label="1C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="36" label="1D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="62" label="3A"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="88" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+		<s:RadioButton x="14" y="114" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+	</s:BorderContainer>
+	<s:Label x="406" y="63" text="Bat Type" width="112" id="selDeviceLabel0"/>
+	<s:Label x="243" y="63" text="Pwr Type" width="112" id="selDeviceLabel1"/>
 
 </s:Group>

@@ -13,6 +13,22 @@
 
 	<fx:Script>
 		<![CDATA[
+			protected function getDeviceList_resultHandler(event:ResultEvent):void
+			{
+				this.deviceListDrop.dataProvider = this.getDeviceList.lastResult as ArrayCollection;
+			}
+
+			protected function updateData_faultHandler(event:FaultEvent):void
+			{
+				var z:Object = event.message.body.toString();
+			}
+
+		]]>
+	</fx:Script>
+
+
+	<fx:Script>
+		<![CDATA[
 			
 			import controls.*;
 			
@@ -44,7 +60,7 @@
 				
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
-				// TODO Auto-generated method stub
+				var rez:Object = this.updateData.lastResult;
 			}				
 				
 			protected function startApp(event:FlexEvent):void {
@@ -56,8 +72,7 @@
 				trace("init names inside panel B");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				//countryListNames.token = this.dataServiceNames.getCountryList(0);
-				
-				//get some data from master slide;
+				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
 			public function setWorkingScenario(nv:int):void {
@@ -115,11 +130,13 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected, 1, 0);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected, 0);
 			}
 
 			[bindable] private var selectedIndi:int;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
@@ -130,10 +147,36 @@
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
-				this.testChart.setData(currentData); // transformation is performed inside chart component
-				this.testGrid.setData(currentData);
+				
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source  = this.currentData.source;
+				
+				this.currentDataGrid.filterFunction = this.filterGrid;
+				this.currentDataGrid.refresh();
+				
+				this.currentDataChart.filterFunction = this.filterChart;
+				this.currentDataChart.refresh();
+				
+				this.testGrid.setData(currentDataGrid);
+				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
 			}
 
+			private function filterGrid(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if ((item.scenarioID == this.workingScenarioID)
+					&& (item.deviceID == this.selDevice)) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}	
+
+			private function filterChart(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if (item.deviceID == this.selDevice) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}	
 
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
@@ -141,11 +184,32 @@
 				var temp:Object = new Object();
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, 1, 0);
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, this.selDevice, 0);
 				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
 			}
 			
 
+
+
+			protected function button4_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event("scenarioResetRequested", true));
+			}
+
+			[bindable] private var selDevice:int = 0;
+			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
+			{
+				this.selDevice = this.deviceListDrop.selectedItem.id;
+
+				this.currentDataGrid.filterFunction = this.filterGrid;
+				this.currentDataGrid.refresh();
+				
+				this.currentDataChart.filterFunction = this.filterChart;
+				this.currentDataChart.refresh();
+				
+				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid);
+			}
 
 		]]>
 	</fx:Script>
@@ -159,7 +223,8 @@
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
-		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
+		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
+		<s:CallResponder id="getDeviceList" result="getDeviceList_resultHandler(event)" />
 		
 	</fx:Declarations>
 	
@@ -181,11 +246,14 @@
 	<utils:CInteractiveGrid x="239" width="544" height="232" id="testGrid" top="362">
 	</utils:CInteractiveGrid>
 	
-	<s:DropDownList x="483" width="300" height="18" id="indicatorsBox" 
+	<s:DropDownList x="241" width="243" height="18" id="indicatorsBox" 
 					change="indicatorsBox_changeHandler(event)" labelField="namen" top="10"/>
 	
 	<s:Button x="609" label="getSomeData" click="button3_clickHandler(event)" id="button" top="39" width="174"/>
 	
-	<s:CheckBox x="393" y="10" label="hasSplit" enabled="false" id="hasSplitFlag"/>
+	<s:CheckBox x="242" y="40" label="hasSplit" enabled="false" id="hasSplitFlag"/>
 	<s:Button x="238" y="334" label="updateDB" width="215" click="digestChanges(event)"/>
+	<s:Button x="461" y="334" label="Reset" width="103" click="button4_clickHandler(event)"/>
+	<s:DropDownList x="492" y="10" width="291" id="deviceListDrop" labelField="namen" 
+					change="deviceListDrop_changeHandler(event)"></s:DropDownList>
 </s:Group>

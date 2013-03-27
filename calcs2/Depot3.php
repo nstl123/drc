@@ -31,9 +31,13 @@ class Depot3 {
 			$stmnt = "
 				UPDATE ".$srcTable." 
 				SET						
+					Y2004 = ".$b['Y2004'].",
 					Y2005 = ".$b['Y2005'].", Y2006 = ".$b['Y2006'].", Y2007 = ".$b['Y2007'].",
 					Y2008 = ".$b['Y2008'].", Y2009 = ".$b['Y2009'].", Y2010 = ".$b['Y2010'].",
-					Y2010 = ".$b['Y2010']." 
+					Y2011 = ".$b['Y2011'].", Y2012 = ".$b['Y2012'].", Y2013 = ".$b['Y2013'].", 
+					Y2014 = ".$b['Y2014'].", Y2015 = ".$b['Y2015'].", Y2016 = ".$b['Y2016'].", 
+					Y2017 = ".$b['Y2017'].", Y2018 = ".$b['Y2018'].", Y2019 = ".$b['Y2019'].", 
+					Y2020 = ".$b['Y2020']."
 				WHERE scenarioID = ".$b['scenarioID']."			
 					AND countryID = ".$b['countryID']."
 					AND indicatorID = ".$b['indicatorID'];
@@ -49,47 +53,10 @@ class Depot3 {
 			$result = $this->connection->prepare($stmnt);
 			$result->execute();	
 		}		
-		return  $j;
+		return true;
+		//return  $stmnt;
 	}		
-	
 		
-	public function updateDataCycle($data, $hasSplit, $isDeviceBase, $deviceID, $typeID, $yr, $shockVal) { // id indicator hasSplit by batTypes
-		$arr0 = (array)$data;
-		$arr = $arr0['data'];
-		
-		$srcTable = "";
-		if ($hasSplit) $srcTable = "Consulting.DC_scenarioDataProxy";
-		else           $srcTable = "Consulting.DC_scenarioData";
-		
-		if ($isDeviceBase) $srcTable = "Consulting.DC_deviceBaseTable"; 		
-		
-		// loop to select
-		// loop to select all country-indi pairs		
-		
-		for ($j = 0; $j < count($arr); $j++) {		
-			$b =(array) $arr0['data'][$j];
-			$stmnt = "
-				UPDATE ".$srcTable." 
-				SET						
-					Y2005 = ".$b['Y2005'].", Y2010 = ".$b['Y2010']."
-				WHERE scenarioID = ".$b['scenarioID']."			
-					AND countryID = ".$b['countryID']."
-					AND indicatorID = ".$b['indicatorID'];
-			
-			if ($b['indicatorID'] == 203) { // means device base
-					$stmnt = $stmnt." AND deviceID = ".$deviceID;
-			} else 			
-			if ($b['indicatorID'] > 200) { // means not macro
-					$stmnt = $stmnt."
-						AND deviceID = ".$deviceID." AND typeID = ".$typeID.";";
-			};
-		
-			$result = $this->connection->prepare($stmnt);
-			$result->execute();	
-		}		
-		return  $j;
-	}	
-	
 	public function createNewWorkingScenario($scenarioID) {
 		$this -> deleteWorkingScenario($scenarioID);
 		$this -> insertWorkingScenario($scenarioID);

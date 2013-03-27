@@ -62,12 +62,18 @@
 				this.addEventListener("countryListLoaded", digestUpdate);
 				//this.addEventListener("scenarioCreated", proceedFurther);
 				
+				this.addEventListener("scenarioResetRequested", resetScenario);
+				
 				masterTab = new FlowManager();
 				//masterTab.addTab(this.panelTest1);
 				/*masterTab.addTab(this.panelTest2);
 				masterTab.addTab(this.panelTest3);*/				
 			}		
 
+			public function resetScenario(evt:Event):void {
+				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(this.workingScenarioID);
+			}
+			
 			public function digestUpdate(event:Event):void {	
 				if (event)	{
 					this.masterTab.manageUpdate(event.target.className);

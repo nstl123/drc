@@ -18,19 +18,25 @@ package utils
 				rez.addItem({
 					"scenarioID" : workingScenarioID,
 					"countryID"  : fin.countryID, "indicatorID" : selectedIndi, 
-					//"Y2000":fin.Y2000,
-					//"Y2001":fin.Y2001, "Y2002":fin.Y2002, "Y2003":fin.Y2003,					
+					
+					"Y2004": (yrs <= 2004) ? (fin.Y2004 * mult) : fin.Y2004,										
 					"Y2005": (yrs <= 2005) ? (fin.Y2005 * mult) : fin.Y2005,
 					"Y2006": (yrs <= 2006) ? (fin.Y2006 * mult) : fin.Y2006,
 					"Y2007": (yrs <= 2007) ? (fin.Y2007 * mult) : fin.Y2007,
 					"Y2008": (yrs <= 2008) ? (fin.Y2008 * mult) : fin.Y2008,
 					"Y2009": (yrs <= 2009) ? (fin.Y2009 * mult) : fin.Y2009,					
-					"Y2010": (yrs <= 2010) ? (fin.Y2010 * mult) : fin.Y2010
-					/*, "Y2011":fin.Y2011, "Y2012":fin.Y2012,
-					/*"Y2013":fin.Y2013, "Y2014":fin.Y2014, "Y2015":fin.Y2015, "Y2016":fin.Y2016,
-					"Y2017":fin.Y2017, "Y2017":fin.Y2017, "Y2018":fin.Y2018, "Y2019":fin.Y2019,
-					"Y2020":fin.Y2020, "Y2021":fin.Y2021, "Y2022":fin.Y2022, "Y2023":fin.Y2023,
-					"Y2024":fin.Y2024, "Y2025":fin.Y2025*/
+					"Y2010": (yrs <= 2010) ? (fin.Y2010 * mult) : fin.Y2010,					
+					"Y2011": (yrs <= 2011) ? (fin.Y2011 * mult) : fin.Y2011,										
+					"Y2012": (yrs <= 2012) ? (fin.Y2012 * mult) : fin.Y2012,
+					"Y2013": (yrs <= 2013) ? (fin.Y2013 * mult) : fin.Y2013,
+					"Y2014": (yrs <= 2014) ? (fin.Y2014 * mult) : fin.Y2014,
+					"Y2015": (yrs <= 2015) ? (fin.Y2015 * mult) : fin.Y2015,
+					"Y2016": (yrs <= 2016) ? (fin.Y2016 * mult) : fin.Y2016,					
+					"Y2017": (yrs <= 2017) ? (fin.Y2017 * mult) : fin.Y2017,										
+					"Y2018": (yrs <= 2018) ? (fin.Y2018 * mult) : fin.Y2018,
+					"Y2019": (yrs <= 2019) ? (fin.Y2019 * mult) : fin.Y2019,
+					"Y2020": (yrs <= 2020) ? (fin.Y2020 * mult) : fin.Y2020,					
+					"Y2021": (yrs <= 2021) ? (fin.Y2021 * mult) : fin.Y2021
 				});
 			
 			};
@@ -73,7 +79,13 @@ package utils
 					{"id" : 9, "yrs": "y2012", "data" : obj.Y2012, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
 					{"id" :10, "yrs": "y2013", "data" : obj.Y2013, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
 					{"id" :11, "yrs": "y2014", "data" : obj.Y2014, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :12, "yrs": "y2015", "data" : obj.Y2015, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID}
+					{"id" :12, "yrs": "y2015", "data" : obj.Y2015, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
+					{"id" :13, "yrs": "y2016", "data" : obj.Y2016, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
+					{"id" :14, "yrs": "y2017", "data" : obj.Y2017, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
+					{"id" :15, "yrs": "y2018", "data" : obj.Y2018, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
+					{"id" :16, "yrs": "y2019", "data" : obj.Y2019, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
+					{"id" :17, "yrs": "y2020", "data" : obj.Y2020, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID}
+					//{"id" :18, "yrs": "y2021", "data" : obj.Y2021, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID}
 				]);			
 				z.addItem(newObj);
 			}		

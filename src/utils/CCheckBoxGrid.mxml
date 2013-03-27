@@ -80,7 +80,8 @@
 					for (i=0; i < res.length; i++) {							
 						selectionList.addItem({
 							"namen":res[i].namen, "id" : res[i].id, 
-							"isRegion" : res[i].isRegion, "active" : (res[i].active?res[i].active:false) });
+							"isRegion" : res[i].isRegion, 
+							"active" : (res[i].active ? res[i].active : false) });
 					}	
 				}			
 			}			

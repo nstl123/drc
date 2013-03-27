@@ -110,7 +110,7 @@
 				var countryIDs:Array = this.countryListGrid.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, true, 1, 0);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, true, 0);
 			}
 			
 			[bindable] private var selectedIndi:int;
@@ -129,6 +129,18 @@
 				this.testGrid.setData(currentData);
 			}
 			
+
+			protected function button4_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event("scenarioResetRequested", true));
+			}
+
+
+			protected function button5_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -161,4 +173,6 @@
 	<utils:CInteractiveGrid x="296" width="557" height="250" id="testGrid" top="389">
 	</utils:CInteractiveGrid>
 	<s:DropDownList x="304" width="300" id="indicatorsBox"  labelField="namen" top="50"></s:DropDownList>
+	<s:Button x="430" y="355" label="Reset" click="button4_clickHandler(event)" width="118"/>
+	<s:Button x="294" y="356" label="Update DB" click="button5_clickHandler(event)" width="106"/>
 </s:Group>

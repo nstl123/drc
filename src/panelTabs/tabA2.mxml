@@ -7,7 +7,7 @@
 		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*" 
-		 >
+		  xmlns:depot3="services.depot3.*">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -56,7 +56,7 @@
 			
 			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
 			protected function initShockControls():void {
-				for (var i:int = 2006; i < 2025; i++) {
+				for (var i:int = 2004; i < 2021; i++) {
 					yrsList.addItem({"yrs":i});
 				};
 				this.shockYears.dataProvider = yrsList;
@@ -136,11 +136,11 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 0);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0);
 			}
 			
 			[bindable] private var selectedIndi:int;
-			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentData:ArrayCollection = new ArrayCollection();			
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
@@ -151,9 +151,21 @@
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
+				
 				this.testChart.setData(currentData); // transformation is performed inside chart component
+				
+				this.currentData.filterFunction = filterMajor;
+				this.currentData.refresh();				
 				this.testGrid.setData(currentData);
 			}
+			
+			private function filterMajor(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if (item.scenarioID == this.workingScenarioID) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}		
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
@@ -193,6 +205,13 @@
 				this.shockControls.enabled = !this.isSingleGeo;
 			}
 
+			
+			protected function button_clickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new Event("scenarioResetRequested", true));
+				//createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(this.workingScenarioID);
+			}			
+
 		]]>
 	</fx:Script>
 	
@@ -200,21 +219,22 @@
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 					   showBusyCursor="true"/>
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
-						 showBusyCursor="true"/>
+						 showBusyCursor="true"/>		
+		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"
+					   showBusyCursor="true"/>
 		
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
-		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" 
-						 fault="updateData_faultHandler(event)" />
-		<s:RadioButtonGroup id="growthType"/>
-		<s:RadioButtonGroup id="shockType"/>
+		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		
+		<s:RadioButtonGroup id="growthType"/>
+		<s:RadioButtonGroup id="shockType"/>		
 	</fx:Declarations>
 	
 	<utils:CInteractiveGrid x="238" width="652" height="198" id="testGrid" top="426">
 	</utils:CInteractiveGrid>
-	<utils:CTwoAxisChart x="237" width="653" height="293" id="testChart" top="66"
+	<utils:CTwoAxisChart x="237" width="652" height="293" id="testChart" top="66"
 						  isLineSeries="true">
 	</utils:CTwoAxisChart>
 	<utils:CCheckBoxGrid x="11" width="220" height="587" id="countryListGrid" top="37"
@@ -231,24 +251,25 @@
 	
 	<s:DropDownList x="374" width="301" id="indicatorsBox" labelField="namen"
 					 change="indicatorsBox_changeHandler(event)" top="9"></s:DropDownList>
-	<s:Button x="239" label="send changes to PHP" width="202" click="digestChanges(event)" top="396" height="22"/>
+	<s:Button x="239" label="send changes to PHP" width="154" click="digestChanges(event)" top="396" height="22"/>
 	<s:Button x="550" label="refresh data" click="button3_clickHandler(event)" top="38" width="125"/>
 	<s:Label x="238" y="6" text="Select Indicator" width="128" height="17"/>
 	<s:Label x="238" y="41" text="Data in:" width="65" height="19" verticalAlign="middle"/>
 	<s:RadioButton x="294" y="40" label="Levels" groupName="growthType" enabled="false" selected="true" height="19"/>
 	<s:RadioButton x="356" y="40" label="Growths" groupName="growthType" enabled="false" height="19"/>
-	<s:BorderContainer x="472" y="366" width="416" height="51" id="shockControls" enabled="false">
+	<s:BorderContainer x="498" y="366" width="390" height="51" id="shockControls" enabled="false">
 		<s:Label x="-1" y="0" text="Shock Mechanism" fontStyle="italic"/>
 		<s:Label x="10" y="17" text="When (Year)" width="103" height="18" verticalAlign="middle"/>
-		<s:Label x="249" y="16" text="Value (in % points)" width="87" height="27" verticalAlign="middle"/>
-		<s:DropDownList id="shockYears" x="137" y="19" width="100">					
+		<s:Label x="211" y="12" text="Value (in % points)" width="87" height="27" verticalAlign="middle"/>
+		<s:DropDownList id="shockYears" x="92" y="18" width="100">					
 		</s:DropDownList>
-		<s:NumericStepper x="351" y="17" id="shockValue" minimum="-20" maximum="20" stepSize="1"/>
+		<s:NumericStepper x="305" y="16" id="shockValue" minimum="-20" maximum="20" stepSize="1"/>
 	</s:BorderContainer>
 	<s:RadioButton x="276" y="371" label="SingleGeo" groupName="shockType" enabled="true" value="1"
 				   selected="true" click="radiobutton1_clickHandler(event)"/>
 	<s:RadioButton x="374" y="370" label="MultiGeo" groupName="shockType" enabled="true" value="0"
 				   click="radiobutton1_clickHandler(event)"/>
+	<s:Button x="400" y="397" label="Reset" width="90" id="button" click="button_clickHandler(event)"/>
 	
 
 </s:Group>

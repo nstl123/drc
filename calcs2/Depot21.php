@@ -22,7 +22,7 @@ class Depot21 {
 		return $a;
 	}
 	
-	public function getMacroData($countryIDs, $indicatorID, $scenarioID, $hasSplit, $deviceID, $typeID) {
+	public function getMacroData($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID) {
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
 		$countryList = " (";
@@ -35,12 +35,13 @@ class Depot21 {
 		if ($hasSplit == 0) { // hasSplitByTypes
 		
 			$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, typeID, unitID,
-				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
+				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015,
+				Y2016, Y2017, Y2018, Y2019, Y2020, Y2021
 				FROM Consulting.DC_scenarioData
 				WHERE scenarioID IN (".$scenarioID.", 10001) 				
 					AND countryID IN ".$countryList."
-					AND indicatorID = ".$indicatorID."
-					AND deviceID = ".$deviceID; // for macro should be zero				
+					AND indicatorID = ".$indicatorID;
+				// AND deviceID = ".$deviceID; // for macro should be zero				
 			if ($indicatorID == 207) {
 				$stmnt = $stmnt." AND typeID = ".$typeID;
 			};					
@@ -58,16 +59,16 @@ class Depot21 {
 			
 			$stmnt = "SELECT sdp.scenarioID, nc.id as countryID, sdp.indicatorID, sdp.deviceID, 
 				sdp.Y2004, sdp.Y2005, sdp.Y2006, sdp.Y2007, sdp.Y2008, sdp.Y2009, sdp.Y2010, sdp.Y2011, sdp.Y2012, 
-				sdp.Y2013, sdp.Y2014, sdp.Y2015
+				sdp.Y2013, sdp.Y2014, sdp.Y2015, sdp.Y2016, sdp.Y2017, sdp.Y2018, sdp.Y2019, sdp.Y2020, sdp.Y2021
 				FROM `Consulting`.`DC_scenarioDataProxy` sdp
 					JOIN `Consulting`.`DC_namesCountries` nc
 				ON sdp.countryID = nc.".$joinOn."
 				WHERE 
 					nc.id IN ".$countryList." 
-					AND sdp.indicatorID = ".$indicatorID." 
-					AND deviceID = ".$deviceID."
+					AND sdp.indicatorID = ".$indicatorID."
 					AND typeID = ".$typeID."
 					AND scenarioID IN (".$scenarioID.", 10001)";
+					//AND deviceID = ".$deviceID."
 		}		
 		
 		$result = $this->connection->fetchAll($stmnt); 
@@ -98,7 +99,9 @@ class Depot21 {
 						SELECT scenarioID, countryID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID,
 							sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
 							sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
-							sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015
+							sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
+							sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
+							sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
 						FROM Consulting.DC_demand
 						WHERE scenarioID IN (".$scenarioID.", 10001)".
 							($deviceID > 0 ? " AND deviceID = ".$deviceID : "").							
@@ -114,7 +117,9 @@ class Depot21 {
 						SELECT scenarioID,  nc.region as countryID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID,
 							sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
 							sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
-							sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015
+							sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
+							sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
+							sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
 						FROM Consulting.DC_demand AS dm
 						JOIN Consulting.DC_namesCountries as nc ON (dm.countryID = nc.id)                    
 						WHERE scenarioID IN (".$scenarioID.", 10001)".
@@ -133,7 +138,9 @@ class Depot21 {
 					SELECT scenarioID, countryID, 302 AS indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
 						sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
 						sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
-						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015
+						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
+						sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
+						sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
 					FROM Consulting.DC_demandAggregated
 					WHERE scenarioID IN (".$scenarioID.", 10001) 				
 						AND countryID IN ".$countryList."
@@ -143,7 +150,9 @@ class Depot21 {
 					SELECT scenarioID,  nc.region as countryID, 302 AS indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID,
 						sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
 						sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
-						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015
+						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
+						sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
+						sum(Y2020) AS Y2020, sum(Y2021) AS Y2021						
 					FROM Consulting.DC_demandAggregated AS dma
 					JOIN Consulting.DC_namesCountries as nc ON (dma.countryID = nc.id)                    
 					WHERE scenarioID IN (".$scenarioID.", 10001) 				
@@ -172,11 +181,12 @@ class Depot21 {
 		$countryList = $countryList." )";
 		
 		$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, 
-			Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015
+			Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015,
+			Y2016, Y2017, Y2018, Y2019, Y2020, Y2021
 			FROM Consulting.DC_deviceBaseTable
 			WHERE scenarioID IN (".$scenarioID.", 10001) 				
-				AND countryID IN ".$countryList."				
-				AND deviceID = 1;";
+				AND countryID IN ".$countryList;
+				//AND deviceID = 1;";
 		
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		

@@ -293,7 +293,7 @@
 				
 				
 				getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
-					tmpSplit, tmpDev, typeID); 
+					tmpSplit, typeID); 
 				//getMacroDataResult.token = this.dataServiceData.getMacroData(tmp, indicatorID, scenarioID, hasSplit, deviceID, typeID);
 			}
 			
@@ -326,9 +326,9 @@
 	</utils:CCheckBoxGrid>	
 	
 	
-	<utils:CTwoAxisChart x="232" width="383" height="283" id="testChart" y="147">
+	<utils:CTwoAxisChart x="237" width="383" height="283" id="testChart" y="147">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="232" width="383" height="203" id="testGrid" y="438">
+	<utils:CInteractiveGrid x="238" width="383" height="203" id="testGrid" y="438">
 	</utils:CInteractiveGrid>
 	<s:Button x="605" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="83" width="171"/>
 	<s:Label x="422" y="9" text="Selected Device" width="344" id="selDeviceLabel"/>
@@ -357,10 +357,10 @@
 	</s:BorderContainer>
 	<s:Label x="778" y="10" text="some exogenous var" width="193"/>
 	<s:DropDownList x="789" y="29" width="201" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)"/>
-	<s:Button x="823" y="58" label="getSomeExo" width="171" click="button3_clickHandler(event)" id="button"/>
-	<utils:CTwoAxisChart x="620" y="147" height="283" id="testChartExo" width="383">
+	<s:Button x="819" y="83" label="getSomeExo" width="171" click="button3_clickHandler(event)" id="button"/>
+	<utils:CTwoAxisChart x="630" y="147" height="283" id="testChartExo" width="375">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="618" y="438" height="203" id="testGridExo" width="383">
+	<utils:CInteractiveGrid x="639" y="438" height="203" id="testGridExo" width="366">
 	</utils:CInteractiveGrid>
 	<utils:CCheckBoxGrid x="10" y="383" height="268" width="220" id="regionsListGrid"
 						 labelText="Regions" >

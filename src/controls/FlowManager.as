@@ -66,6 +66,44 @@ package controls
 				//tabList[i].setDataList(dataList);
 				tabList[i].setDataListActive(dataList);
 			};		
-		}		
+		}	
+		
+		[bindable] public var selPath:String = "";
+		[bindable] private var pathFlags:Array = new Array(); 
+		
+		public function registerPath(np:String):void {
+			this.selPath = np;
+			switch (this.selPath) {
+				case "A1":						
+					//          [A, B, C, D, F, E]
+					pathFlags = [1, 0, 0, 0, 1, 0];
+					break;
+				case "B":					
+					pathFlags = [0, 1, 0, 0, 1, 0];
+					break;
+				case "C":					
+					pathFlags = [0, 0, 1, 0, 1, 0];
+					break;
+				case "D":
+					pathFlags = [0, 0, 0, 1, 1, 0];
+					break;				
+				case "A2":
+					pathFlags = [1, 0, 0, 0, 1, 0];
+					break;			
+			};	
+			
+			this.enableGrids(this.pathFlags);
+			
+		}
+		
+		public function enableGrids(arr:Array):void {
+			if (this.tabList.length > 0) {
+				for (var i:int = 0; i < arr.length; i++) {				
+					this.tabList[i].enableGrid(arr[i] == 1);				
+				};
+			};
+		
+		}
+		
 	}
 }

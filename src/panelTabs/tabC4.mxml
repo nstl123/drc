@@ -42,16 +42,24 @@
 			{
 				this.selDevice = this.deviceListDrop.selectedItem.id;
 
-				this.currentData.filterFunction = filterDevBase;
-				this.currentData.refresh();				
-				this.testChart.setData(currentData); // transformation is performed inside chart component
-				//this.testGrid.setData(currentData);
+				this.currentDataChart.filterFunction = filterChart;
+				this.currentDataChart.refresh();		
+				this.currentDataGrid.filterFunction = filterGrid;
+				this.currentDataGrid.refresh();
+				
+				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid);
 
 			}
 
 			protected function getDeviceNames_resultHandler(event:ResultEvent):void
 			{
 				this.deviceListDrop.dataProvider = this.getDeviceNames.lastResult as ArrayCollection;
+			}
+			
+			public function enableGrid(flag:Boolean) : void {
+				this.testGrid.isEditable = flag;
+				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 			}
 
 		]]>
@@ -128,7 +136,7 @@
 				var temp:Object = new Object();
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, true, 1, 0);
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, true, this.selDevice, 0);
 				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
 			}
 			
@@ -174,31 +182,47 @@
 			
 			[bindable] private var selectedIndi:int;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
 				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
 				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
-			}			
-
+			}						
+			
 			protected function getDeviceBase_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getDeviceBase.lastResult as ArrayCollection;
 				
-				this.currentData.filterFunction = filterDevBase;
-				this.currentData.refresh();				
-				this.testChart.setData(currentData); // transformation is performed inside chart component
-				this.testGrid.setData(currentData);
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source = this.currentData.source;
+				
+				this.currentDataGrid.filterFunction = this.filterGrid;
+				this.currentDataGrid.refresh();
+				this.currentDataChart.filterFunction = this.filterChart;
+				this.currentDataChart.refresh();				
+				
+				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid);
 			}
 			
-			private function filterDevBase(item:Object):Boolean {				
+			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = true;				
-				if ((item.deviceID == this.selDevice)
-					&&(item.scenarioID == this.workingScenarioID)) {					
+				if ((item.scenarioID == this.workingScenarioID)
+					&& (item.deviceID == this.selDevice)) {					
 					f = true
 				}  else f = false;				
 				return f;
-			}		
+			}	
+			
+			private function filterChart(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if (item.deviceID == this.selDevice) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}			
 			
 		]]>
 	</fx:Script>
@@ -249,4 +273,5 @@
 	<s:Button x="239" y="357" label="Reset" width="122" click="button4_clickHandler(event)"/>
 	<s:DropDownList x="459" y="26" width="322" id="deviceListDrop" labelField="namen" 
 					change="deviceListDrop_changeHandler(event)"></s:DropDownList>
+	<s:Label x="239" y="392" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
 </s:Group> 

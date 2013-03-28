@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
-		 creationComplete="group1_creationCompleteHandler(event)" >
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"		 
+		 >
 
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
-			[bindable] private var selPath:int = 2;
+			[bindable] public var selPath:String = "";
 			
-			protected function radiobutton1_changeHandler(event:Event):void
+			protected function radiobutton1_clickHandler(event:Event):void
 			{
-				this.selPath = int(this.radiogroup1.selectedValue);	
+				this.selPath = String(this.pathTypes.selectedValue);	
 				this.dispatchEvent(new Event("pathChanged", true));
 			}
 
-			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			/*protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.addEventListener("pathChanged", digestUpdate);
-			}
+			}*/
 
 			protected function digestUpdate(evt:Event):void {
 			
@@ -29,8 +29,7 @@
 
 	
 	<fx:Declarations>
-		<s:RadioButtonGroup id="radiogroup1"/>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:RadioButtonGroup id="pathTypes"/>	
 	</fx:Declarations>
 	
 	<s:BorderContainer width="358" height="200" horizontalCenter="0" verticalCenter="0">
@@ -38,15 +37,15 @@
 			<s:VerticalLayout/>
 		</s:layout>
 		<s:RadioButton x="89" y="59" label="A1 (macro) + # of HHs" 
-					   groupName="radiogroup1" value="1"/>
-		<s:RadioButton x="89" y="85" label="B (HH pen rate + dev. per HH)" value="2" 
-					   groupName="radiogroup1" selected="true" change="radiobutton1_changeHandler(event)"/>
-		<s:RadioButton x="89" y="85" label="C (device base)" value="3"
-					   groupName="radiogroup1"/>
-		<s:RadioButton x="89" y="85" label="D (market size + depreciation)" value="4" 
-					   groupName="radiogroup1"/>
+					   groupName="pathTypes" value="A1" click="radiobutton1_clickHandler(event)"/>
+		<s:RadioButton x="89" y="85" label="B (HH pen rate + dev. per HH)" value="B" 
+					   groupName="pathTypes" selected="true" click="radiobutton1_clickHandler(event)"/>
+		<s:RadioButton x="89" y="85" label="C (device base)" value="C"
+					   groupName="pathTypes" click="radiobutton1_clickHandler(event)"/>
+		<s:RadioButton x="89" y="85" label="D (market size + depreciation)" value="D" 
+					   groupName="pathTypes" click="radiobutton1_clickHandler(event)"/>
 		<s:RadioButton x="89" y="85" label="D though A2 ((market size + depreciation) through macro)"
-					   groupName="radiogroup1" value="5"/>		
+					   groupName="pathTypes" value="A2" click="radiobutton1_clickHandler(event)"/>		
 	</s:BorderContainer>
 	
 	<s:Label x="15" y="30" text="Possible Paths"/>

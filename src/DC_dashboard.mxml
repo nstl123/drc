@@ -60,14 +60,12 @@
 				
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);		
 				this.addEventListener("countryListLoaded", digestUpdate);
+				this.addEventListener("pathChanged", digestPathChange);
 				//this.addEventListener("scenarioCreated", proceedFurther);
 				
 				this.addEventListener("scenarioResetRequested", resetScenario);
 				
-				masterTab = new FlowManager();
-				//masterTab.addTab(this.panelTest1);
-				/*masterTab.addTab(this.panelTest2);
-				masterTab.addTab(this.panelTest3);*/				
+				masterTab = new FlowManager();								
 			}		
 
 			public function resetScenario(evt:Event):void {
@@ -80,6 +78,12 @@
 				} else {
 					this.masterTab.manageUpdate("tabA2");
 				};
+			}
+			
+			[bindable] private var selPath:String = "";			
+			public function digestPathChange(event:Event):void {	
+				this.selPath = this.panelTabPath.selPath;				
+				this.masterTab.registerPath(this.selPath);								
 			}
 
 			public function cleanOldScenarios():void {
@@ -114,9 +118,9 @@
 				this.panelTabB3.dataServiceData = this.dataServiceData;
 				this.panelTabB3.dataServiceUpdate = this.dataServiceUpdate;
 				
-				this.panelTabB3.initNames();				
-				this.panelTabB3.countryListGrid.dataList = this.masterTab.getDataList();			
+				this.panelTabB3.initNames();		
 				
+				this.panelTabB3.countryListGrid.dataList = this.masterTab.getDataList();				
 				this.masterTab.addTab(this.panelTabB3, 1);
 			}
 
@@ -129,8 +133,8 @@
 				this.panelTabC4.dataServiceUpdate = this.dataServiceUpdate;
 				
 				this.panelTabC4.initNames();
-				this.panelTabC4.countryListGrid.dataList = this.masterTab.getDataList();
 				
+				this.panelTabC4.countryListGrid.dataList = this.masterTab.getDataList();
 				this.masterTab.addTab(this.panelTabC4, 2);
 			}
 
@@ -141,12 +145,13 @@
 				this.panelTabD5.dataServiceNames = this.dataServiceNames;
 				this.panelTabD5.dataServiceData = this.dataServiceData;
 				
-				this.panelTabD5.initNames();				
+				this.panelTabD5.initNames();	
+				
 				this.panelTabD5.countryListGrid.dataList = this.masterTab.getDataList();
 				this.masterTab.addTab(this.panelTabD5, 3);
 			}
 
-		
+
 			protected function deleteAllScenariosResult_resultHandler(event:ResultEvent):void
 			{
 			     this.statusLabel.text = "data cleaned from DB";
@@ -162,8 +167,7 @@
 				this.panelTabA2.dataServiceNames = this.dataServiceNames;
 				this.panelTabA2.dataServiceData =  this.dataServiceData;
 				this.panelTabA2.dataServiceUpdate = this.dataServiceUpdate;
-				this.panelTabA2.initNames();
-				
+				this.panelTabA2.initNames();				
 		
 				this.masterTab.addTab(this.panelTabA2, 0);
 			}
@@ -179,6 +183,7 @@
 				this.panelTabF51.dataServiceUpdate = this.dataServiceUpdate;
 				
 				this.panelTabF51.initNames();
+				
 				this.panelTabF51.countryListGrid.dataList = this.masterTab.getDataList();
 				this.masterTab.addTab(this.panelTabF51, 4);
 			}
@@ -202,7 +207,7 @@
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-		<s:Label text="Battery Dermand Analysis Tool" width="50%" height="100%"/>
+		<s:Label text="Battery Dermand Analysis Tool. v.03-28-11am" width="50%" height="100%"/>
 		<s:Label text="info bar" id="statusLabel" width="50%" textAlign="right" height="100%"/>
 	</s:BorderContainer>
 	
@@ -215,7 +220,7 @@
 					>
 
 			<s:NavigatorContent label="Path selection" width="100%" height="100%">
-				<panelTabs:tabPathSelection top="10" left="15" width="499">
+				<panelTabs:tabPathSelection id="panelTabPath" top="10" left="15" width="499">
 				</panelTabs:tabPathSelection>
 			</s:NavigatorContent>
 			

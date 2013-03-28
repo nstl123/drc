@@ -141,6 +141,11 @@
 				// TODO Auto-generated method stub
 			}
 
+			public function enableGrid(flag:Boolean) : void {
+				this.testGrid.isEditable = flag;
+				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -170,9 +175,10 @@
 	
 	<utils:CTwoAxisChart x="298" width="556" height="260" id="testChart" top="87">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="296" width="557" height="250" id="testGrid" top="389">
+	<utils:CInteractiveGrid x="296" width="557" height="223" id="testGrid" top="416">
 	</utils:CInteractiveGrid>
 	<s:DropDownList x="304" width="300" id="indicatorsBox"  labelField="namen" top="50"></s:DropDownList>
 	<s:Button x="430" y="355" label="Reset" click="button4_clickHandler(event)" width="118"/>
 	<s:Button x="294" y="356" label="Update DB" click="button5_clickHandler(event)" width="106"/>
+	<s:Label x="302" y="397" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
 </s:Group>

@@ -25,9 +25,18 @@
 			
 			[bindable] private var workingScenarioID:int;
 			
-			[bindable] public var isEditable:Boolean = false;
+			[bindable] private static var isEditable:Boolean = false;
 			// data getters			
 			// data setters			
+			public function set isEditable(flag:Boolean):void {
+				this.testGrid.editable = flag;
+				this.testGrid.invalidateDisplayList();
+			}			
+			
+			public function get isEditable():Boolean {
+				return this.isEditable;
+			}
+			
 			public function setWorkingScenario(nv:int, isEditable:Boolean):void {
 				this.workingScenarioID = nv;
 				this.testGrid.editable = isEditable;
@@ -47,7 +56,7 @@
 			}
 			
 			private function disableEditing(event:DataGridEvent):void {
-				if(event.columnIndex < 4) {  
+				if(event.columnIndex < 3) {  
 					event.preventDefault(); 
 				};
 			}
@@ -161,7 +170,7 @@
 				//send some php calls here mit alteredData			
 			}
 			
-			[bindable] public var w1:int = 50;
+			[bindable] public var w1:int = 55;
 			[bindable] public var w2:int = 50;
 			private static var fixedCols:int = 3;
 			private function startGrid(evt:Event):void {
@@ -178,29 +187,30 @@
 				 horizontalCenter="0" verticalCenter="0" width="100%" height="100%"
 				 editable="false" itemEditBegin="{this.disableEditing(event)}"
 				 itemEditEnd="{this.checkForNewValues(event)}"
-				 lockedColumnCount="3"  horizontalScrollPolicy="on" creationComplete="startGrid(event)" fontSize="11">
+				 lockedColumnCount="3"  horizontalScrollPolicy="on" 
+				 creationComplete="startGrid(event)" fontSize="11">
 		<mx:columns>
 			<mx:DataGridColumn headerText="countryID" dataField="countryID"/>
 			<mx:DataGridColumn headerText="indicatorID" dataField="indicatorID" />
 			<!-- <mx:DataGridColumn headerText="scenarioID" dataField="scenarioID"/> !-->
 			<mx:DataGridColumn headerText="deviceID" dataField="deviceID"/>
-			<mx:DataGridColumn headerText="Y2004" dataField="Y2004" />
-			<mx:DataGridColumn headerText="Y2005" dataField="Y2005" />
-			<mx:DataGridColumn headerText="Y2006" dataField="Y2006" />
-			<mx:DataGridColumn headerText="Y2007" dataField="Y2007" />
-			<mx:DataGridColumn headerText="Y2008" dataField="Y2008" />
-			<mx:DataGridColumn headerText="Y2009" dataField="Y2009" />
-			<mx:DataGridColumn headerText="Y2010" dataField="Y2010" />
-			<mx:DataGridColumn headerText="Y2011" dataField="Y2011" />
-			<mx:DataGridColumn headerText="Y2012" dataField="Y2012"/>
-			<mx:DataGridColumn headerText="Y2013" dataField="Y2013"/>
-			<mx:DataGridColumn headerText="Y2014" dataField="Y2014"/>
-			<mx:DataGridColumn headerText="Y2015" dataField="Y2015"/>
-			<mx:DataGridColumn headerText="Y2016" dataField="Y2016"/>
-			<mx:DataGridColumn headerText="Y2017" dataField="Y2016"/>
-			<mx:DataGridColumn headerText="Y2018" dataField="Y2018"/>
-			<mx:DataGridColumn headerText="Y2019" dataField="Y2019"/>			
-			<mx:DataGridColumn headerText="Y2020" dataField="Y2020"/>			
+			<mx:DataGridColumn headerText="2004" dataField="Y2004" />
+			<mx:DataGridColumn headerText="2005" dataField="Y2005" />
+			<mx:DataGridColumn headerText="2006" dataField="Y2006" />
+			<mx:DataGridColumn headerText="2007" dataField="Y2007" />
+			<mx:DataGridColumn headerText="2008" dataField="Y2008" />
+			<mx:DataGridColumn headerText="2009" dataField="Y2009" />
+			<mx:DataGridColumn headerText="2010" dataField="Y2010" />
+			<mx:DataGridColumn headerText="2011" dataField="Y2011" />
+			<mx:DataGridColumn headerText="2012" dataField="Y2012"/>
+			<mx:DataGridColumn headerText="2013" dataField="Y2013"/>
+			<mx:DataGridColumn headerText="2014" dataField="Y2014"/>
+			<mx:DataGridColumn headerText="2015" dataField="Y2015"/>
+			<mx:DataGridColumn headerText="2016" dataField="Y2016"/>
+			<mx:DataGridColumn headerText="2017" dataField="Y2016"/>
+			<mx:DataGridColumn headerText="2018" dataField="Y2018"/>
+			<mx:DataGridColumn headerText="2019" dataField="Y2019"/>			
+			<mx:DataGridColumn headerText="2020" dataField="Y2020"/>			
 		</mx:columns>
 	</mx:DataGrid>
 </s:Group>

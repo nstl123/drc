@@ -18,7 +18,8 @@ class Depot3 {
 		$arr = $arr0['data'];
 		
 		$srcTable = "";
-		if ($hasSplit) $srcTable = "Consulting.DC_scenarioDataProxy";
+		if ($hasSplit) $srcTable = "Consulting.DC_scenarioDataProxy"; 
+		// in this case need to add proxy countries for matching batType and pwrType IDs
 		else           $srcTable = "Consulting.DC_scenarioData";
 		
 		if ($isDeviceBase) $srcTable = "Consulting.DC_deviceBaseTable"; 		

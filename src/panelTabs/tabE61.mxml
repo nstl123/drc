@@ -161,8 +161,15 @@
 			protected function getDemandRegions_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getDemandRegions.lastResult as ArrayCollection;				
-				this.testChart.setData(currentData); // transformation is performed inside chart component
-				this.testGrid.setData(currentData);
+				
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source = this.currentData.source;
+				
+				this.currentDataChart.filterFunction = this.filterChart;
+				this.currentDataGrid.filterFunction  = this.filterGrid;
+				
+				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid);
 				
 				this.cursorManager.removeBusyCursor();
 			}
@@ -195,14 +202,28 @@
 		<![CDATA[	
 			[bindable] private var selectedIndi:int;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
+			
 			[bindable] private var currentDataExo:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataExoChart:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataExoGrid:ArrayCollection = new ArrayCollection();
+			
 			[bindable] private var aggType:int = 0;				
 			
 			protected function getDemandData_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getDemandData.lastResult as ArrayCollection;				
-				this.testChart.setData(currentData); // transformation is performed inside chart component
-				this.testGrid.setData(currentData);
+				
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source = this.currentData.source;
+				
+				this.currentDataChart.filterFunction = this.filterChart;
+				this.currentDataGrid.filterFunction  = this.filterGrid;
+				
+				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid);
+				
 				this.cursorManager.removeBusyCursor();
 			}
 			
@@ -300,17 +321,64 @@
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
 				currentDataExo = this.getMacroData.lastResult as ArrayCollection;				
-				this.testChartExo.setData(currentDataExo); // transformation is performed inside chart component
-				this.testGridExo.setData(this.currentDataExo);
+				
+				this.currentDataExoChart.source = this.currentDataExo.source;
+				this.currentDataExoGrid.source = this.currentDataExo.source;
+
+				this.currentDataExoChart.filterFunction = this.filterChartExo;
+				this.currentDataExoGrid.filterFunction = this.filterGridExo;
+				
+				this.testChartExo.setData(currentDataExoChart); // transformation is performed inside chart component
+				this.testGridExo.setData(currentDataExoGrid);
+				
 				this.cursorManager.removeBusyCursor();
 			}			
+			
+			private function filterGrid(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if ((item.scenarioID == this.workingScenarioID)
+					&& ((item.deviceID == this.selDevice)||(!devicesActiveFlag))) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}	
+			
+			private function filterChart(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if ((item.deviceID == this.selDevice)||(!devicesActiveFlag)) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}			
+			
+			private function filterGridExo(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if ((item.scenarioID == this.workingScenarioID)
+					&& (item.deviceID == this.selDevice)) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}	
+			
+			private function filterChartExo(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if (item.deviceID == this.selDevice) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}
 			
 			protected function getMacroData_faultHandler(event:FaultEvent):void
 			{
 				var z:int = 0;
 				z = z + 1;
 				Alert.show("some fockin err in SQL query");
-			}			
+			}	
+			
+			public function enableGrid(flag:Boolean) : void {
+				this.testGrid.isEditable = flag;			
+			}
+			
 		]]>
 	</fx:Script>
 	<s:BorderContainer width="220" height="26" left="10" top="10">
@@ -328,9 +396,9 @@
 	
 	<utils:CTwoAxisChart x="237" width="383" height="283" id="testChart" y="147">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="238" width="383" height="203" id="testGrid" y="438">
+	<utils:CInteractiveGrid x="234" width="761" height="203" id="testGrid" y="440">
 	</utils:CInteractiveGrid>
-	<s:Button x="605" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="83" width="171"/>
+	<s:Button x="605" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="76" width="171"/>
 	<s:Label x="422" y="9" text="Selected Device" width="344" id="selDeviceLabel"/>
 	<s:Label x="393" y="103" text="Bat Type" width="112" id="selDeviceLabel0"/>
 	<s:Label x="230" y="103" text="Pwr Type" width="112" id="selDeviceLabel1"/>
@@ -357,10 +425,12 @@
 	</s:BorderContainer>
 	<s:Label x="778" y="10" text="some exogenous var" width="193"/>
 	<s:DropDownList x="789" y="29" width="201" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)"/>
-	<s:Button x="819" y="83" label="getSomeExo" width="171" click="button3_clickHandler(event)" id="button"/>
-	<utils:CTwoAxisChart x="630" y="147" height="283" id="testChartExo" width="375">
+	<s:Button x="819" y="76" label="getSomeExo" width="171" click="button3_clickHandler(event)" id="button"/>
+	<utils:CTwoAxisChart x="630" y="147" height="283" id="testChartExo" width="365">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="639" y="438" height="203" id="testGridExo" width="366">
+	<utils:CInteractiveGrid x="751" y="583" height="58" id="testGridExo" width="254"
+							 visible="false" enabled="false"
+							>
 	</utils:CInteractiveGrid>
 	<utils:CCheckBoxGrid x="10" y="383" height="268" width="220" id="regionsListGrid"
 						 labelText="Regions" >

@@ -21,6 +21,11 @@
 			protected function updateData_faultHandler(event:FaultEvent):void
 			{
 				var z:Object = event.message.body.toString();
+			}		
+			
+			public function enableGrid(flag:Boolean) : void {
+				this.testGrid.isEditable = flag;
+				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 			}
 
 		]]>
@@ -243,7 +248,7 @@
 	<utils:CTwoAxisChart x="243" width="540" height="258" id="testChart" top="68">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid x="239" width="544" height="232" id="testGrid" top="362">
+	<utils:CInteractiveGrid x="239" width="544" height="232" id="testGrid" top="384">
 	</utils:CInteractiveGrid>
 	
 	<s:DropDownList x="241" width="243" height="18" id="indicatorsBox" 
@@ -255,5 +260,6 @@
 	<s:Button x="238" y="334" label="updateDB" width="215" click="digestChanges(event)"/>
 	<s:Button x="461" y="334" label="Reset" width="103" click="button4_clickHandler(event)"/>
 	<s:DropDownList x="492" y="10" width="291" id="deviceListDrop" labelField="namen" 
-					change="deviceListDrop_changeHandler(event)"></s:DropDownList>
+					change="deviceListDrop_changeHandler(event)"></s:DropDownList>	
+	<s:Label x="239" y="365" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
 </s:Group>

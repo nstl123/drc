@@ -75,9 +75,9 @@
 				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
-			public function setWorkingScenario(nv:int):void {
+			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
-				this.testGrid.setWorkingScenario(this.workingScenarioID, true);				
+				this.testGrid.setWorkingScenario(workingScenarioID, flag);				
 			}					
 			
 			protected function getDeviceList_resultHandler(event:ResultEvent):void
@@ -213,11 +213,8 @@
 						tmpType = this.selPwrType; break;
 				};
 				
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, true, false, this.selDevice, tmpType);
-				
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, true, false, this.selDevice, tmpType);				
 			}			
-			
-			
 
 			protected function button4_clickHandler(event:MouseEvent):void
 			{

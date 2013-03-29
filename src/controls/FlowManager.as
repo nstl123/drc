@@ -25,7 +25,8 @@ package controls
 		}
 		
 		public function addTab(A:Object, jk:int):void {
-			tabList.addItemAt(A, jk);
+			//tabList.addItemAt(A, jk);
+			tabList.addItem(A);
 		}
 		
 		public function removeLastTab(jk:int):void {
@@ -71,7 +72,8 @@ package controls
 		[bindable] public var selPath:String = "";
 		[bindable] private var pathFlags:Array = new Array(); 
 		
-		public function registerPath(np:String):void {
+		public function registerPath(np:String, isStart:int):void {		
+			
 			this.selPath = np;
 			switch (this.selPath) {
 				case "A1":						
@@ -89,11 +91,14 @@ package controls
 					break;				
 				case "A2":
 					pathFlags = [1, 0, 0, 0, 1, 0];
-					break;			
-			};	
+					break;	
+				default:
+					pathFlags = [0, 0, 0, 0, 0, 0];
+					break;
+			};
 			
 			this.enableGrids(this.pathFlags);
-			
+			//if (isStart > 0) enableTabs(true);			
 		}
 		
 		public function enableGrids(arr:Array):void {
@@ -101,9 +106,14 @@ package controls
 				for (var i:int = 0; i < arr.length; i++) {				
 					this.tabList[i].enableGrid(arr[i] == 1);				
 				};
-			};
-		
+			};		
 		}
+		
+		/*public function enableTabs(flag:Boolean):void {
+			for (var i:int = 0; i < tabList.length; i++) {
+				this.tabList[i].enabled = flag;
+			};		
+		}*/
 		
 	}
 }

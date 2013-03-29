@@ -70,7 +70,8 @@
 				
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab B");			
-				hlp = new helper();				
+				hlp = new helper();			
+				//enableGrid(false);
 			}
 			
 			public function initNames():void {
@@ -80,9 +81,9 @@
 				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
-			public function setWorkingScenario(nv:int):void {
+			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
-				this.testGrid.setWorkingScenario(this.workingScenarioID, true);				
+				this.testGrid.setWorkingScenario(this.workingScenarioID, flag);				
 			}					
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void

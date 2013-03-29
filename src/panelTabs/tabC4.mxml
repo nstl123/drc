@@ -108,9 +108,9 @@
 				this.getDeviceNames.token = this.dataServiceNames.getDeviceNames();
 			}
 			
-			public function setWorkingScenario(nv:int):void {
+			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
-				this.testGrid.setWorkingScenario(this.workingScenarioID, true);				
+				this.testGrid.setWorkingScenario(this.workingScenarioID, flag);				
 			}					
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void

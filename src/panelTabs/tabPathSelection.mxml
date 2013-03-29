@@ -2,12 +2,12 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"		 
-		 >
+		 creationComplete="group1_creationCompleteHandler(event)" >
 
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
-			[bindable] public var selPath:String = "";
+			[bindable] public var selPath:String = "";			
 			
 			protected function radiobutton1_clickHandler(event:Event):void
 			{
@@ -15,15 +15,11 @@
 				this.dispatchEvent(new Event("pathChanged", true));
 			}
 
-			/*protected function group1_creationCompleteHandler(event:FlexEvent):void
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
-				this.addEventListener("pathChanged", digestUpdate);
-			}*/
-
-			protected function digestUpdate(evt:Event):void {
-			
+				this.dispatchEvent(new Event("pathChanged", true));
 			}
-			
+
 		]]>
 	</fx:Script>
 
@@ -39,7 +35,7 @@
 		<s:RadioButton x="89" y="59" label="A1 (macro) + # of HHs" 
 					   groupName="pathTypes" value="A1" click="radiobutton1_clickHandler(event)"/>
 		<s:RadioButton x="89" y="85" label="B (HH pen rate + dev. per HH)" value="B" 
-					   groupName="pathTypes" selected="true" click="radiobutton1_clickHandler(event)"/>
+					   groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)"/>
 		<s:RadioButton x="89" y="85" label="C (device base)" value="C"
 					   groupName="pathTypes" click="radiobutton1_clickHandler(event)"/>
 		<s:RadioButton x="89" y="85" label="D (market size + depreciation)" value="D" 

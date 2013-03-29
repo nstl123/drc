@@ -52,6 +52,7 @@
 				this.addEventListener(CCheckBoxGrid.UNCHECKED, updateCountriesRM);
 				
 				initShockControls();
+				
 			}
 			
 			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
@@ -85,9 +86,9 @@
 				countryListNames.token = this.dataServiceNames.getCountryList(0);
 			}
 			
-			public function setWorkingScenario(nv:int):void {
+			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
-				this.grid.setWorkingScenario(this.workingScenarioID, true);				
+				this.grid.setWorkingScenario(this.workingScenarioID, flag);				
 			}					
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void
@@ -215,7 +216,6 @@
 				this.grid.isEditable = flag;
 				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 			}
-
 		]]>
 	</fx:Script>
 	
@@ -237,7 +237,7 @@
 	</fx:Declarations>
 	
 	<utils:CInteractiveGrid x="239" width="652" height="211" id="grid" top="413"
-						 	>
+						  >
 	</utils:CInteractiveGrid>
 	<utils:CTwoAxisChart x="239" width="521" height="295" id="chart" top="67"
 						  isLineSeries="true">

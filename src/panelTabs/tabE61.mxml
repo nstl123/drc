@@ -85,9 +85,9 @@
 				this.getIndicatorNames.token = this.dataServiceNames.getIndicatorNames();
 			}
 			
-			public function setWorkingScenario(nv:int):void {
+			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
-				this.testGrid.setWorkingScenario(this.workingScenarioID, false);	
+				this.testGrid.setWorkingScenario(this.workingScenarioID, flag);	
 				this.testGridExo.setWorkingScenario(this.workingScenarioID, false);
 			}					
 			
@@ -168,6 +168,9 @@
 				this.currentDataChart.filterFunction = this.filterChart;
 				this.currentDataGrid.filterFunction  = this.filterGrid;
 				
+				this.currentDataChart.refresh();
+				this.currentDataGrid.refresh();
+				
 				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
 				this.testGrid.setData(currentDataGrid);
 				
@@ -220,6 +223,9 @@
 				
 				this.currentDataChart.filterFunction = this.filterChart;
 				this.currentDataGrid.filterFunction  = this.filterGrid;
+				
+				this.currentDataChart.refresh();
+				this.currentDataGrid.refresh();
 				
 				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
 				this.testGrid.setData(currentDataGrid);
@@ -328,6 +334,9 @@
 				this.currentDataExoChart.filterFunction = this.filterChartExo;
 				this.currentDataExoGrid.filterFunction = this.filterGridExo;
 				
+				this.currentDataExoChart.refresh();
+				this.currentDataExoGrid.refresh();
+				
 				this.testChartExo.setData(currentDataExoChart); // transformation is performed inside chart component
 				this.testGridExo.setData(currentDataExoGrid);
 				
@@ -353,8 +362,8 @@
 			
 			private function filterGridExo(item:Object):Boolean {				
 				var f:Boolean = true;				
-				if ((item.scenarioID == this.workingScenarioID)
-					&& (item.deviceID == this.selDevice)) {					
+				if (((item.scenarioID == this.workingScenarioID)
+					&& (item.deviceID == this.selDevice))||(this.selExoIndi < 200)) {					
 					f = true
 				}  else f = false;				
 				return f;
@@ -362,7 +371,7 @@
 			
 			private function filterChartExo(item:Object):Boolean {				
 				var f:Boolean = true;				
-				if (item.deviceID == this.selDevice) {					
+				if ((item.deviceID == this.selDevice)||(this.selExoIndi < 200)) {					
 					f = true
 				}  else f = false;				
 				return f;

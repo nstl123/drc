@@ -13,19 +13,15 @@ class Depot3 {
 		));
 	}	
 	
-	public function updateData($data, $hasSplit, $isDeviceBase, $deviceID, $typeID) { // id indicator hasSplit by batTypes
+	public function updateData($data, $isDeviceBase, $deviceID, $typeID) { // id indicator hasSplit by batTypes
 		$arr0 = (array)$data;
 		$arr = $arr0['data'];
 		
-		$srcTable = "";
-		if ($hasSplit) $srcTable = "Consulting.DC_scenarioDataProxy"; 
+		$srcTable = "";		
 		// in this case need to add proxy countries for matching batType and pwrType IDs
-		else           $srcTable = "Consulting.DC_scenarioData";
+		$srcTable = "Consulting.DC_scenarioData";
 		
-		if ($isDeviceBase) $srcTable = "Consulting.DC_deviceBaseTable"; 		
-		
-		// loop to select
-		// loop to select all country-indi pairs		
+		if ($isDeviceBase) $srcTable = "Consulting.DC_deviceBaseTable"; 				
 		
 		for ($j = 0; $j < count($arr); $j++) {		
 			$b =(array) $arr0['data'][$j]; // need to extend to more data points
@@ -58,6 +54,47 @@ class Depot3 {
 		//return  $stmnt;
 	}		
 		
+	public function updateDataProxy($data, $deviceID, $typeID) { // id indicator hasSplit by batTypes
+		$arr0 = (array)$data;
+		$arr = $arr0['data'];
+		
+		$srcTable = "Consulting.DC_scenarioDataProxy"; 
+		
+		for ($j = 0; $j < count($arr); $j++) {		
+			$b =(array) $arr0['data'][$j]; // need to extend to more data points
+			switch ($b['indicatorID']) {
+				case 204:
+					$col_namen = 'avg_number'; 	 break;
+				case 205:
+					$col_namen = 'pwr_DPP'; 	 break;
+				case 206:
+					$col_namen = 'battery_size'; break;
+			};			
+			$stmnt = "
+				UPDATE ".$srcTable." sdp
+				JOIN Consulting.DC_namesCountries nc
+				ON sdp.countryID = nc.".$col_namen." 
+				SET						
+					Y2004 = ".$b['Y2004'].",
+					Y2005 = ".$b['Y2005'].", Y2006 = ".$b['Y2006'].", Y2007 = ".$b['Y2007'].",
+					Y2008 = ".$b['Y2008'].", Y2009 = ".$b['Y2009'].", Y2010 = ".$b['Y2010'].",
+					Y2011 = ".$b['Y2011'].", Y2012 = ".$b['Y2012'].", Y2013 = ".$b['Y2013'].", 
+					Y2014 = ".$b['Y2014'].", Y2015 = ".$b['Y2015'].", Y2016 = ".$b['Y2016'].", 
+					Y2017 = ".$b['Y2017'].", Y2018 = ".$b['Y2018'].", Y2019 = ".$b['Y2019'].", 
+					Y2020 = ".$b['Y2020']."
+				WHERE scenarioID = ".$b['scenarioID']."								
+					AND indicatorID = ".$b['indicatorID']."			
+					AND deviceID = ".$deviceID."					
+					AND typeID = ".$typeID."
+					AND nc.id = ".$b['countryID'].";";			
+		
+			$result = $this->connection->prepare($stmnt);
+			$result->execute();	
+		}		
+		//return true;
+		return  $stmnt;
+	}	
+
 	public function createNewWorkingScenario($scenarioID) {
 		$this -> deleteWorkingScenario($scenarioID);
 		$this -> insertWorkingScenario($scenarioID);

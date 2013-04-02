@@ -7,7 +7,7 @@
 		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*" 
-		  xmlns:depot3="services.depot3.*">
+		 xmlns:depot3="services.depot3.*">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -47,7 +47,8 @@
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab A1");			
-				hlp = new helper();				
+				hlp = new helper();	
+				
 				this.addEventListener(CCheckBoxGrid.CHECKED, updateCountries);
 				this.addEventListener(CCheckBoxGrid.UNCHECKED, updateCountriesRM);
 				
@@ -69,13 +70,13 @@
 			protected function updateCountries(evt:Event):void	{
 				//var selCntries:Object = this.countryListGrid.dataList;
 				//this.dispatchEvent(new Event(tabA2.CNTRYCHANGED, true));
-				trace("cought selection positive");
+				trace("cought cntry selection positive");
 			}
 			
 			protected function updateCountriesRM(evt:Event):void	{
 				//var selCntries:Object = this.countryListGrid.dataList;				
 				//this.dispatchEvent(new Event(tabA2.CNTRYCHANGED, true));
-				trace("cought selection negative");
+				trace("cought cntry selection negative");
 			}
 			
 			public function initNames():void {
@@ -185,7 +186,7 @@
 				
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, 0, 0);
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, 0, 0);
 			}
 			
 

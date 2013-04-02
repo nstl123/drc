@@ -20,12 +20,16 @@
 				this.dispatchEvent(new Event("pathChanged", true));
 			}
 
+			public function enablePaths(flag:Boolean):void {
+				this.pathTypes.enabled = flag;				
+			}
+			
 		]]>
 	</fx:Script>
 
 	
 	<fx:Declarations>
-		<s:RadioButtonGroup id="pathTypes"/>	
+		<s:RadioButtonGroup id="pathTypes" enabled="false"/>	
 	</fx:Declarations>
 	
 	<s:BorderContainer width="358" height="200" horizontalCenter="0" verticalCenter="0">

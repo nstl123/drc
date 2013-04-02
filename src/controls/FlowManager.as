@@ -37,7 +37,7 @@ package controls
 		public function manageUpdate(className:String):void {
 			
 			switch(className) {
-				case "tabA2":
+			 	case "tabA2":
 					tmp = this.tabList[0].getDataList();
 					break;
 				case "tabB3":
@@ -50,10 +50,10 @@ package controls
 					tmp = this.tabList[3].getDataList();
 					break;
 				case "tabF51": // bat factors
-					tmp = this.tabList[4].getDataList();
+					tmp = this.tabList[5].getDataList();
 					break;			
 				case "tabE61": // demand view
-					tmp = this.tabList[5].getDataList();
+					tmp = this.tabList[4].getDataList();
 					break;
 					
 			};			
@@ -77,20 +77,20 @@ package controls
 			this.selPath = np;
 			switch (this.selPath) {
 				case "A1":						
-					//          [A, B, C, D, F, E]
-					pathFlags = [1, 0, 0, 0, 1, 0];
+					//          [A, B, C, D, E, F]
+					pathFlags = [1, 0, 0, 0, 0, 1];
 					break;
 				case "B":					
-					pathFlags = [0, 1, 0, 0, 1, 0];
+					pathFlags = [0, 1, 0, 0, 1, 1];
 					break;
 				case "C":					
-					pathFlags = [0, 0, 1, 0, 1, 0];
+					pathFlags = [0, 0, 1, 0, 0, 1];
 					break;
 				case "D":
-					pathFlags = [0, 0, 0, 1, 1, 0];
+					pathFlags = [0, 0, 0, 1, 0, 1];
 					break;				
 				case "A2":
-					pathFlags = [1, 0, 0, 0, 1, 0];
+					pathFlags = [1, 0, 0, 0, 0, 1];
 					break;	
 				default:
 					pathFlags = [0, 0, 0, 0, 0, 0];

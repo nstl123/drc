@@ -190,7 +190,7 @@
 				var temp:Object = new Object();
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, false, this.selDevice, 0);
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);
 				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
 			}
 			

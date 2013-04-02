@@ -31,7 +31,8 @@
 		<![CDATA[
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
-				// TODO Auto-generated method stub
+				var r:Object = event.message;
+				Alert.show("Data Updated Successfully", "Info");
 			}
 			
 			import controls.*;
@@ -213,7 +214,11 @@
 						tmpType = this.selPwrType; break;
 				};
 				
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, true, false, this.selDevice, tmpType);				
+				if (this.selectedIndi == 207) {
+					this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, tmpType);
+				} else {				
+					this.updateData.token = this.dataServiceUpdate.updateDataProxy(temp, this.selDevice, tmpType);
+				};
 			}			
 
 			protected function button4_clickHandler(event:MouseEvent):void

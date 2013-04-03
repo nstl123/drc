@@ -320,7 +320,7 @@
 				
 				
 				getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
-					tmpSplit, typeID); 
+					tmpSplit, typeID, 1); 
 				//getMacroDataResult.token = this.dataServiceData.getMacroData(tmp, indicatorID, scenarioID, hasSplit, deviceID, typeID);
 			}
 			

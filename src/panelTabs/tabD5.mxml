@@ -110,7 +110,8 @@
 				var countryIDs:Array = this.countryListGrid.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, true, 0);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
+					workingScenarioID, true, 0, 1);
 			}
 			
 			[bindable] private var selectedIndi:int;

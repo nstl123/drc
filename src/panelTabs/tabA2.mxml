@@ -138,7 +138,7 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 1);
 			}
 			
 			[bindable] private var selectedIndi:int;
@@ -217,6 +217,12 @@
 				this.grid.isEditable = flag;
 				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 			}
+
+			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
+			{
+				Alert.show(event.fault.faultString, "Error");				
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -230,7 +236,7 @@
 		
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
-		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
+		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		
 		<s:RadioButtonGroup id="growthType"/>

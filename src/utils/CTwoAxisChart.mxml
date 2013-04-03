@@ -108,7 +108,8 @@
 					else series2.verticalAxis = vaxis2;*/
 					series2.verticalAxis = vaxis1;					
 					
-					series2.displayName = tmp.countryID + "|" + tmp.indicatorID + "\n" + tmp.scenarioID;
+					series2.displayName = tmp.countryID + ", " 
+						+ (tmp.scenarioID == 10001 ? "Baseline" : "Working Scen.");
 					
 					hAxis.dataProvider = someData.getItemAt(i);
 					vaxis1.baseAtZero = false;

@@ -66,29 +66,33 @@ package utils
 			var newObj:Object = new Object();
 			
 			for (var j:int = 0;  j < data.length; j++) {
-				var obj:Object = data.getItemAt(j); 
-				newObj        = ([	  
-					{"id" : 1, "yrs": "y2004", "data" : obj.Y2004, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" : 2, "yrs": "y2005", "data" : obj.Y2005, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},			  		
-					{"id" : 3, "yrs": "y2006", "data" : obj.Y2006, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" : 4, "yrs": "y2007", "data" : obj.Y2007, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" : 5, "yrs": "y2008", "data" : obj.Y2008, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" : 6, "yrs": "y2009", "data" : obj.Y2009, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" : 7, "yrs": "y2010", "data" : obj.Y2010, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" : 8, "yrs": "y2011", "data" : obj.Y2011, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" : 9, "yrs": "y2012", "data" : obj.Y2012, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :10, "yrs": "y2013", "data" : obj.Y2013, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :11, "yrs": "y2014", "data" : obj.Y2014, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :12, "yrs": "y2015", "data" : obj.Y2015, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :13, "yrs": "y2016", "data" : obj.Y2016, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :14, "yrs": "y2017", "data" : obj.Y2017, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :15, "yrs": "y2018", "data" : obj.Y2018, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :16, "yrs": "y2019", "data" : obj.Y2019, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID},
-					{"id" :17, "yrs": "y2020", "data" : obj.Y2020, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID}
-					//{"id" :18, "yrs": "y2021", "data" : obj.Y2021, "countryID":obj.countryID, "indicatorID":obj.indicatorID, "scenarioID":obj.scenarioID}
-				]);			
+				var obj:Object = data.getItemAt(j);
+				var yr:int = j + 2004;
+				var cntryName:String = obj.namen;
+				var indiName:String = obj.indicatorID;
+				var scenName:String = obj.scenarioID;
+				newObj = ([	  
+					{"yrs": 2004, "data" : obj.Y2004, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2005, "data" : obj.Y2005, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},			  		
+					{"yrs": 2006, "data" : obj.Y2006, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2007, "data" : obj.Y2007, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2008, "data" : obj.Y2008, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2009, "data" : obj.Y2009, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2010, "data" : obj.Y2010, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2011, "data" : obj.Y2011, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2012, "data" : obj.Y2012, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2013, "data" : obj.Y2013, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2014, "data" : obj.Y2014, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2015, "data" : obj.Y2015, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2016, "data" : obj.Y2016, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2017, "data" : obj.Y2017, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2018, "data" : obj.Y2018, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2019, "data" : obj.Y2019, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2020, "data" : obj.Y2020, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName}					
+				]);
 				z.addItem(newObj);
-			}		
+			}			
+
 			return z;
 		}	
 		

@@ -149,7 +149,8 @@
 						tmpType = this.selPwrType; break;
 				};				
 				
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, hasSplitFlag.selected, tmpType);
+				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
+					hasSplitFlag.selected, tmpType, 1);
 			}
 			
 			[bindable] private var selectedIndi:int;

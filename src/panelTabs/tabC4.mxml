@@ -27,8 +27,7 @@
 			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void
 			{
 				if (event.message.body != "ok") //this.someLabel.text = "view written successfully";
-				//else this.someLabel.text = "view was not written";
-					Alert.show("data was not written to DB!", "Error");
+				Alert.show("data was not written to DB!", "Error");
 			}
 
 
@@ -47,8 +46,8 @@
 				this.currentDataGrid.filterFunction = filterGrid;
 				this.currentDataGrid.refresh();
 				
-				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid);
+				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid, isLevel);
 
 			}
 
@@ -98,13 +97,13 @@
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab C");			
-				hlp = new helper();				
+				hlp = new helper();			
+				this.addEventListener("updateCharts", updateCharts);				
 			}
 			
 			public function initNames():void {
 				trace("init names inside panel C");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
-				//countryListNames.token = this.dataServiceNames.getCountryList(0);
 				this.getDeviceNames.token = this.dataServiceNames.getDeviceNames();
 			}
 			
@@ -116,12 +115,7 @@
 			protected function countryListNames_resultHandler(event:ResultEvent):void
 			{
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
-			}
-			
-			protected function button1_clickHandler(event:MouseEvent):void
-			{
-				//this.countryListNames.token = this.dataService.getCountryList();
-			}
+			}			
 			
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
@@ -137,7 +131,6 @@
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
 				this.updateData.token = this.dataServiceUpdate.updateData(temp, true, this.selDevice, 0);
-				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
 			}
 			
 			
@@ -162,7 +155,6 @@
 			}
 			
 			private function filterB(item:Object):Boolean {			
-				// here should be all indis within ID range
 				var fl:Boolean = true;				
 				if ((item.hasSplitByDevices == 1)&&(item.hasSplitByTypes == 0)&&
 					(item.isOutputIndicator == 1)) {					
@@ -172,8 +164,7 @@
 			}					
 			
 			protected function button3_clickHandler(event:MouseEvent):void
-			{
-				//send query to DB mit countryIDs and IndiID
+			{				
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;		
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling device base token");
@@ -187,8 +178,6 @@
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
 			}						
 			
 			protected function getDeviceBase_resultHandler(event:ResultEvent):void
@@ -197,14 +186,17 @@
 				
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source = this.currentData.source;
-				
+				this.dispatchEvent(new Event("updateCharts", false));				
+			}
+			
+			protected function updateCharts(evt:Event):void {
 				this.currentDataGrid.filterFunction = this.filterGrid;
 				this.currentDataGrid.refresh();
 				this.currentDataChart.filterFunction = this.filterChart;
 				this.currentDataChart.refresh();				
 				
-				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid);
+				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid, isLevel);
 			}
 			
 			private function filterGrid(item:Object):Boolean {				
@@ -224,6 +216,12 @@
 				return f;
 			}			
 			
+			[bindable] private var isLevel:Boolean = true;
+			protected function radiobutton2_changeHandler(event:Event):void
+			{
+				this.isLevel = !this.isLevel;
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
 		]]>
 	</fx:Script>
 	
@@ -274,4 +272,8 @@
 	<s:DropDownList x="459" y="26" width="322" id="deviceListDrop" labelField="namen" 
 					change="deviceListDrop_changeHandler(event)"></s:DropDownList>
 	<s:Label x="239" y="392" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
+	<s:RadioButton x="427" y="58" label="Levels" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:RadioButton x="489" y="58" label="Growths" groupName="growthType" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
 </s:Group> 

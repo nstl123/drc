@@ -71,7 +71,8 @@
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab B");			
-				hlp = new helper();				
+				hlp = new helper();			
+				this.addEventListener("updateCharts", updateCharts);				
 			}
 			
 			public function initNames():void {
@@ -165,14 +166,7 @@
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source = this.currentData.source;
 				
-				this.currentDataChart.filterFunction = this.filterChart;
-				this.currentDataGrid.filterFunction  = this.filterGrid;
-				
-				this.currentDataChart.refresh();
-				this.currentDataGrid.refresh();
-				
-				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid);
+				this.dispatchEvent(new Event("updateCharts", false));
 				
 				this.cursorManager.removeBusyCursor();
 			}
@@ -221,15 +215,8 @@
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source = this.currentData.source;
 				
-				this.currentDataChart.filterFunction = this.filterChart;
-				this.currentDataGrid.filterFunction  = this.filterGrid;
-				
-				this.currentDataChart.refresh();
-				this.currentDataGrid.refresh();
-				
-				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid);
-				
+				this.dispatchEvent(new Event("updateCharts", false));
+							
 				this.cursorManager.removeBusyCursor();
 			}
 			
@@ -316,12 +303,10 @@
 				
 				if ( this.selExoIndi == 101 ) { 
 					tmpDev = 0; tmpSplit = 0; 
-				} else tmpDev = this.selDevice; 
-				
+				} else tmpDev = this.selDevice; 				
 				
 				getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
-					tmpSplit, typeID, 1); 
-				//getMacroDataResult.token = this.dataServiceData.getMacroData(tmp, indicatorID, scenarioID, hasSplit, deviceID, typeID);
+					tmpSplit, typeID, 1);				
 			}
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
@@ -330,16 +315,8 @@
 				
 				this.currentDataExoChart.source = this.currentDataExo.source;
 				this.currentDataExoGrid.source = this.currentDataExo.source;
-
-				this.currentDataExoChart.filterFunction = this.filterChartExo;
-				this.currentDataExoGrid.filterFunction = this.filterGridExo;
 				
-				this.currentDataExoChart.refresh();
-				this.currentDataExoGrid.refresh();
-				
-				this.testChartExo.setData(currentDataExoChart); // transformation is performed inside chart component
-				this.testGridExo.setData(currentDataExoGrid);
-				
+				this.dispatchEvent(new Event("updateCharts", false));				
 				this.cursorManager.removeBusyCursor();
 			}			
 			
@@ -386,6 +363,24 @@
 			
 			public function enableGrid(flag:Boolean) : void {
 				this.testGrid.isEditable = flag;			
+			}
+			
+			[bindable] private var isLevel:Boolean = true;
+			protected function radiobutton2_changeHandler(event:Event):void
+			{
+				this.isLevel = !this.isLevel;
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+			
+			protected function updateCharts(evt:Event):void {
+				this.currentDataChart.filterFunction = this.filterChart;
+				this.currentDataGrid.filterFunction  = this.filterGrid;
+				
+				this.currentDataChart.refresh();
+				this.currentDataGrid.refresh();
+				
+				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid, isLevel);
 			}
 			
 		]]>
@@ -462,6 +457,10 @@
 	<s:CheckBox x="423" y="27" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
 				enabled="true" selected="true" height="23"
 			     click="devicesActive_clickHandler(event)"/>
+	<s:RadioButton x="649" y="118" label="Levels" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:RadioButton x="711" y="118" label="Growths" groupName="growthType" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
 
 
 </s:Group>

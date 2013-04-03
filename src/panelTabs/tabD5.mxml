@@ -45,7 +45,8 @@
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab B");			
-				hlp = new helper();				
+				hlp = new helper();		
+				this.addEventListener("updateCharts", updateCharts);				
 			}
 			
 			public function initNames():void {
@@ -126,8 +127,8 @@
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
-				this.testChart.setData(currentData); // transformation is performed inside chart component
-				this.testGrid.setData(currentData);
+				this.testChart.setData(currentData, isLevel); // transformation is performed inside chart component
+				this.testGrid.setData(currentData, isLevel);
 			}
 			
 
@@ -147,6 +148,21 @@
 				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 			}
 			
+			[bindable] private var isLevel:Boolean = true;
+			protected function radiobutton2_changeHandler(event:Event):void
+			{
+				this.isLevel = !this.isLevel;
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+			
+			protected function updateCharts(evt:Event):void {
+				/*this.testGrid.filterFunction = this.fi
+				this.currentDataGrid.refresh();
+				this.currentDataChart.filterFunction = this.filterChart;
+				this.currentDataChart.refresh();			
+				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid);*/
+			}
 		]]>
 	</fx:Script>
 	
@@ -182,4 +198,8 @@
 	<s:Button x="430" y="355" label="Reset" click="button4_clickHandler(event)" width="118"/>
 	<s:Button x="294" y="356" label="Update DB" click="button5_clickHandler(event)" width="106"/>
 	<s:Label x="302" y="397" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
+	<s:RadioButton x="636" y="54" label="Levels" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:RadioButton x="698" y="54" label="Growths" groupName="growthType" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
 </s:Group>

@@ -15,17 +15,19 @@
 			import mx.events.DataGridEvent;
 			import mx.events.FlexEvent;
 			
+			import utils.helper;
+			
 			// events for managing user action
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			[bindable] public var scenarioDataChanged : Boolean = false;
 			[bindable] public var alteredMacroData:Array = new Array();
-			[bindable] public var alteredSplitData:Array = new Array();	
-			
-			[bindable] private var dataSet:ArrayCollection = new ArrayCollection();
-			
-			[bindable] private var workingScenarioID:int;
-			
+			[bindable] public var alteredSplitData:Array = new Array();			
+			[bindable] private var dataSet:ArrayCollection = new ArrayCollection();			
+			[bindable] private var workingScenarioID:int;			
 			[bindable] private static var isEditable:Boolean = false;
+			
+			[bindable] private var hlp:helper;
+			
 			// data getters			
 			// data setters			
 			public function set isEditable(flag:Boolean):void {
@@ -42,9 +44,10 @@
 				this.testGrid.editable = isEditable;
 			}
 			
-			public function setData(data:ArrayCollection):void {
-				this.dataSet = ArrayCollection(data);
-				refreshView();
+			public function setData(data:ArrayCollection, isLevel:Boolean):void {
+				this.dataSet = data;
+				// need level vs growth transform here as well
+				refreshView(isLevel);
 			}
 			
 			public function getData():ArrayCollection {
@@ -61,7 +64,7 @@
 				};
 			}
 			
-			private function checkForNewValues(event:DataGridEvent):void {
+			private function checkForNewValues(event:DataGridEvent):void { 
 				var myEditor:TextInput = TextInput(event.currentTarget.itemEditorInstance);
 				var newVal:String = myEditor.text;				
 				var oldVal:String = event.currentTarget.editedItemRenderer.data[event.dataField];				
@@ -139,37 +142,19 @@
 				return this.alteredData;
 			}		
 
-			protected function refreshView():void
-			{
-				/*this.dataSet.filterFunction = this.filterScenarios;
-				this.dataSet.refresh();*/
-				
-				this.testGrid.dataProvider = this.dataSet;
-				//this.testGrid.invalidateDisplayList();
-				// need filter function for new sceanrio only				
-			}
-
-			/*private function filterScenarios(item:Object):Boolean {			
-				var fl:Boolean = false;
-				
-				if (item.scenarioID == this.workingScenarioID) {					
-					fl = true
-				}  else fl = false;				
-				
-				return fl;
-			}*/				
+			protected function refreshView(isLevel:Boolean):void
+			{				
+				var tmp:ArrayCollection = hlp.transformGridData(this.dataSet, isLevel);				
+				this.testGrid.dataProvider = tmp;
+				this.testGrid.invalidateDisplayList();
+			}				
 
 			protected function appStart(event:FlexEvent):void
 			{
-				this.addEventListener("scenarioDataChanged", updateScenarioData);				
+				hlp = new helper();
+				//this.addEventListener("scenarioDataChanged", updateScenarioData);				
 			}
 
-			protected function updateScenarioData(evt:Event):void {
-				// clean the old value
-				//alteredSplitData.splice(0, this.alteredSplitData.length);
-				//send some php calls here mit alteredData			
-			}
-			
 			[bindable] public var w1:int = 55;
 			[bindable] public var w2:int = 50;
 			private static var fixedCols:int = 3;

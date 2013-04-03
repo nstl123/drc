@@ -97,8 +97,7 @@ package controls
 					break;
 			};
 			
-			this.enableGrids(this.pathFlags);
-			//if (isStart > 0) enableTabs(true);			
+			this.enableGrids(this.pathFlags);					
 		}
 		
 		public function enableGrids(arr:Array):void {
@@ -107,13 +106,7 @@ package controls
 					this.tabList[i].enableGrid(arr[i] == 1);				
 				};
 			};		
-		}
-		
-		/*public function enableTabs(flag:Boolean):void {
-			for (var i:int = 0; i < tabList.length; i++) {
-				this.tabList[i].enabled = flag;
-			};		
-		}*/
+		}	
 		
 	}
 }

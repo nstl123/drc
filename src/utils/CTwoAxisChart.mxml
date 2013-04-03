@@ -61,9 +61,9 @@
 				hlp = new helper();
 			}
 			
-			public function setData(data:ArrayCollection):void {
+			public function setData(data:ArrayCollection, isLevel:Boolean):void {
 				this.dataSet = data;	
-				drawChart();
+				drawChart(isLevel);
 			}
 			
 			public function getData():ArrayCollection {
@@ -75,8 +75,8 @@
 				return raw;
 			}
 			
-			protected function drawChart():void {
-				var tmp:ArrayCollection = hlp.transformArrCol(this.dataSet);
+			protected function drawChart(isLevel:Boolean):void {
+				var tmp:ArrayCollection = hlp.transformArrCol(this.dataSet, isLevel);
 				createSeries(tmp);
 				// some transformation of arrColl here
 			}

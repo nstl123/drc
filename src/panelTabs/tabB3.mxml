@@ -70,14 +70,13 @@
 				
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab B");			
-				hlp = new helper();			
-				//enableGrid(false);
+				hlp = new helper();		
+				this.addEventListener("updateCharts", updateCharts);
 			}
 			
 			public function initNames():void {
 				trace("init names inside panel B");				
-				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
-				//countryListNames.token = this.dataServiceNames.getCountryList(0);
+				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();			
 				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
@@ -89,11 +88,6 @@
 			protected function countryListNames_resultHandler(event:ResultEvent):void
 			{
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
-			}
-
-			protected function button1_clickHandler(event:MouseEvent):void
-			{
-				//this.countryListNames.token = this.dataService.getCountryList();
 			}
 
 			protected function button2_clickHandler(event:MouseEvent):void
@@ -121,8 +115,7 @@
 				this.indicatorsBox.dataProvider = this.indicatorsList;			
 			}
 			
-			private function filterB(item:Object):Boolean {			
-				// here should be all indis within ID range
+			private function filterB(item:Object):Boolean {
 				var fl:Boolean = true;				
 				if ((item.id == 201)||(item.id == 202)) {					
 					fl = true
@@ -132,7 +125,6 @@
 			
 			protected function button3_clickHandler(event:MouseEvent):void
 			{
-				//send query to DB mit countryIDs and IndiID
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
@@ -147,25 +139,16 @@
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
 				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
-				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
-				
+				currentData = this.getMacroDataResult.lastResult as ArrayCollection;			
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source  = this.currentData.source;
 				
-				this.currentDataGrid.filterFunction = this.filterGrid;
-				this.currentDataGrid.refresh();
-				
-				this.currentDataChart.filterFunction = this.filterChart;
-				this.currentDataChart.refresh();
-				
-				this.testGrid.setData(currentDataGrid);
-				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
+				this.dispatchEvent(new Event("updateCharts", false));
 			}
 
 			private function filterGrid(item:Object):Boolean {				
@@ -189,14 +172,9 @@
 			public function digestChanges(evt:Event):void {
 				alteredData = this.testGrid.getData();
 				var temp:Object = new Object();
-				temp = ({'id':1, data:this.alteredData});
-				//hasSplit by batteryTypes = false
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);
-				//updateSplitIndisResult.token = depot3.updateData(temp, indiHasSplit);
+				temp = ({'id':1, data:this.alteredData});			
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);			
 			}
-			
-
-
 
 			protected function button4_clickHandler(event:MouseEvent):void
 			{
@@ -207,15 +185,25 @@
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				this.selDevice = this.deviceListDrop.selectedItem.id;
-
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+			
+			[bindable] private var isLevel:Boolean = true;
+			protected function radiobutton2_changeHandler(event:Event):void
+			{
+				this.isLevel = !this.isLevel;
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+			
+			protected function updateCharts(evt:Event):void {
 				this.currentDataGrid.filterFunction = this.filterGrid;
 				this.currentDataGrid.refresh();
 				
 				this.currentDataChart.filterFunction = this.filterChart;
 				this.currentDataChart.refresh();
 				
-				this.testChart.setData(currentDataChart); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid);
+				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
+				this.testGrid.setData(currentDataGrid, isLevel);
 			}
 
 		]]>
@@ -264,4 +252,8 @@
 	<s:DropDownList x="492" y="10" width="291" id="deviceListDrop" labelField="namen" 
 					change="deviceListDrop_changeHandler(event)"></s:DropDownList>	
 	<s:Label x="239" y="365" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
+	<s:RadioButton x="338" y="40" label="Levels" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:RadioButton x="400" y="40" label="Growths" groupName="growthType" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
 </s:Group>

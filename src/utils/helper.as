@@ -1,5 +1,7 @@
 package utils
 {
+	import flashx.textLayout.formats.Float;
+	
 	import mx.collections.ArrayCollection;
 
 	public class helper
@@ -57,11 +59,9 @@ package utils
 					partOut.addItem(z);
 				}			
 			};			
-		}
-		
-		//public var yrs:Array = new Array({"", ""});
-		
-		public function transformArrCol(data:ArrayCollection):ArrayCollection {
+		}	
+				
+		public function transformArrCol(data:ArrayCollection, isLevel:Boolean):ArrayCollection {
 			var z :ArrayCollection = new ArrayCollection();
 			var newObj:Object = new Object();
 			
@@ -90,11 +90,69 @@ package utils
 					{"yrs": 2019, "data" : obj.Y2019, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
 					{"yrs": 2020, "data" : obj.Y2020, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName}					
 				]);
+				if (!isLevel) {
+					for (var jj:int = newObj.length - 1; jj > 0 ; jj--) {
+						var f:Object;
+						(newObj[jj - 1] != 0) ? f = ((newObj[jj].data/newObj[jj-1].data)- 1)*100: f = null;						
+						newObj[jj].data = f;
+					};				
+					newObj[0].data = null;
+				};				
 				z.addItem(newObj);
 			}			
 
 			return z;
 		}	
+		
+		public function transformGridData(data:ArrayCollection, isLevel:Boolean):ArrayCollection {
+			var z:ArrayCollection = new ArrayCollection();
+			//make a data copy	
+			var newObj:Object = new Object();
+			if (!isLevel) {		
+				for (var i1:int = 0; i1 < data.length; i1++) {
+					newObj = ({
+					"namen"  : data[i1].namen, "scenarioID" : data[i1].scenarioID, 
+					"countryID" : data[i1].countryID, "deviceID": data[i1].deviceID,
+					"indicatorID" : data[i1].indicatorID,
+					"Y2021" : (data[i1].Y2020 != 0) ? ((data[i1].Y2021/data[i1].Y2020)-1)*100 : null,  				
+					"Y2020" : (data[i1].Y2019 != 0) ? ((data[i1].Y2020/data[i1].Y2019)-1)*100 : null,
+					"Y2019" : (data[i1].Y2018 != 0) ? ((data[i1].Y2019/data[i1].Y2018)-1)*100 : null,
+					"Y2018" : (data[i1].Y2017 != 0) ? ((data[i1].Y2018/data[i1].Y2017)-1)*100 : null,
+					"Y2017" : (data[i1].Y2016 != 0) ? ((data[i1].Y2017/data[i1].Y2016)-1)*100 : null,
+					"Y2016" : (data[i1].Y2015 != 0) ? ((data[i1].Y2016/data[i1].Y2015)-1)*100 : null,
+					"Y2015" : (data[i1].Y2014 != 0) ? ((data[i1].Y2015/data[i1].Y2014)-1)*100 : null,
+					"Y2014" : (data[i1].Y2013 != 0) ? ((data[i1].Y2014/data[i1].Y2013)-1)*100 : null,
+					"Y2013" : (data[i1].Y2012 != 0) ? ((data[i1].Y2013/data[i1].Y2012)-1)*100 : null,
+					"Y2012" : (data[i1].Y2011 != 0) ? ((data[i1].Y2012/data[i1].Y2011)-1)*100 : null,
+					"Y2011" : (data[i1].Y2010 != 0) ? ((data[i1].Y2011/data[i1].Y2010)-1)*100 : null,
+					"Y2010" : (data[i1].Y2009 != 0) ? ((data[i1].Y2010/data[i1].Y2009)-1)*100 : null,
+					"Y2009" : (data[i1].Y2008 != 0) ? ((data[i1].Y2009/data[i1].Y2008)-1)*100 : null,
+					"Y2008" : (data[i1].Y2007 != 0) ? ((data[i1].Y2008/data[i1].Y2007)-1)*100 : null,
+					"Y2007" : (data[i1].Y2006 != 0) ? ((data[i1].Y2007/data[i1].Y2006)-1)*100 : null,				
+					"Y2006" : (data[i1].Y2005 != 0) ? ((data[i1].Y2006/data[i1].Y2005)-1)*100 : null,
+					"Y2005" : (data[i1].Y2004 != 0) ? ((data[i1].Y2005/data[i1].Y2004)-1)*100 : null,
+					"Y2004" : null
+					});
+					z.addItem(newObj);
+				};				
+			} else {
+				for (i1 = 0; i1 < data.length; i1++) {
+					newObj = ({
+						"namen"  : data[i1].namen, "scenarioID" : data[i1].scenarioID, 
+						"countryID" : data[i1].countryID, "deviceID": data[i1].deviceID,
+						"indicatorID" : data[i1].indicatorID, 
+						Y2021 : data[i1].Y2021, "Y2020" : data[i1].Y2020, "Y2019" : data[i1].Y2019,
+						Y2018 : data[i1].Y2018, "Y2017" : data[i1].Y2017, "Y2016" : data[i1].Y2016,
+						Y2015 : data[i1].Y2015, "Y2014" : data[i1].Y2014, "Y2013" : data[i1].Y2013,
+						Y2012 : data[i1].Y2012, "Y2011" : data[i1].Y2011, "Y2010" : data[i1].Y2010,
+						Y2009 : data[i1].Y2009, "Y2008" : data[i1].Y2008, "Y2007" : data[i1].Y2007,				
+						Y2006 : data[i1].Y2006, "Y2005" : data[i1].Y2005, "Y2004" : data[i1].Y2004
+					});
+					z.addItem(newObj);
+				};				
+			};
+			return z;
+		}
 		
 		public function formStringFromIDs(data:Array):Array {
 			var list:Array = new Array();

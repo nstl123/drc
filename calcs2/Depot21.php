@@ -82,7 +82,7 @@ class Depot21 {
 		//return ($stmnt);
 	}
 	
-	public function getDemandData($countryIDs, $scenarioID, $aggType, $deviceID, $typeID, $pwrID, $isRegion) { 
+	public function getDemandData($countryIDs, $scenarioID, $deviceID, $typeID, $pwrID, $isRegion) { 
 	// aggType = 0 for device level, 1 - for country level
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
@@ -96,47 +96,29 @@ class Depot21 {
 		}
 		$countryList = $countryList." )";
 		
-		$stmnt = "";
+		$stmnt = "";		
 		
-		if ($aggType == 0) {						
-				$stmnt = $stmnt."
-					SELECT scenarioID, countryID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID, namen,
-						sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
-						sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
-						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
-						sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
-						sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
-					FROM Consulting.DC_demand AS dm
-					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id)                    
-					WHERE scenarioID IN (".$scenarioID.", 10001)".
-						($deviceID  > 0 ? " AND deviceID = ".$deviceID : "").							
-						($typeID    > 0 ? " AND batTypeID = ".$typeID  : "").
-						($pwrID     > 0 ? " AND pwrTypeID = ".$pwrID   : "").
-						($isRegion == 0 ? " AND countryID" : " AND region")." IN ".$countryList."
-					GROUP BY scenarioID".
-						($isRegion == 0 ? ", countryID" : ", region").
-						($deviceID  > 0 ? ", deviceID" : "").
-						($typeID    > 0 ? ", batTypeID": "").
-						($pwrID     > 0 ? ", pwrTypeID": "");													
-		} else if ($aggType == 1) {				
-				$stmnt = "
-					SELECT scenarioID,  nc.region as countryID, 302 AS indicatorID, 0 as deviceID, 0 as batTypeID, 0 as pwrTypeID, namen,
-						sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
-						sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
-						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
-						sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
-						sum(Y2020) AS Y2020, sum(Y2021) AS Y2021						
-					FROM Consulting.DC_demandAggregated AS dma
-					JOIN Consulting.DC_namesCountries AS nc ON (dma.countryID = nc.id)                    
-					WHERE scenarioID IN (".$scenarioID.", 10001)".
-						($isRegion == 0 ? " AND countryID" : " AND region")." IN ".$countryList." 
-						GROUP BY scenarioID".
-						($isRegion == 0 ? ", countryID" : ", region");			
-
-		} else {
-			return "error in  aggType parameters";
-			exit;
-		};
+		$stmnt = $stmnt."
+			SELECT scenarioID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID, ".
+				($isRegion > 0 ? " rg.namen as namen, rg.id AS countryID, " : "nc.namen AS namen, countryID, ")."					
+				sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
+				sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
+				sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
+				sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
+				sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
+			FROM Consulting.DC_demand AS dm
+			JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) ".                    
+				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.region = rg.id)" : "")."						
+			WHERE scenarioID IN (".$scenarioID.", 10001)".
+				($deviceID > 0 ? " AND deviceID = ".$deviceID : "").							
+				($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").
+				($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").
+				($isRegion > 0 ? " AND nc.region " : " AND countryID ")." IN ".$countryList."
+			GROUP BY scenarioID".
+				($isRegion > 0 ? ", nc.region" : ", countryID").
+				($deviceID > 0 ? ", deviceID" : "").
+				($typeID   > 0 ? ", batTypeID": "").
+				($pwrID    > 0 ? ", pwrTypeID": "");															
 		
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		

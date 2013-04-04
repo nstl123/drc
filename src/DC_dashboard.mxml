@@ -50,7 +50,7 @@
 			protected function initAll(evt:FlexEvent):void {				
 				this.tabai.createDeferredContent();
 				this.startApp(evt);
-			}
+			}		
 			
 			protected function startApp(event:FlexEvent):void
 			{
@@ -68,8 +68,11 @@
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);		
 				this.addEventListener("countryListLoaded", digestUpdate);
 				
-				this.addEventListener("pathChanged", digestPathChange);				
+				this.addEventListener("pathChanged", digestPathChange);		
+				this.addEventListener("NewScenarioUpdated", refreshDeviceBase);				
+				
 				this.addEventListener("scenarioResetRequested", resetScenario);
+				this.addEventListener("scenarioReset", refreshAllTabs);
 				
 				this.addEventListener("init", createNext);
 				this.addEventListener("tabA", createNext);
@@ -82,8 +85,21 @@
 				masterTab = new FlowManager();
 				
 				this.dispatchEvent(new Event("init", true));
-			}					
+			}
+			
+			protected function refreshAllTabs(evt:Event):void {
+				this.panelTabA2.refreshData();
+				this.panelTabB3.refreshData();
+				this.panelTabC4.refreshData();
+				//this.panelTabD5.refeshData();				
+				this.panelTabF51.refreshData();
+				this.panelTabE61.refreshData();
+			}
 
+			protected function refreshDeviceBase(evt:Event):void {			
+				this.panelTabC4.refreshDeviceBase();
+			}
+			
 			public function resetScenario(evt:Event):void {
 				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(this.workingScenarioID);
 			}
@@ -100,7 +116,7 @@
 			[bindable] public static var isStart:int = 0;
 			
 			public function digestPathChange(event:Event):void {
-				this.pathLabel.text = event.target.selPath;
+				this.pathLabel.text = "Selected Path: " + event.target.selPath;
 				if (isStart < 1 ) { isStart = isStart + 1 }; 	
 				this.selPath = this.panelTabPath.selPath;				
 				this.masterTab.registerPath(this.selPath, isStart);			
@@ -116,10 +132,12 @@
 			}		
 			
 			[bindable] private var scenarioCreatedFlag:Boolean = false;
+			private var startas:int = 0;
 			protected function createNewWorkingScenarioResult_resultHandler(event:ResultEvent):void
 			{ 
-				scenarioCreatedFlag = true;	
-				dispatchEvent(new Event("scenarioCreated", true));
+				scenarioCreatedFlag = true;
+				startas = startas + 1;
+				if (startas > 1) dispatchEvent(new Event("scenarioReset", true));
 				this.statusLabel.text = "new scenario created"
 			}		
 

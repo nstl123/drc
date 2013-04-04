@@ -59,7 +59,7 @@
 			
 			[bindable] private var indicatorsList:ArrayCollection;
 			[bindable] private var deviceList:ArrayCollection;
-			[bindable] public var selDevice:int; 
+			[bindable] public var selDevice:int = 1; 
 			
 			[bindable] private var batTypesActiveFlag:Boolean = true;
 			[bindable] private var pwrTypesActiveFlag:Boolean = true;
@@ -119,8 +119,12 @@
 			private var tmpPwrTypes:int = 0;
 			private var tmpBatTypes:int = 0;
 			protected function getSomeData_clickHandler(event:MouseEvent):void
-			{
-				//send query to DB mit countryIDs and IndiID
+			{			
+				trace("calling demand token");				
+				this.refreshData();
+			}
+			
+			public function refreshData():void {
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				
@@ -135,16 +139,16 @@
 				
 				if (tmp2.length > 0) {
 					this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1); 
+						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1);
+					this.cursorManager.setBusyCursor();
 				} else if (tmp.length > 0) {				
 					this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
 						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0);
+					this.cursorManager.setBusyCursor();
 				} else {
-					Alert.show("select some countries and/or regions", "Info");
-				};
-				
-				this.cursorManager.setBusyCursor();
-			}
+					Alert.show("Select some countries and/or regions", "Error");
+				};								
+			}			
 			
 			[bindable] private var regList:ArrayCollection = new ArrayCollection();
 			protected function regionsListNames_resultHandler(event:ResultEvent):void
@@ -192,6 +196,23 @@
 				this.deviceListDrop.enabled = this.devicesActiveFlag;
 			}
 
+			private function filterGrid(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if (((item.scenarioID == this.workingScenarioID)
+					&& (item.deviceID == this.selDevice))||(!devicesActiveFlag)) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}	
+			
+			private function filterChart(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if ((item.deviceID == this.selDevice)||(!devicesActiveFlag)) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}		
+			
 		]]>
 	</fx:Script>
 	
@@ -245,6 +266,18 @@
 			{
 				this.selDevice = this.deviceListDrop.selectedItem.id;
 				this.selDeviceLabel.text = this.deviceListDrop.selectedItem.namen;
+								
+				this.currentDataChart.filterFunction = this.filterChart;
+				this.currentDataGrid.filterFunction  = this.filterGrid;				
+				this.currentDataChart.refresh();
+				this.currentDataGrid.refresh();				
+				this.testChart.setData(currentDataChart, isLevel);
+				this.testGrid.setData(currentDataGrid, isLevel);
+				
+				this.currentDataExoChart.filterFunction = this.filterChartExo;
+				this.currentDataExoChart.refresh();				
+				this.testChartExo.setData(this.currentDataExoChart, isLevel);	
+				
 			}
 			
 			protected function deviceNamesList_resultHandler(event:ResultEvent):void
@@ -281,7 +314,7 @@
 				return fl;
 			}					
 			
-			[bindable] private var selExoIndi:int = 0;
+			[bindable] private var selExoIndi:int = 101;
 			protected function exoListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				this.selExoIndi = this.exoListDrop.selectedItem.id;
@@ -316,23 +349,6 @@
 				//this.currentDataExoGrid.source = this.currentDataExo.source;				
 				this.dispatchEvent(new Event("updateCharts", false));				
 				this.cursorManager.removeBusyCursor();
-			}			
-			
-			private function filterGrid(item:Object):Boolean {				
-				var f:Boolean = true;				
-				if ((item.scenarioID == this.workingScenarioID)
-					&& ((item.deviceID == this.selDevice)||(!devicesActiveFlag))) {					
-					f = true
-				}  else f = false;				
-				return f;
-			}	
-			
-			private function filterChart(item:Object):Boolean {				
-				var f:Boolean = true;				
-				if ((item.deviceID == this.selDevice)||(!devicesActiveFlag)) {					
-					f = true
-				}  else f = false;				
-				return f;
 			}			
 			
 			private function filterGridExo(item:Object):Boolean {				
@@ -410,7 +426,7 @@
 	<s:Label x="393" y="103" text="Bat Type" width="112" id="selDeviceLabel0"/>
 	<s:Label x="230" y="103" text="Pwr Type" width="112" id="selDeviceLabel1"/>
 	<s:DropDownList x="485" y="30" width="281" id="deviceListDrop"
-					change="dropdownlist1_changeHandler(event)" labelField="namen"/>
+					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1"/>
 	<s:BorderContainer x="408" y="118" width="208" height="21" fontSize="11">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
@@ -431,7 +447,7 @@
 					   click="pwrTypes_clickHandler(event)"/>			
 	</s:BorderContainer>
 	<s:Label x="778" y="10" text="some exogenous var" width="193"/>
-	<s:DropDownList x="789" y="29" width="201" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)"/>
+	<s:DropDownList x="789" y="29" width="201" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)" selectedIndex="0"/>
 	<s:Button x="819" y="76" label="getSomeExo" width="171" click="button3_clickHandler(event)" id="button"/>
 	<utils:CTwoAxisChart x="630" y="147" height="283" id="testChartExo" width="365">
 	</utils:CTwoAxisChart>

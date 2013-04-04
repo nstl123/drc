@@ -124,14 +124,22 @@
 			}					
 			
 			protected function button3_clickHandler(event:MouseEvent):void
-			{				
-				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+			{								
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 1);
+				this.refreshData();			
 			}
 			
-			[bindable] private var selectedIndi:int;
+			public function refreshData():void {
+				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+				if (tmp.length < 1) { 
+					Alert.show("Select at least one country", "Error"); 
+				} else {
+					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 1);
+				};
+			}
+			
+			[bindable] private var selectedIndi:int = 101;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();			
 			[bindable] private var currentDataGrowth:ArrayCollection = new ArrayCollection();
 			
@@ -146,7 +154,7 @@
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
-			private function filterMajor(item:Object):Boolean {				
+			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = true;				
 				if (item.scenarioID == this.workingScenarioID) {					
 					f = true
@@ -177,6 +185,7 @@
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
 				Alert.show("data updated successfully");
+				this.dispatchEvent(new Event("NewScenarioUpdated", true));
 			}
 
 			protected function updateData_faultHandler(event:FaultEvent):void
@@ -215,12 +224,15 @@
 			
 			protected function updateCharts(evt:Event):void {
 				/*this.currentData = this.hlp.transformGridData(this.currentData, false);
-				this.currentDataGrowth = this.hlp.transformGridData(this.currentData, true);*/
+				this.currentDataGrowth = this.hlp.transformGridData(this.currentData, true);*/					
 				
-				this.currentData.filterFunction = filterMajor;
-				this.currentData.refresh();		
+				this.currentData.filterFunction =  null;
+				this.currentData.refresh();
+				this.chart.setData(currentData, isLevel);// transformation is performed inside chart component
 				
-				this.chart.setData(currentData, isLevel);// transformation is performed inside chart component					
+				this.currentData.filterFunction = filterGrid;
+				this.currentData.refresh();
+				
 				this.grid.setData(currentData, isLevel);				
 			}
 
@@ -263,7 +275,7 @@
 	</s:BorderContainer>
 	
 	<s:DropDownList x="374" width="301" id="indicatorsBox" labelField="namen"
-					 change="indicatorsBox_changeHandler(event)" top="9"></s:DropDownList>
+					 change="indicatorsBox_changeHandler(event)" top="9" selectedIndex="1"></s:DropDownList>
 	<s:Button x="239" label="send changes to PHP" width="154" click="digestChanges(event)" top="367" height="22"/>
 	<s:Button x="772" label="refresh data" click="button3_clickHandler(event)" top="10" width="125"/>
 	<s:Label x="238" y="6" text="Select Indicator" width="128" height="17"/>

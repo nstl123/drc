@@ -124,11 +124,16 @@
 			
 			protected function button3_clickHandler(event:MouseEvent):void
 			{				
+				trace("calling macro data token");
+				this.refreshData();
+			}
+			
+			public function refreshData():void {
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
 				
-				var tmpType:int = 0;
+				var tmpType:int = 1;
 				switch (this.selectedIndi) {
 					case 204: 
 						tmpType = this.selBatType; break;
@@ -141,10 +146,10 @@
 				};				
 				
 				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
-					hasSplitFlag.selected, tmpType, 1);
+					hasSplitFlag.selected, tmpType, 1);		
 			}
 			
-			[bindable] private var selectedIndi:int;
+			[bindable] private var selectedIndi:int = 204;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
@@ -211,7 +216,7 @@
 				this.dispatchEvent(new Event("scenarioResetRequested", true));
 			}
 
-			[bindable] private var selDevice:int = 0;			
+			[bindable] private var selDevice:int = 1;			
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				this.selDevice = this.deviceListDrop.selectedItem.id;	

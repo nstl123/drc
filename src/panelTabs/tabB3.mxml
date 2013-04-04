@@ -66,6 +66,7 @@
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
 				var rez:Object = this.updateData.lastResult;
+				this.dispatchEvent(new Event("NewScenarioUpdated", true));
 			}				
 				
 			protected function startApp(event:FlexEvent):void {
@@ -125,14 +126,22 @@
 			
 			protected function button3_clickHandler(event:MouseEvent):void
 			{
-				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
-					workingScenarioID, hasSplitFlag.selected, 0, 1);
+				this.refreshData();
 			}
 
-			[bindable] private var selectedIndi:int;
+			public function refreshData():void {
+				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);	
+				if (tmp.length < 1) { 
+					Alert.show("Select at least one country", "Error"); 
+				} else {
+					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
+						workingScenarioID, hasSplitFlag.selected, 0, 1);
+				};
+			}
+			
+			[bindable] private var selectedIndi:int = 201;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
@@ -181,7 +190,7 @@
 				this.dispatchEvent(new Event("scenarioResetRequested", true));
 			}
 
-			[bindable] private var selDevice:int = 0;
+			[bindable] private var selDevice:int = 1;
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				this.selDevice = this.deviceListDrop.selectedItem.id;
@@ -242,7 +251,7 @@
 	</utils:CInteractiveGrid>
 	
 	<s:DropDownList x="241" width="243" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="10"/>
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="10" selectedIndex="0"/>
 	
 	<s:Button x="609" label="getSomeData" click="button3_clickHandler(event)" id="button" top="39" width="174"/>
 	
@@ -250,7 +259,7 @@
 	<s:Button x="238" y="334" label="updateDB" width="215" click="digestChanges(event)"/>
 	<s:Button x="461" y="334" label="Reset" width="103" click="button4_clickHandler(event)"/>
 	<s:DropDownList x="492" y="10" width="291" id="deviceListDrop" labelField="namen" 
-					change="deviceListDrop_changeHandler(event)"></s:DropDownList>	
+					change="deviceListDrop_changeHandler(event)" selectedIndex="0"></s:DropDownList>	
 	<s:Label x="239" y="365" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
 	<s:RadioButton x="338" y="40" label="Levels" groupName="growthType" enabled="true" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>

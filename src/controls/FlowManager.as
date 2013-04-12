@@ -96,8 +96,7 @@ package controls
 					pathFlags = [0, 0, 0, 0, 0, 0];
 					break;
 			};
-			
-			this.enableGrids(this.pathFlags);					
+			if (isStart > 1) this.enableGrids(this.pathFlags);					
 		}
 		
 		public function enableGrids(arr:Array):void {

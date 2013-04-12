@@ -36,6 +36,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.graphics.SolidColorStroke;
 			import mx.charts.series.ColumnSeries;
 			import mx.charts.series.LineSeries;
 			import mx.charts.LinearAxis;
@@ -106,10 +107,13 @@
 					/*if (tmp.indicatorID == someData.getItemAt(0)[0].indicatorID)
 							series2.verticalAxis = vaxis1
 					else series2.verticalAxis = vaxis2;*/
-					series2.verticalAxis = vaxis1;					
-					
+					series2.verticalAxis = vaxis1;				
 					series2.displayName = tmp.countryID + ", " 
 						+ (tmp.scenarioID == 10001 ? "Baseline" : "Working Scen.");
+					
+					var basisCol:uint = uint(this.intToHex(tmp.countryCode*2));
+					var s1:SolidColorStroke = new SolidColorStroke(basisCol, 3,.9); 
+					series2.setStyle("lineStroke", s1);				
 					
 					hAxis.dataProvider = someData.getItemAt(i);
 					vaxis1.baseAtZero = false;
@@ -125,6 +129,18 @@
 				this.lineChart.showDataTips = true;
 				//this.testChart.dataTipFunction = show_label;				
 				this.lineChart.invalidateDisplayList();				
+			}
+			
+			public function changeStyle(s1:SolidColorStroke):void {
+				for (var k:int = 0; k < mySeries.length; k++) {
+					this.mySeries[k].setStyle("lineStroke", s1);
+				}
+			}
+			
+			private function intToHex(color:uint = 0):String {
+				var mask:String = "00000F";
+				var str:String = mask + color.toString(16).toUpperCase();
+				return "0x" + str.substr(str.length - 6);
 			}
 			
 		]]>

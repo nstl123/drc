@@ -14,6 +14,22 @@
 
 	<fx:Script>
 		<![CDATA[
+			protected function getDeviceBase_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("could not read DeviceBase Table in DB", "Error");
+			}
+
+			protected function updateData_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("could not update DeviceBaseTable", "Error");	
+			}
+
+		]]>
+	</fx:Script>
+
+
+	<fx:Script>
+		<![CDATA[
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
 				Alert.show("data updated");
@@ -21,10 +37,12 @@
 			
 			protected function button_clickHandler(event:MouseEvent):void
 			{
-				this.refreshDeviceBase();			
+				//this.rewriteDeviceBase();			
 			}			
 
-			public function refreshDeviceBase():void {
+			public var startInd:int = 0;
+			public function rewriteDeviceBase():void {
+				startInd = startInd + 1;
 				writeViewToTableResult.token = depot3.writeViewToTable();
 			}
 			
@@ -32,8 +50,8 @@
 			{
 				if (event.message.body != "ok") //this.someLabel.text = "view written successfully";
 				Alert.show("data was not written to DB!", "Error");
+				this.dispatchEvent(new Event("deviceBaseWritten", true));
 			}
-
 
 			protected function button4_clickHandler(event:MouseEvent):void
 			{
@@ -63,6 +81,12 @@
 			public function enableGrid(flag:Boolean) : void {
 				this.testGrid.isEditable = flag;
 				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+			}
+
+
+			protected function writeViewToTableResult_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("view was not written to table", "Error");
 			}
 
 		]]>
@@ -103,7 +127,8 @@
 				trace("app start panelTab C");			
 				hlp = new helper();			
 				this.addEventListener("updateCharts", updateCharts);
-				this.refreshDeviceBase();
+				this.addEventListener("deviceBaseWritten", refreshData);
+				this.rewriteDeviceBase();
 			}
 			
 			public function initNames():void {
@@ -129,9 +154,9 @@
 			}
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
+			
 			public function digestChanges(evt:Event):void {
-				alteredData = this.testGrid.getData();
-				
+				alteredData = this.testGrid.getData();				
 				var temp:Object = new Object();
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
@@ -171,16 +196,16 @@
 			protected function button3_clickHandler(event:MouseEvent):void
 			{				
 				trace("calling device base token");
-				this.refreshData();					
+				this.refreshData(null);					
 			}
 			
-			public function refreshData():void {
+			public function refreshData(evt:Event):void {			
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;		
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
-				if (tmp.length < 1) { 
-					Alert.show("Select at least one country", "Error"); 
-				} else {
-					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID);
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+				if (tmp.length > 0) { 
+					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID);					 
+				} else if (this.startInd > 1) {
+					Alert.show("Select at least one country", "ErrorC4");
 				};
 			}
 			
@@ -250,10 +275,9 @@
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>		
 		<s:CallResponder id="getDeviceNames" result="getDeviceNames_resultHandler(event)" />
 		
-		<s:CallResponder id="getDeviceBase" result="getDeviceBase_resultHandler(event)" />		
-		<s:CallResponder id="writeViewToTableResult" result="writeViewToTableResult_resultHandler(event)"/>
-		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />		
-		
+		<s:CallResponder id="getDeviceBase" result="getDeviceBase_resultHandler(event)" fault="getDeviceBase_faultHandler(event)" />		
+		<s:CallResponder id="writeViewToTableResult" result="writeViewToTableResult_resultHandler(event)" fault="writeViewToTableResult_faultHandler(event)"/>
+		<s:CallResponder id="updateData" result="updateData_resultHandler(event)"  fault="updateData_faultHandler(event)"/>		
 		
 	</fx:Declarations>
 	
@@ -275,8 +299,8 @@
 	<s:DropDownList x="243" width="195" id="indicatorsBox"
 					labelField="namen"	 top="24" selectedIndex="0"></s:DropDownList>
 	<s:Button x="685" label="getSomeData" id="getSomeData" click="button3_clickHandler(event)" top="55"/>
-	<s:Button x="243" y="55" label="writeViewToDB" width="148" id="button"
-			  click="button_clickHandler(event)" enabled="false"/>
+	<s:Button x="243" y="55" label="writeViewToDB_1" width="148" id="button"
+			  click="button_clickHandler(event)" enabled="true"/>
 	<s:Button x="640" y="357" label="updateDB" width="136" id="button2"
 			  click="digestChanges(event)"/>
 	<s:Label x="513" y="10" text="Devices" width="84" id="someLabel0" textAlign="left"/>

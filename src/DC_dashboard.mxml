@@ -89,15 +89,16 @@
 			
 			protected function refreshAllTabs(evt:Event):void {
 				this.panelTabA2.refreshData();
-				this.panelTabB3.refreshData();
-				this.panelTabC4.refreshData();
+				this.panelTabB3.refreshData();				
+				this.panelTabC4.rewriteDeviceBase();
+				// this has two parts: rewrite deviceTable; reload Data;
 				//this.panelTabD5.refeshData();				
 				this.panelTabF51.refreshData();
 				this.panelTabE61.refreshData();
 			}
 
 			protected function refreshDeviceBase(evt:Event):void {			
-				this.panelTabC4.refreshDeviceBase();
+				this.panelTabC4.rewriteDeviceBase();
 			}
 			
 			public function resetScenario(evt:Event):void {

@@ -14,6 +14,8 @@ import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
 import valueObjects.CustomDatatype10;
 import valueObjects.CustomDatatype11;
+import valueObjects.CustomDatatype12;
+import valueObjects.CustomDatatype15;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -31,7 +33,9 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         // initialize RemoteClass alias for all entities returned by functions of this service
         valueObjects.CustomDatatype11._initRemoteClassAlias();
         valueObjects.CountryName._initRemoteClassAlias();
+        valueObjects.CustomDatatype12._initRemoteClassAlias();
         valueObjects.CustomDatatype10._initRemoteClassAlias();
+        valueObjects.CustomDatatype15._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -43,11 +47,14 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CountryName;
         operations["getMacroDataFormat"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandData");
-         operation.resultType = Object;
+         operation.resultElementType = valueObjects.CustomDatatype12;
         operations["getDemandData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDeviceBase");
          operation.resultElementType = valueObjects.CustomDatatype10;
         operations["getDeviceBase"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "getDemandByChemistry");
+         operation.resultElementType = valueObjects.CustomDatatype15;
+        operations["getDemandByChemistry"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -132,6 +139,25 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDeviceBase");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'getDemandByChemistry' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function getDemandByChemistry(countryIDs:Object, scenarioID:Object, isRegion:Object) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDemandByChemistry");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,isRegion) ;
 
         return _internal_token;
     }

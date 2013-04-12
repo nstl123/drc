@@ -145,8 +145,12 @@
 						tmpType = this.selPwrType; break;
 				};				
 				
-				getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
-					hasSplitFlag.selected, tmpType, 1);		
+				if (tmp.length > 0) {
+					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
+						hasSplitFlag.selected, tmpType, 1);
+				} else {
+					Alert.show("Select at leats one coutry", "ErrorF51");
+				};
 			}
 			
 			[bindable] private var selectedIndi:int = 204;

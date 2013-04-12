@@ -24,10 +24,13 @@
 		<s:CallResponder id="getIndicatorNames" result="getIndicatorNames_resultHandler(event)" />		
 		
 		<s:RadioButtonGroup id="demandTypes"/>
-		<s:RadioButtonGroup id="batTypes"/>
-		<s:RadioButtonGroup id="pwrTypes"/>
+		<s:RadioButtonGroup id="batTypes" enabled="true"/>
+		<s:RadioButtonGroup id="pwrTypes" enabled="true"/>
+		<s:RadioButtonGroup id="chemTypes" enabled="false"/>
+		
 		<s:CallResponder id="getMacroData" result="getMacroDataResult_resultHandler(event)" 
-						 fault="getMacroData_faultHandler(event)"/>
+						 fault="getMacroData_faultHandler(event)"/>		
+		<s:CallResponder id="getDemandByChemistryResult" result="getDemandByChemistryResult_resultHandler(event)"/>
 		
 	</fx:Declarations>
 
@@ -63,6 +66,7 @@
 			
 			[bindable] private var batTypesActiveFlag:Boolean = true;
 			[bindable] private var pwrTypesActiveFlag:Boolean = true;
+			[bindable] private var chemTypesActiveFlag:Boolean = false;
 			[bindable] private var devicesActiveFlag:Boolean = true;
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
@@ -72,7 +76,8 @@
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab B");			
 				hlp = new helper();			
-				this.addEventListener("updateCharts", updateCharts);				
+				this.addEventListener("updateCharts", updateCharts);	
+				this.addEventListener("demandAggChanged", updateChemistrySplit);
 			}
 			
 			public function initNames():void {
@@ -118,10 +123,12 @@
 			private var tmpDevices:int  = 0;
 			private var tmpPwrTypes:int = 0;
 			private var tmpBatTypes:int = 0;
+			
 			protected function getSomeData_clickHandler(event:MouseEvent):void
 			{			
 				trace("calling demand token");				
 				this.refreshData();
+				
 			}
 			
 			public function refreshData():void {
@@ -133,20 +140,24 @@
 				
 				this.devicesActiveFlag ? this.tmpDevices = this.selDevice : this.tmpDevices = -1; 
 				this.pwrTypesActiveFlag ? this.tmpPwrTypes = this.selPwrType : this.tmpPwrTypes = -1; 
-				this.batTypesActiveFlag ? this.tmpBatTypes = this.selBatType : this.tmpBatTypes = -1;
+				this.batTypesActiveFlag ? this.tmpBatTypes = this.selBatType : this.tmpBatTypes = -1;				
 				
 				trace("calling demand token");				
 				
-				if (tmp2.length > 0) {
+				this.cursorManager.setBusyCursor();
+				if ((this.chemTypesActiveFlag)&&(tmp2.length > 0)) {
+					getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1);
+				} else if ((this.chemTypesActiveFlag)&&(tmp.length > 0)) {
+					getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
+				} else if (tmp2.length > 0) {
 					this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1);
-					this.cursorManager.setBusyCursor();
+						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1);					
 				} else if (tmp.length > 0) {				
 					this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0);
-					this.cursorManager.setBusyCursor();
+						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0);					
 				} else {
-					Alert.show("Select some countries and/or regions", "Error");
+					this.cursorManager.removeBusyCursor();
+					Alert.show("Select some countries and/or regions", "ErrorE61");
 				};								
 			}			
 			
@@ -180,6 +191,8 @@
 			{
 				this.pwrTypesActiveFlag = !this.pwrTypesActiveFlag;
 				this.pwrTypes.enabled = this.pwrTypesActiveFlag;
+
+				this.dispatchEvent(new Event("demandAggChanged", true));		
 			}
 
 
@@ -187,38 +200,98 @@
 			{
 				this.batTypesActiveFlag = !this.batTypesActiveFlag;
 				this.batTypes.enabled = this.batTypesActiveFlag;
+				
+				this.dispatchEvent(new Event("demandAggChanged", true));		
 			}
 
+			protected function chemTypesActive_clickHandler(event:MouseEvent):void
+			{
+				this.chemTypesActiveFlag = !this.chemTypesActiveFlag;
+				this.chemTypes.enabled = this.chemTypesActiveFlag;
+				
+				if (this.chemTypesActiveFlag) {
+					this.pwrTypesActive.selected = !this.chemTypesActiveFlag; 
+					this.pwrTypesActiveFlag = !this.chemTypesActiveFlag;
+					this.pwrTypes.enabled = this.pwrTypesActiveFlag;
+					
+					this.batTypesActive.selected = !this.chemTypesActiveFlag;
+					this.batTypesActiveFlag = !this.chemTypesActiveFlag;
+					this.batTypes.enabled = this.batTypesActiveFlag;
+					
+					this.devicesActive.selected = !this.chemTypesActiveFlag;
+					this.devicesActiveFlag = !this.chemTypesActiveFlag;
+					this.deviceListDrop.enabled = !this.chemTypesActiveFlag;
+				};
+			}
 
 			protected function devicesActive_clickHandler(event:MouseEvent):void
 			{
 				this.devicesActiveFlag = !this.devicesActiveFlag;
 				this.deviceListDrop.enabled = this.devicesActiveFlag;
+				
+				this.dispatchEvent(new Event("demandAggChanged", true));				
 			}
 
 			private function filterGrid(item:Object):Boolean {				
-				var f:Boolean = true;				
-				if (((item.scenarioID == this.workingScenarioID)
-					&& (item.deviceID == this.selDevice))||(!devicesActiveFlag)) {					
-					f = true
-				}  else f = false;				
+				var f:Boolean = true;	
+				
+				if (chemTypesActiveFlag) {
+					if ((item.chemistryID == this.selChemType)&&
+						(item.scenarioID == this.workingScenarioID))
+							f = true;
+					else 
+							f = false;
+				} else {									
+					if (((item.scenarioID == this.workingScenarioID)
+						&& (item.deviceID == this.selDevice))||(!devicesActiveFlag)) {					
+						f = true
+					}  else 
+						f = false;		
+				};
+				
 				return f;
 			}	
 			
 			private function filterChart(item:Object):Boolean {				
-				var f:Boolean = true;				
-				if ((item.deviceID == this.selDevice)||(!devicesActiveFlag)) {					
-					f = true
-				}  else f = false;				
+				var f:Boolean = true;
+				
+				if (chemTypesActiveFlag) {
+					if (item.chemistryID == this.selChemType) f = true;
+					else f = false;
+				} else {
+					if ((item.deviceID == this.selDevice)||(!devicesActiveFlag)) {					
+						f = true
+					}  else 
+						f = false;				
+				};			
+				
 				return f;
-			}		
-			
+			}					
+
+			protected function getDemandByChemistryResult_resultHandler(event:ResultEvent):void
+			{
+				currentData = this.getDemandByChemistryResult.lastResult as ArrayCollection;				
+				
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source = this.currentData.source;
+				
+				this.dispatchEvent(new Event("updateCharts", false));
+				
+				this.cursorManager.removeBusyCursor();
+			}
+
+			protected function chemTypes_clickHandler(event:MouseEvent):void
+			{
+				this.selChemType = int(this.chemTypes.selectedValue);
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+
 		]]>
 	</fx:Script>
 	
 	<fx:Script>
 		<![CDATA[	
-			[bindable] private var selectedIndi:int;
+			[bindable] private var selectedIndi:int = 301;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
@@ -287,6 +360,8 @@
 			
 			[bindable] private var selBatType:int = 1;
 			[bindable] private var selPwrType:int = 1;
+			[bindable] private var selChemType:int = 1;
+			
 			protected function batTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selBatType = int(this.batTypes.selectedValue);
@@ -402,6 +477,16 @@
 				this.testChartExo.setData(this.currentDataExoChart, isLevel);				
 			}
 			
+			protected function updateChemistrySplit(evt:Event):void {
+				var z:Boolean = (!batTypesActiveFlag && !pwrTypesActiveFlag && !devicesActiveFlag);
+				
+				if (!z) {
+					this.chemistryActive.selected = z;
+					this.chemTypesActiveFlag = z;
+					this.chemTypes.enabled = this.chemTypesActiveFlag;
+				};
+			}
+			
 		]]>
 	</fx:Script>
 	<s:BorderContainer width="220" height="26" left="10" top="10">
@@ -421,13 +506,14 @@
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid x="234" width="761" height="203" id="testGrid" y="440">
 	</utils:CInteractiveGrid>
-	<s:Button x="605" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="76" width="171"/>
+	<s:Button x="868" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="93" width="129"/>
 	<s:Label x="422" y="9" text="Selected Device" width="344" id="selDeviceLabel"/>
-	<s:Label x="393" y="103" text="Bat Type" width="112" id="selDeviceLabel0"/>
-	<s:Label x="230" y="103" text="Pwr Type" width="112" id="selDeviceLabel1"/>
+	<s:Label x="373" y="75" text="Bat Type" width="112" id="selDeviceLabel0"/>
+	<s:Label x="473" y="124" text="Show Data in:" width="84" id="selDeviceLabel2"/>
+	<s:Label x="232" y="76" text="Pwr Type" width="67" id="selDeviceLabel1"/>
 	<s:DropDownList x="485" y="30" width="281" id="deviceListDrop"
 					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1"/>
-	<s:BorderContainer x="408" y="118" width="208" height="21" fontSize="11">
+	<s:BorderContainer x="388" y="90" width="199" height="21" fontSize="11">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -437,7 +523,7 @@
 		<s:RadioButton x="14" y="88" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 		<s:RadioButton x="14" y="114" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 	</s:BorderContainer>
-	<s:BorderContainer width="116" height="21" x="248" y="118" fontSize="11">
+	<s:BorderContainer width="100" height="21" x="250" y="91" fontSize="11">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -446,9 +532,9 @@
 		<s:RadioButton x="14" y="36" label="RCR" value="2" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)"/>			
 	</s:BorderContainer>
-	<s:Label x="778" y="10" text="some exogenous var" width="193"/>
+	<s:Label x="778" y="10" text="some exogenous var" width="152"/>
 	<s:DropDownList x="789" y="29" width="201" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)" selectedIndex="0"/>
-	<s:Button x="819" y="76" label="getSomeExo" width="171" click="button3_clickHandler(event)" id="button"/>
+	<s:Button x="866" y="60" label="getSomeExo" width="129" click="button3_clickHandler(event)" id="button"/>
 	<utils:CTwoAxisChart x="630" y="147" height="283" id="testChartExo" width="365">
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid x="751" y="583" height="58" id="testGridExo" width="254"
@@ -458,28 +544,40 @@
 	<utils:CCheckBoxGrid x="10" y="383" height="268" width="220" id="regionsListGrid"
 						 labelText="Regions" >
 	</utils:CCheckBoxGrid>
-	<s:BorderContainer x="246" y="25" width="153" height="56">
+	<s:BorderContainer x="246" y="9" width="159" height="54">
 		<s:layout>
 			<s:VerticalLayout paddingLeft="5" paddingTop="5"/>
 		</s:layout>
-		<s:RadioButton x="41" y="9" label="Demand" groupName="demandTypes"  value="301"
-					   click="radiobutton1_clickHandler(event)" id="dem0" selected="true" fontSize="13" fontFamily="Georgia"/>
-		<s:RadioButton label="DemandAggegated" groupName="demandTypes" value="302"
-					   click="radiobutton1_clickHandler(event)" id="dem1" fontSize="13" fontFamily="Georgia"/>
+		<s:Label text="Demand" fontFamily="Georgia" fontSize="15" width="100%"/>
+		<s:RadioButton label="Demand" groupName="demandTypes"  value="301" enabled="false"
+					   click="radiobutton1_clickHandler(event)" id="dem0" selected="true" fontSize="15" fontFamily="Georgia" width="100%"/>
 	</s:BorderContainer>
-	<s:CheckBox x="305" y="98" label="Use?" fontSize="11" fontStyle="italic" 
+	<s:CheckBox x="307" y="71" label="Use?" fontSize="11" fontStyle="italic" 
 				id="pwrTypesActive" enabled="true" selected="true" 
 				 click="pwrTypesActive_clickHandler(event)"/>
-	<s:CheckBox x="463" y="98" label="Use?" fontSize="11" fontStyle="italic" 
+	<s:CheckBox x="443" y="70" label="Use?" fontSize="11" fontStyle="italic" 
 				id="batTypesActive" enabled="true" selected="true" 
 			 	click="batTypesActive_clickHandler(event)"	/>
-	<s:CheckBox x="423" y="27" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
+	<s:CheckBox x="669" y="69" label="Use?" fontSize="11" fontStyle="italic" 
+				id="chemistryActive" enabled="true" selected="false" 
+			 	click="chemTypesActive_clickHandler(event)"	/>
+	<s:CheckBox x="435" y="28" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
 				enabled="true" selected="true" height="23"
 			     click="devicesActive_clickHandler(event)"/>
-	<s:RadioButton x="649" y="118" label="Levels" groupName="growthType" enabled="true" 
+	<s:RadioButton x="565" y="118" label="Levels" groupName="growthType" enabled="true" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="711" y="118" label="Growths" groupName="growthType" 
+	<s:RadioButton x="627" y="118" label="Growths" groupName="growthType" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:Label x="599" y="74" text="Chemistry"/>
+	<s:BorderContainer y="89" width="203" height="21" x="620">
+		<s:layout>
+			<s:HorizontalLayout paddingLeft="5"/>
+		</s:layout>
+		<s:RadioButton x="3" y="11" label="Alkaline" groupName="chemTypes" value="1" selected="true" 
+					   click="chemTypes_clickHandler(event)"/>
+		<s:RadioButton x="92" y="25" label="Zinc" groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)"/>
+		<s:RadioButton x="151" y="28" label="Lithium" groupName="chemTypes" value="3" click="chemTypes_clickHandler(event)"/>
+	</s:BorderContainer>
 
 
 </s:Group>

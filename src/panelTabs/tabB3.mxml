@@ -134,7 +134,7 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);	
 				if (tmp.length < 1) { 
-					Alert.show("Select at least one country", "Error"); 
+					Alert.show("Select at least one country", "ErrorB3"); 
 				} else {
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
 						workingScenarioID, hasSplitFlag.selected, 0, 1);

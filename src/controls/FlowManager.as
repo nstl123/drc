@@ -102,7 +102,7 @@ package controls
 		public function enableGrids(arr:Array):void {
 			if (this.tabList.length > 0) {
 				for (var i:int = 0; i < arr.length; i++) {				
-					this.tabList[i].enableGrid(arr[i] == 1);				
+					this.tabList[i].enableGrid(arr[i] == 1, false);				
 				};
 			};		
 		}	

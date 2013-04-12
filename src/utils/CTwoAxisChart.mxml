@@ -111,9 +111,9 @@
 					series2.displayName = tmp.countryID + ", " 
 						+ (tmp.scenarioID == 10001 ? "Baseline" : "Working Scen.");
 					
-					var basisCol:uint = uint(this.intToHex(tmp.countryCode*2));
+					/*var basisCol:uint = uint(this.intToHex(tmp.countryCode*2));
 					var s1:SolidColorStroke = new SolidColorStroke(basisCol, 3,.9); 
-					series2.setStyle("lineStroke", s1);				
+					series2.setStyle("lineStroke", s1);*/				
 					
 					hAxis.dataProvider = someData.getItemAt(i);
 					vaxis1.baseAtZero = false;

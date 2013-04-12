@@ -140,12 +140,15 @@
 
 			protected function button5_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				this.dispatchEvent(new Event("changesMadeInScenario", true));
 			}
 
-			public function enableGrid(flag:Boolean) : void {
-				this.testGrid.isEditable = flag;
-				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+			[bindable] public var tabEditable:Boolean;			
+			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
+				if (!isLocal) this.tabEditable = flag && isLevel;
+				this.testGrid.isEditable = flag && isLevel;
+				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+				this.saveBtn.enabled = (flag && isLevel);
 			}
 			
 			[bindable] private var isLevel:Boolean = true;
@@ -153,6 +156,10 @@
 			{
 				this.isLevel = !this.isLevel;
 				this.dispatchEvent(new Event("updateCharts", false));
+
+				var tmp:int = 1 - int(this.growthType.selection.value);
+				this.enableGrid(tmp == 0 && this.tabEditable, true);	
+				this.saveBtn.enabled = (tmp == 0 && this.tabEditable);
 			}
 			
 			protected function updateCharts(evt:Event):void {
@@ -167,6 +174,8 @@
 	</fx:Script>
 	
 	<fx:Declarations>
+		<s:RadioButtonGroup id="growthType" />
+		
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 					   showBusyCursor="true"/>
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
@@ -195,11 +204,11 @@
 	<utils:CInteractiveGrid x="296" width="557" height="223" id="testGrid" top="416">
 	</utils:CInteractiveGrid>
 	<s:DropDownList x="304" width="300" id="indicatorsBox"  labelField="namen" top="50"></s:DropDownList>
-	<s:Button x="430" y="355" label="Reset" click="button4_clickHandler(event)" width="118"/>
-	<s:Button x="294" y="356" label="Update DB" click="button5_clickHandler(event)" width="106"/>
+	<s:Button x="736" y="356" label="Reset" click="button4_clickHandler(event)" width="118"/>
+	<s:Button x="294" y="356" label="Update DB" click="button5_clickHandler(event)" width="146" id="saveBtn"/>
 	<s:Label x="302" y="397" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
-	<s:RadioButton x="636" y="54" label="Levels" groupName="growthType" enabled="true" 
+	<s:RadioButton x="636" y="54" label="Levels" groupName="growthType" enabled="true" value="0"
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="698" y="54" label="Growths" groupName="growthType" 
+	<s:RadioButton x="698" y="54" label="Growths" groupName="growthType" value="1" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
 </s:Group>

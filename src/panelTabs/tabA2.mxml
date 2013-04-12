@@ -165,8 +165,9 @@
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
-				var temp:Object = new Object();
+				this.dispatchEvent(new Event("changesMadeInScenario", true));
 				
+				var temp:Object = new Object();				
 				if (this.isSingleGeo) { 				
 					alteredData = this.grid.getData();					
 				} else {
@@ -206,21 +207,28 @@
 				this.dispatchEvent(new Event("scenarioResetRequested", true));
 			}			
 			
-			public function enableGrid(flag:Boolean) : void {
-				this.grid.isEditable = flag;
-				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
-			}
-
+			[bindable] public var tabEditable:Boolean;			
+			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
+				if (!isLocal) this.tabEditable = flag && isLevel;
+				this.grid.isEditable = flag && isLevel ;
+				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+				this.saveBtn.enabled = (flag && isLevel);				
+			}		
+			
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
 			{
 				Alert.show(event.fault.faultString, "Error");				
 			}
 
 			[bindable] private var isLevel:Boolean = true;
-			protected function radiobutton2_changeHandler(event:Event):void
+			protected function radiobutton2_clickHandler(event:Event):void
 			{
+				var tmp:int = 1 - int(this.growthType.selection.value);
 				this.isLevel = !this.isLevel;
-				this.dispatchEvent(new Event("updateCharts", false));
+				this.dispatchEvent(new Event("updateCharts", false));	
+				// 0 for levels, 1 for growth				 
+				this.enableGrid(tmp == 0 && this.tabEditable, true);	
+				this.saveBtn.enabled = (tmp == 0 && this.tabEditable);
 			}
 			
 			protected function updateCharts(evt:Event):void {
@@ -286,14 +294,15 @@
 	
 	<s:DropDownList x="374" width="301" id="indicatorsBox" labelField="namen"
 					 change="indicatorsBox_changeHandler(event)" top="9" selectedIndex="1"></s:DropDownList>
-	<s:Button x="239" label="send changes to PHP" width="154" click="digestChanges(event)" top="367" height="22"/>
+	<s:Button x="239" label="send changes to PHP" width="154" click="digestChanges(event)" 
+			  id="saveBtn"  top="367" height="22"/>
 	<s:Button x="772" label="refresh data" click="button3_clickHandler(event)" top="10" width="125"/>
 	<s:Label x="238" y="6" text="Select Indicator" width="128" height="17"/>
 	<s:Label x="238" y="41" text="Data in:" width="65" height="19" verticalAlign="middle"/>
-	<s:RadioButton x="308" y="40" label="Levels" groupName="growthType" enabled="true" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="370" y="40" label="Growths" groupName="growthType" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:RadioButton x="308" y="40" label="Levels" groupName="growthType" enabled="true" value="0"
+				   selected="true" height="19" change="radiobutton2_clickHandler(event)"/>
+	<s:RadioButton x="370" y="40" label="Growths" groupName="growthType" value="1" 
+				   enabled="true" height="19" change="radiobutton2_clickHandler(event)"/>
 	<s:BorderContainer x="770" y="218" width="122" height="170" id="shockControls" enabled="false">
 		<s:Label x="-1" y="0" text="Shock Mechanism" fontStyle="italic"/>
 		<s:Label x="10" y="28" text="When (Year)" width="103" height="18" verticalAlign="middle"/>

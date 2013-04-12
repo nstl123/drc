@@ -24,6 +24,7 @@
 		
 		<s:RadioButtonGroup id="batTypes"/>		
 		<s:RadioButtonGroup id="pwrTypes"/>
+		<s:RadioButtonGroup id="growthType" />
 		
 	</fx:Declarations>
 	
@@ -192,6 +193,8 @@
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
+				this.dispatchEvent(new Event("changesMadeInScenario", true));
+				
 				alteredData = this.testGrid.getData();
 				var temp:Object = new Object();
 				temp = ({'id':1, data:this.alteredData});
@@ -246,16 +249,23 @@
 				this.selPwrType = int(this.pwrTypes.selectedValue);
 			}
 			
-			public function enableGrid(flag:Boolean) : void {
-				this.testGrid.isEditable = flag;
-				flag ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+			[bindable] public var tabEditable:Boolean;			
+			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
+				if (!isLocal) this.tabEditable = flag && isLevel;
+				this.testGrid.isEditable = flag && isLevel;
+				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+				this.saveBtn.enabled = (flag && isLevel);
 			}
 			
 			[bindable] private var isLevel:Boolean = true;
 			protected function radiobutton2_changeHandler(event:Event):void
 			{
 				this.isLevel = !this.isLevel;
-				this.dispatchEvent(new Event("updateCharts", false));
+				this.dispatchEvent(new Event("updateCharts", false));				
+				
+				var tmp:int = 1 - int(this.growthType.selection.value);
+				this.enableGrid(tmp == 0 && this.tabEditable, true);		
+				this.saveBtn.enabled = (tmp == 0 && this.tabEditable);
 			}
 			
 			protected function updateCharts(evt:Event):void {
@@ -294,8 +304,8 @@
 	<s:Button x="629" label="getSomeData" click="button3_clickHandler(event)" id="button" top="50" width="153"/>
 	
 	<s:CheckBox x="394" y="3" label="hasSplit" enabled="false" id="hasSplitFlag"/>
-	<s:Button x="445" y="403" label="updateDB" width="215" click="digestChanges(event)"/>
-	<s:Button x="668" y="403" label="Reset" width="94" click="button4_clickHandler(event)"/>
+	<s:Button x="238" y="403" label="updateDB" width="215" click="digestChanges(event)" id="saveBtn"/>
+	<s:Button x="689" y="403" label="Reset" width="94" click="button4_clickHandler(event)"/>
 	<s:DropDownList x="483" y="22" width="300" id="deviceListDrop"
 					 labelField="namen" change="deviceListDrop_changeHandler(event)"></s:DropDownList>
 	<s:Label x="243" y="6" text="Indicators"/>
@@ -311,7 +321,7 @@
 					   click="pwrTypes_clickHandler(event)"/>			
 	</s:BorderContainer>
 	
-	<s:BorderContainer x="398" y="78" width="208" height="21" fontSize="11">
+	<s:BorderContainer x="398" y="78" width="229" height="21" fontSize="11">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -323,9 +333,9 @@
 	</s:BorderContainer>
 	<s:Label x="406" y="63" text="Bat Type" width="112" id="selDeviceLabel0"/>
 	<s:Label x="243" y="63" text="Pwr Type" width="112" id="selDeviceLabel1"/>
-	<s:RadioButton x="635" y="79" label="Levels" groupName="growthType" enabled="true" 
+	<s:RadioButton x="635" y="79" label="Levels" groupName="growthType" enabled="true" value="0" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="697" y="79" label="Growths" groupName="growthType" 
+	<s:RadioButton x="697" y="79" label="Growths" groupName="growthType" value="1" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
 	<s:Label x="241" y="432" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
 

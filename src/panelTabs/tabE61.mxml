@@ -242,8 +242,8 @@
 					else 
 							f = false;
 				} else {									
-					if (((item.scenarioID == this.workingScenarioID)
-						&& (item.deviceID == this.selDevice))||(!devicesActiveFlag)) {					
+					if ( (item.scenarioID == this.workingScenarioID) &&
+						( (item.deviceID == this.selDevice) || (!devicesActiveFlag) ) ) {					
 						f = true
 					}  else 
 						f = false;		
@@ -450,7 +450,7 @@
 				Alert.show("some fockin err in SQL query");
 			}	
 			
-			public function enableGrid(flag:Boolean) : void {
+			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {
 				this.testGrid.isEditable = flag;			
 			}
 			
@@ -489,6 +489,7 @@
 			
 		]]>
 	</fx:Script>
+	
 	<s:BorderContainer width="220" height="26" left="10" top="10">
 		<s:layout>
 			<s:HorizontalLayout/>
@@ -506,14 +507,14 @@
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid x="234" width="761" height="203" id="testGrid" y="440">
 	</utils:CInteractiveGrid>
-	<s:Button x="868" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="93" width="129"/>
+	<s:Button x="637" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="5" width="129"/>
 	<s:Label x="422" y="9" text="Selected Device" width="344" id="selDeviceLabel"/>
 	<s:Label x="373" y="75" text="Bat Type" width="112" id="selDeviceLabel0"/>
 	<s:Label x="473" y="124" text="Show Data in:" width="84" id="selDeviceLabel2"/>
 	<s:Label x="232" y="76" text="Pwr Type" width="67" id="selDeviceLabel1"/>
 	<s:DropDownList x="485" y="30" width="281" id="deviceListDrop"
 					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1"/>
-	<s:BorderContainer x="388" y="90" width="199" height="21" fontSize="11">
+	<s:BorderContainer x="388" y="90" width="224" height="21" fontSize="11">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -534,7 +535,7 @@
 	</s:BorderContainer>
 	<s:Label x="778" y="10" text="some exogenous var" width="152"/>
 	<s:DropDownList x="789" y="29" width="201" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)" selectedIndex="0"/>
-	<s:Button x="866" y="60" label="getSomeExo" width="129" click="button3_clickHandler(event)" id="button"/>
+	<s:Button x="860" y="57" label="getSomeExo" width="129" click="button3_clickHandler(event)" id="button"/>
 	<utils:CTwoAxisChart x="630" y="147" height="283" id="testChartExo" width="365">
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid x="751" y="583" height="58" id="testGridExo" width="254"
@@ -558,7 +559,7 @@
 	<s:CheckBox x="443" y="70" label="Use?" fontSize="11" fontStyle="italic" 
 				id="batTypesActive" enabled="true" selected="true" 
 			 	click="batTypesActive_clickHandler(event)"	/>
-	<s:CheckBox x="669" y="69" label="Use?" fontSize="11" fontStyle="italic" 
+	<s:CheckBox x="694" y="69" label="Use?" fontSize="11" fontStyle="italic" 
 				id="chemistryActive" enabled="true" selected="false" 
 			 	click="chemTypesActive_clickHandler(event)"	/>
 	<s:CheckBox x="435" y="28" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
@@ -568,8 +569,8 @@
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
 	<s:RadioButton x="627" y="118" label="Growths" groupName="growthType" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:Label x="599" y="74" text="Chemistry"/>
-	<s:BorderContainer y="89" width="203" height="21" x="620">
+	<s:Label x="624" y="74" text="Chemistry"/>
+	<s:BorderContainer y="89" width="203" height="21" x="645">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>

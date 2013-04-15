@@ -251,7 +251,7 @@
 			
 			[bindable] public var tabEditable:Boolean;			
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
-				if (!isLocal) this.tabEditable = flag && isLevel;
+				if (!isLocal) this.tabEditable = flag; 
 				this.testGrid.isEditable = flag && isLevel;
 				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 				this.saveBtn.enabled = (flag && isLevel);

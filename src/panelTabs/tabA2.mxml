@@ -45,6 +45,7 @@
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
 			
+			public var cntryListLoaded:Boolean = false;
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab A1");			
@@ -89,8 +90,10 @@
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void
 			{
+				trace("tab A. cntryList loaded.");
 				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
-				this.dispatchEvent(new Event("countryListLoaded", true));
+				this.cntryListLoaded = true;
+				this.dispatchEvent(new Event("countryListLoaded", true));				
 			}				
 			
 			protected function button2_clickHandler(event:MouseEvent):void
@@ -209,7 +212,7 @@
 			
 			[bindable] public var tabEditable:Boolean;			
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
-				if (!isLocal) this.tabEditable = flag && isLevel;
+				if (!isLocal) this.tabEditable = flag; //&& isLevel;
 				this.grid.isEditable = flag && isLevel ;
 				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 				this.saveBtn.enabled = (flag && isLevel);				

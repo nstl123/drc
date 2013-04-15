@@ -50,26 +50,30 @@
 			private var workingScenarioID:int;			
 			protected var IDgen:IDgenerator = new IDgenerator();
 			
-			protected function initAll(evt:FlexEvent):void {				
-				this.tabai.createDeferredContent();
+			
+			
+			protected function initAll(evt:FlexEvent):void {
+				trace("application creationComplete part. start initAll");
+				this.tabai.createDeferredContent();				
 				this.startApp(evt);
 			}		
 			
 			protected function startApp(event:FlexEvent):void
 			{
-				this.pathLabel.text = "Init";
-				
+				trace("starting init Depot1, Depot21, Depot3");
+				this.pathLabel.text = "Init";				
 				this.dataServiceNames = new Depot1();
 				this.dataServiceData = new Depot21();
-				this.dataServiceUpdate = new Depot3();
-				trace("init Depot1, Depot21");
+				this.dataServiceUpdate = new Depot3();				
 				
 				this.workingScenarioID = this.IDgen.generateID();			
 				cleanOldScenarios(); // this should be removed later				
 				this.addEventListener("dbCleaned", initScenarioDB);
 				
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);		
-				this.addEventListener("countryListLoaded", digestUpdate);
+				
+				this.addEventListener("countryListLoaded", setCntryListToTabs);				
+				this.addEventListener("tabaiCreated", setCntryListToTabs);
 				
 				this.addEventListener("pathChanged", digestPathChange);	
 				
@@ -116,14 +120,29 @@
 				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(this.workingScenarioID);
 			}
 			
-			public function digestUpdate(event:Event):void {	
+			public function digestUpdate(event:Event):void {								
 				if (event)	{
 					this.masterTab.manageUpdate(event.target.className);
 				} else {
 					this.masterTab.manageUpdate("tabA2");
 				};
 			}
-			
+						
+			public function setCntryListToTabs(event:Event):void {				
+				if (this.panelTabA2.cntryListLoaded) {
+					this.masterTab.manageUpdate("tabA2");
+					var z:ArrayCollection = this.masterTab.getDataList();		
+				};
+					
+				if ((this.tabaiCreationComplete)&&(this.panelTabA2.cntryListLoaded)) {					
+					this.panelTabB3.countryListGrid.dataList = this.masterTab.getDataList();
+					this.panelTabC4.countryListGrid.dataList = this.masterTab.getDataList();
+					this.panelTabD5.countryListGrid.dataList = this.masterTab.getDataList();
+					this.panelTabE61.countryListGrid.dataList = this.masterTab.getDataList();
+					this.panelTabF51.countryListGrid.dataList = this.masterTab.getDataList();
+				};
+			}
+
 			[bindable] private var selPath:String = "";
 			[bindable] public static var isStart:int = 0;			
 			[bindable] public var selPathObj:Object;
@@ -181,24 +200,22 @@
 			}	
 			
 			protected function tabb11_creationCompleteHandler(event:FlexEvent):void
-			{
-				trace("creation complete of tab B1");
+			{				
 				this.panelTabB3.setWorkingScenario(this.workingScenarioID, false);								
 				this.panelTabB3.dataServiceNames = this.dataServiceNames;
 				this.panelTabB3.dataServiceData = this.dataServiceData;
 				this.panelTabB3.dataServiceUpdate = this.dataServiceUpdate;
 				
-				this.panelTabB3.initNames();		
-				
-				this.panelTabB3.countryListGrid.dataList = this.masterTab.getDataList();				
+				this.panelTabB3.initNames();				
+				//this.panelTabB3.countryListGrid.dataList = this.masterTab.getDataList();				
 				this.masterTab.addTab(this.panelTabB3, 1);
 				
 				this.dispatchEvent(new Event("tabB", true));
+				trace("creation complete of tab B1");
 			}
 
 			protected function tabc11_creationCompleteHandler(event:FlexEvent):void
-			{
-				trace("creation complete of tab C4");
+			{				
 				this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);
 				this.panelTabC4.dataServiceData = this.dataServiceData;				
 				this.panelTabC4.dataServiceNames = this.dataServiceNames;	
@@ -210,21 +227,22 @@
 				this.masterTab.addTab(this.panelTabC4, 2);
 				
 				this.dispatchEvent(new Event("tabC", true));
+				trace("creation complete of tab C4");
 			}
 
 			protected function tabd11_creationCompleteHandler(event:FlexEvent):void
-			{
-				trace("creation complete of tab D1");
+			{				
 				this.panelTabD5.setWorkingScenario(this.workingScenarioID, false);				
 				this.panelTabD5.dataServiceNames = this.dataServiceNames;
 				this.panelTabD5.dataServiceData = this.dataServiceData;
 				
 				this.panelTabD5.initNames();	
-				
-				this.panelTabD5.countryListGrid.dataList = this.masterTab.getDataList();
+							
+				//this.panelTabD5.countryListGrid.dataList = this.masterTab.getDataList();
 				this.masterTab.addTab(this.panelTabD5, 3);
 				
 				this.dispatchEvent(new Event("tabD", true));
+				trace("creation complete of tab D1");
 			}
 
 
@@ -236,8 +254,7 @@
 			}
 
 			protected function taba11_creationCompleteHandler(event:FlexEvent):void
-			{
-				trace("creation complete of tab A1");
+			{			
 				this.panelTabA2.setWorkingScenario(this.workingScenarioID, false);
 				
 				this.panelTabA2.dataServiceNames = this.dataServiceNames;
@@ -248,12 +265,12 @@
 				this.masterTab.addTab(this.panelTabA2, 0);
 				
 				this.dispatchEvent(new Event("tabA", true));
+				trace("creation complete of tab A1");
 			}
 
 
 			protected function tabf511_creationCompleteHandler(event:FlexEvent):void
-			{
-				trace("creation complete of tab F5");
+			{			
 				this.panelTabF51.setWorkingScenario(this.workingScenarioID, false);
 				
 				this.panelTabF51.dataServiceNames = this.dataServiceNames;
@@ -266,11 +283,14 @@
 				this.masterTab.addTab(this.panelTabF51, 4);
 				
 				this.dispatchEvent(new Event("tabF", true));
+				trace("creation complete of tab F5");
+				
+				this.tabaiCreationComplete = true;
+				this.dispatchEvent(new Event("tabaiCreated", true));
 			}
 
 			protected function tabe11_creationCompleteHandler(event:FlexEvent):void
-			{
-				trace("creation complete of tab E61");
+			{				
 				this.panelTabE61.setWorkingScenario(this.workingScenarioID, false);				
 				this.panelTabE61.dataServiceNames = this.dataServiceNames;
 				this.panelTabE61.dataServiceData = this.dataServiceData;
@@ -280,6 +300,7 @@
 				this.masterTab.addTab(this.panelTabE61, 5);
 				
 				this.dispatchEvent(new Event("tabE", true));
+				trace("creation complete of tab E61");				
 			}
 			
 			protected function createNext(evt:Event):void {
@@ -321,17 +342,23 @@
 			protected function panelTabPath_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.panelTabPath.enablePaths(false);
-				this.pathLabel.text = "Loading Module...";
+				trace("creation complete of tab pathSelections");
+			}
+
+			[bindable] private var tabaiCreationComplete:Boolean = false;
+			protected function tabai_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("tabai creation complete");			
 			}
 
 		]]>
 	</fx:Script>
 		
-	<s:BorderContainer width="100%" height="15">
+	<s:BorderContainer width="100%" height="15" fontFamily="Verdana">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-		<s:Label text="Battery Dermand Analysis Tool. v.03-28-11am" width="50%" height="100%"/>
+		<s:Label text="Battery Dermand Analysis Tool. v.04-15-12pm" width="50%" height="100%"/>
 		<s:Label text="info bar" id="statusLabel" width="50%" textAlign="right" height="100%"/>
 	</s:BorderContainer>
 	<s:Label text="Selected Path" width="100%" height="15" verticalAlign="middle" id="pathLabel"/>
@@ -341,8 +368,8 @@
 		<s:layout>
 			<s:VerticalLayout/>
 		</s:layout>		
-		<mx:TabNavigator id="tabai" width="100%" height="100%" fontFamily="Georgia" 
-						 creationPolicy="none" >
+		<mx:TabNavigator id="tabai" width="100%" height="100%" fontFamily="Verdana" 
+						 creationPolicy="none" creationComplete="tabai_creationCompleteHandler(event)"  fontSize="11">
 
 			<s:NavigatorContent id="nc_00" label="Path selection" width="100%" height="100%" 
 								creationPolicy="none">
@@ -359,7 +386,8 @@
 				</panelTabs:tabA2>
 			</s:NavigatorContent>
 			
-			<s:NavigatorContent id="nc_B3" label="B. Factors" width="100%" height="100%" creationPolicy="none">
+			<s:NavigatorContent id="nc_B3" label="B. Factors" width="100%" height="100%" 
+								creationPolicy="none">
 				<panelTabs:tabB3 id="panelTabB3" width="100%" height="100%" enabled="true"
 								 creationComplete="tabb11_creationCompleteHandler(event)"  left="0" top="0">					
 				</panelTabs:tabB3>				

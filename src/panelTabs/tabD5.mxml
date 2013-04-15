@@ -44,13 +44,13 @@
 			
 			
 			protected function startApp(event:FlexEvent):void {
-				trace("app start panelTab B");			
+				trace("app start panelTab D");			
 				hlp = new helper();		
 				this.addEventListener("updateCharts", updateCharts);				
 			}
 			
 			public function initNames():void {
-				trace("init names inside panel B");				
+				trace("init names inside panel D");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				//countryListNames.token = this.dataServiceNames.getCountryList(0);
 			}
@@ -145,7 +145,7 @@
 
 			[bindable] public var tabEditable:Boolean;			
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
-				if (!isLocal) this.tabEditable = flag && isLevel;
+				if (!isLocal) this.tabEditable = flag; // && isLevel;
 				this.testGrid.isEditable = flag && isLevel;
 				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 				this.saveBtn.enabled = (flag && isLevel);

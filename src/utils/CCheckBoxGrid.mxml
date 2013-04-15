@@ -71,7 +71,7 @@
 			
 			//assign new data
 			public function set dataList(data:ArrayCollection):void
-			{			
+			{					
 				selectionList = new ArrayCollection();
 				var res:ArrayCollection = data as ArrayCollection;				
 				
@@ -176,10 +176,10 @@
 	</fx:Declarations>	
 
 	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle">
-		<s:Label text="Label" width="60%" fontWeight="normal" fontSize="11" id="lblName" height="100%" verticalAlign="middle" fontStyle="italic"/>
-		<mx:LinkButton label="Select all" width="20%" textAlign="right" id="lnkAll" 
+		<s:Label text="Label" width="70%" fontWeight="normal" fontSize="11" id="lblName" height="100%" verticalAlign="middle" fontStyle="italic"/>
+		<mx:LinkButton label="Select all" width="15%" textAlign="right" id="lnkAll" 
 					   click="lnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal" height="100%" fontSize="11"/>
-		<mx:LinkButton label="deSelectAll" width="20%" textAlign="right" id="rmAll" 
+		<mx:LinkButton label="deSelectAll" width="15%" textAlign="right" id="rmAll" 
 					   click="delnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal" height="100%" fontSize="11"/>
 	</s:HGroup>
 		

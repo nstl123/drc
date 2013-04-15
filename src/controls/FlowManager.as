@@ -72,7 +72,7 @@ package controls
 		[bindable] public var selPath:String = "";
 		[bindable] private var pathFlags:Array = new Array(); 
 		
-		public function registerPath(np:String, isStart:int):void {		
+		public function registerPath(np:String, isStart:int):Array {		
 			
 			this.selPath = np;
 			switch (this.selPath) {
@@ -81,7 +81,7 @@ package controls
 					pathFlags = [1, 0, 0, 0, 0, 1];
 					break;
 				case "B":					
-					pathFlags = [0, 1, 0, 0, 1, 1];
+					pathFlags = [0, 1, 0, 0, 0, 1];
 					break;
 				case "C":					
 					pathFlags = [0, 0, 1, 0, 0, 1];
@@ -96,7 +96,8 @@ package controls
 					pathFlags = [0, 0, 0, 0, 0, 0];
 					break;
 			};
-			if (isStart > 1) this.enableGrids(this.pathFlags);					
+			if (isStart > 1) this.enableGrids(this.pathFlags);		
+			return pathFlags;
 		}
 		
 		public function enableGrids(arr:Array):void {

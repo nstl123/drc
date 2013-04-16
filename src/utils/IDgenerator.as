@@ -24,5 +24,12 @@ package utils
 			
 			return Number(sid);
 		}
+		
+		public function generateTimeStamp():String {
+			var now:Date = new Date();
+			var timePart:String = now.getTime().toString();
+			
+			return timePart;
+		}
 	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="800" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" height="800" 
 		 xmlns:utils="utils.*"
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*"
@@ -281,10 +281,10 @@
 		]]>
 	</fx:Script>
 
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="594" top="38" x="13" />
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="594" top="37" left="10"/>
 	
 	
-	<s:BorderContainer width="221" height="25" top="6" left="12">
+	<s:BorderContainer width="221" height="25" top="7" left="10">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
@@ -292,51 +292,41 @@
 		<s:Button label="notify F" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="243" width="540" height="287" id="testChart" top="108">
+	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="109" left="240">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid x="241" width="544" height="185" id="testGrid" top="451">
+	<utils:CInteractiveGrid width="631" height="208" id="testGrid" top="427" left="240">
 	</utils:CInteractiveGrid>
 	
-	<s:DropDownList x="270" width="189" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="22"/>
+	<s:DropDownList width="242" height="18" id="indicatorsBox" 
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="20" left="278"/>
 	
-	<s:Button x="629" label="getSomeData" click="button3_clickHandler(event)" id="button" top="50" width="153"/>
+	<s:CheckBox x="522" y="22" label="hasSplit" enabled="false" id="hasSplitFlag"/>
+	<s:Button label="save changes" width="215" click="digestChanges(event)" id="saveBtn" left="441" top="394" fontWeight="bold" height="20"/>
+	<s:Button label="Reset" click="button4_clickHandler(event)" y="395" width="122" x="753"/>
+	<s:DropDownList width="272" id="deviceListDrop"
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" right="29" top="20"></s:DropDownList>
 	
-	<s:CheckBox x="394" y="3" label="hasSplit" enabled="false" id="hasSplitFlag"/>
-	<s:Button x="238" y="403" label="updateDB" width="215" click="digestChanges(event)" id="saveBtn"/>
-	<s:Button x="689" y="403" label="Reset" width="94" click="button4_clickHandler(event)"/>
-	<s:DropDownList x="483" y="22" width="300" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)"></s:DropDownList>
-	<s:Label x="243" y="6" text="Indicators"/>
-	<s:Label x="468" y="6" text="Devices"/>
+	<s:Button label="refresh data" click="button3_clickHandler(event)" id="button" width="153" height="25" fontWeight="bold" left="410" top="67"/>
 	
-	<s:BorderContainer width="116" height="21" x="266" y="78" fontSize="11">
-		<s:layout>
-			<s:HorizontalLayout paddingLeft="5"/>
-		</s:layout>
-		<s:RadioButton x="14" y="10" label="DPP" value="1" groupName="pwrTypes" selected="true"
-					   click="pwrTypes_clickHandler(event)"/>
-		<s:RadioButton x="14" y="36" label="RCR" value="2" groupName="pwrTypes"
-					   click="pwrTypes_clickHandler(event)"/>			
-	</s:BorderContainer>
-	
-	<s:BorderContainer x="398" y="78" width="229" height="21" fontSize="11">
-		<s:layout>
-			<s:HorizontalLayout paddingLeft="5"/>
-		</s:layout>
-		<s:RadioButton x="14" y="10" label="1C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)"/>
-		<s:RadioButton x="14" y="36" label="1D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)"/>
-		<s:RadioButton x="14" y="62" label="3A"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)"/>
-		<s:RadioButton x="14" y="88" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
-		<s:RadioButton x="14" y="114" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
-	</s:BorderContainer>
-	<s:Label x="406" y="63" text="Bat Type" width="112" id="selDeviceLabel0"/>
-	<s:Label x="243" y="63" text="Pwr Type" width="112" id="selDeviceLabel1"/>
-	<s:RadioButton x="635" y="79" label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="697" y="79" label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:Label x="241" y="432" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
+	<s:Label x="688" text="Bat Type" width="112" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="50"/>
+	<s:Label x="577" text="Pwr Type" width="85" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="50"/>
+	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="301" top="56"/>
+	<s:RadioButton label="Growths" groupName="growthType" value="1" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="301" top="77"/>
+	<s:Label x="238" y="414" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="243" top="50"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
+	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
+	<s:RadioButton x="615" y="62" label="DPP" value="1" groupName="pwrTypes" selected="true"
+				   click="pwrTypes_clickHandler(event)"/>
+	<s:RadioButton x="615" y="82" label="RCR" value="2" groupName="pwrTypes"
+				   click="pwrTypes_clickHandler(event)"/>
+	<s:RadioButton x="701" y="65" label="1C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)"/>
+	<s:RadioButton x="738" y="65" label="1D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+	<s:RadioButton x="775" y="65" label="3A"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+	<s:RadioButton x="813" y="65" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+	<s:RadioButton x="851" y="65" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 
 </s:Group>

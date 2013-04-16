@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1005" height="100%"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" height="100%"
 		 
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
@@ -19,7 +19,7 @@
 		<s:CallResponder id="regionListNames" result="regionsListNames_resultHandler(event)" />
 		
 		<s:CallResponder id="deviceNamesList" result="deviceNamesList_resultHandler(event)" />		
-		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" />
+		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" fault="getDemandData_faultHandler(event)" />
 		<s:CallResponder id="getDemandRegions" result="getDemandRegions_resultHandler(event)" />
 		<s:CallResponder id="getIndicatorNames" result="getIndicatorNames_resultHandler(event)" />		
 		
@@ -145,6 +145,7 @@
 				trace("calling demand token");				
 				
 				this.cursorManager.setBusyCursor();
+				
 				if ((this.chemTypesActiveFlag)&&(tmp2.length > 0)) {
 					getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1);
 				} else if ((this.chemTypesActiveFlag)&&(tmp.length > 0)) {
@@ -286,6 +287,12 @@
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 
+
+			protected function getDemandData_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("cou-ld not gte demand data", "Error");
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -338,7 +345,7 @@
 			protected function dropdownlist1_changeHandler(event:IndexChangeEvent):void
 			{
 				this.selDevice = this.deviceListDrop.selectedItem.id;
-				this.selDeviceLabel.text = this.deviceListDrop.selectedItem.namen;
+				//this.selDeviceLabel.text = this.deviceListDrop.selectedItem.namen;
 								
 				this.currentDataChart.filterFunction = this.filterChart;
 				this.currentDataGrid.filterFunction  = this.filterGrid;				
@@ -490,31 +497,31 @@
 		]]>
 	</fx:Script>
 	
-	<s:BorderContainer width="220" height="26" left="10" top="10">
+	<s:BorderContainer width="220" height="26" left="10" top="7">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
-		<s:Label text="Tab E. Demand" height="100%" width="50%" x="61" y="38"/>		
-		<s:Button label="notify E" click="button2_clickHandler(event)" width="50%" height="100%"/>			
+		<s:Label text="Tab E. Demand" height="100%" width="40%" x="61" y="38"/>		
+		<s:Button label="notify E" click="button2_clickHandler(event)" width="60%" height="100%"/>			
 	</s:BorderContainer>	
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="225" height="332" left="8" y="36"
-						 labelText="Countries">
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="332" left="10"
+						 top="37">
 	</utils:CCheckBoxGrid>	
 	
 	
-	<utils:CTwoAxisChart x="237" width="383" height="283" id="testChart" y="161">
+	<utils:CTwoAxisChart x="238" width="343" height="288" id="testChart" y="140">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="234" width="761" height="193" id="testGrid" y="450">
+	<utils:CInteractiveGrid width="652" height="193" id="testGrid" left="238" top="431">
 	</utils:CInteractiveGrid>
-	<s:Button x="481" label="getSomeData" id="getSomeData" click="getSomeData_clickHandler(event)" y="131" width="285"/>
-	<s:Label x="422" y="9" text="Selected Device" width="207" id="selDeviceLabel"/>
-	<s:Label x="373" y="75" text="Bat Type" width="112" id="selDeviceLabel0"/>
-	<s:Label x="243" y="121" text="Show Data in:" width="84" id="selDeviceLabel2"/>
-	<s:Label x="232" y="76" text="Pwr Type" width="67" id="selDeviceLabel1"/>
-	<s:DropDownList x="485" y="30" width="281" id="deviceListDrop"
-					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1"/>
-	<s:BorderContainer x="388" y="91" width="224" height="21" fontSize="11" fontFamily="Verdana">
+	<s:Button x="420" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="105" width="285" height="25" fontWeight="bold"/>
+	<s:Label x="299" text="Selected Device" width="259" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="10"/>
+	<s:Label x="394" text="Bat Type" width="62" id="selDeviceLabel0" fontStyle="italic" fontSize="11" height="15" top="50" verticalAlign="middle"/>
+	<s:Label x="237" y="98" text="Show Data in:" width="84" id="selDeviceLabel2" fontStyle="italic" fontSize="11"/>
+	<s:Label x="239" text="Pwr Type" width="67" id="selDeviceLabel1" fontStyle="italic" fontSize="11" top="50" height="15" verticalAlign="middle"/>
+	<s:DropDownList width="280" id="deviceListDrop"
+					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="21" left="321"/>
+	<s:BorderContainer x="409" width="224" height="21" fontSize="11" fontFamily="Verdana" top="65">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -524,7 +531,7 @@
 		<s:RadioButton x="14" y="88" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 		<s:RadioButton x="14" y="114" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 	</s:BorderContainer>
-	<s:BorderContainer width="100" height="21" x="250" y="91" fontSize="11" fontFamily="Verdana">
+	<s:BorderContainer width="100" height="21" x="257" fontSize="11" fontFamily="Verdana" top="65">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -533,44 +540,36 @@
 		<s:RadioButton x="14" y="36" label="RCR" value="2" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)"/>			
 	</s:BorderContainer>
-	<s:Label x="778" y="10" text="some exogenous var" width="152"/>
-	<s:DropDownList x="789" y="29" width="201" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)" selectedIndex="0"/>
-	<s:Button x="861" y="130" label="getSomeExo" width="129" click="button3_clickHandler(event)" id="button"/>
-	<utils:CTwoAxisChart x="630" y="160" height="283" id="testChartExo" width="365">
+	<s:Label x="653" text="some exogenous var" width="152" fontStyle="italic" fontSize="11" top="8"/>
+	<s:DropDownList x="664" width="226" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)" selectedIndex="0" height="20" top="20"/>
+	<s:Button x="761" y="109" label="exo data" width="129" click="button3_clickHandler(event)" id="button"/>
+	<utils:CTwoAxisChart x="588" y="140" height="288" id="testChartExo" width="302">
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid x="751" y="583" height="58" id="testGridExo" width="254"
 							 visible="false" enabled="false"
 							>
 	</utils:CInteractiveGrid>
-	<utils:CCheckBoxGrid x="10" y="383" height="268" width="225" id="regionsListGrid"
-						 labelText="Regions" >
+	<utils:CCheckBoxGrid height="251" width="220" id="regionsListGrid"
+						 labelText="Regions"  top="373" left="10">
 	</utils:CCheckBoxGrid>
-	<s:BorderContainer x="246" y="9" width="159" height="54">
-		<s:layout>
-			<s:VerticalLayout paddingLeft="5" paddingTop="5"/>
-		</s:layout>
-		<s:Label text="Demand" fontFamily="Georgia" fontSize="15" width="100%"/>
-		<s:RadioButton label="Demand" groupName="demandTypes"  value="301" enabled="false"
-					   click="radiobutton1_clickHandler(event)" id="dem0" selected="true" fontSize="15" fontFamily="Georgia" width="100%"/>
-	</s:BorderContainer>
-	<s:CheckBox x="307" y="71" label="Use?" fontSize="11" fontStyle="italic" 
+	<s:CheckBox x="314" label="Use?" fontSize="11" fontStyle="italic" 
 				id="pwrTypesActive" enabled="true" selected="true" 
-				 click="pwrTypesActive_clickHandler(event)"/>
-	<s:CheckBox x="443" y="70" label="Use?" fontSize="11" fontStyle="italic" 
+				 click="pwrTypesActive_clickHandler(event)" top="45" height="20"/>
+	<s:CheckBox x="464" label="Use?" fontSize="11" fontStyle="italic" 
 				id="batTypesActive" enabled="true" selected="true" 
-			 	click="batTypesActive_clickHandler(event)"	/>
-	<s:CheckBox x="694" y="69" label="Use?" fontSize="11" fontStyle="italic" 
+			 	click="batTypesActive_clickHandler(event)"	 top="45" height="20"/>
+	<s:CheckBox x="737" label="Use?" fontSize="11" fontStyle="italic" 
 				id="chemistryActive" enabled="true" selected="false" 
-			 	click="chemTypesActive_clickHandler(event)"	/>
-	<s:CheckBox x="435" y="28" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
-				enabled="true" selected="true" height="23"
-			     click="devicesActive_clickHandler(event)"/>
-	<s:RadioButton x="272" y="132" label="Levels" groupName="growthType" enabled="true" 
+			 	click="chemTypesActive_clickHandler(event)"	 top="45" height="20"/>
+	<s:CheckBox x="270" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
+				enabled="true" selected="true" height="20"
+			     click="devicesActive_clickHandler(event)" top="21"/>
+	<s:RadioButton x="266" y="109" label="Levels" groupName="growthType" enabled="true" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="335" y="132" label="Growths" groupName="growthType" 
+	<s:RadioButton x="329" y="109" label="Growths" groupName="growthType" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:Label x="624" y="74" text="Chemistry"/>
-	<s:BorderContainer y="91" width="203" height="21" x="645" fontFamily="Verdana" fontSize="11">
+	<s:Label x="667" text="Chemistry" fontStyle="italic" fontSize="11" top="50" height="15" verticalAlign="middle"/>
+	<s:BorderContainer width="203" height="21" x="688" fontFamily="Verdana" fontSize="11" top="65">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>

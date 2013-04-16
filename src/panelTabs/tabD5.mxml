@@ -188,10 +188,10 @@
 		
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="290" height="95%" top="50" left="0">
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="587" top="37" left="10">
 	</utils:CCheckBoxGrid>
 	
-	<s:BorderContainer width="300" height="25" top="0" x="0">
+	<s:BorderContainer width="220" height="25" top="7" left="10">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
@@ -199,16 +199,19 @@
 		<s:Button label="notify D" click="button2_clickHandler(event)" width="50%" height="100%"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="298" width="556" height="260" id="testChart" top="87">
+	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="82" left="240">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="296" width="557" height="223" id="testGrid" top="416">
+	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="397" left="239">
 	</utils:CInteractiveGrid>
-	<s:DropDownList x="304" width="300" id="indicatorsBox"  labelField="namen" top="50"></s:DropDownList>
-	<s:Button x="736" y="356" label="Reset" click="button4_clickHandler(event)" width="118"/>
-	<s:Button x="294" y="356" label="Update DB" click="button5_clickHandler(event)" width="146" id="saveBtn"/>
-	<s:Label x="302" y="397" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
-	<s:RadioButton x="636" y="54" label="Levels" groupName="growthType" enabled="true" value="0"
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="698" y="54" label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:DropDownList width="243" id="indicatorsBox"  labelField="namen" top="20" left="278"></s:DropDownList>
+	<s:Button label="Reset" click="button4_clickHandler(event)" width="122" top="366" height="20" left="753"/>
+	<s:Button label="save changes" click="button5_clickHandler(event)" width="215" id="saveBtn" left="441" top="366" height="20" fontWeight="bold"/>
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="239" top="385"/>
+	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="290" top="57"/>
+	<s:RadioButton label="Growths" groupName="growthType" value="1" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="57" left="353"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" y="50" left="243"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
+	<s:Button label="refresh data" left="428" top="50" height="25" width="241" fontWeight="bold"/>
 </s:Group>

@@ -9,7 +9,7 @@
 			   creationComplete="initAll(event)"		   
 			   
 			   xmlns:panelTabs="panelTabs.*" 
-			   width="1000" height="750">
+			   width="900" height="750">
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center"/>
 	</s:layout>
@@ -45,7 +45,8 @@
 			private var dataServiceUpdate:Depot3;
 			
 			private var masterTab:FlowManager;			
-			private var workingScenarioID:int;			
+			private var workingScenarioID:int;
+			private var currTime:String;
 			protected var IDgen:IDgenerator = new IDgenerator();
 			
 			
@@ -64,7 +65,9 @@
 				this.dataServiceData = new Depot21();
 				this.dataServiceUpdate = new Depot3();				
 				
-				this.workingScenarioID = this.IDgen.generateID();			
+				this.workingScenarioID = this.IDgen.generateID();	
+				this.currTime = this.IDgen.generateTimeStamp();
+				
 				cleanOldScenarios(); // this should be removed later				
 				this.addEventListener("dbCleaned", initScenarioDB);
 				
@@ -115,7 +118,7 @@
 			
 			public function resetScenario(evt:Event):void {
 				this.changeMadeInScenario = false;
-				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(this.workingScenarioID);
+				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(workingScenarioID);
 			}
 			
 			public function digestUpdate(event:Event):void {								
@@ -178,26 +181,18 @@
 			
 			private function colorLabelsOnPath(arr:Array):void {
 				// try debuging the constructor?
-				var col1:String = '0xFFEE00';
-				var col2:String = '0xAA00FF';
+				var col1:String = '0xdfd3b3b'; //for active input
+				var col2:String = '0xd1d1d1'; // grey
+				var prop:String = 'backgroundColor'; // 'backgroundColor'; color
 				
-				if (arr[0] == 1) labA.setStyle('backgroundColor', col1); 
-					else labA.setStyle('backgroundColor', col2); 
-				if (arr[1] == 1)  
-					labB.setStyle('backgroundColor', col1); 
-					else labB.setStyle('backgroundColor', col2);
-				if (arr[2] == 1)  
-					labC.setStyle('backgroundColor', col1); 
-				    else labC.setStyle('backgroundColor', col2);
-				if (arr[3] == 1)  
-					labD.setStyle('backgroundColor', col1); 
-				    else labD.setStyle('backgroundColor', col2);
-				if (arr[4] == 1)  
-					labE.setStyle('backgroundColor', col1); 
-				    else labE.setStyle('backgroundColor', col2);
-				if (arr[5] == 1)  
-					labF.setStyle('backgroundColor', col1); 
-					else labF.setStyle('backgroundColor', col2);
+				//this.tabai.getElementAt(0)
+				this.lab0.setStyle(prop, col2);
+				(arr[0] == 1) ? labA.setStyle(prop, col1) : labA.setStyle(prop, col2); 
+				(arr[1] == 1) ? labB.setStyle(prop, col1) : labB.setStyle(prop, col2);
+				(arr[2] == 1) ? labC.setStyle(prop, col1) : labC.setStyle(prop, col2);
+				(arr[3] == 1) ? labD.setStyle(prop, col1) : labD.setStyle(prop, col2);
+				(arr[4] == 1) ? labE.setStyle(prop, col1) : labE.setStyle(prop, col2);
+				(arr[5] == 1) ? labF.setStyle(prop, col1) : labF.setStyle(prop, col2);
 				
 				this.invalidateDisplayList();
 			}
@@ -208,7 +203,7 @@
 			}
 			
 			public function initScenarioDB(evt:Event):void {
-				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(this.workingScenarioID);
+				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(workingScenarioID);
 			}		
 			
 			[bindable] private var scenarioCreatedFlag:Boolean = false;
@@ -389,32 +384,32 @@
 		]]>
 	</fx:Script>
 		
-<s:BorderContainer width="100%" height="100%">	
+<s:BorderContainer width="900" height="100%">	
 	<s:layout>
-		<s:VerticalLayout/>
+		<s:VerticalLayout gap="0" horizontalAlign="center"/>
 	</s:layout>
 	<s:BorderContainer width="100%" height="15" fontFamily="Verdana" horizontalCenter="0" top="0">
 		<s:layout>
-			<s:HorizontalLayout verticalAlign="middle"/>
+			<s:HorizontalLayout verticalAlign="justify"/>
 		</s:layout>
-		<s:Label text="Battery Dermand Analysis Tool. v.04-15-12pm" width="50%" height="100%"/>
+		<s:Label text="Battery Dermand Analysis Tool. v.04-16-4pm" width="50%" height="100%"/>
 		<s:Label text="info bar" id="statusLabel" width="50%" textAlign="right" height="100%"/>
 	</s:BorderContainer>	
 	<s:Label text="Selected Path" width="100%" height="15" verticalAlign="middle"
 			   id="pathLabel"/>
-	<s:BorderContainer width="100%" height="15" id="someCols">
+	<s:BorderContainer width="100%" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-		<s:Label id="lab0" text="Path selection"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  width="95" fontFamily="Verdana" fontSize="11" paddingLeft="0" paddingTop="0"/>
-		<s:Label id="labA" text="Macro Indicators"  verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="162"/>
-		<s:Label id="labB" text="B. Factors"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="68"/>
-		<s:Label id="labC" text="C. Device Base"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="100"/>
-		<s:Label id="labD" text="D. Market Size" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="95"/>
-		<s:Label id="labF" text="F. batFactors" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="84"/>
-		<s:Label id="labE" text="E. Demand" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="77"/>
+		<s:Label id="lab0"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  width="95" fontFamily="Verdana" fontSize="11" paddingLeft="0" paddingTop="0"  fontWeight="normal" chromeColor="#D1D1D1"/>
+		<s:Label id="labA" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="162" fontWeight="normal"/>
+		<s:Label id="labB"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="68" fontWeight="normal"/>
+		<s:Label id="labC"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="100" fontWeight="normal"/>
+		<s:Label id="labD" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="95" fontWeight="normal"/>
+		<s:Label id="labF"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="84" fontWeight="normal"/>
+		<s:Label id="labE" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="77" fontWeight="normal"/>
 	</s:BorderContainer>
-	<s:BorderContainer width="1000" height="700" horizontalCenter="0" top="25">	
+	<s:BorderContainer width="100%" height="700" horizontalCenter="0" top="25">	
 		<s:layout>
 			<s:VerticalLayout horizontalAlign="center"/>
 		</s:layout>
@@ -425,48 +420,47 @@
 								creationPolicy="none">
 				<panelTabs:tabPathSelection id="panelTabPath" width="100%" 
 											creationComplete="panelTabPath_creationCompleteHandler(event)" 
-											horizontalCenter="0" top="10" height="100%">
-				</panelTabs:tabPathSelection>
-				<s:Label x="896" y="6" text="Init" id="statusFlag"/>
+											top="10" height="100%" left="0">
+				</panelTabs:tabPathSelection>				
 			</s:NavigatorContent>
 			
 			<s:NavigatorContent id="nc_A2" label="MacroIndicators (A1 + A2)" width="100%" height="100%" 
 								creationPolicy="none">
 				<panelTabs:tabA2 id="panelTabA2" width="100%" height="100%"  enabled="false"
-								 creationComplete="taba11_creationCompleteHandler(event)"  top="0" horizontalCenter="0">
+								 creationComplete="taba11_creationCompleteHandler(event)"  top="0" left="0">
 				</panelTabs:tabA2>
 			</s:NavigatorContent>
 			
 			<s:NavigatorContent id="nc_B3" label="B. Factors" width="100%" height="100%" 
 								creationPolicy="none">
 				<panelTabs:tabB3 id="panelTabB3" width="100%" height="100%" enabled="false"
-								 creationComplete="tabb11_creationCompleteHandler(event)" top="0" horizontalCenter="0">					
+								 creationComplete="tabb11_creationCompleteHandler(event)" top="0" left="0">					
 				</panelTabs:tabB3>				
 			</s:NavigatorContent>
 			
 			<s:NavigatorContent id="nc_C4" label="C. Device Base" width="100%" height="100%" creationPolicy="none">
 				<panelTabs:tabC4 id = "panelTabC4" width="100%" height="100%" enabled="false"
-								 creationComplete="tabc11_creationCompleteHandler(event)" top="0" horizontalCenter="0">					
+								 creationComplete="tabc11_creationCompleteHandler(event)" top="0" left="0">					
 				</panelTabs:tabC4>
 			</s:NavigatorContent>
 			
 			<s:NavigatorContent id="nc_D5" label="D. Market Size" width="100%" height="100%" 
 								creationPolicy="none">
 				<panelTabs:tabD5 id="panelTabD5" creationComplete="tabd11_creationCompleteHandler(event)"
-								  enabled="false" top="0" horizontalCenter="0" width="100%" height="100%">					
+								  enabled="false" top="0" width="100%" height="100%" left="0">					
 				</panelTabs:tabD5>
 			</s:NavigatorContent>
 			
 			<s:NavigatorContent id="nc_F51" label="F. batFactors" width="100%" height="100%" creationPolicy="none">
-				<panelTabs:tabF51 id="panelTabF51" horizontalCenter="0" width="100%" 
+				<panelTabs:tabF51 id="panelTabF51" width="100%" 
 								  height="100%" enabled="false"
-								  creationComplete="tabf511_creationCompleteHandler(event)"  top="0">
+								  creationComplete="tabf511_creationCompleteHandler(event)"  top="0" left="0">
 				</panelTabs:tabF51>
 			</s:NavigatorContent>
 			
 			<s:NavigatorContent id="nc_E61" label="E. Demand" width="100%" height="100%" creationPolicy="none">
 				<panelTabs:tabE61 id="panelTabE61" enabled="false" 
-								  creationComplete="tabe11_creationCompleteHandler(event)" top="0" horizontalCenter="4" width="100%" height="100%">					
+								  creationComplete="tabe11_creationCompleteHandler(event)" top="0" width="100%" height="100%" left="0">					
 				</panelTabs:tabE61>		
 			</s:NavigatorContent>			
 			

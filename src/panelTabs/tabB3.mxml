@@ -245,37 +245,40 @@
 		<s:RadioButtonGroup id="growthType"/>
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="556" top="38" x="13"
-						  >
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="587" top="37"
+						   left="10">
 	</utils:CCheckBoxGrid>
 	
-	<s:BorderContainer width="221" height="25" top="6" left="12">
+	<s:BorderContainer width="220" height="25" top="7" left="10">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
-		<s:Label text="Tab - B. HH related factors" height="100%" width="50%" x="61" y="38"/>		
-		<s:Button label="notify B" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
+		<s:Label text="Tab - B. HH related factors" height="100%" width="40%" x="61" y="38"/>		
+		<s:Button label="notify B" click="button2_clickHandler(event)" width="60%" height="100%" x="56" y="66"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="243" width="540" height="258" id="testChart" top="68">
+	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="82" left="240">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid x="239" width="544" height="232" id="testGrid" top="384">
+	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="397" left="239">
 	</utils:CInteractiveGrid>
 	
-	<s:DropDownList x="241" width="243" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="10" selectedIndex="0"/>
+	<s:DropDownList height="20" id="indicatorsBox" 
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="20" selectedIndex="0" width="243" x="278"/>
 	
-	<s:Button x="609" label="getSomeData" click="button3_clickHandler(event)" id="button" top="39" width="174"/>
+	<s:Button label="refresh data" click="button3_clickHandler(event)" id="button" top="50" width="241" height="25" fontWeight="bold" left="428"/>
 	
-	<s:CheckBox x="242" y="40" label="hasSplit" enabled="false" id="hasSplitFlag"/>
-	<s:Button x="238" y="334" label="updateDB" width="215" click="digestChanges(event)" id="saveBtn"/>
-	<s:Button x="680" y="334" label="Reset" width="103" click="button4_clickHandler(event)"/>
-	<s:DropDownList x="492" y="10" width="291" id="deviceListDrop" labelField="namen" 
-					change="deviceListDrop_changeHandler(event)" selectedIndex="0"></s:DropDownList>	
-	<s:Label x="239" y="365" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
-	<s:RadioButton x="338" y="40" label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="400" y="40" label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:CheckBox x="526" label="hasSplit" enabled="false" id="hasSplitFlag" top="20" height="20"/>
+	<s:Button label="save changes" width="215" click="digestChanges(event)" id="saveBtn" fontWeight="bold" height="20" top="366" left="441"/>
+	<s:Button label="Reset" width="103" click="button4_clickHandler(event)" height="20" top="366" left="771"/>
+	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
+					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="20" height="20" x="599"></s:DropDownList>	
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="239" top="385"/>
+	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="290" top="57"/>
+	<s:RadioButton label="Growths" groupName="growthType" value="1" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="353" top="57"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="243" top="50"/>
+	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
 </s:Group>

@@ -293,36 +293,37 @@
 		
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="589" top="43" left="11">
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="587" top="37" left="10">
 	</utils:CCheckBoxGrid>
 	
-	<s:BorderContainer width="224" height="25" top="10" x="6">
+	<s:BorderContainer width="220" height="25" top="7" left="10">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
-		<s:Label text="Tab C. Device Base" height="100%" width="50%" x="61" y="38"/>		
-		<s:Button label="notify C" click="button2_clickHandler(event)" width="50%" height="100%"/>			
+		<s:Label text="Tab C. Device Base" height="100%" width="40%" x="61" y="38"/>		
+		<s:Button label="notify C" click="button2_clickHandler(event)" width="60%" height="100%"/>			
 	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart x="242" width="540" height="260" id="testChart" top="86">
+	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="82" left="240">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="241" width="540" height="221" id="testGrid" top="411">
+	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="397" left="239">
 	</utils:CInteractiveGrid>
-	<s:DropDownList x="243" width="195" id="indicatorsBox"
-					labelField="namen"	 top="24" selectedIndex="0"></s:DropDownList>
-	<s:Button x="685" label="getSomeData" id="getSomeData" click="button3_clickHandler(event)" top="55"/>
-	<s:Button x="243" y="55" label="writeViewToDB_1" width="148" id="button"
-			  click="button_clickHandler(event)" enabled="true"/>
-	<s:Button x="239" y="354" label="updateDB" width="136" id="saveBtn"
-			  click="digestChanges(event)"/>
-	<s:Label x="513" y="10" text="Devices" width="84" id="someLabel0" textAlign="left"/>
-	<s:Label x="243" y="10" text="Indicators" width="84" id="someLabel1" textAlign="left"/>
-	<s:Button x="660" y="354" label="Reset" width="122" click="button4_clickHandler(event)"/>
-	<s:DropDownList x="459" y="26" width="322" id="deviceListDrop" labelField="namen" 
-					change="deviceListDrop_changeHandler(event)" selectedIndex="0"></s:DropDownList>
-	<s:Label x="239" y="392" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
-	<s:RadioButton x="427" y="58" label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="489" y="58" label="Growths" groupName="growthType" value="1"
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
+	<s:DropDownList width="243" id="indicatorsBox"
+					labelField="namen"	 top="20" selectedIndex="0" height="20" left="278"></s:DropDownList>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="243" top="50"/>
+	<s:Button label="refresh data" id="getSomeData" click="button3_clickHandler(event)" top="50" height="25" width="241" left="428" fontWeight="bold"/>
+	<s:Button x="723" y="53" label="writeViewToDB_1" width="148" id="button"
+			  click="button_clickHandler(event)" enabled="false" height="20"/>
+	<s:Button label="save changes" width="215" id="saveBtn"
+			  click="digestChanges(event)" height="20" fontWeight="bold" left="441" top="366"/>
+	<s:Button label="Reset" click="button4_clickHandler(event)" height="20" top="366" width="122" x="753"/>
+	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
+					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="20" height="20" right="29"></s:DropDownList>
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" top="385" left="239"/>
+	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" top="57" left="290"/>
+	<s:RadioButton label="Growths" groupName="growthType" value="1"
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="57" left="353"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
+	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
 </s:Group> 

@@ -5,7 +5,7 @@
 		  creationComplete="startApp(event)">
 	
 	<fx:Declarations>		
-		<mx:CurrencyFormatter   id="stilius2" precision="2"
+		<mx:CurrencyFormatter   id="stilius2" precision="0"
 								rounding="nearest"
 								decimalSeparatorTo="."
 								thousandsSeparatorTo=","
@@ -13,6 +13,17 @@
 								currencySymbol=""
 								useNegativeSign="true"                  
 								/>
+		
+		<mx:CurrencyFormatter   id="stilius3" precision="2"
+								rounding="nearest"
+								decimalSeparatorTo="."
+								thousandsSeparatorTo=","
+								useThousandsSeparator="true"
+								currencySymbol=""
+								useNegativeSign="true"                  
+								/>
+		<mx:NumberFormatter id="numForm" useThousandsSeparator="true"/>
+		
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -36,6 +47,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.charts.HitData;
 			import mx.graphics.SolidColorStroke;
 			import mx.charts.series.ColumnSeries;
 			import mx.charts.series.LineSeries;
@@ -118,7 +130,8 @@
 					hAxis.dataProvider = someData.getItemAt(i);
 					vaxis1.baseAtZero = false;
 					vaxis2.baseAtZero = false;
-					// vaxis1.labelFunction = defineLabel;
+					vaxis1.labelFunction = this.defineLabel;
+					//vaxis2.labelFunction = this.defineLabel;
 					mySeries.push(series2);
 				};	
 				
@@ -127,7 +140,7 @@
 				this.lineChart.series = mySeries;			
 				this.lineChart.dataProvider = mySeries;
 				this.lineChart.showDataTips = true;
-				//this.testChart.dataTipFunction = show_label;				
+				this.lineChart.dataTipFunction = tooltips_formater;				
 				this.lineChart.invalidateDisplayList();				
 			}
 			
@@ -143,21 +156,42 @@
 				return "0x" + str.substr(str.length - 6);
 			}
 			
+			public function defineLabel(cat:Object, pcat:Object, ax:LinearAxis):String 
+			{
+				return stilius2.format(cat)
+				//return cat.toString();
+			}
+			
+			[Bindable] private var chartDGToolTip:String;		 
+			public function tooltips_formater(m:Object):String		{			
+				(m.item.scenarioID == "10001") ? chartDGToolTip = "Baseline" : chartDGToolTip = "Working Scenario";			
+								
+				chartDGToolTip = m.item['countryID'] + ", " + chartDGToolTip + "\n";
+				chartDGToolTip = chartDGToolTip + m.item['yrs'] + ": ";
+				
+				if (Math.abs(m.item['data']) < 1000) {
+					chartDGToolTip = chartDGToolTip + stilius3.format(m.item['data']);
+				} else {
+					chartDGToolTip = chartDGToolTip + stilius2.format(m.item['data']);
+				};		
+				
+				return chartDGToolTip;            
+			}	
 		]]>
-	</fx:Script>
-		
+	</fx:Script>	
 	
-	<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0">
+	
+	<s:BorderContainer width="100%" height="100%" horizontalCenter="0" verticalCenter="0" borderVisible="false">
 		<s:layout>
 			<s:VerticalLayout/>
 		</s:layout>
 		<mx:LineChart id="lineChart" width="100%" height="90%" 
 					  horizontalCenter="0" verticalCenter="0"
-					  seriesFilters="[]">
-			<!-- <mx:verticalAxisRenderers>
-				<mx:AxisRenderer placement="left" axis="{this.vaxis1}"/>
-				<mx:AxisRenderer placement="right" axis="{this.vaxis2}"/>
-			</mx:verticalAxisRenderers> !-->
+					  seriesFilters="[]" showDataTips="true">
+			 <!-- <mx:verticalAxisRenderers>
+				 <mx:AxisRenderer placement="left" axis="{this.vaxis1}"/>  
+				 <mx:AxisRenderer placement="right" axis="{this.vaxis2}"/> 
+			</mx:verticalAxisRenderers> !--> 
 		</mx:LineChart>		
 	
 	<mx:Legend dataProvider="{lineChart}" width="100%" height="10%" horizontalCenter="0" verticalCenter="139">

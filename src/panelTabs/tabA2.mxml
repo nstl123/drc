@@ -118,7 +118,10 @@
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
-				this.indicatorsBox.dataProvider = this.indicatorsList;				
+				var z:Object = {id : 101, namen : 'macroIndicator#1'};
+				var arrCol:ArrayCollection = new ArrayCollection();
+				arrCol.addItem(z);
+				this.indicatorsBox.dataProvider = arrCol;//this.indicatorsList;				
 			}
 			
 			private function filterB(item:Object):Boolean {			

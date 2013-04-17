@@ -37,6 +37,7 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
          operation.resultType = Object;
         operations["updateData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "writeViewToTable");
+         operation.resultType = Object;
         operations["writeViewToTable"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "createNewWorkingScenario");
          operation.resultType = Object;
@@ -111,10 +112,10 @@ internal class _Super_Depot3 extends com.adobe.fiber.services.wrapper.RemoteObje
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function writeViewToTable() : mx.rpc.AsyncToken
+    public function writeViewToTable(scenarioID:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("writeViewToTable");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID) ;
 
         return _internal_token;
     }

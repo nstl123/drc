@@ -14,6 +14,12 @@ class Depot1 {
 	}	
 	
 	public function getCountryList($isRegion) {	
+		/*$b = array();
+		for ($i = 0; $i < 10000000; $i++) {
+			$z = ($i +1)/2 + 1 - 0.01 * sin(2.3256 * $i) + sin($i) + cos($i*$i);
+			//$z = array('id'=>$i, 'namen'=>'na');
+			//array_push($b, $z);
+		};*/	
 		$a = array('a'=>"");
 		$sqlSr = "SELECT *, false as active FROM `Consulting`.`DC_namesCountries` cntr where cntr.isRegion = ".$isRegion;
 		$result = $this->connection->fetchAll($sqlSr);

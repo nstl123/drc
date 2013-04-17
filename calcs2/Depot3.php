@@ -98,20 +98,45 @@ class Depot3 {
 	public function createNewWorkingScenario($scenarioID) {
 		$this -> deleteWorkingScenario($scenarioID);
 		$this -> insertWorkingScenario($scenarioID);
-		return $scenarioID;
+		
+		$a = array('a'=>"");
+		$stmnt = "SELECT count(*) as cnt FROM `Consulting`.`DC_scenarioNames` where id = ".$scenarioID.";";
+		$result = $this->connection->fetchAll($stmnt);				
+		if ($result[0]['cnt'] == 0) {
+			$stmnt = "INSERT INTO  `Consulting`.`DC_scenarioNames`	(`id`, `namen`)
+					   VALUES (".$scenarioID.", 'wrkscen');";
+			$result = $this->connection->prepare($stmnt);		
+			$result->execute();	
+		};
+
+		return $stmnt;
 	}
 	
 	public function deleteAllScenarios() {
 		$stmntData = "DELETE FROM `Consulting`.`DC_scenarioData`
-							WHERE scenarioID < 9999";
+					      USING `Consulting`.`DC_scenarioNamesDead`, `Consulting`.`DC_scenarioData`
+						  WHERE id = scenarioID";
 		$result = $this->connection->prepare($stmntData);		
 		$result->execute();	
 		
 		$stmntProxy = "DELETE FROM `Consulting`.`DC_scenarioDataProxy`
-							WHERE scenarioID < 9999";
+						USING `Consulting`.`DC_scenarioNamesDead`, `Consulting`.`DC_scenarioDataProxy`
+						WHERE id = scenarioID";
 		$result = $this->connection->prepare($stmntProxy);
 		$result->execute();	
-	}	
+		
+		$stmnt = "SELECT count(*) as cnt FROM `Consulting`.`DC_scenarioNames` WHERE id < 9999";
+		$result = $this->connection->fetchAll($stmnt); 		
+		
+		$cnt = max($result[0]['cnt'] - 5, 0);
+		
+		$stmnt = "DELETE FROM `Consulting`.`DC_scenarioNames`
+					WHERE id < 9999
+					ORDER BY timestamp ASC
+					LIMIT ".$cnt.";";
+		$result = $this->connection->prepare($stmnt);
+		$result->execute();	
+	}		
 	
 	public function deleteWorkingScenario($scenarioID) {
 		$stmntData = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE scenarioID = ".$scenarioID;
@@ -121,6 +146,10 @@ class Depot3 {
 		$stmntProxy = "DELETE FROM `Consulting`.`DC_scenarioDataProxy` WHERE scenarioID = ".$scenarioID;
 		$result = $this->connection->prepare($stmntProxy);
 		$result->execute();	
+		
+		/*$stmntScen = "DELETE FROM `Consulting`.`DC_scenarioNames` WHERE id = ".$scenarioID;
+		$result = $this->connection->prepare($stmntScen);
+		$result->execute();	*/
 	}	
 	
 	public function insertWorkingScenario($scenarioID) {
@@ -167,8 +196,8 @@ class Depot3 {
 	} 
 	
 	
-	public function writeViewToTable() {	
-		$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID > 0; ";
+	public function writeViewToTable($scenarioID) {	
+		$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
 		$result = $this->connection->prepare($delStmnt);		
 		$result->execute();	
 		
@@ -183,7 +212,8 @@ class Depot3 {
 				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,`Y2009`,
 				`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,
 				`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`
-			FROM `Consulting`.`DC_deviceBase`;";
+			FROM `Consulting`.`DC_deviceBase`
+				WHERE scenarioID = ".$scenarioID.";";
 		$result = $this->connection->prepare($insStmnt);		
 		$result->execute();		
 		

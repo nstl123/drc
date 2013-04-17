@@ -31,6 +31,7 @@
 		<s:CallResponder id="getMacroData" result="getMacroDataResult_resultHandler(event)" 
 						 fault="getMacroData_faultHandler(event)"/>		
 		<s:CallResponder id="getDemandByChemistryResult" result="getDemandByChemistryResult_resultHandler(event)"/>
+		<s:RadioButtonGroup id="regionType"/>
 		
 	</fx:Declarations>
 
@@ -147,18 +148,18 @@
 				this.cursorManager.setBusyCursor();
 				
 				if ((this.chemTypesActiveFlag)&&(tmp2.length > 0)) {
-					getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1);
+					getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster));
 				} else if ((this.chemTypesActiveFlag)&&(tmp.length > 0)) {
 					getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
 				} else if (tmp2.length > 0) {
 					this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1);					
+						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster));					
 				} else if (tmp.length > 0) {				
 					this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
 						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0);					
 				} else {
 					this.cursorManager.removeBusyCursor();
-					Alert.show("Select some countries and/or regions", "ErrorE61");
+					Alert.show("select some countries and/or regions", "Error E61");
 				};								
 			}			
 			
@@ -171,8 +172,11 @@
 				this.regionsListGrid.dataList = this.regList;				
 			}
 
-			private function filterRegions(item:Object):Boolean {								
-				return (item.id < 108);			
+			private function filterRegions(item:Object):Boolean {		
+				if (!useCluster)
+					return (item.id < 108);
+				else
+					return (item.id > 999);
 			}
 
 			protected function getDemandRegions_resultHandler(event:ResultEvent):void
@@ -290,9 +294,20 @@
 
 			protected function getDemandData_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("cou-ld not gte demand data", "Error");
+				Alert.show("could not get Demand data", "Error E61");
 			}
 
+			[bindable] private var useCluster:Boolean = false;
+			protected function radiobutton3_clickHandler(event:MouseEvent):void
+			{
+				this.useCluster = !this.useCluster;
+				this.dispatchEvent(new Event("updateCharts", false));
+				
+				regList.refresh();
+				this.regionsListGrid.dataList = this.regList;	
+			}	
+			
+			
 		]]>
 	</fx:Script>
 	
@@ -454,7 +469,7 @@
 			{
 				var z:int = 0;
 				z = z + 1;
-				Alert.show("some fockin err in SQL query");
+				Alert.show("error in macroData SQL query", "Error E61");
 			}	
 			
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {
@@ -505,7 +520,7 @@
 		<s:Button label="notify E" click="button2_clickHandler(event)" width="60%" height="100%"/>			
 	</s:BorderContainer>	
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="332" left="10"
+	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="310" left="10"
 						 top="37">
 	</utils:CCheckBoxGrid>	
 	
@@ -518,6 +533,7 @@
 	<s:Label x="299" text="Selected Device" width="259" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="10"/>
 	<s:Label x="394" text="Bat Type" width="62" id="selDeviceLabel0" fontStyle="italic" fontSize="11" height="15" top="50" verticalAlign="middle"/>
 	<s:Label x="237" y="98" text="Show Data in:" width="84" id="selDeviceLabel2" fontStyle="italic" fontSize="11"/>
+	<s:Label x="10" y="353" text="Groups:" width="71" id="selDeviceLabel3" fontStyle="italic" fontSize="11"/>
 	<s:Label x="239" text="Pwr Type" width="67" id="selDeviceLabel1" fontStyle="italic" fontSize="11" top="50" height="15" verticalAlign="middle"/>
 	<s:DropDownList width="280" id="deviceListDrop"
 					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="21" left="321"/>
@@ -578,6 +594,10 @@
 		<s:RadioButton x="92" y="25" label="Zinc" groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)"/>
 		<s:RadioButton x="151" y="28" label="Lithium" groupName="chemTypes" value="3" click="chemTypes_clickHandler(event)" fontFamily="Verdana"/>
 	</s:BorderContainer>
+	<s:RadioButton x="63" y="351" label="Regions" groupName="regionType" selected="true" 
+				   enabled="true" value="0" click="radiobutton3_clickHandler(event)"/>
+	<s:RadioButton x="135" y="351" label="Clusters" groupName="regionType" enabled="true"
+				    value="1" click="radiobutton3_clickHandler(event)"/>
 
 
 </s:Group>

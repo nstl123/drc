@@ -150,7 +150,7 @@
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
 						hasSplitFlag.selected, tmpType, 1);
 				} else {
-					Alert.show("Select at leats one coutry", "ErrorF51");
+					Alert.show("select at least one country", "Error F51");
 				};
 			}
 			

@@ -16,17 +16,17 @@
 		<![CDATA[
 			protected function getDeviceBase_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not read DeviceBase Table in DB", "Error");
+				Alert.show("could not read DeviceBase Table in DB", "Error C4");
 			}
 
 			protected function updateData_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not update DeviceBaseTable", "Error");	
+				Alert.show("could not update DeviceBase Table", "Error C4");	
 			}
 	
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
-				Alert.show("data updated");
+				Alert.show("data updated", "Info");
 			}	
 			
 			protected function button_clickHandler(event:MouseEvent):void
@@ -43,7 +43,7 @@
 			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void
 			{
 				if (event.message.body != "ok") //this.someLabel.text = "view written successfully";
-				Alert.show("data was not written to DB!", "Error");
+				Alert.show("data could not be written to DB", "Error C4");
 				this.dispatchEvent(new Event("deviceBaseWritten", true));
 			}
 
@@ -83,7 +83,7 @@
 
 			protected function writeViewToTableResult_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("view was not written to table", "Error");
+				Alert.show("view was not written to table", "Error C4");
 			}
 		
 			import controls.*;
@@ -199,12 +199,12 @@
 			public function refreshData(evt:Event):void {			
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;		
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
-				if (tmp.length < 1) { 
-					tmp = [1];					 
+				if (tmp.length > 0) { 
+					//tmp = [1];
+					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID);
 				} else if (this.startInd > 1) {
 					//Alert.show("Select at least one country", "ErrorC4");
-				};
-				getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID);	
+				};					
 			}
 			
 			[bindable] private var selectedIndi:int;

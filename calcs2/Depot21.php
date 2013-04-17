@@ -83,6 +83,8 @@ class Depot21 {
 	}
 	
 	public function getDemandData($countryIDs, $scenarioID, $deviceID, $typeID, $pwrID, $isRegion) { 
+		$useCluster = 0;
+		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
 	// aggType = 0 for device level, 1 - for country level
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
@@ -104,13 +106,13 @@ class Depot21 {
 				sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
 			FROM Consulting.DC_demand AS dm
 			JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) ".                    
-				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.region = rg.id)" : "")."						
+				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."						
 			WHERE scenarioID IN (".$scenarioID.", 10001)".				
 				($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").
 				($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").
-				($isRegion > 0 ? " AND nc.region " : " AND countryID ")." IN ".$countryList.				
+				($isRegion > 0 ? " AND nc.".$useCluster." " : " AND countryID ")." IN ".$countryList.				
 			"GROUP BY scenarioID ".
-				($isRegion > 0 ? ", nc.region" : ", countryID").				
+				($isRegion > 0 ? ", nc.".$useCluster : ", countryID").				
 				($typeID   > 0 ? ", batTypeID": "").
 				($pwrID    > 0 ? ", pwrTypeID": "").
 				($deviceID > 0 ? ", deviceID" : "");																	
@@ -148,6 +150,9 @@ class Depot21 {
 	}
 	
 	public function getDemandByChemistry($countryIDs, $scenarioID, $isRegion) {
+		$useCluster = 0;
+		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
+	
 		$a = array('a'=>"");				
 		$countryArray = (array)($countryIDs);		
 		$countryList = " (";		
@@ -168,11 +173,11 @@ class Depot21 {
 			FROM `Consulting`.`DC_demandAggregated` dma
 				JOIN Consulting.DC_chemistry chm ON  chm.countryID = dma.countryID
 			JOIN Consulting.DC_namesCountries AS nc ON (dma.countryID = nc.id) ".                    
-				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.region = rg.id)" : "")."						
+				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."						
 			WHERE scenarioID IN (".$scenarioID.", 10001)".				
-				($isRegion > 0 ? " AND nc.region " : " AND dma.countryID ")." IN ".$countryList.	
+				($isRegion > 0 ? " AND nc.".$useCluster : " AND dma.countryID ")." IN ".$countryList.	
 			"GROUP BY scenarioID, chemistryID ".
-				($isRegion > 0 ? ", nc.region" : ", dma.countryID");
+				($isRegion > 0 ? ", nc.".$useCluster : ", dma.countryID");
 			
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		

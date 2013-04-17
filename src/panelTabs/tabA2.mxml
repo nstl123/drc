@@ -140,7 +140,7 @@
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
 				if (tmp.length < 1) { 
-					Alert.show("Select at least one country", "ErrorA2"); 
+					Alert.show("Select at least one country", "Error A2"); 
 				} else {
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 1);
 				};
@@ -192,13 +192,13 @@
 
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
-				Alert.show("data updated successfully");
+				Alert.show("Data updated successfully", "Info");
 				this.dispatchEvent(new Event("NewScenarioUpdated", true));
 			}
 
 			protected function updateData_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("data update error");
+				Alert.show("Data update error", "Error");
 			}
 
 			[bindable] private var isSingleGeo:Boolean = true;

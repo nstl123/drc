@@ -8,14 +8,31 @@
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*"
+		 xmlns:depot3="services.depot3.*"
 		 >
 	
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
-	
+
 	<fx:Script>
 		<![CDATA[
+			protected function getDeviceLits_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+		]]>
+	</fx:Script>
+
+
+	<fx:Script>
+		<![CDATA[
+			import services.depot3.Depot3;
+			protected function getDeviceLits_resultHandler(event:ResultEvent):void
+			{
+				this.deviceListDrop.dataProvider = this.getDeviceList.lastResult as ArrayCollection;
+			}
+			
 			import controls.*;
 			
 			import mx.collections.ArrayCollection;
@@ -34,6 +51,7 @@
 			
 			public var dataServiceNames:Depot1;
 			public var dataServiceData:Depot21;
+			public var dataServiceUpdate:Depot3;
 			
 			[bindable] private var workingScenarioID:int;
 			private var hlp:helper;
@@ -46,13 +64,14 @@
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab D");			
 				hlp = new helper();		
-				this.addEventListener("updateCharts", updateCharts);				
+				this.addEventListener("updateCharts", updateCharts);	
+				this.addEventListener("refreshData", refreshData);
 			}
 			
 			public function initNames():void {
 				trace("init names inside panel D");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
-				//countryListNames.token = this.dataServiceNames.getCountryList(0);
+				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
 			public function setWorkingScenario(nv:int, flag:Boolean):void {
@@ -95,11 +114,9 @@
 				this.indicatorsBox.dataProvider = this.indicatorsList;			
 			}
 			
-			private function filterB(item:Object):Boolean {			
-				// here should be all indis within ID range
+			private function filterB(item:Object):Boolean {						
 				var fl:Boolean = true;				
-				if ((item.hasSplitByDevices == 1)&&(item.hasSplitByTypes == 0)&&
-					(item.isOutputIndicator == 0)&&(item.id >= 210)) {					
+				if ((item.id == 210)||(item.id == 211)) {					
 					fl = true
 				}  else fl = false;				
 				return fl;
@@ -115,20 +132,23 @@
 					workingScenarioID, true, 0, 1);
 			}
 			
-			[bindable] private var selectedIndi:int;
+			[bindable] private var selectedIndi:int = 210;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByDevices;
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
+				
+				this.refreshData(null);
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
-				this.testChart.setData(currentData, isLevel); // transformation is performed inside chart component
-				this.testGrid.setData(currentData, isLevel);
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source  = this.currentData.source;
+				
+				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
 
@@ -138,9 +158,14 @@
 			}
 
 
-			protected function button5_clickHandler(event:MouseEvent):void
-			{
+			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
+			public function digestChanges(evt:Event):void {
 				this.dispatchEvent(new Event("changesMadeInScenario", true));
+				
+				alteredData = this.testGrid.getData();
+				var temp:Object = new Object();
+				temp = ({'id':1, data:this.alteredData});			
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);			
 			}
 
 			[bindable] public var tabEditable:Boolean;			
@@ -160,16 +185,84 @@
 				var tmp:int = 1 - int(this.growthType.selection.value);
 				this.enableGrid(tmp == 0 && this.tabEditable, true);	
 				this.saveBtn.enabled = (tmp == 0 && this.tabEditable);
-			}
+			}			
+			
+			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();			
+			[bindable] private var selDevice:int = 1;
 			
 			protected function updateCharts(evt:Event):void {
-				/*this.testGrid.filterFunction = this.fi
+				this.currentDataGrid.filterFunction = this.filterGrid;
 				this.currentDataGrid.refresh();
+				
 				this.currentDataChart.filterFunction = this.filterChart;
-				this.currentDataChart.refresh();			
+				this.currentDataChart.refresh();
+				
 				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid);*/
+				this.testGrid.setData(currentDataGrid, isLevel);
 			}
+			
+			private function filterGrid(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if ((item.scenarioID == this.workingScenarioID)
+					&& (item.deviceID == this.selDevice)) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}	
+			
+			private function filterChart(item:Object):Boolean {				
+				var f:Boolean = true;				
+				if (item.deviceID == this.selDevice) {					
+					f = true
+				}  else f = false;				
+				return f;
+			}	
+
+			protected function button6_clickHandler(event:MouseEvent):void
+			{
+				trace("calling market size token");
+				this.refreshData(null);				
+			}
+
+			public function refreshData(evt:Event):void {
+				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);	
+				if (tmp.length < 1) { 
+					Alert.show("Select at least one country", "Error B3"); 
+				} else {
+					this.cursorManager.setBusyCursor();
+					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
+						workingScenarioID,0, 0, 1);
+				};
+			}			
+
+			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+
+			}
+
+			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
+			{
+				this.selDevice = this.deviceListDrop.selectedItem.id;
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+			
+			
+			protected function updateData_resultHandler(event:ResultEvent):void
+			{
+				var rez:Object = this.updateData.lastResult;
+				this.dispatchEvent(new Event("NewScenarioUpdated", true));
+				this.dispatchEvent(new Event("refreshData", false));
+			}	
+			
+			protected function updateData_faultHandler(event:FaultEvent):void
+			{
+				var z:Object = event.message.body.toString();
+			}	
+			
+			
 		]]>
 	</fx:Script>
 	
@@ -183,8 +276,9 @@
 		
 		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
-		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
-		
+		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
+		<s:CallResponder id="getDeviceList" result="getDeviceLits_resultHandler(event)" fault="getDeviceLits_faultHandler(event)" />
+		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		
 	</fx:Declarations>
 	
@@ -203,9 +297,12 @@
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="397" left="239">
 	</utils:CInteractiveGrid>
-	<s:DropDownList width="243" id="indicatorsBox"  labelField="namen" top="20" left="278"></s:DropDownList>
+	
+	<s:DropDownList width="243" id="indicatorsBox"  labelField="namen" top="20" left="278" 
+					change="indicatorsBox_changeHandler(event)"/>
+	
 	<s:Button label="Reset" click="button4_clickHandler(event)" width="122" top="366" height="20" left="753"/>
-	<s:Button label="save changes" click="button5_clickHandler(event)" width="215" id="saveBtn" left="441" top="366" height="20" fontWeight="bold"/>
+	<s:Button label="save changes" click="digestChanges(event)" width="215" id="saveBtn" left="441" top="366" height="20" fontWeight="bold"/>
 	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="239" top="385"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="290" top="57"/>
@@ -213,5 +310,9 @@
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="57" left="353"/>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" y="50" left="243"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
-	<s:Button label="refresh data" left="428" top="50" height="25" width="241" fontWeight="bold"/>
+	<s:Button label="refresh data" left="428" top="50" height="25" width="241" fontWeight="bold"
+			   click="button6_clickHandler(event)"/>
+	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
+					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="20" height="20" x="599"></s:DropDownList>
+	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
 </s:Group>

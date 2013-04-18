@@ -76,6 +76,7 @@
 				trace("app start panelTab B");			
 				hlp = new helper();		
 				this.addEventListener("updateCharts", updateCharts);
+				this.addEventListener("refreshData", refreshData);
 			}
 			
 			public function initNames():void {
@@ -143,7 +144,7 @@
 					Alert.show("Select at least one country", "Error B3"); 
 				} else {
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
-						workingScenarioID, hasSplitFlag.selected, 0, 1);
+						workingScenarioID, 0, 0, 1); 
 				};
 			}
 			

@@ -39,7 +39,7 @@ class Depot3 {
 					AND countryID = ".$b['countryID']."
 					AND indicatorID = ".$b['indicatorID'];
 			
-			if ($b['indicatorID'] == 203) { // means device base
+			if ( ($b['indicatorID'] == 203)||($b['indicatorID'] == 210)||($b['indicatorID'] == 211) ) { // means device base
 					$stmnt = $stmnt." AND deviceID = ".$deviceID;
 			} else 			
 			if ($b['indicatorID'] > 200) { // means not macro

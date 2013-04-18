@@ -128,7 +128,7 @@ class Depot3 {
 		$stmnt = "SELECT count(*) as cnt FROM `Consulting`.`DC_scenarioNames` WHERE id < 9999";
 		$result = $this->connection->fetchAll($stmnt); 		
 		
-		$cnt = max($result[0]['cnt'] - 5, 0);
+		$cnt = max($result[0]['cnt'] - 10, 0);
 		
 		$stmnt = "DELETE FROM `Consulting`.`DC_scenarioNames`
 					WHERE id < 9999

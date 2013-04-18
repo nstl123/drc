@@ -79,6 +79,8 @@
 				hlp = new helper();			
 				this.addEventListener("updateCharts", updateCharts);	
 				this.addEventListener("demandAggChanged", updateChemistrySplit);
+				
+				this.addEventListener("refreshData", refreshData);
 			}
 			
 			public function initNames():void {
@@ -128,11 +130,11 @@
 			protected function getSomeData_clickHandler(event:MouseEvent):void
 			{			
 				trace("calling demand token");				
-				this.refreshData();
-				
+				//this.refreshData();
+				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
-			public function refreshData():void {
+			public function refreshData(evt:Event):void {
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				
@@ -197,7 +199,7 @@
 				this.pwrTypesActiveFlag = !this.pwrTypesActiveFlag;
 				this.pwrTypes.enabled = this.pwrTypesActiveFlag;
 
-				this.dispatchEvent(new Event("demandAggChanged", true));		
+				this.dispatchEvent(new Event("demandAggChanged", true));
 			}
 
 
@@ -227,6 +229,8 @@
 					this.devicesActiveFlag = !this.chemTypesActiveFlag;
 					this.deviceListDrop.enabled = !this.chemTypesActiveFlag;
 				};
+				
+				this.dispatchEvent(new Event("refreshData", false));
 			}
 
 			protected function devicesActive_clickHandler(event:MouseEvent):void
@@ -387,11 +391,16 @@
 			protected function batTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selBatType = int(this.batTypes.selectedValue);
+				this.dispatchEvent(new Event("refreshData", false));
+				
+				exoIndi_clickHandler(null);
 			}
 			
 			protected function pwrTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selPwrType = int(this.pwrTypes.selectedValue);
+				this.dispatchEvent(new Event("refreshData", false));	
+				exoIndi_clickHandler(null);
 			}
 			
 			protected function getIndicatorNames_resultHandler(event:ResultEvent):void
@@ -415,9 +424,10 @@
 			protected function exoListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				this.selExoIndi = this.exoListDrop.selectedItem.id;
+				exoIndi_clickHandler(null);
 			}
 			
-			protected function button3_clickHandler(event:MouseEvent):void
+			protected function 	exoIndi_clickHandler(event:MouseEvent):void
 			{					
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
@@ -507,6 +517,8 @@
 					this.chemTypesActiveFlag = z;
 					this.chemTypes.enabled = this.chemTypesActiveFlag;
 				};
+				
+				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
 		]]>
@@ -557,8 +569,10 @@
 					   click="pwrTypes_clickHandler(event)"/>			
 	</s:BorderContainer>
 	<s:Label x="653" text="some exogenous var" width="152" fontStyle="italic" fontSize="11" top="8"/>
-	<s:DropDownList x="664" width="226" id="exoListDrop" labelField="namen" change="exoListDrop_changeHandler(event)" selectedIndex="0" height="20" top="20"/>
-	<s:Button x="761" y="109" label="exo data" width="129" click="button3_clickHandler(event)" id="button"/>
+	<s:DropDownList x="664" width="226" id="exoListDrop" labelField="namen" 
+					change="exoListDrop_changeHandler(event)" selectedIndex="0" height="20" top="20"/>
+	<s:Button x="761" y="109" label="exo data" width="129" 
+			  click="exoIndi_clickHandler(event)" id="button"/>
 	<utils:CTwoAxisChart x="588" y="140" height="288" id="testChartExo" width="302">
 	</utils:CTwoAxisChart>
 	<utils:CInteractiveGrid x="751" y="583" height="58" id="testGridExo" width="254"

@@ -10,7 +10,7 @@ package utils
 			var sid:String = '';
 			var now:Date = new Date();
 			var timePart:Number = now.getTime();
-			var randomPart:Number = Math.round(Math.random()*1000);
+			var randomPart:Number = Math.round(Math.random()*10000);
 			var rP:String = String(randomPart);
 			var i:Number = rP.length;
 			

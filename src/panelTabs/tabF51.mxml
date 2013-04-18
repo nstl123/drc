@@ -34,6 +34,7 @@
 			{
 				var r:Object = event.message;
 				Alert.show("Data Updated Successfully", "Info");
+				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
 			import controls.*;
@@ -68,7 +69,8 @@
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab F");			
 				hlp = new helper();	
-				this.addEventListener("updateCharts", updateCharts);				
+				this.addEventListener("updateCharts", updateCharts);	
+				this.addEventListener("refreshData", refreshData);
 			}
 			
 			public function initNames():void {
@@ -126,10 +128,11 @@
 			protected function button3_clickHandler(event:MouseEvent):void
 			{				
 				trace("calling macro data token");
-				this.refreshData();
+				this.dispatchEvent(new Event("refreshData", false));
+				//this.refreshData();
 			}
 			
-			public function refreshData():void {
+			public function refreshData(evt:Event):void {
 				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
@@ -146,11 +149,13 @@
 						tmpType = this.selPwrType; break;
 				};				
 				
+				this.cursorManager.setBusyCursor();
 				if (tmp.length > 0) {
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
 						hasSplitFlag.selected, tmpType, 1);
 				} else {
-					Alert.show("select at least one country", "Error F51");
+					this.cursorManager.removeBusyCursor();
+					Alert.show("select at least one country", "Error F51");					
 				};
 			}
 			
@@ -162,10 +167,13 @@
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;				
 				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
+				
+				this.dispatchEvent(new Event("refreshData", false));
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
 
 				this.currentDataChart.source = this.currentData.source;
@@ -234,6 +242,7 @@
 
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				Alert.show(event.message.body.toString());
 			}
 
@@ -242,11 +251,13 @@
 			protected function batTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selBatType = int(this.batTypes.selectedValue);
+				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
 			protected function pwrTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selPwrType = int(this.pwrTypes.selectedValue);
+				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
 			[bindable] public var tabEditable:Boolean;			

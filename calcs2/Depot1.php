@@ -21,7 +21,8 @@ class Depot1 {
 			//array_push($b, $z);
 		};*/	
 		$a = array('a'=>"");
-		$sqlSr = "SELECT *, false as active FROM `Consulting`.`DC_namesCountries` cntr where cntr.isRegion = ".$isRegion;
+		$sqlSr = "SELECT *, false as active FROM `Consulting`.`DC_namesCountries` cntr WHERE cntr.isRegion = ".$isRegion."
+					ORDER BY namen ASC";
 		$result = $this->connection->fetchAll($sqlSr);
 		array_push($a, $result);		
 	    return $result;

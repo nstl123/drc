@@ -155,6 +155,8 @@
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
 				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
+				
+				this.refreshData();
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void

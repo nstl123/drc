@@ -69,7 +69,7 @@
 				this.workingScenarioID = this.IDgen.generateID();	
 				this.currTime = this.IDgen.generateTimeStamp();
 				
-				cleanOldScenarios(); // this should be removed later				
+				cleanOldScenarios(); // clean DB from unneccesary scenarios
 				this.addEventListener("dbCleaned", initScenarioDB);
 				
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);		
@@ -99,15 +99,15 @@
 			}
 			
 			protected function refreshAllTabs(evt:Event):void {
-				this.panelTabA2.refreshData();
+				this.panelTabA2.refreshData(null);
 				this.panelTabB3.refreshData();		
 				if (this.panelTabC4.getWorkingScenario() == 0) 
 					this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);
 				this.panelTabC4.rewriteDeviceBase();
 				// this has two parts: rewrite deviceTable; reload Data;
 				//this.panelTabD5.refeshData();				
-				this.panelTabF51.refreshData();
-				this.panelTabE61.refreshData();
+				this.panelTabF51.refreshData(null);
+				this.panelTabE61.refreshData(null);
 			}
 
 			[bindable] public var changeMadeInScenario:Boolean = false;
@@ -406,7 +406,7 @@
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="justify"/>
 		</s:layout>
-		<s:Label text="Battery Dermand Analysis Tool. v.04-17-7m" width="50%" height="100%"/>
+		<s:Label text="Battery Dermand Analysis Tool. v.04-18-11am" width="50%" height="100%"/>
 		<s:Label text="info bar" id="statusLabel" width="50%" textAlign="right" height="100%"/>
 	</s:BorderContainer>	
 	<s:Label text="Selected Path" width="100%" height="15" verticalAlign="middle"

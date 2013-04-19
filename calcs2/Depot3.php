@@ -123,7 +123,12 @@ class Depot3 {
 						USING `Consulting`.`DC_scenarioNamesDead`, `Consulting`.`DC_scenarioDataProxy`
 						WHERE id = scenarioID";
 		$result = $this->connection->prepare($stmntProxy);
-		$result->execute();	
+		$result->execute();			
+		
+		$stmntProxy = "DELETE FROM `Consulting`.`DC_deviceBaseTable`
+						WHERE scenarioID < 9999";
+		$result = $this->connection->prepare($stmntProxy);
+		$result->execute();			
 		
 		$stmnt = "SELECT count(*) as cnt FROM `Consulting`.`DC_scenarioNames` WHERE id < 9999";
 		$result = $this->connection->fetchAll($stmnt); 		
@@ -196,7 +201,7 @@ class Depot3 {
 	} 
 	
 	
-	public function writeViewToTable($scenarioID) {	
+	public function writeViewToTable($scenarioID, $isMarket) {	
 		$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
 		$result = $this->connection->prepare($delStmnt);		
 		$result->execute();	
@@ -212,7 +217,7 @@ class Depot3 {
 				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,`Y2009`,
 				`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,
 				`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`
-			FROM `Consulting`.`DC_deviceBase`
+			FROM `Consulting`.".(($isMarket == 0) ? 'DC_deviceBase' : 'DC_deviceBaseMarket')."
 				WHERE scenarioID = ".$scenarioID.";";
 		$result = $this->connection->prepare($insStmnt);		
 		$result->execute();		

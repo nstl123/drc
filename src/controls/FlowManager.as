@@ -87,7 +87,7 @@ package controls
 					pathFlags = [0, 0, 1, 0, 0, 1];
 					break;
 				case "D":
-					pathFlags = [0, 0, 0, 1, 1, 1];
+					pathFlags = [0, 0, 0, 1, 0, 1];
 					break;				
 				case "A2":
 					pathFlags = [1, 0, 0, 0, 0, 1];

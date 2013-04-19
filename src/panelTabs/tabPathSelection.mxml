@@ -60,7 +60,7 @@
 			<s:RadioButton x="48" y="71" label="C (device base)" value="C"
 						   groupName="pathTypes" click="radiobutton1_clickHandler(event)"/>
 			<s:RadioButton x="39" y="103" label="D (market size + depreciation)" value="D" 
-						   groupName="pathTypes" click="radiobutton1_clickHandler(event)" enabled="false"/>
+						   groupName="pathTypes" click="radiobutton1_clickHandler(event)" enabled="true"/>
 			<s:RadioButton x="41" y="128" label="D though A2 ((market size + depreciation) through macro)"
 						   groupName="pathTypes" value="A2" click="radiobutton1_clickHandler(event)"/>		
 		</s:BorderContainer>

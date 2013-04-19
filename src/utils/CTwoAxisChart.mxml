@@ -29,8 +29,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.dataGridClasses.DataGridColumn;
-			import mx.events.FlexEvent;
-			/* some text/numbers formatting tasks go here */
+			import mx.events.FlexEvent;		
 			
 			public function format_numbers(item:Object, column:DataGridColumn):String { 
 				var a:Object = item[column.dataField]				
@@ -42,11 +41,7 @@
 				return a.toString();	
 			}		
 
-		]]>
-	</fx:Script>
-	
-	<fx:Script>
-		<![CDATA[
+			import mx.charts.AxisRenderer;
 			import mx.charts.HitData;
 			import mx.graphics.SolidColorStroke;
 			import mx.charts.series.ColumnSeries;
@@ -62,6 +57,8 @@
 			[bindable] public var selectedDevice:int = 1;
 			[bindable] public var selectedBatType:int = 1;
 			[bindable] public var selectedPwrType:int = 1;
+			[bindable] public var isLevel:Boolean = false;
+			
 			
 			[bindable] private var dataSet:ArrayCollection = new ArrayCollection();		
 			private var hlp:helper;
@@ -76,6 +73,7 @@
 			
 			public function setData(data:ArrayCollection, isLevel:Boolean):void {
 				this.dataSet = data;	
+				this.isLevel = isLevel;
 				drawChart(isLevel);
 			}
 			
@@ -96,15 +94,21 @@
 			
 			[Bindable] private var vaxis1:LinearAxis = new LinearAxis;
 			[Bindable] private var vaxis2:LinearAxis = new LinearAxis;
+			[Bindable] private var hAxis:CategoryAxis = new CategoryAxis;
+			
+			[Bindable] private var vaRndr:AxisRenderer = new AxisRenderer;
+			[Bindable] private var axStroke:SolidColorStroke = new SolidColorStroke;
+			
 			private var series2:Object;
 			private var mySeries:Array=new Array(); 
 			
 			public function createSeries(someData:ArrayCollection):void {
 				vaxis1 = new LinearAxis;
-				vaxis2 = new LinearAxis;
-				var hAxis:CategoryAxis = new CategoryAxis();
+				vaxis2 = new LinearAxis;		
+				
+				hAxis = new CategoryAxis();
 				mySeries.splice(0, mySeries.length);
-				var counter:int = 0;				
+				var counter:int = 0;		
 				
 				for (var i:int = 0; i < someData.length; i++) {
 					if (isLineSeries) series2 = new LineSeries();
@@ -130,7 +134,8 @@
 					hAxis.dataProvider = someData.getItemAt(i);
 					vaxis1.baseAtZero = false;
 					vaxis2.baseAtZero = false;
-					vaxis1.labelFunction = this.defineLabel;
+					vaxis1.labelFunction = this.defineLabel;				
+					
 					//vaxis2.labelFunction = this.defineLabel;
 					mySeries.push(series2);
 				};	
@@ -158,7 +163,10 @@
 			
 			public function defineLabel(cat:Object, pcat:Object, ax:LinearAxis):String 
 			{
-				return stilius2.format(cat)
+				if (cat < 1000)				
+					return stilius3.format(cat)
+				else
+					return stilius2.format(cat)
 				//return cat.toString();
 			}
 			
@@ -169,13 +177,13 @@
 				chartDGToolTip = m.item['countryID'] + ", " + chartDGToolTip + "\n";
 				chartDGToolTip = chartDGToolTip + m.item['yrs'] + ": ";
 				
-				if (Math.abs(m.item['data']) < 1000) {
+				if (Math.abs(m.item['data']) < 100) {
 					chartDGToolTip = chartDGToolTip + stilius3.format(m.item['data']);
 				} else {
 					chartDGToolTip = chartDGToolTip + stilius2.format(m.item['data']);
-				};		
+				};				
 				
-				return chartDGToolTip;            
+				return chartDGToolTip + (!this.isLevel ? "%" : "");            
 			}	
 		]]>
 	</fx:Script>	
@@ -188,10 +196,21 @@
 		<mx:LineChart id="lineChart" width="100%" height="90%" 
 					  horizontalCenter="0" verticalCenter="0"
 					  seriesFilters="[]" showDataTips="true">
-			 <!-- <mx:verticalAxisRenderers>
-				 <mx:AxisRenderer placement="left" axis="{this.vaxis1}"/>  
-				 <mx:AxisRenderer placement="right" axis="{this.vaxis2}"/> 
-			</mx:verticalAxisRenderers> !--> 
+			 <mx:verticalAxisRenderers>
+				 <mx:AxisRenderer placement="left" axis="{this.vaxis1}">
+					 <mx:axisStroke>
+						 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
+					 </mx:axisStroke>
+				 </mx:AxisRenderer>  
+				 <!-- <mx:AxisRenderer placement="right" axis="{this.vaxis2}"/>!-->				 
+			 </mx:verticalAxisRenderers> 
+			<mx:horizontalAxisRenderers>
+				<mx:AxisRenderer axis="{this.hAxis}">
+					<mx:axisStroke>
+						<s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
+					</mx:axisStroke>
+				</mx:AxisRenderer>
+			</mx:horizontalAxisRenderers>
 		</mx:LineChart>		
 	
 	<mx:Legend dataProvider="{lineChart}" width="100%" height="10%" horizontalCenter="0" verticalCenter="139">

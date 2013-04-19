@@ -37,7 +37,8 @@
 			public var startInd:int = 0;
 			public function rewriteDeviceBase():void {
 				startInd = startInd + 1;
-				if (this.startInd > 1) writeViewToTableResult.token = depot3.writeViewToTable(workingScenarioID);
+				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
+				if (this.startInd > 1) writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 0);
 			}
 			
 			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void

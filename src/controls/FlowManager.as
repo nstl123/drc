@@ -5,8 +5,10 @@ package controls
 	
 	public class FlowManager
 	{
-		private static var dataList:ArrayCollection = new ArrayCollection();
-		private static var openItems:Object = new Object();
+		private static var dataList:ArrayCollection;
+		private static var dataListReg:ArrayCollection;
+		private static var useCluster:Boolean;
+		private static var openItems:Object;
 		
 		private var tabList:ArrayCollection = new ArrayCollection();
 		
@@ -18,22 +20,28 @@ package controls
 			else Alert.show("cannot call contructor twise!");
 		}
 		
-		public function setDataList(data:ArrayCollection):void {
+		public function setDataList(data:ArrayCollection, regData:ArrayCollection):void {
 			dataList = data;
+			dataListReg = regData;
 			this.notifyAll();
+		}
+		
+		public function setDataList0(data:ArrayCollection):void {
+			dataList = data;			
+			this.notifyAll();
+		}
+		
+		public function set useCluster(flag:Boolean):void {
+			useCluster = flag;			
+		}
+		
+		public function get useCluster():Boolean {
+			return useCluster;			
 		}
 		
 		public function getDataList():ArrayCollection {
 			return dataList;
 		}
-
-		public function setOpenItems(obj:Object):void {
-			openItems = obj;
-		}
-		
-		public function getOpenItems():Object {
-			return openItems;
-		}		
 		
 		public function addTab(A:Object, jk:int):void {
 			//tabList.addItemAt(A, jk);
@@ -71,14 +79,18 @@ package controls
 					
 			};			
 			
-			this.setDataList(tmp[0]["res"]);
-			this.setOpenItems(tmp[0]["openItems"]);
+			this.setDataList0(tmp[0]["res"]);
+			//this.setOpenItems(tmp[0]["openItems"]);
 			this.notifyAll();
 		}
 		
 		public function notifyAll():void {
 			for (var i:int; i < tabList.length; i++) {				
-				tabList[i].setDataList(dataList);			
+				tabList[i].setDataList(dataList);	
+				if (i == 4) {
+					tabList[i].setDataListReg(dataListReg);
+					tabList[i].setDataListReg(useCluster);
+				} 
 			};		
 		}	
 		

@@ -32,7 +32,7 @@
 			public var labelText:String;
 			
 			//collect checked data
-			public function get dataList():ArrayCollection
+			public function getdataList():ArrayCollection
 			{
 				var res:ArrayCollection = new ArrayCollection();
 				
@@ -70,7 +70,7 @@
 			}
 			
 			//assign new data
-			public function set dataList(data:ArrayCollection):void
+			public function setDataList(data:ArrayCollection):void
 			{					
 				selectionList = new ArrayCollection();
 				var res:ArrayCollection = data as ArrayCollection;				

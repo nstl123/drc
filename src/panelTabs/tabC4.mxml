@@ -156,7 +156,9 @@
 			
 			
 			// ----- COMMUNICATION PART ---------------/////			
-			public function getDataList():Object {
+			public function getDataList():Object {				
+				//getActiveDataList
+				
 				return this.dataList;			
 			}
 			

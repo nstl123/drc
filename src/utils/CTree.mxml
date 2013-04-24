@@ -2,7 +2,10 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
-		 creationComplete="startApp(event)" >
+		 creationComplete="startApp(event)" xmlns:utils="utils.*" >
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
 
 	<fx:Script>
 		<![CDATA[
@@ -18,8 +21,10 @@
 			
 			import spark.layouts.ColumnAlign;
 			
+			import utils.*;
+			
 			public static const UNCHECKED:String = 'cntryUnChecked';
-			public static const CHECKED:String   = 'cntryChecked';
+			public static const CHECKED:String   = 'cntryChecked';			
 			
 			[bindable] 
 			private var openItems:Object;
@@ -28,7 +33,7 @@
 			private var selectionList:ArrayCollection;			
 			private var checkedCount:uint;
 			[bindable] 
-			private var regList:Array = new Array;
+			private var regList:ArrayCollection;
 			
 			protected function cntryNames_resultHandler(event:ResultEvent):void
 			{
@@ -69,6 +74,13 @@
 				};		
 				return res;	
 			}		
+			
+			public function getRegionsDataList():ArrayCollection {
+				return this.regionsListGrid.getActiveDataList();
+			}
+			
+			//getActiveDataList
+			
 			
 			//assign new data
 			public function setDataList(data:ArrayCollection):void
@@ -123,6 +135,7 @@
 			public function initNames():void {
 				trace("init names inside cTree");				
 				cntryNames.token = this.dataServiceNames.getCountryListADG();				
+				regionNames.token = this.dataServiceNames.getCountryList(1);
 			}
 			
 			//increment number of checked elements
@@ -194,16 +207,48 @@
 				return {uid: value + iCount++};
 			}
 			
+
+			protected function regionListNames_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("Could not read regionNames from DB", "Error cTree");
+			}
+			
+			protected function regionListNames_resultHandler(event:ResultEvent):void
+			{				
+				regList = this.regionNames.lastResult as ArrayCollection;
+				regList.filterFunction = filterRegions;
+				regList.refresh();
+				this.regionsListGrid.setDataList(this.regList);		
+			}		
+			
+			[bindable] private var useCluster:Boolean = false;
+			private function filterRegions(item:Object):Boolean {		
+				if (!useCluster)
+					return (item.id < 108);
+				else
+					return (item.id > 999);
+			}
+			
+			protected function radiobutton3_clickHandler(event:MouseEvent):void
+			{
+				this.useCluster = !this.useCluster;
+				this.dispatchEvent(new Event("updateClusterType", true));				
+				regList.refresh();
+				this.regionsListGrid.setDataList(regList);	
+			}	
 		]]>
 	</fx:Script>
 
 	
 	<fx:Declarations>
-		<s:CallResponder id="cntryNames" result="cntryNames_resultHandler(event)" fault="cntryNames_faultHandler(event)" />
+		<s:CallResponder id="cntryNames" result="cntryNames_resultHandler(event)" 
+						 fault="cntryNames_faultHandler(event)" />
+		<s:CallResponder id="regionNames" result="regionListNames_resultHandler(event)"
+						 fault="regionListNames_faultHandler(event)" />
 	</fx:Declarations>
 	
 	
-	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle">
+	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle" width="100%">
 		<s:Label text="Label" width="70%" fontWeight="normal" fontSize="11" id="lblName" height="100%" 
 				 verticalAlign="middle" fontStyle="italic"/>
 		<mx:LinkButton label="Select all" width="15%" textAlign="right" id="lnkAll" 
@@ -237,4 +282,24 @@
 		</mx:rendererProviders>
 	</mx:AdvancedDataGrid>	
 		
+	<s:BorderContainer width="100%" height="30">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Label x="11" y="344" text="Groups:" id="selDeviceLabel3"
+				 fontStyle="italic" fontSize="11" height="100%" width="30%"/>
+		<s:RadioButton x="64" y="342" label="Regions" groupName="regionType" selected="true" 
+					   enabled="true" value="0" click="radiobutton3_clickHandler(event)" height="100%" width="35%"/>
+		<s:RadioButton x="136" y="342" label="Clusters" groupName="regionType" enabled="true"
+					   value="1" click="radiobutton3_clickHandler(event)" height="100%" width="35%"/>
+	</s:BorderContainer>
+	<s:BorderContainer x="21" y="563" width="100%" height="40%">				
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>		
+		<utils:CCheckBoxGrid id="regionsListGrid"
+							 labelText="Regions"  top="373" left="10" width="100%" height="100%">
+		</utils:CCheckBoxGrid>			
+	</s:BorderContainer>
+	
 </s:Group>

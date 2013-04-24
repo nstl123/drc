@@ -14,8 +14,6 @@
 					   showBusyCursor="true"/>
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 						 showBusyCursor="true"/>	
-
-		<s:CallResponder id="regionListNames" result="regionsListNames_resultHandler(event)" />
 		
 		<s:CallResponder id="deviceNamesList" result="deviceNamesList_resultHandler(event)" />		
 		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" fault="getDemandData_faultHandler(event)" />
@@ -93,8 +91,8 @@
 			}					
 			
 			// ----- COMMUNICATION PART ---------------/////
-			[bindable]
-			private var dataList:ArrayCollection;
+			[bindable]	private var dataList:ArrayCollection;
+			[bindable]	private var dataListReg:ArrayCollection;
 			public function getDataList():ArrayCollection {
 				return this.dataList;			
 			}
@@ -102,6 +100,10 @@
 			public function setDataList(data:ArrayCollection):void {
 				this.dataList = data;
 			}		
+			
+			public function setDataListReg(data:ArrayCollection):void {
+				this.dataListReg = data;
+			}	
 			
 			private var tmpDevices:int  = 0;
 			private var tmpPwrTypes:int = 0;
@@ -114,13 +116,17 @@
 				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
-			[bindable] private var useCluster:Boolean = false;
+			public function setUseCluster(flag:Boolean):void {
+				this.useCluster = flag;
+			}
+			
+			[bindable] public var useCluster:Boolean = false;
 			public function refreshData(evt:Event):void {
 				var countryIDs:Array = this.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				
-				//var regionIDs:Array = this.regionsListGrid.getActiveDataList().source;
-				var tmp2:Array = new Array(); // this.hlp.formStringFromIDs(regionIDs);			
+				var regionIDs:Array = this.dataListReg.source;
+				var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);			
 				
 				this.devicesActiveFlag ? this.tmpDevices = this.selDevice : this.tmpDevices = -1; 
 				this.pwrTypesActiveFlag ? this.tmpPwrTypes = this.selPwrType : this.tmpPwrTypes = -1; 
@@ -147,21 +153,7 @@
 			}			
 			
 			[bindable] private var regList:ArrayCollection = new ArrayCollection();
-			protected function regionsListNames_resultHandler(event:ResultEvent):void
-			{
-				regList = this.regionListNames.lastResult as ArrayCollection;
-				regList.filterFunction = filterRegions;
-				regList.refresh();
-				//this.regionsListGrid.dataList = this.regList;				
-			}
-
-			private function filterRegions(item:Object):Boolean {		
-				if (!useCluster)
-					return (item.id < 108);
-				else
-					return (item.id > 999);
-			}
-
+			
 			protected function getDemandRegions_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getDemandRegions.lastResult as ArrayCollection;				

@@ -75,10 +75,12 @@
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);		
 				
 				this.addEventListener("cntryChecked",   digestUpdate);
-				this.addEventListener("cntryUnChecked", digestUpdate);				
+				this.addEventListener("cntryUnChecked", digestUpdate);	
 				
-				this.addEventListener("countryListLoaded", setCntryListToTabs);				
-				this.addEventListener("tabaiCreated", setCntryListToTabs);
+				this.addEventListener("updateClusterType", digestUpdate);
+				
+				/*this.addEventListener("countryListLoaded", setCntryListToTabs);				
+				this.addEventListener("tabaiCreated", setCntryListToTabs);*/
 				
 				this.addEventListener("pathChanged", digestPathChange);	
 				
@@ -126,8 +128,7 @@
 			protected function refreshDeviceBase(evt:Event):void {
 				this.firstDeviceBase = this.firstDeviceBase + 1;
 				//if (this.firstDeviceBase > 1) 
-				//this.panelTabC4.rewriteDeviceBase();
-				
+				//this.panelTabC4.rewriteDeviceBase();				
 			}
 			
 			public function resetScenario(evt:Event):void {
@@ -136,25 +137,12 @@
 			}
 			
 			public function digestUpdate(event:Event):void {	
-				var z:ArrayCollection = this.cntryTree.getDataList();
-				this.masterTab.setDataList(z);
-				//this.masterTab.manageUpdate(event.target.className);				
-			}
-						
-			public function setCntryListToTabs(event:Event):void {				
-				/*if (this.panelTabA2.cntryListLoaded) {
-					this.masterTab.manageUpdate("tabA2");
-					var z:ArrayCollection = this.masterTab.getDataList();		
-				};
-					
-				if ((this.tabaiCreationComplete)&&(this.panelTabA2.cntryListLoaded)) {					
-					//this.panelTabB3.countryListGrid.dataList = this.masterTab.getDataList();
-					/*this.panelTabC4.countryListGrid.dataList = this.masterTab.getDataList();
-					this.panelTabD5.countryListGrid.dataList = this.masterTab.getDataList();
-					this.panelTabE61.countryListGrid.dataList = this.masterTab.getDataList();
-					this.panelTabF51.countryListGrid.dataList = this.masterTab.getDataList();*/
-				//};
-			}
+				var cntryData:ArrayCollection = this.cntryTree.getDataList();				
+				var regData:ArrayCollection = this.cntryTree.getRegionsDataList();
+				var useCluster:Boolean = this.cntryTree.get . .useCluster;
+				
+				this.masterTab.setDataList(cntryData, regData);								
+			}		
 
 			[bindable] private var selPath:String = "";
 			[bindable] public static var isStart:int = 0;			
@@ -408,14 +396,7 @@
 				Alert.show("could not clean old scenarios from DB...", "Error");
 			}			
 			
-			[bindable] private var useCluster:Boolean = false;
-			protected function radiobutton3_clickHandler(event:MouseEvent):void
-			{
-				//this.useCluster = !this.useCluster;
-				//this.dispatchEvent(new Event("updateCharts", false));				
-				//regList.refresh();
-				//this.regionsListGrid.dataList = this.regList;	
-			}	
+
 			
 		]]>
 	</fx:Script>
@@ -454,28 +435,10 @@
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
-			<utils:CTree id="cntryTree" width="100%" height="60%" horizontalCenter="0" 
+			<utils:CTree id="cntryTree" width="100%" height="100%" horizontalCenter="0" 
 						 verticalCenter="0"	 >
-			</utils:CTree>
-			<s:BorderContainer width="100%" height="30">
-				<s:layout>
-					<s:HorizontalLayout/>
-				</s:layout>
-				<s:Label x="11" y="344" text="Groups:" id="selDeviceLabel3"
-						 fontStyle="italic" fontSize="11" height="100%" width="30%"/>
-				<s:RadioButton x="64" y="342" label="Regions" groupName="regionType" selected="true" 
-							   enabled="false" value="0" click="radiobutton3_clickHandler(event)" height="100%" width="35%"/>
-				<s:RadioButton x="136" y="342" label="Clusters" groupName="regionType" enabled="false"
-							   value="1" click="radiobutton3_clickHandler(event)" height="100%" width="35%"/>
-			</s:BorderContainer>
-			<s:BorderContainer x="21" y="563" width="100%" height="40%">				
-				<s:layout>
-					<s:HorizontalLayout/>
-				</s:layout>
-				<utils:CCheckBoxGrid id="regionsListGrid"
-									 labelText="Regions"  top="373" left="10" width="100%" height="100%">
-				</utils:CCheckBoxGrid>			
-			</s:BorderContainer>
+			</utils:CTree>			
+			
 		</s:BorderContainer>
 		
 		<s:BorderContainer width="75%" height="100%" left="0">

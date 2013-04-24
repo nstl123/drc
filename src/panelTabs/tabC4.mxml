@@ -14,8 +14,10 @@
 
 	<fx:Script>
 		<![CDATA[
+			import mx.charts.AreaChart;
 			protected function getDeviceBase_faultHandler(event:FaultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				Alert.show("could not read DeviceBase Table in DB", "Error C4");
 			}
 
@@ -110,6 +112,8 @@
 			[bindable] private var workingScenarioID:int;
 			private var hlp:helper;
 			[bindable] private var indicatorsList:ArrayCollection;
+			[bindable] private var dataList:ArrayCollection;
+			
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
@@ -136,18 +140,8 @@
 			
 			public function getWorkingScenario():int {
 				return this.workingScenarioID;								
-			}
-			
-			protected function countryListNames_resultHandler(event:ResultEvent):void
-			{
-				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
 			}			
 			
-			protected function button2_clickHandler(event:MouseEvent):void
-			{
-				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabC4.CNTRYCHANGED, true));				
-			}
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			
@@ -163,21 +157,14 @@
 			
 			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():Object {
-				return this.countryListGrid.dataList;			
+				return this.dataList;			
 			}
 			
 			public function setDataList(data:ArrayCollection):void {
 				trace("tab C. set cntryNames");
-				this.countryListGrid.dataList = data;
-			}		
+				this.dataList = data;
+			}	
 			
-			public function setDataListActive(data:ArrayCollection):void {				
-				this.countryListGrid.activateSelections(data);
-			}
-			
-			public function setOpenItems(opIt:Object):void {
-				this.countryListGrid.setOpenItems(opIt);
-			}
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
@@ -201,11 +188,11 @@
 				this.refreshData(null);					
 			}
 			
-			public function refreshData(evt:Event):void {			
-				var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;		
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
-				if (tmp.length > 0) { 
-					//tmp = [1];
+			public function refreshData(evt:Event):void {											
+				if (this.dataList) {
+					var countryIDs:Array = this.dataList.source;
+					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+					this.cursorManager.setBusyCursor();
 					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID);
 				} else if (this.startInd > 1) {
 					//Alert.show("Select at least one country", "ErrorC4");
@@ -223,6 +210,7 @@
 			
 			protected function getDeviceBase_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentData = this.getDeviceBase.lastResult as ArrayCollection;
 				
 				this.currentDataChart.source = this.currentData.source;
@@ -281,7 +269,7 @@
 		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"
 					   showBusyCursor="true"/>
 		
-		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
+
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>		
 		<s:CallResponder id="getDeviceNames" result="getDeviceNames_resultHandler(event)" />
 		
@@ -291,36 +279,28 @@
 		
 	</fx:Declarations>
 	
-	<s:BorderContainer width="220" height="25" top="7" left="10">
-		<s:layout>
-			<s:HorizontalLayout/>
-		</s:layout>		
-		<s:Label text="Tab C. Device Base" height="100%" width="40%" x="61" y="38"/>		
-		<s:Button label="notify C" click="button2_clickHandler(event)" width="60%" height="100%"/>			
-	</s:BorderContainer>
 	
-	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="82" left="240">
+	
+	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="84" left="11">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="397" left="239">
+	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="399" left="10">
 	</utils:CInteractiveGrid>
 	<s:DropDownList width="243" id="indicatorsBox"
-					labelField="namen"	 top="20" selectedIndex="0" height="20" left="278"></s:DropDownList>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="243" top="50"/>
-	<s:Button label="refresh data" id="getSomeData" click="button3_clickHandler(event)" top="50" height="25" width="241" left="428" fontWeight="bold"/>
-	<s:Button x="723" y="53" label="writeViewToDB_1" width="148" id="button"
+					labelField="namen"	 top="22" selectedIndex="0" height="20" left="49"></s:DropDownList>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="14" top="52"/>
+	<s:Button label="refresh data" id="getSomeData" click="button3_clickHandler(event)" top="52" height="25" width="241" left="199" fontWeight="bold"/>
+	<s:Button x="494" y="55" label="writeViewToDB_1" width="148" id="button"
 			  click="button_clickHandler(event)" enabled="false" height="20"/>
 	<s:Button label="save changes" width="215" id="saveBtn"
-			  click="digestChanges(event)" height="20" fontWeight="bold" left="441" top="366"/>
-	<s:Button label="Reset" click="button4_clickHandler(event)" height="20" top="366" width="122" x="753"/>
-	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
-					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="20" height="20" right="29"></s:DropDownList>
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" top="385" left="239"/>
+			  click="digestChanges(event)" height="20" fontWeight="bold" left="212" top="368"/>
+	<s:Button label="Reset" click="button4_clickHandler(event)" height="20" top="368" width="122" left="524"/>
+	<s:DropDownList id="deviceListDrop" labelField="namen" 
+					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="22" height="20" left="370" width="272"></s:DropDownList>
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" top="387" left="10"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" top="57" left="290"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" top="59" left="61"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1"
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="57" left="353"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
-	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
-	<utils:CTree left="10" top="37" width="220" height="400" id="countryListGrid">
-	</utils:CTree>
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="59" left="124"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="10" height="10" left="14"/>
+	<s:Label x="341" text="Select Device" fontStyle="italic" fontSize="11" top="10" height="10"/>
 </s:Group> 

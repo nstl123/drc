@@ -7,20 +7,19 @@
 	<fx:Script>
 		<![CDATA[
 			
-			import services.depot1.Depot1;
-			
 			import mx.collections.ArrayCollection;
 			import mx.collections.IHierarchicalCollectionView;
-			
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
-			import mx.rpc.events.ResultEvent;		
-			import spark.layouts.ColumnAlign;			
-			import mx.rpc.events.ResultEvent;
 			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 			
-			public static const UNCHECKED:String = 'unchecked';
-			public static const CHECKED:String = 'checked';
+			import services.depot1.Depot1;
+			
+			import spark.layouts.ColumnAlign;
+			
+			public static const UNCHECKED:String = 'cntryUnChecked';
+			public static const CHECKED:String   = 'cntryChecked';
 			
 			[bindable] 
 			private var openItems:Object;
@@ -37,15 +36,14 @@
 				var someCntries:ArrayCollection = this.cntryNames.lastResult as ArrayCollection;
 				this.setDataList(someCntries);				
 				
-				this.cntryListLoaded = true;
-				this.dispatchEvent(new Event("countryListLoaded", true));	
+				//this.cntryListLoaded = true;
+				//this.dispatchEvent(new Event("countryListLoaded", true));	
 			}
 
 			protected function cntryNames_faultHandler(event:FaultEvent):void
 			{
 				Alert.show("Could not read countryNames from DB", "Error cTree");
 			}
-
 				
 			public function get count():uint
 			{
@@ -54,52 +52,26 @@
 			
 			public var labelText:String;		
 			
-			public function getdataList():Object
-			{
+			public function getDataList():ArrayCollection {
 				var res:ArrayCollection = new ArrayCollection();
 				
 				var i:uint;				
-				for (i = 0; i < selectionList.length; i++) {					 
-					res.addItem({
-						"namen"   : selectionList[i].namen, 
-						"id"	  : selectionList[i].id, 
-						"isRegion": selectionList[i].isRegion,
-						"active"  : selectionList[i].active,
-						"region"  : selectionList[i].region						 
-					});
-				};			
-					
-				var s:Array = new Array({
-					"res"	   : res, 
-					"openItems": IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes});
-				return (s);
-			}
-			
-			public function getActiveDataList():Object
-			{
-				var res:ArrayCollection = new ArrayCollection();
-				
-				var i:uint;				
-				for (i = 0; i < selectionList.length; i++) {					
-					if (selectionList[i].active) { 
+				for (i = 0; i < selectionList.length; i++) {		
+					if (selectionList[i].active) {
 						res.addItem({
-							"namen":selectionList[i].namen, 
-							"id":selectionList[i].id, 
-							"isRegion":selectionList[i].isRegion,
-							"active":selectionList[i].active,
-							"region":selectionList[i].region
+							"namen"   : selectionList[i].namen, 
+							"id"	  : selectionList[i].id, 
+							"isRegion": selectionList[i].isRegion,
+							"active"  : selectionList[i].active,
+							"region"  : selectionList[i].region						 
 						});
 					};
-				};
-				
-				var s:Array = new Array({
-					"res" : res, 
-					"openItems": IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes});
-				return (s);
-			}
+				};		
+				return res;	
+			}		
 			
 			//assign new data
-			public function setDataList(data:Object):void
+			public function setDataList(data:ArrayCollection):void
 			{					
 				selectionList = new ArrayCollection();
 				var res:ArrayCollection = data as ArrayCollection;				
@@ -126,16 +98,6 @@
 					//adg2.dataProvider = gc;
 					//adg2.validateNow();
 				//IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes = openNodes;				
-			}
-			
-			
-			public function setOpenItems(opIt:Object):void {
-				this.openItems = opIt;
-				// kazkur cia keliauja refresh???
-			}
-			
-			public function getOpenItems():Object {
-				return this.openItems;
 			}			
 			
 			public function reset():void
@@ -166,8 +128,7 @@
 			//increment number of checked elements
 			private function onIncrValue(e:Event):void
 			{
-				checkedCount++;
-				
+				checkedCount++;				
 				//if (checkedCount == 1)
 					dispatchEvent(new Event(CTree.CHECKED, true));
 			}
@@ -175,8 +136,7 @@
 			//decrement number of checked elements
 			private function onDecrValue(e:Event):void
 			{
-				checkedCount--;
-				
+				checkedCount--;				
 				//if (checkedCount == 0)
 					dispatchEvent(new Event(CTree.UNCHECKED, true));
 			}
@@ -219,8 +179,7 @@
 					//this.preserveRefresh(data[0]["openItems"]);	
 					dispatchEvent(new Event(CTree.CHECKED, true));
 				};
-			}		
-
+			}
 		
 			public function formDataList_adg(data:Array):void {
 				this.selectionList = new ArrayCollection(data);
@@ -255,13 +214,13 @@
 					   height="100%" fontSize="11"/>
 	</s:HGroup>
 	
-	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="100%" horizontalCenter="0" 
-						 width="100%" 
+	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="100%" 
+						 horizontalCenter="0"  width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
 						 defaultLeafIcon="{null}" showHeaders="false" top="20">
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
-				<mx:Grouping groupingObjectFunction="grpObjFunc">
+				<mx:Grouping>
 					<mx:GroupingField name="region"/>									
 				</mx:Grouping>				
 			</mx:GroupingCollection2>

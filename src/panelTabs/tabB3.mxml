@@ -31,6 +31,13 @@
 				this.saveBtn.enabled = (flag && isLevel);
 			}
 
+
+			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+				Alert.show("could not read data", "error B3");
+			}
+
 		]]>
 	</fx:Script>
 
@@ -59,9 +66,12 @@
 			public var dataServiceData:Depot21;
 			public var dataServiceUpdate:Depot3;
 			
-			[bindable] private var workingScenarioID:int;
+			[bindable] 
+			private var workingScenarioID:int;
 			private var hlp:helper;
-			[bindable] private var indicatorsList:ArrayCollection;
+			[bindable] 
+			private var indicatorsList:ArrayCollection;
+			[bindable] private var dataList:ArrayCollection;
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
 			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
@@ -79,6 +89,10 @@
 				this.addEventListener("refreshData", refreshData);
 			}
 			
+			public function setDataList(data:ArrayCollection):void {
+				this.dataList = data;				
+			}	
+			
 			public function initNames():void {
 				trace("init names inside panel B");				
 				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();			
@@ -88,38 +102,9 @@
 			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
 				this.testGrid.setWorkingScenario(this.workingScenarioID, flag);				
-			}					
-			
-			protected function countryListNames_resultHandler(event:ResultEvent):void
-			{
-				//this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
-			}
-
-			protected function button2_clickHandler(event:MouseEvent):void
-			{
-				//var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabB3.CNTRYCHANGED, true));
-			}
- // ----- COMMUNICATION PART ---------------/////			
-			public function getDataList():Object {
-				//return this.countryListGrid.dataList	
-				return new Object();
-			}
-
-			public function setDataList(data:ArrayCollection):void {
-				trace("tab B. set cntryNames");
-				var kl:int = data.length;
-					
-				//this.countryListGrid.dataList = data;
-			}		
-			
-			public function setDataListActive(data:ArrayCollection):void {				
-				//this.countryListGrid.activateSelections(data);
 			}			
 			
-			public function setOpenItems(opIt:Object):void {
-				//this.countryListGrid.setOpenItems(opIt);
-			}
+		 // ----- COMMUNICATION PART ---------------/////		
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
@@ -143,14 +128,15 @@
 			}
 
 			public function refreshData():void {
-				/*var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;				
+				var countryIDs:Array = this.dataList.source;			
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);	
 				if (tmp.length < 1) { 
 					Alert.show("Select at least one country", "Error B3"); 
 				} else {
+					this.cursorManager.setBusyCursor();
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
 						workingScenarioID, 0, 0, 1); 
-				};*/
+				};
 			}
 			
 			[bindable] private var selectedIndi:int = 201;
@@ -167,6 +153,7 @@
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentData = this.getMacroDataResult.lastResult as ArrayCollection;			
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source  = this.currentData.source;
@@ -242,11 +229,10 @@
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 					   showBusyCursor="true"/>
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
-						 showBusyCursor="true"/>
-		
-		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
+						 showBusyCursor="true"/>		
+
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
-		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)"/>
+		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		<s:CallResponder id="getDeviceList" result="getDeviceList_resultHandler(event)" />
 		

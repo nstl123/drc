@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" height="100%"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
 		 
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
@@ -13,9 +13,8 @@
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 					   showBusyCursor="true"/>
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
-						 showBusyCursor="true"/>
-		
-		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
+						 showBusyCursor="true"/>	
+
 		<s:CallResponder id="regionListNames" result="regionsListNames_resultHandler(event)" />
 		
 		<s:CallResponder id="deviceNamesList" result="deviceNamesList_resultHandler(event)" />		
@@ -68,11 +67,7 @@
 			[bindable] private var batTypesActiveFlag:Boolean = true;
 			[bindable] private var pwrTypesActiveFlag:Boolean = true;
 			[bindable] private var chemTypesActiveFlag:Boolean = false;
-			[bindable] private var devicesActiveFlag:Boolean = true;
-			
-			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
-			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
-			
+			[bindable] private var devicesActiveFlag:Boolean = true;			
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab E");			
@@ -86,11 +81,8 @@
 			public function initNames():void {
 				trace("init names inside panel E");			
 				
-				this.deviceNamesList.token = this.dataServiceNames.getDeviceNames();
-				//this.countryListNames.token = this.dataServiceNames.getCountryList(0);
-				
-				this.regionListNames.token = this.dataServiceNames.getCountryList(1);
-				// here we get regions names				
+				this.deviceNamesList.token = this.dataServiceNames.getDeviceNames();				
+				//this.regionListNames.token = this.dataServiceNames.getCountryList(1);								
 				this.getIndicatorNames.token = this.dataServiceNames.getIndicatorNames();
 			}
 			
@@ -100,32 +92,16 @@
 				this.testGridExo.setWorkingScenario(this.workingScenarioID, false);
 			}					
 			
-			protected function countryListNames_resultHandler(event:ResultEvent):void
-			{
-				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
-			}
-			
-			protected function button2_clickHandler(event:MouseEvent):void
-			{
-				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabE61.CNTRYCHANGED, true));
-			}
-			// ----- COMMUNICATION PART ---------------/////			
+			// ----- COMMUNICATION PART ---------------/////
+			[bindable]
+			private var dataList:ArrayCollection;
 			public function getDataList():ArrayCollection {
-				return this.countryListGrid.dataList[0]["res"];			
+				return this.dataList;			
 			}
 			
 			public function setDataList(data:ArrayCollection):void {
-				this.countryListGrid.dataList = data;
+				this.dataList = data;
 			}		
-			
-			public function setDataListActive(data:ArrayCollection):void {				
-				this.countryListGrid.activateSelections(data);
-			}						
-			
-			public function setOpenItems(opIt:Object):void {
-				//this.countryListGrid.setOpenItems(opIt);
-			}
 			
 			private var tmpDevices:int  = 0;
 			private var tmpPwrTypes:int = 0;
@@ -138,12 +114,13 @@
 				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
+			[bindable] private var useCluster:Boolean = false;
 			public function refreshData(evt:Event):void {
-				var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;				
+				var countryIDs:Array = this.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				
-				var regionIDs:Array = this.regionsListGrid.getActiveDataList().source;
-				var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);			
+				//var regionIDs:Array = this.regionsListGrid.getActiveDataList().source;
+				var tmp2:Array = new Array(); // this.hlp.formStringFromIDs(regionIDs);			
 				
 				this.devicesActiveFlag ? this.tmpDevices = this.selDevice : this.tmpDevices = -1; 
 				this.pwrTypesActiveFlag ? this.tmpPwrTypes = this.selPwrType : this.tmpPwrTypes = -1; 
@@ -175,7 +152,7 @@
 				regList = this.regionListNames.lastResult as ArrayCollection;
 				regList.filterFunction = filterRegions;
 				regList.refresh();
-				this.regionsListGrid.dataList = this.regList;				
+				//this.regionsListGrid.dataList = this.regList;				
 			}
 
 			private function filterRegions(item:Object):Boolean {		
@@ -286,10 +263,8 @@
 				currentData = this.getDemandByChemistryResult.lastResult as ArrayCollection;				
 				
 				this.currentDataChart.source = this.currentData.source;
-				this.currentDataGrid.source = this.currentData.source;
-				
-				this.dispatchEvent(new Event("updateCharts", false));
-				
+				this.currentDataGrid.source = this.currentData.source;				
+				this.dispatchEvent(new Event("updateCharts", false));				
 				this.cursorManager.removeBusyCursor();
 			}
 
@@ -305,15 +280,6 @@
 				Alert.show("could not get Demand data", "Error E61");
 			}
 
-			[bindable] private var useCluster:Boolean = false;
-			protected function radiobutton3_clickHandler(event:MouseEvent):void
-			{
-				this.useCluster = !this.useCluster;
-				this.dispatchEvent(new Event("updateCharts", false));
-				
-				regList.refresh();
-				this.regionsListGrid.dataList = this.regList;	
-			}	
 			
 			
 		]]>
@@ -433,7 +399,7 @@
 			
 			protected function 	exoIndi_clickHandler(event:MouseEvent):void
 			{					
-				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
+				var countryIDs:Array = this.dataList.source;		
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				var typeID:int = 0;
 				var tmpDev:int = 0;
@@ -528,32 +494,18 @@
 		]]>
 	</fx:Script>
 	
-	<s:BorderContainer width="220" height="26" left="10" top="7">
-		<s:layout>
-			<s:HorizontalLayout/>
-		</s:layout>		
-		<s:Label text="Tab E. Demand" height="100%" width="40%" x="61" y="38"/>		
-		<s:Button label="notify E" click="button2_clickHandler(event)" width="60%" height="100%"/>			
-	</s:BorderContainer>	
-	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="310" left="10"
-						 top="37">
-	</utils:CCheckBoxGrid>	
-	
-	
-	<utils:CTwoAxisChart x="238" width="343" height="288" id="testChart" y="140">
+	<utils:CTwoAxisChart x="15" width="343" height="288" id="testChart" y="142">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid width="652" height="193" id="testGrid" left="238" top="431">
+	<utils:CInteractiveGrid width="652" height="193" id="testGrid" left="15" top="433">
 	</utils:CInteractiveGrid>
-	<s:Button x="420" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="105" width="285" height="25" fontWeight="bold"/>
-	<s:Label x="299" text="Selected Device" width="259" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="10"/>
-	<s:Label x="394" text="Bat Type" width="62" id="selDeviceLabel0" fontStyle="italic" fontSize="11" height="15" top="50" verticalAlign="middle"/>
-	<s:Label x="237" y="98" text="Show Data in:" width="84" id="selDeviceLabel2" fontStyle="italic" fontSize="11"/>
-	<s:Label x="10" y="353" text="Groups:" width="71" id="selDeviceLabel3" fontStyle="italic" fontSize="11"/>
-	<s:Label x="239" text="Pwr Type" width="67" id="selDeviceLabel1" fontStyle="italic" fontSize="11" top="50" height="15" verticalAlign="middle"/>
+	<s:Button x="197" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="107" width="285" height="25" fontWeight="bold"/>
+	<s:Label x="76" text="Selected Device" width="259" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="12"/>
+	<s:Label x="171" text="Bat Type" width="62" id="selDeviceLabel0" fontStyle="italic" fontSize="11" height="15" top="52" verticalAlign="middle"/>
+	<s:Label x="14" y="100" text="Show Data in:" width="84" id="selDeviceLabel2" fontStyle="italic" fontSize="11"/>
+	<s:Label x="16" text="Pwr Type" width="67" id="selDeviceLabel1" fontStyle="italic" fontSize="11" top="52" height="15" verticalAlign="middle"/>
 	<s:DropDownList width="280" id="deviceListDrop"
-					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="21" left="321"/>
-	<s:BorderContainer x="409" width="224" height="21" fontSize="11" fontFamily="Verdana" top="65">
+					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="23" left="98"/>
+	<s:BorderContainer x="186" width="224" height="21" fontSize="11" fontFamily="Verdana" top="67">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -563,7 +515,7 @@
 		<s:RadioButton x="14" y="88" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 		<s:RadioButton x="14" y="114" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 	</s:BorderContainer>
-	<s:BorderContainer width="100" height="21" x="257" fontSize="11" fontFamily="Verdana" top="65">
+	<s:BorderContainer width="100" height="21" x="34" fontSize="11" fontFamily="Verdana" top="67">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -572,38 +524,35 @@
 		<s:RadioButton x="14" y="36" label="RCR" value="2" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)"/>			
 	</s:BorderContainer>
-	<s:Label x="653" text="some exogenous var" width="152" fontStyle="italic" fontSize="11" top="8"/>
-	<s:DropDownList x="664" width="226" id="exoListDrop" labelField="namen" 
-					change="exoListDrop_changeHandler(event)" selectedIndex="0" height="20" top="20"/>
-	<s:Button x="761" y="109" label="refresh exo data" width="129" 
+	<s:Label x="430" text="some exogenous var" width="152" fontStyle="italic" fontSize="11" top="10"/>
+	<s:DropDownList x="441" width="226" id="exoListDrop" labelField="namen" 
+					change="exoListDrop_changeHandler(event)" selectedIndex="0" height="20" top="22"/>
+	<s:Button x="538" y="111" label="refresh exo data" width="129" 
 			  click="exoIndi_clickHandler(event)" id="button"/>
-	<utils:CTwoAxisChart x="588" y="140" height="288" id="testChartExo" width="302">
+	<utils:CTwoAxisChart x="365" y="142" height="288" id="testChartExo" width="302">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="751" y="583" height="58" id="testGridExo" width="254"
+	<utils:CInteractiveGrid x="528" y="585" height="58" id="testGridExo" width="254"
 							 visible="false" enabled="false"
 							>
 	</utils:CInteractiveGrid>
-	<utils:CCheckBoxGrid height="251" width="220" id="regionsListGrid"
-						 labelText="Regions"  top="373" left="10">
-	</utils:CCheckBoxGrid>
-	<s:CheckBox x="314" label="Use?" fontSize="11" fontStyle="italic" 
+	<s:CheckBox x="91" label="Use?" fontSize="11" fontStyle="italic" 
 				id="pwrTypesActive" enabled="true" selected="true" 
-				 click="pwrTypesActive_clickHandler(event)" top="45" height="20"/>
-	<s:CheckBox x="464" label="Use?" fontSize="11" fontStyle="italic" 
+				 click="pwrTypesActive_clickHandler(event)" top="47" height="20"/>
+	<s:CheckBox x="241" label="Use?" fontSize="11" fontStyle="italic" 
 				id="batTypesActive" enabled="true" selected="true" 
-			 	click="batTypesActive_clickHandler(event)"	 top="45" height="20"/>
-	<s:CheckBox x="737" label="Use?" fontSize="11" fontStyle="italic" 
+			 	click="batTypesActive_clickHandler(event)"	 top="47" height="20"/>
+	<s:CheckBox x="514" label="Use?" fontSize="11" fontStyle="italic" 
 				id="chemistryActive" enabled="true" selected="false" 
-			 	click="chemTypesActive_clickHandler(event)"	 top="45" height="20"/>
-	<s:CheckBox x="270" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
+			 	click="chemTypesActive_clickHandler(event)"	 top="47" height="20"/>
+	<s:CheckBox x="47" label="Use?" fontSize="11" fontStyle="italic" id="devicesActive" 
 				enabled="true" selected="true" height="20"
-			     click="devicesActive_clickHandler(event)" top="21"/>
-	<s:RadioButton x="266" y="109" label="Levels" groupName="growthType" enabled="true" 
+			     click="devicesActive_clickHandler(event)" top="23"/>
+	<s:RadioButton x="43" y="111" label="Levels" groupName="growthType" enabled="true" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:RadioButton x="329" y="109" label="Growths" groupName="growthType" 
+	<s:RadioButton x="106" y="111" label="Growths" groupName="growthType" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)"/>
-	<s:Label x="667" text="Chemistry" fontStyle="italic" fontSize="11" top="50" height="15" verticalAlign="middle"/>
-	<s:BorderContainer width="203" height="21" x="688" fontFamily="Verdana" fontSize="11" top="65">
+	<s:Label x="444" text="Chemistry" fontStyle="italic" fontSize="11" top="52" height="15" verticalAlign="middle"/>
+	<s:BorderContainer width="203" height="21" x="465" fontFamily="Verdana" fontSize="11" top="67">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
@@ -612,10 +561,6 @@
 		<s:RadioButton x="92" y="25" label="Zinc" groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)"/>
 		<s:RadioButton x="151" y="28" label="Lithium" groupName="chemTypes" value="3" click="chemTypes_clickHandler(event)" fontFamily="Verdana"/>
 	</s:BorderContainer>
-	<s:RadioButton x="63" y="351" label="Regions" groupName="regionType" selected="true" 
-				   enabled="true" value="0" click="radiobutton3_clickHandler(event)"/>
-	<s:RadioButton x="135" y="351" label="Clusters" groupName="regionType" enabled="true"
-				    value="1" click="radiobutton3_clickHandler(event)"/>
 
 
 </s:Group>

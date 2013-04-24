@@ -15,8 +15,7 @@
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 						 showBusyCursor="true"/>
 		
-		<s:CallResponder id="getDeviceList" result="getDeviceList_resultHandler(event)" />		
-		<s:CallResponder id="countryListNames"  result="countryListNames_resultHandler(event)"/>
+		<s:CallResponder id="getDeviceList" result="getDeviceList_resultHandler(event)" />
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>		
 		
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
@@ -60,11 +59,7 @@
 			
 			[bindable] private var workingScenarioID:int;
 			private var hlp:helper;
-			[bindable] private var indicatorsList:ArrayCollection;
-			
-			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
-			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
-			
+			[bindable] private var indicatorsList:ArrayCollection;			
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab F");			
@@ -89,32 +84,16 @@
 				this.deviceListDrop.dataProvider = this.getDeviceList.lastResult as ArrayCollection;
 			}
 			
-			protected function countryListNames_resultHandler(event:ResultEvent):void
-			{
-				this.countryListGrid.dataList = this.countryListNames.lastResult as ArrayCollection;
-			}
-			
-			protected function button2_clickHandler(event:MouseEvent):void
-			{
-				var selCntries:Object = this.countryListGrid.dataList;
-				this.dispatchEvent(new Event(tabB3.CNTRYCHANGED, true));
-			}
-			// ----- COMMUNICATION PART ---------------/////			
+			// ----- COMMUNICATION PART ---------------/////
+			[bindable]
+			private var dataList:ArrayCollection;
 			public function getDataList():ArrayCollection {
-				return this.countryListGrid.dataList[0]["res"];			
+				return this.dataList;
 			}
 			
 			public function setDataList(data:ArrayCollection):void {
-				this.countryListGrid.dataList = data;
-			}		
-			
-			public function setDataListActive(data:ArrayCollection):void {				
-				this.countryListGrid.activateSelections(data);
+				this.dataList = data;
 			}			
-			
-			public function setOpenItems(opIt:Object):void {
-				this.countryListGrid.setOpenItems(opIt);
-			}
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
@@ -137,7 +116,7 @@
 			}
 			
 			public function refreshData(evt:Event):void {
-				var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;				
+				var countryIDs:Array = this.dataList.source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				trace("calling macro data token");
 				
@@ -153,12 +132,11 @@
 						tmpType = this.selPwrType; break;
 				};				
 				
-				this.cursorManager.setBusyCursor();
 				if (tmp.length > 0) {
+					this.cursorManager.setBusyCursor();
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
 						hasSplitFlag.selected, tmpType, 1);
-				} else {
-					this.cursorManager.removeBusyCursor();
+				} else {					
 					Alert.show("select at least one country", "Error F51");					
 				};
 			}
@@ -240,9 +218,7 @@
 			{
 				this.selDevice = this.deviceListDrop.selectedItem.id;	
 				this.dispatchEvent(new Event("updateCharts", false));			
-			
 			}
-
 
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
 			{
@@ -296,51 +272,41 @@
 		]]>
 	</fx:Script>
 
-	<s:BorderContainer width="221" height="25" top="7" left="10">
-		<s:layout>
-			<s:HorizontalLayout/>
-		</s:layout>		
-		<s:Label text="Tab - F. bat types rel factors" height="100%" width="50%" x="61" y="38"/>		
-		<s:Button label="notify F" click="button2_clickHandler(event)" width="50%" height="100%" x="56" y="66"/>			
-	</s:BorderContainer>
-	
-	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="109" left="240">
+	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="111" left="12">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid width="631" height="208" id="testGrid" top="427" left="240">
+	<utils:CInteractiveGrid width="631" height="208" id="testGrid" top="429" left="12">
 	</utils:CInteractiveGrid>
 	
 	<s:DropDownList width="242" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="20" left="278"/>
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="22" left="50"/>
 	
-	<s:CheckBox x="522" y="22" label="hasSplit" enabled="false" id="hasSplitFlag"/>
-	<s:Button label="save changes" width="215" click="digestChanges(event)" id="saveBtn" left="441" top="394" fontWeight="bold" height="20"/>
-	<s:Button label="Reset" click="button4_clickHandler(event)" y="395" width="122" x="753"/>
+	<s:CheckBox x="294" y="24" label="hasSplit" enabled="false" id="hasSplitFlag"/>
+	<s:Button label="save changes" width="215" click="digestChanges(event)" id="saveBtn" left="213" top="396" fontWeight="bold" height="20"/>
+	<s:Button label="Reset" click="button4_clickHandler(event)" y="397" width="122" x="525"/>
 	<s:DropDownList width="272" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)" right="29" top="20"></s:DropDownList>
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="22" left="371"></s:DropDownList>
 	
-	<s:Button label="refresh data" click="button3_clickHandler(event)" id="button" width="153" height="25" fontWeight="bold" left="410" top="67"/>
+	<s:Button label="refresh data" click="button3_clickHandler(event)" id="button" width="153" height="25" fontWeight="bold" left="182" top="69"/>
 	
-	<s:Label x="688" text="Bat Type" width="112" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="50"/>
-	<s:Label x="577" text="Pwr Type" width="85" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="50"/>
+	<s:Label x="460" text="Bat Type" width="112" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="52"/>
+	<s:Label x="349" text="Pwr Type" width="85" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="52"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="301" top="56"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="73" top="58"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="301" top="77"/>
-	<s:Label x="238" y="414" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="243" top="50"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
-	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
-	<s:RadioButton x="615" y="62" label="DPP" value="1" groupName="pwrTypes" selected="true"
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="73" top="79"/>
+	<s:Label x="10" y="416" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="15" top="52"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="10" height="10" left="15"/>
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="10" height="10" left="342"/>
+	<s:RadioButton x="387" y="64" label="DPP" value="1" groupName="pwrTypes" selected="true"
 				   click="pwrTypes_clickHandler(event)"/>
-	<s:RadioButton x="615" y="82" label="RCR" value="2" groupName="pwrTypes"
+	<s:RadioButton x="387" y="84" label="RCR" value="2" groupName="pwrTypes"
 				   click="pwrTypes_clickHandler(event)"/>
-	<s:RadioButton x="701" y="65" label="1C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)"/>
-	<s:RadioButton x="738" y="65" label="1D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)"/>
-	<s:RadioButton x="775" y="65" label="3A"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)"/>
-	<s:RadioButton x="813" y="65" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
-	<s:RadioButton x="851" y="65" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
-	<utils:CTree left="10" top="37" width="220" height="400" id="countryListGrid">
-	</utils:CTree>
+	<s:RadioButton x="473" y="67" label="1C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)"/>
+	<s:RadioButton x="510" y="67" label="1D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+	<s:RadioButton x="547" y="67" label="3A"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+	<s:RadioButton x="585" y="67" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)"/>
+	<s:RadioButton x="623" y="67" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)"/>
 
 </s:Group>

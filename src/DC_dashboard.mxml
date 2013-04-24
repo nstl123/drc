@@ -71,7 +71,11 @@
 				cleanOldScenarios(); // clean DB from unneccesary scenarios
 				this.addEventListener("dbCleaned", initScenarioDB);
 				
+				// remove this eventListener
 				this.addEventListener("CNTRY_CHANGED", digestUpdate);		
+				
+				this.addEventListener("cntryChecked",   digestUpdate);
+				this.addEventListener("cntryUnChecked", digestUpdate);				
 				
 				this.addEventListener("countryListLoaded", setCntryListToTabs);				
 				this.addEventListener("tabaiCreated", setCntryListToTabs);
@@ -96,6 +100,10 @@
 				masterTab = new FlowManager();
 				
 				this.dispatchEvent(new Event("init", true));
+			}
+			
+			public function test(evt:Event) : void {
+			
 			}
 			
 			protected function refreshAllTabs(evt:Event):void {
@@ -127,12 +135,10 @@
 				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(workingScenarioID);
 			}
 			
-			public function digestUpdate(event:Event):void {								
-				if (event)	{
-					this.masterTab.manageUpdate(event.target.className);
-				} else {
-					this.masterTab.manageUpdate("tabA2");
-				};
+			public function digestUpdate(event:Event):void {	
+				var z:ArrayCollection = this.cntryTree.getDataList();
+				this.masterTab.setDataList(z);
+				//this.masterTab.manageUpdate(event.target.className);				
 			}
 						
 			public function setCntryListToTabs(event:Event):void {				
@@ -229,53 +235,64 @@
 				this.statusLabel.text = "new scenario not created"
 			}	
 			
+			protected function taba11_creationCompleteHandler(event:FlexEvent):void
+			{			
+				this.panelTabA2.setWorkingScenario(this.workingScenarioID, false);
+				
+				this.panelTabA2.dataServiceNames = this.dataServiceNames;
+				this.panelTabA2.dataServiceData =  this.dataServiceData;
+				this.panelTabA2.dataServiceUpdate = this.dataServiceUpdate;
+				this.panelTabA2.initNames();				
+				
+				this.masterTab.addTab(this.panelTabA2, 0);
+				this.panelTabPath.enablePaths(true);
+				
+				this.dispatchEvent(new Event("tabA", true));				
+				trace("creation complete of tab A1");
+			}
+			
 			protected function tabb11_creationCompleteHandler(event:FlexEvent):void
 			{				
-				/*this.panelTabB3.setWorkingScenario(this.workingScenarioID, false);								
+				this.panelTabB3.setWorkingScenario(this.workingScenarioID, false);								
 				this.panelTabB3.dataServiceNames = this.dataServiceNames;
 				this.panelTabB3.dataServiceData = this.dataServiceData;
 				this.panelTabB3.dataServiceUpdate = this.dataServiceUpdate;
 				
-				this.panelTabB3.initNames();				
-				//this.panelTabB3.countryListGrid.dataList = this.masterTab.getDataList();				
+				this.panelTabB3.initNames();								
 				this.masterTab.addTab(this.panelTabB3, 1);
 				
-				this.dispatchEvent(new Event("tabB", true));*/
+				this.dispatchEvent(new Event("tabB", true));
 				trace("creation complete of tab B1");
 			}
 
 			protected function tabc11_creationCompleteHandler(event:FlexEvent):void
 			{				
-				/*this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);
+				this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);
 				this.panelTabC4.dataServiceData = this.dataServiceData;				
 				this.panelTabC4.dataServiceNames = this.dataServiceNames;	
 				this.panelTabC4.dataServiceUpdate = this.dataServiceUpdate;
 				
-				this.panelTabC4.initNames();
-				
-				this.panelTabC4.countryListGrid.dataList = this.masterTab.getDataList();
-				this.panelTabC4.rewriteDeviceBase();
-				
+				this.panelTabC4.initNames();				
 				this.masterTab.addTab(this.panelTabC4, 2);
 				
+				this.panelTabC4.rewriteDeviceBase();
+				
 				this.dispatchEvent(new Event("tabC", true));
-				trace("creation complete of tab C4");*/
+				trace("creation complete of tab C4");
 			}
 
 			protected function tabd11_creationCompleteHandler(event:FlexEvent):void
 			{				
-				/*this.panelTabD5.setWorkingScenario(this.workingScenarioID, false);				
+				this.panelTabD5.setWorkingScenario(this.workingScenarioID, false);				
 				this.panelTabD5.dataServiceNames = this.dataServiceNames;
 				this.panelTabD5.dataServiceData = this.dataServiceData;
 				this.panelTabD5.dataServiceUpdate = this.dataServiceUpdate;
 				
-				this.panelTabD5.initNames();	
-							
-				this.panelTabD5.countryListGrid.dataList = this.masterTab.getDataList();
-				this.masterTab.addTab(this.panelTabD5, 3);
+				this.panelTabD5.initNames();							
+				this.masterTab.addTab(this.panelTabD5, 3);	
 				
 				this.dispatchEvent(new Event("tabD", true));
-				trace("creation complete of tab D1");*/
+				trace("creation complete of tab D1");
 			}
 
 
@@ -295,54 +312,37 @@
 				trace("creation complete of cTree");				
 			}
 			
-			protected function taba11_creationCompleteHandler(event:FlexEvent):void
-			{			
-				this.panelTabA2.setWorkingScenario(this.workingScenarioID, false);
-				
-				this.panelTabA2.dataServiceNames = this.dataServiceNames;
-				this.panelTabA2.dataServiceData =  this.dataServiceData;
-				this.panelTabA2.dataServiceUpdate = this.dataServiceUpdate;
-				this.panelTabA2.initNames();				
 		
-				//this.masterTab.addTab(this.panelTabA2, 0);
-				this.panelTabPath.enablePaths(true);
-				
-				this.dispatchEvent(new Event("tabA", true));				
-				trace("creation complete of tab A1");
-			}
-
 			protected function tabf511_creationCompleteHandler(event:FlexEvent):void
 			{			
-				/*this.panelTabF51.setWorkingScenario(this.workingScenarioID, false);
+				this.panelTabF51.setWorkingScenario(this.workingScenarioID, false);
 				
 				this.panelTabF51.dataServiceNames = this.dataServiceNames;
 				this.panelTabF51.dataServiceData =  this.dataServiceData;
 				this.panelTabF51.dataServiceUpdate = this.dataServiceUpdate;
 				
-				this.panelTabF51.initNames();
+				this.panelTabF51.initNames();			
 				
-				this.panelTabF51.countryListGrid.dataList = this.masterTab.getDataList();
 				this.masterTab.addTab(this.panelTabF51, 4);
 				
 				this.dispatchEvent(new Event("tabF", true));
 				trace("creation complete of tab F5");
 				
 				this.tabaiCreationComplete = true;
-				this.dispatchEvent(new Event("tabaiCreated", true));*/
+				this.dispatchEvent(new Event("tabaiCreated", true));
 			}
 
 			protected function tabe11_creationCompleteHandler(event:FlexEvent):void
 			{				
-				/*this.panelTabE61.setWorkingScenario(this.workingScenarioID, false);				
+				this.panelTabE61.setWorkingScenario(this.workingScenarioID, false);				
 				this.panelTabE61.dataServiceNames = this.dataServiceNames;
 				this.panelTabE61.dataServiceData = this.dataServiceData;
 				
-				this.panelTabE61.initNames();
-				this.panelTabE61.countryListGrid.dataList = this.masterTab.getDataList();				
+				this.panelTabE61.initNames();								
 				this.masterTab.addTab(this.panelTabE61, 5);
 				
 				this.dispatchEvent(new Event("tabE", true));
-				trace("creation complete of tab E61");*/				
+				trace("creation complete of tab E61");				
 			}			
 			
 			protected function createNext(evt:Event):void {
@@ -354,28 +354,27 @@
 						break;
 					case 'cTree':
 						this.pathLabel.text = "Loading Module: A2";
-						this.nc_A2.createDeferredContent();				
-					
+						this.nc_A2.createDeferredContent();					
 						break;
 					case 'tabA':
 						this.pathLabel.text = "Loading Module: B3";
-						//this.nc_B3.createDeferredContent();						
+						this.nc_B3.createDeferredContent();						
 						break;
 					case 'tabB':
 						this.pathLabel.text = "Loading Module: C4";
-						//this.nc_C4.createDeferredContent();						
+						this.nc_C4.createDeferredContent();						
 						break;
 					case 'tabC':
 						this.pathLabel.text = "Loading Module: D5";
-						//this.nc_D5.createDeferredContent();						
+						this.nc_D5.createDeferredContent();						
 						break;
 					case 'tabD':
 						this.pathLabel.text = "Loading Module: E61";
-						//this.nc_E61.createDeferredContent();												
+						this.nc_E61.createDeferredContent();												
 						break;
 					case 'tabE':
 						this.pathLabel.text = "Loading Module: F51";
-						//this.nc_F51.createDeferredContent();						
+						this.nc_F51.createDeferredContent();						
 						break;					
 					case 'tabF':				
 						this.pathLabel.text = "Loading Module: N00";
@@ -383,11 +382,11 @@
 						this.panelTabPath.enablePaths(true);
 						this.pathLabel.text = "Content Loaded";
 						
-						/*his.panelTabA2.enabled = true;
-						//this.panelTabB3.enabled = true;
+						this.panelTabA2.enabled = true;
+						this.panelTabB3.enabled = true;
 						this.panelTabC4.enabled = true;					
 						this.panelTabE61.enabled = true;
-						this.panelTabF51.enabled = true;*/
+						this.panelTabF51.enabled = true;
 					break;
 				}				
 			}			
@@ -407,8 +406,16 @@
 			protected function deleteAllScenariosResult_faultHandler(event:FaultEvent):void
 			{
 				Alert.show("could not clean old scenarios from DB...", "Error");
-			}
+			}			
 			
+			[bindable] private var useCluster:Boolean = false;
+			protected function radiobutton3_clickHandler(event:MouseEvent):void
+			{
+				//this.useCluster = !this.useCluster;
+				//this.dispatchEvent(new Event("updateCharts", false));				
+				//regList.refresh();
+				//this.regionsListGrid.dataList = this.regList;	
+			}	
 			
 		]]>
 	</fx:Script>
@@ -444,9 +451,31 @@
 		</s:layout>
 		
 		<s:BorderContainer width="25%" height="100%" horizontalCenter="0" top="">
-			<utils:CTree id="cntryTree" width="100%" height="100%" horizontalCenter="0" verticalCenter="0"
-						 >
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<utils:CTree id="cntryTree" width="100%" height="60%" horizontalCenter="0" 
+						 verticalCenter="0"	 >
 			</utils:CTree>
+			<s:BorderContainer width="100%" height="30">
+				<s:layout>
+					<s:HorizontalLayout/>
+				</s:layout>
+				<s:Label x="11" y="344" text="Groups:" id="selDeviceLabel3"
+						 fontStyle="italic" fontSize="11" height="100%" width="30%"/>
+				<s:RadioButton x="64" y="342" label="Regions" groupName="regionType" selected="true" 
+							   enabled="false" value="0" click="radiobutton3_clickHandler(event)" height="100%" width="35%"/>
+				<s:RadioButton x="136" y="342" label="Clusters" groupName="regionType" enabled="false"
+							   value="1" click="radiobutton3_clickHandler(event)" height="100%" width="35%"/>
+			</s:BorderContainer>
+			<s:BorderContainer x="21" y="563" width="100%" height="40%">				
+				<s:layout>
+					<s:HorizontalLayout/>
+				</s:layout>
+				<utils:CCheckBoxGrid id="regionsListGrid"
+									 labelText="Regions"  top="373" left="10" width="100%" height="100%">
+				</utils:CCheckBoxGrid>			
+			</s:BorderContainer>
 		</s:BorderContainer>
 		
 		<s:BorderContainer width="75%" height="100%" left="0">
@@ -458,8 +487,8 @@
 	
 				<s:NavigatorContent id="nc_00" label="Path selection" width="100%" height="100%" 
 									creationPolicy="none">
-					<panelTabs:tabPathSelection id="panelTabPath" width="697" height="656"  enabled="true"
-												creationComplete="panelTabPath_creationCompleteHandler(event)"  top="10" left="147">
+					<panelTabs:tabPathSelection id="panelTabPath" width="100%" height="100%"  enabled="true"
+												creationComplete="panelTabPath_creationCompleteHandler(event)" horizontalCenter="0" verticalCenter="0">
 					</panelTabs:tabPathSelection>				
 				</s:NavigatorContent>
 				
@@ -469,30 +498,31 @@
 									 creationComplete="taba11_creationCompleteHandler(event)"  top="0" left="0">
 					</panelTabs:tabA2>
 				</s:NavigatorContent>
-				<!--
+				
 				<s:NavigatorContent id="nc_B3" label="B. Factors" width="100%" height="100%" 
 									creationPolicy="none">
-					<panelTabs:tabB3 id="panelTabB3" width="100%" height="100%" enabled="false"
+					<panelTabs:tabB3 id="panelTabB3" width="100%" height="100%" enabled="true"
 									 creationComplete="tabb11_creationCompleteHandler(event)" top="0" left="0">					
 					</panelTabs:tabB3> 
 				</s:NavigatorContent>
 				
 				<s:NavigatorContent id="nc_C4" label="C. Device Base" width="100%" height="100%" creationPolicy="none">
-					<panelTabs:tabC4 id = "panelTabC4" width="100%" height="100%" enabled="false"
+					<panelTabs:tabC4 id = "panelTabC4" width="100%" height="100%" enabled="true"
 									 creationComplete="tabc11_creationCompleteHandler(event)" top="0" left="0">					
 					</panelTabs:tabC4>
-				</s:NavigatorContent>
+				</s:NavigatorContent>				
 				
 				<s:NavigatorContent id="nc_D5" label="D. Market Size" width="100%" height="100%" 
 									creationPolicy="none">
 					<panelTabs:tabD5 id="panelTabD5" creationComplete="tabd11_creationCompleteHandler(event)"
-									  enabled="true" top="0" width="100%" height="100%" left="0">					
+									 enabled="true" top="0" width="100%" height="100%" left="0">					
 					</panelTabs:tabD5>
 				</s:NavigatorContent>
 				
+				
 				<s:NavigatorContent id="nc_F51" label="F. batFactors" width="100%" height="100%" creationPolicy="none">
 					<panelTabs:tabF51 id="panelTabF51" width="100%" 
-									  height="100%" enabled="false"
+									  height="100%" enabled="true"
 									  creationComplete="tabf511_creationCompleteHandler(event)"  top="0" left="0">
 					</panelTabs:tabF51>
 				</s:NavigatorContent>
@@ -500,8 +530,8 @@
 				<s:NavigatorContent id="nc_E61" label="E. Demand" width="100%" height="100%" creationPolicy="none">
 					<panelTabs:tabE61 id="panelTabE61" enabled="false" 
 									  creationComplete="tabe11_creationCompleteHandler(event)" top="0" width="100%" height="100%" left="0">					
-					</panelTabs:tabE61>						
-				</s:NavigatorContent>		!-->
+					</panelTabs:tabE61> 					
+				</s:NavigatorContent> 
 				
 			</mx:TabNavigator>
 		</s:BorderContainer>

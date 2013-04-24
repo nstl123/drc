@@ -20,6 +20,7 @@ package controls
 		
 		public function setDataList(data:ArrayCollection):void {
 			dataList = data;
+			this.notifyAll();
 		}
 		
 		public function getDataList():ArrayCollection {
@@ -77,9 +78,7 @@ package controls
 		
 		public function notifyAll():void {
 			for (var i:int; i < tabList.length; i++) {				
-				tabList[i].setDataListActive(dataList);
-				tabList[i].setOpenItems(openItems);
-				// cia idedt reik setOpenItems keikvienam tabe
+				tabList[i].setDataList(dataList);			
 			};		
 		}	
 		

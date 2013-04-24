@@ -6,6 +6,8 @@ package controls
 	public class FlowManager
 	{
 		private static var dataList:ArrayCollection = new ArrayCollection();
+		private static var openItems:Object = new Object();
+		
 		private var tabList:ArrayCollection = new ArrayCollection();
 		
 		private var countSelf:int = 0; 
@@ -23,6 +25,14 @@ package controls
 		public function getDataList():ArrayCollection {
 			return dataList;
 		}
+
+		public function setOpenItems(obj:Object):void {
+			openItems = obj;
+		}
+		
+		public function getOpenItems():Object {
+			return openItems;
+		}		
 		
 		public function addTab(A:Object, jk:int):void {
 			//tabList.addItemAt(A, jk);
@@ -33,12 +43,14 @@ package controls
 			tabList.removeItemAt(jk);
 		}
 		
-		private var tmp:ArrayCollection;
+	
+		private var tmp:Object;
 		public function manageUpdate(className:String):void {
 			
 			switch(className) {
+				// what if pass the openState? 
 			 	case "tabA2":
-					tmp = this.tabList[0].getDataList();
+					tmp = this.tabList[0].getDataList();					
 					break;
 				case "tabB3":
 					tmp = this.tabList[1].getDataList();
@@ -58,14 +70,16 @@ package controls
 					
 			};			
 			
-			this.setDataList(tmp);			
+			this.setDataList(tmp[0]["res"]);
+			this.setOpenItems(tmp[0]["openItems"]);
 			this.notifyAll();
 		}
 		
 		public function notifyAll():void {
-			for (var i:int; i < tabList.length; i++) {
-				//tabList[i].setDataList(dataList);
+			for (var i:int; i < tabList.length; i++) {				
 				tabList[i].setDataListActive(dataList);
+				tabList[i].setOpenItems(openItems);
+				// cia idedt reik setOpenItems keikvienam tabe
 			};		
 		}	
 		

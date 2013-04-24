@@ -45,6 +45,12 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
         operation = new mx.rpc.remoting.Operation(null, "getDeviceNames");
          operation.resultElementType = valueObjects.DeviceNameObject;
         operations["getDeviceNames"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "getCountryListTree");
+         operation.resultType = Object;
+        operations["getCountryListTree"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "getCountryListADG");
+         operation.resultType = Object;
+        operations["getCountryListADG"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -109,6 +115,44 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
     public function getDeviceNames() : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDeviceNames");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'getCountryListTree' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function getCountryListTree(isRegion:int) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getCountryListTree");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(isRegion) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'getCountryListADG' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function getCountryListADG() : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getCountryListADG");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send() ;
 
         return _internal_token;

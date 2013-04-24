@@ -4,7 +4,6 @@
 						  xmlns:mx="library://ns.adobe.com/flex/mx" 
 						  focusEnabled="true" 
 						  click="mxdatagriditemrenderer1_clickHandler(event)">
-
 	<fx:Script>
 
 		<![CDATA[

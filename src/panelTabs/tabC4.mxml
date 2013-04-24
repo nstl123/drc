@@ -162,7 +162,7 @@
 			
 			
 			// ----- COMMUNICATION PART ---------------/////			
-			public function getDataList():ArrayCollection {
+			public function getDataList():Object {
 				return this.countryListGrid.dataList;			
 			}
 			
@@ -173,6 +173,10 @@
 			
 			public function setDataListActive(data:ArrayCollection):void {				
 				this.countryListGrid.activateSelections(data);
+			}
+			
+			public function setOpenItems(opIt:Object):void {
+				this.countryListGrid.setOpenItems(opIt);
 			}
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
@@ -198,7 +202,7 @@
 			}
 			
 			public function refreshData(evt:Event):void {			
-				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;		
+				var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;		
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				if (tmp.length > 0) { 
 					//tmp = [1];
@@ -287,9 +291,6 @@
 		
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="587" top="37" left="10">
-	</utils:CCheckBoxGrid>
-	
 	<s:BorderContainer width="220" height="25" top="7" left="10">
 		<s:layout>
 			<s:HorizontalLayout/>
@@ -320,4 +321,6 @@
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="57" left="353"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
 	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
+	<utils:CTree left="10" top="37" width="220" height="400" id="countryListGrid">
+	</utils:CTree>
 </s:Group> 

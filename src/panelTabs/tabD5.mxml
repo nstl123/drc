@@ -106,7 +106,7 @@
 			}
 			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():ArrayCollection {
-				return this.countryListGrid.dataList;			
+				return this.countryListGrid.dataList[0]["res"];			
 			}
 			
 			public function setDataList(data:ArrayCollection):void {
@@ -115,6 +115,10 @@
 			
 			public function setDataListActive(data:ArrayCollection):void {				
 				this.countryListGrid.activateSelections(data);
+			}
+			
+			public function setOpenItems(opIt:Object):void {
+				this.countryListGrid.setOpenItems(opIt);
 			}
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
@@ -236,7 +240,7 @@
 
 			public function refreshData(evt:Event):void {
 				this.rewriteDeviceBase();
-				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
+				var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);	
 				if (tmp.length < 1) { 
 					Alert.show("Select at least one country", "Error D5"); 
@@ -299,9 +303,6 @@
 		
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="587" top="37" left="10">
-	</utils:CCheckBoxGrid>
-	
 	<s:BorderContainer width="220" height="25" top="7" left="10">
 		<s:layout>
 			<s:HorizontalLayout/>
@@ -332,4 +333,6 @@
 	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
 					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="20" height="20" x="599"></s:DropDownList>
 	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
+	<utils:CTree width="220" left="10" top="37" height="400" id="countryListGrid">
+	</utils:CTree>
 </s:Group>

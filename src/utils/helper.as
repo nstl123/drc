@@ -156,10 +156,12 @@ package utils
 		}
 		
 		public function formStringFromIDs(data:Array):Array {
-			var list:Array = new Array();
-			for (var i:int = 0; i < data.length; i++) {
-				list.push(data[i]['id']);
-			};		
+			var list:Array = new Array();		
+			if (data) {				
+				for (var i:int = 0; i < data.length; i++) {
+					list.push(data[i]['id']);
+				};		
+			};
 			return list;	
 		}
 		

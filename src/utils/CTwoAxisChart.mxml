@@ -196,21 +196,21 @@
 		<mx:LineChart id="lineChart" width="100%" height="90%" 
 					  horizontalCenter="0" verticalCenter="0"
 					  seriesFilters="[]" showDataTips="true">
-			 <mx:verticalAxisRenderers>
-				 <mx:AxisRenderer placement="left" axis="{this.vaxis1}">
+			 <!-- <mx:verticalAxisRenderers>
+				<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 					 <mx:axisStroke>
 						 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
 					 </mx:axisStroke>
-				 </mx:AxisRenderer>  
-				 <!-- <mx:AxisRenderer placement="right" axis="{this.vaxis2}"/>!-->				 
-			 </mx:verticalAxisRenderers> 
+				 </mx:AxisRenderer>   
+				 <mx:AxisRenderer placement="right" axis="{this.vaxis2}"/>				 
+		 </mx:verticalAxisRenderers> 
 			<mx:horizontalAxisRenderers>
 				<mx:AxisRenderer axis="{this.hAxis}">
 					<mx:axisStroke>
 						<s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
 					</mx:axisStroke>
 				</mx:AxisRenderer>
-			</mx:horizontalAxisRenderers>
+			</mx:horizontalAxisRenderers> !-->
 		</mx:LineChart>		
 	
 	<mx:Legend dataProvider="{lineChart}" width="100%" height="10%" horizontalCenter="0" verticalCenter="139">

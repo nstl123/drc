@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" height="670" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="660" height="670" 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
@@ -101,8 +101,8 @@
 				this.dispatchEvent(new Event(tabB3.CNTRYCHANGED, true));
 			}
  // ----- COMMUNICATION PART ---------------/////			
-			public function getDataList():ArrayCollection {
-				return this.countryListGrid.dataList;			
+			public function getDataList():Object {
+				return this.countryListGrid.dataList	
 			}
 
 			public function setDataList(data:ArrayCollection):void {
@@ -115,6 +115,10 @@
 			public function setDataListActive(data:ArrayCollection):void {				
 				this.countryListGrid.activateSelections(data);
 			}			
+			
+			public function setOpenItems(opIt:Object):void {
+				this.countryListGrid.setOpenItems(opIt);
+			}
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
@@ -138,7 +142,7 @@
 			}
 
 			public function refreshData():void {
-				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
+				var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);	
 				if (tmp.length < 1) { 
 					Alert.show("Select at least one country", "Error B3"); 
@@ -248,40 +252,28 @@
 		<s:RadioButtonGroup id="growthType"/>
 	</fx:Declarations>
 	
-	<utils:CCheckBoxGrid id="countryListGrid" width="220" height="587" top="37"
-						   left="10">
-	</utils:CCheckBoxGrid>
-	
-	<s:BorderContainer width="220" height="25" top="7" left="10">
-		<s:layout>
-			<s:HorizontalLayout/>
-		</s:layout>		
-		<s:Label text="Tab - B. HH related factors" height="100%" width="40%" x="61" y="38"/>		
-		<s:Button label="notify B" click="button2_clickHandler(event)" width="60%" height="100%" x="56" y="66"/>			
-	</s:BorderContainer>
-	
-	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="82" left="240">
+	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="84" left="13">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="397" left="239">
+	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="399" left="12">
 	</utils:CInteractiveGrid>
 	
 	<s:DropDownList height="20" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="20" selectedIndex="0" width="243" x="278"/>
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="22" selectedIndex="0" width="243" x="50"/>
 	
-	<s:Button label="refresh data" click="button3_clickHandler(event)" id="button" top="50" width="241" height="25" fontWeight="bold" left="428"/>
+	<s:Button label="refresh data" click="button3_clickHandler(event)" id="button" top="52" width="241" height="25" fontWeight="bold" left="201"/>
 	
-	<s:CheckBox x="526" label="hasSplit" enabled="false" id="hasSplitFlag" top="20" height="20"/>
-	<s:Button label="save changes" width="215" click="digestChanges(event)" id="saveBtn" fontWeight="bold" height="20" top="366" left="441"/>
-	<s:Button label="Reset" width="103" click="button4_clickHandler(event)" height="20" top="366" left="771"/>
+	<s:CheckBox x="298" label="hasSplit" enabled="false" id="hasSplitFlag" top="22" height="20"/>
+	<s:Button label="save changes" width="215" click="digestChanges(event)" id="saveBtn" fontWeight="bold" height="20" top="368" left="214"/>
+	<s:Button label="Reset" width="103" click="button4_clickHandler(event)" height="20" top="368" left="544"/>
 	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
-					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="20" height="20" x="599"></s:DropDownList>	
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="239" top="385"/>
+					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="22" height="20" x="371"></s:DropDownList>	
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="12" top="387"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="290" top="57"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="63" top="59"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="353" top="57"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="8" height="10" left="243"/>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="243" top="50"/>
-	<s:Label x="570" text="Select Device" fontStyle="italic" fontSize="11" top="8" height="10"/>
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="126" top="59"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="10" height="10" left="16"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="16" top="52"/>
+	<s:Label x="342" text="Select Device" fontStyle="italic" fontSize="11" top="10" height="10"/>
 </s:Group>

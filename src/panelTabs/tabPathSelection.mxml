@@ -48,8 +48,7 @@
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
-		<mx:Image source="{imgCls}" width="763" height="518" scaleContent="false" autoLoad="true" horizontalCenter="0" top="47"/>
-		<s:BorderContainer width="374" height="138" top="393" horizontalCenter="-184">
+		<s:BorderContainer width="374" height="138" top="52" horizontalCenter="-234">
 			<s:layout>
 				<s:VerticalLayout paddingLeft="10" paddingTop="10"/>
 			</s:layout>

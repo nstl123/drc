@@ -112,7 +112,7 @@
 			}
 			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():ArrayCollection {
-				return this.countryListGrid.dataList;			
+				return this.countryListGrid.dataList[0]["res"];			
 			}
 			
 			public function setDataList(data:ArrayCollection):void {
@@ -122,6 +122,10 @@
 			public function setDataListActive(data:ArrayCollection):void {				
 				this.countryListGrid.activateSelections(data);
 			}						
+			
+			public function setOpenItems(opIt:Object):void {
+				//this.countryListGrid.setOpenItems(opIt);
+			}
 			
 			private var tmpDevices:int  = 0;
 			private var tmpPwrTypes:int = 0;
@@ -135,7 +139,7 @@
 			}
 			
 			public function refreshData(evt:Event):void {
-				var countryIDs:Array = this.countryListGrid.getActiveDataList().source;				
+				var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				
 				var regionIDs:Array = this.regionsListGrid.getActiveDataList().source;

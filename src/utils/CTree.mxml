@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 creationComplete="startApp(event)" >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.IHierarchicalCollectionView;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.layouts.ColumnAlign;
+			
+			public static const UNCHECKED:String = 'unchecked';
+			public static const CHECKED:String = 'checked';
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.layouts.ColumnAlign;
+			
+			//data provider (label, data, active)
+			[Bindable]
+			private var selectionList:ArrayCollection;
+			
+			//the count of checked elements
+			private var checkedCount:uint;
+			//the count of checked elements			
+			public function get count():uint
+			{
+				return checkedCount;
+			}
+			
+			//the text of lblName
+			public var labelText:String;
+			
+			//collect checked data
+			public function get dataList():Object
+			{
+				var res:ArrayCollection = new ArrayCollection();
+				
+				var i:uint;				
+				for (i = 0; i < selectionList.length; i++) {					 
+					res.addItem({
+						"namen"   : selectionList[i].namen, 
+						"id"	  : selectionList[i].id, 
+						"isRegion": selectionList[i].isRegion,
+						"active"  : selectionList[i].active,
+						"region"  : selectionList[i].region						 
+					});
+				};			
+					
+				var s:Array = new Array({
+					"res"	   : res, 
+					"openItems": IHierarchicalCollectionView(adg2.dataProvider).openNodes});
+				return (s);
+			}
+			
+			public function getActiveDataList():Object
+			{
+				var res:ArrayCollection = new ArrayCollection();
+				
+				var i:uint;				
+				for (i = 0; i < selectionList.length; i++) {					
+					if (selectionList[i].active) { 
+						res.addItem({
+							"namen":selectionList[i].namen, 
+							"id":selectionList[i].id, 
+							"isRegion":selectionList[i].isRegion,
+							"active":selectionList[i].active,
+							"region":selectionList[i].region
+						});
+					};
+				};
+				
+				var s:Array = new Array({
+					"res" : res, 
+					"openItems": IHierarchicalCollectionView(adg2.dataProvider).openNodes});
+				return (s);
+			}
+			
+			//assign new data
+			public function set dataList(data:Object):void
+			{					
+				selectionList = new ArrayCollection();
+				var res:ArrayCollection = data as ArrayCollection;				
+				
+				if (res.length > 0) {
+					var i:uint;						
+					for (i=0; i < res.length; i++) {							
+						selectionList.addItem({
+							"namen"   : res[i].namen, 
+							"id"      : res[i].id, 
+							"isRegion": res[i].isRegion, 
+							"active"  :(res[i].active ? res[i].active : false),
+							"region"  : res[i].region });
+					}	
+				}		
+				//this.preserveRefresh();
+			}			
+			
+			public function preserveRefresh():void {
+				//adg.dataProvider is IHierarchicalCollectionView)
+				if (this.adg2.dataProvider is IHierarchicalCollectionView) {
+					var openNodes:Object = IHierarchicalCollectionView(adg2.dataProvider).openNodes;
+					this.gc.refresh();
+					//adg2.dataProvider = gc;
+					//adg2.validateNow();
+					IHierarchicalCollectionView(adg2.dataProvider).openNodes = openNodes;
+				};
+			}
+			
+			[bindable] private var openItems:Object;
+			public function setOpenItems(opIt:Object):void {
+				this.openItems = opIt;
+				// kazkur cia keliauja refresh???
+			}
+			
+			public function getOpenItems():Object {
+				return this.openItems;
+			}			
+			
+			//reset
+			public function reset():void
+			{
+				var i:uint;
+				for (i=0; i<selectionList.length; i++)
+					selectionList[i].active = false;
+				
+				//this.preserveRefresh();				
+			}
+			
+			import mx.controls.Alert;
+			//events
+			//when the component is created, set label name
+			protected function startApp(event:FlexEvent):void
+			{
+				trace("creation complete in checkBox component");
+				
+				//lblName.text = labelText;
+				checkedCount = 0;
+				
+				addEventListener(CCheckBoxRendererADG.INCR_COUNT, onIncrValue);
+				addEventListener(CCheckBoxRendererADG.DECR_COUNT, onDecrValue);
+			}
+			
+			//increment number of checked elements
+			private function onIncrValue(e:Event):void
+			{
+				checkedCount++;
+				
+				//if (checkedCount == 1)
+					dispatchEvent(new Event(CTree.CHECKED, true));
+			}
+			
+			//decrement number of checked elements
+			private function onDecrValue(e:Event):void
+			{
+				checkedCount--;
+				
+				//if (checkedCount == 0)
+					dispatchEvent(new Event(CTree.UNCHECKED, true));
+			}
+			
+			//when the link button is clicked, select all checkboxes
+			protected function lnkAll_clickHandler(event:MouseEvent):void
+			{
+				var i:uint;
+				if (this.selectionList != null) {
+					for (i = 0; i < selectionList.length; i++)
+						selectionList[i].active = true;
+					checkedCount = selectionList.length;				
+					
+					this.preserveRefresh();	
+					dispatchEvent(new Event(CTree.CHECKED, true));
+				};				
+			}		
+			
+			//when the link button is clicked, de-select all checkboxes
+			protected function delnkAll_clickHandler(event:MouseEvent):void
+			{
+				var i:uint;
+				if (this.selectionList != null) {
+					for (i = 0; i < selectionList.length; i++)
+						selectionList[i].active = false;
+					checkedCount = 0;
+					
+					//this.preserveRefresh();									
+					dispatchEvent(new Event(CTree.UNCHECKED, true));
+				};
+			}		
+			
+			//used to override active selections
+			public function activateSelections(data:ArrayCollection):void
+			{
+				var i:uint;
+				if (this.selectionList != null) {
+					for (i = 0; i < selectionList.length; i++)
+						selectionList[i].active = data.getItemAt(i).active;					
+					//this.preserveRefresh(data[0]["openItems"]);	
+					dispatchEvent(new Event(CTree.CHECKED, true));
+				};
+			}		
+
+			[bindable] private var regList:Array = new Array;		
+			public function formDataList_adg(data:Array):void {
+				this.selectionList = new ArrayCollection(data);
+				//this.preserveRefresh();	
+			}			
+			
+			// counter to maintain the uid
+			private var iCount:int = 0;
+			private function grpObjFunc(value:String):Object {
+				// we need to assign the same uid for same grouped Objects
+				// use count or value + count
+				return {uid: value + iCount++};
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle">
+		<s:Label text="Label" width="70%" fontWeight="normal" fontSize="11" id="lblName" height="100%" 
+				 verticalAlign="middle" fontStyle="italic"/>
+		<mx:LinkButton label="Select all" width="15%" textAlign="right" id="lnkAll" 
+					   click="lnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal" 
+					   height="100%" fontSize="11"/>
+		<mx:LinkButton label="deSelectAll" width="15%" textAlign="right" id="rmAll" 
+					   click="delnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal"
+					   height="100%" fontSize="11"/>
+	</s:HGroup>
+	
+	<mx:AdvancedDataGrid id="adg2" designViewDataType="tree" height="100%" horizontalCenter="0" 
+						 width="100%" 
+						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
+						 defaultLeafIcon="{null}" showHeaders="false" top="20">
+		<mx:dataProvider>
+			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
+				<mx:Grouping groupingObjectFunction="grpObjFunc">
+					<mx:GroupingField name="region"/>									
+				</mx:Grouping>				
+			</mx:GroupingCollection2>
+		</mx:dataProvider>  
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Geography" dataField="namen" sortable="false"
+									    width="80"/>			
+			<mx:AdvancedDataGridColumn headerText="use" dataField="active" width="20" id="inputas"
+									  sortable="false"/>
+		</mx:columns>
+		<mx:rendererProviders>
+			<mx:AdvancedDataGridRendererProvider column="{inputas}" columnSpan="1" depth="2"
+												 renderer="utils.CCheckBoxRendererADG"/>
+		</mx:rendererProviders>
+	</mx:AdvancedDataGrid>	
+		
+</s:Group>

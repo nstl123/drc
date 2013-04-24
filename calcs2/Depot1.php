@@ -14,12 +14,6 @@ class Depot1 {
 	}	
 	
 	public function getCountryList($isRegion) {	
-		/*$b = array();
-		for ($i = 0; $i < 10000000; $i++) {
-			$z = ($i +1)/2 + 1 - 0.01 * sin(2.3256 * $i) + sin($i) + cos($i*$i);
-			//$z = array('id'=>$i, 'namen'=>'na');
-			//array_push($b, $z);
-		};*/	
 		$a = array('a'=>"");
 		$sqlSr = "SELECT *, false as active FROM `Consulting`.`DC_namesCountries` cntr WHERE cntr.isRegion = ".$isRegion."
 					ORDER BY namen ASC";
@@ -27,6 +21,29 @@ class Depot1 {
 		array_push($a, $result);		
 	    return $result;
 	}		
+
+	public function getCountryListTree($isRegion) {	
+		$a = array('a'=>"");
+		$sqlSr = "SELECT *, false as active FROM `Consulting`.`DC_namesCountries` cntr WHERE 
+					cntr.isRegion <= ".$isRegion."
+					AND cntr.id <= 107
+					ORDER BY id ASC";
+		$result = $this->connection->fetchAll($sqlSr);
+		array_push($a, $result);		
+	    return $result;
+	}		
+	
+	public function getCountryListADG() {	
+		$a = array('a'=>"");
+		$sqlSr = "SELECT nc1.id, nc1.isRegion, nc1.namen as namen, nc1.region, nc2.namen as region
+					FROM `Consulting`.`DC_namesCountries` nc1
+				 JOIN `Consulting`.`DC_namesCountries` nc2
+				 ON (nc1.region = nc2.id)
+				 WHERE nc1.isRegion = 0;";
+		$result = $this->connection->fetchAll($sqlSr);
+		array_push($a, $result);		
+	    return $result;
+	}			
 	
 	public function getIndicatorNames() {
 	// $splitByDevices, $splitByTypes - this is done locally

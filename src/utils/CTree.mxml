@@ -3,46 +3,58 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
 		 creationComplete="startApp(event)" >
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	
+
 	<fx:Script>
 		<![CDATA[
+			
+			import services.depot1.Depot1;
+			
 			import mx.collections.ArrayCollection;
 			import mx.collections.IHierarchicalCollectionView;
+			
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;		
+			import spark.layouts.ColumnAlign;			
 			import mx.rpc.events.ResultEvent;
-			
-			import spark.layouts.ColumnAlign;
+			import mx.rpc.events.FaultEvent;
 			
 			public static const UNCHECKED:String = 'unchecked';
 			public static const CHECKED:String = 'checked';
-			import mx.collections.ArrayCollection;
-			import mx.events.FlexEvent;
-			import mx.events.ListEvent;
-			import mx.rpc.events.ResultEvent;
 			
-			import spark.layouts.ColumnAlign;
-			
-			//data provider (label, data, active)
-			[Bindable]
-			private var selectionList:ArrayCollection;
-			
-			//the count of checked elements
+			[bindable] 
+			private var openItems:Object;
+			private var cntryListLoaded : Boolean = false;	
+			[Bindable] 
+			private var selectionList:ArrayCollection;			
 			private var checkedCount:uint;
-			//the count of checked elements			
+			[bindable] 
+			private var regList:Array = new Array;
+			
+			protected function cntryNames_resultHandler(event:ResultEvent):void
+			{
+				trace("cTree. cntryList loaded.");				
+				var someCntries:ArrayCollection = this.cntryNames.lastResult as ArrayCollection;
+				this.setDataList(someCntries);				
+				
+				this.cntryListLoaded = true;
+				this.dispatchEvent(new Event("countryListLoaded", true));	
+			}
+
+			protected function cntryNames_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("Could not read countryNames from DB", "Error cTree");
+			}
+
+				
 			public function get count():uint
 			{
 				return checkedCount;
-			}
+			}	
 			
-			//the text of lblName
-			public var labelText:String;
+			public var labelText:String;		
 			
-			//collect checked data
-			public function get dataList():Object
+			public function getdataList():Object
 			{
 				var res:ArrayCollection = new ArrayCollection();
 				
@@ -59,7 +71,7 @@
 					
 				var s:Array = new Array({
 					"res"	   : res, 
-					"openItems": IHierarchicalCollectionView(adg2.dataProvider).openNodes});
+					"openItems": IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes});
 				return (s);
 			}
 			
@@ -82,12 +94,12 @@
 				
 				var s:Array = new Array({
 					"res" : res, 
-					"openItems": IHierarchicalCollectionView(adg2.dataProvider).openNodes});
+					"openItems": IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes});
 				return (s);
 			}
 			
 			//assign new data
-			public function set dataList(data:Object):void
+			public function setDataList(data:Object):void
 			{					
 				selectionList = new ArrayCollection();
 				var res:ArrayCollection = data as ArrayCollection;				
@@ -103,21 +115,20 @@
 							"region"  : res[i].region });
 					}	
 				}		
-				//this.preserveRefresh();
+				this.preserveRefresh();
 			}			
 			
 			public function preserveRefresh():void {
 				//adg.dataProvider is IHierarchicalCollectionView)
-				if (this.adg2.dataProvider is IHierarchicalCollectionView) {
-					var openNodes:Object = IHierarchicalCollectionView(adg2.dataProvider).openNodes;
-					this.gc.refresh();
+				//if (this.cntryListGridADG.dataProvider is IHierarchicalCollectionView) {
+					//var openNodes:Object = IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes;
+				this.gc.refresh();
 					//adg2.dataProvider = gc;
 					//adg2.validateNow();
-					IHierarchicalCollectionView(adg2.dataProvider).openNodes = openNodes;
-				};
+				//IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes = openNodes;				
 			}
 			
-			[bindable] private var openItems:Object;
+			
 			public function setOpenItems(opIt:Object):void {
 				this.openItems = opIt;
 				// kazkur cia keliauja refresh???
@@ -127,13 +138,11 @@
 				return this.openItems;
 			}			
 			
-			//reset
 			public function reset():void
 			{
 				var i:uint;
 				for (i=0; i<selectionList.length; i++)
-					selectionList[i].active = false;
-				
+					selectionList[i].active = false;				
 				//this.preserveRefresh();				
 			}
 			
@@ -143,12 +152,15 @@
 			protected function startApp(event:FlexEvent):void
 			{
 				trace("creation complete in checkBox component");
-				
-				//lblName.text = labelText;
-				checkedCount = 0;
-				
+				checkedCount = 0;				
 				addEventListener(CCheckBoxRendererADG.INCR_COUNT, onIncrValue);
 				addEventListener(CCheckBoxRendererADG.DECR_COUNT, onDecrValue);
+			}
+			
+			public var dataServiceNames:Depot1;
+			public function initNames():void {
+				trace("init names inside cTree");				
+				cntryNames.token = this.dataServiceNames.getCountryListADG();				
 			}
 			
 			//increment number of checked elements
@@ -192,7 +204,7 @@
 						selectionList[i].active = false;
 					checkedCount = 0;
 					
-					//this.preserveRefresh();									
+					this.preserveRefresh();									
 					dispatchEvent(new Event(CTree.UNCHECKED, true));
 				};
 			}		
@@ -209,7 +221,7 @@
 				};
 			}		
 
-			[bindable] private var regList:Array = new Array;		
+		
 			public function formDataList_adg(data:Array):void {
 				this.selectionList = new ArrayCollection(data);
 				//this.preserveRefresh();	
@@ -225,6 +237,12 @@
 			
 		]]>
 	</fx:Script>
+
+	
+	<fx:Declarations>
+		<s:CallResponder id="cntryNames" result="cntryNames_resultHandler(event)" fault="cntryNames_faultHandler(event)" />
+	</fx:Declarations>
+	
 	
 	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle">
 		<s:Label text="Label" width="70%" fontWeight="normal" fontSize="11" id="lblName" height="100%" 
@@ -237,7 +255,7 @@
 					   height="100%" fontSize="11"/>
 	</s:HGroup>
 	
-	<mx:AdvancedDataGrid id="adg2" designViewDataType="tree" height="100%" horizontalCenter="0" 
+	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="100%" horizontalCenter="0" 
 						 width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
 						 defaultLeafIcon="{null}" showHeaders="false" top="20">

@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 width="900" height="670" 
+		 width="100%" height="100%" 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)" 
 		 xmlns:depot1="services.depot1.*" 
@@ -15,6 +15,7 @@
 	<fx:Script>
 		<![CDATA[
 			import controls.*;
+			import controls.FlowManager;
 			
 			import flashx.textLayout.formats.Float;
 			
@@ -34,12 +35,14 @@
 			
 			import utils.helper;
 			
+			
 			public var dataServiceNames:Depot1;
 			public var dataServiceData:Depot21;
 			public var dataServiceUpdate:Depot3;
 			
 			[bindable] private var workingScenarioID:int;
 			private var hlp:helper;
+			private var flm:FlowManager;
 			[bindable] private var indicatorsList:ArrayCollection;
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
@@ -49,14 +52,9 @@
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab A1");			
-				hlp = new helper();	
+				hlp = new helper();			
 				
-				//this.addEventListener(CCheckBoxGrid.CHECKED, updateCountries);
-				//this.addEventListener(CCheckBoxGrid.UNCHECKED, updateCountriesRM);
-				
-				this.addEventListener(CTree.CHECKED, updateCountries);
-				this.addEventListener(CTree.UNCHECKED, updateCountriesRM);
-				
+			
 				this.addEventListener("updateCharts", updateCharts);
 				this.addEventListener("refreshData", refreshData);
 				
@@ -97,37 +95,33 @@
 			
 			protected function countryListNames_resultHandler(event:ResultEvent):void
 			{
-				trace("tab A. cntryList loaded.");				
-				var someCntries:Array = (this.countryListNames.lastResult as ArrayCollection).source;
-				this.countryListGrid.dataList = new ArrayCollection(someCntries);				
-				
-				this.cntryListLoaded = true;
-				this.dispatchEvent(new Event("countryListLoaded", true));				
+				//trace("tab A. cntryList loaded.");				
 			}				
 			
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
-				var selCntries:Object = this.countryListGrid.dataList;
+				//var selCntries:Object = this.countryListGrid.dataList;
 				//var selCntries:Object = this.countryListTree.dataList;
-				this.dispatchEvent(new Event(tabA2.CNTRYCHANGED, true));
+				//this.dispatchEvent(new Event(tabA2.CNTRYCHANGED, true));
 			}
 			// ----- COMMUNICATION PART ---------------/////			
 			public function getDataList():Object {
 				//var z:Object = this.countryListGrid.dataList;
-				return this.countryListGrid.dataList;
-				//z[0]["openItems"] - for selections		
+				//return this.countryListGrid.dataList;
+				//z[0]["openItems"] - for selections	
+				return new Object();
 			}
 			
 			public function setDataList(data:ArrayCollection):void {
-				this.countryListGrid.dataList = data;				
+				//this.countryListGrid.dataList = data;				
 			}		
 			
 			public function setDataListActive(data:ArrayCollection):void {				
-				this.countryListGrid.activateSelections(data);				
+				//this.countryListGrid.activateSelections(data);				
 			}			
 			
 			public function setOpenItems(opIt:Object):void {
-				this.countryListGrid.setOpenItems(opIt);
+				//this.countryListGrid.setOpenItems(opIt);
 			}
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
@@ -154,14 +148,16 @@
 			}
 			
 			public function refreshData(evt:Event):void {
-				var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;
+				
+				
+				/*var countryIDs:Array = this.countryListGrid.getActiveDataList()[0]["res"].source;
 				
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
 				if (tmp.length < 1) { 
 					Alert.show("Select at least one country", "Error A2"); 
 				} else {
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 1);
-				};
+				};*/
 			}
 			
 			[bindable] private var selectedIndi:int = 101;
@@ -284,9 +280,9 @@
 
 			protected function countryTreeNames_resultHandler(event:ResultEvent):void
 			{				
-				var z:ArrayCollection = this.countryTreeNames.lastResult as ArrayCollection;				 
+				//var z:ArrayCollection = this.countryTreeNames.lastResult as ArrayCollection;				 
 				//this.testTree.formDataList(z.source);				
-				this.countryListGrid.formDataList_adg(z.source);
+				//this.countryListGrid.formDataList_adg(z.source);
 			}
 
 		]]>
@@ -311,48 +307,38 @@
 		<s:RadioButtonGroup id="shockType"/>		
 	</fx:Declarations>
 	
-	<utils:CInteractiveGrid width="635" height="227" id="grid" top="397"
-						   left="239">
+	<utils:CInteractiveGrid width="635" height="227" id="grid" top="399"
+						   left="4">
 	</utils:CInteractiveGrid>
-	<utils:CTwoAxisChart width="521" height="277" id="chart" top="82"
-						  isLineSeries="true" left="240">
+	<utils:CTwoAxisChart width="521" height="277" id="chart" top="84"
+						  isLineSeries="true" left="5">
 	</utils:CTwoAxisChart>
 	
-	<s:BorderContainer width="220" height="25" top="7" left="10">
-		<s:layout>
-			<s:HorizontalLayout/>
-		</s:layout>		
-		<s:Label text="Tab - A. Macro" height="100%" width="40%"/>		
-		<s:Button label="notify A" click="button2_clickHandler(event)" width="60%" height="100%"/>			
-	</s:BorderContainer>
-	
 	<s:DropDownList width="243" id="indicatorsBox" labelField="namen"
-					 change="indicatorsBox_changeHandler(event)" top="20" selectedIndex="1" height="20" left="278"></s:DropDownList>
+					 change="indicatorsBox_changeHandler(event)" top="22" selectedIndex="1" height="20" left="43"></s:DropDownList>
 	<s:Button label="save changes" width="215" click="digestChanges(event)" 
-			  id="saveBtn"  top="366" height="20" fontWeight="bold" left="441"/>
-	<s:Button label="refresh data" click="button3_clickHandler(event)" top="50" width="218" height="25" fontWeight="bold" fontSize="13" left="428"/>
-	<s:Label text="Select Indicator" width="128" height="10" verticalAlign="middle" fontStyle="italic" fontSize="11" top="8" left="243"/>
+			  id="saveBtn"  top="368" height="20" fontWeight="bold" left="206"/>
+	<s:Button label="refresh data" click="button3_clickHandler(event)" top="52" width="218" height="25" fontWeight="bold" fontSize="13" left="193"/>
+	<s:Label text="Select Indicator" width="128" height="10" verticalAlign="middle" fontStyle="italic" fontSize="11" top="10" left="8"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
-				   selected="true" height="19" change="radiobutton2_clickHandler(event)" top="57" left="290"/>
+				   selected="true" height="19" change="radiobutton2_clickHandler(event)" top="59" left="55"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_clickHandler(event)" top="57" left="353"/>
-	<s:Label text="Shock Mechanism" fontStyle="italic" left="769" top="82" fontSize="11"/>
-	<s:BorderContainer x="767" y="174" width="115" height="145" id="shockControls" enabled="false">
+				   enabled="true" height="19" change="radiobutton2_clickHandler(event)" top="59" left="118"/>
+	<s:Label text="Shock Mechanism" fontStyle="italic" left="534" top="84" fontSize="11"/>
+	<s:BorderContainer x="532" y="176" width="115" height="145" id="shockControls" enabled="false">
 		<s:Label x="4" y="11" text="When (Year)" width="103" height="18" verticalAlign="middle"/>
 		<s:Label x="4" y="71" text="Value (in % points)" width="87" height="27" verticalAlign="middle"/>
 		<s:DropDownList id="shockYears" x="4" y="34" width="100">					
 		</s:DropDownList>
 		<s:NumericStepper x="4" y="103" id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97"/>
 	</s:BorderContainer>
-	<s:Button label="Reset" width="120" id="button" click="button_clickHandler(event)" height="20" top="366" left="758"/>
-	<s:Label text="Table activiy state" width="152" fontStyle="italic" fontSize="11" id="flagLabel" left="239" top="385"/>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" top="50" height="10" left="243"/>
-	<s:RadioButton x="781" y="103" label="SingleGeo" groupName="shockType" enabled="true" value="1"
+	<s:Button label="Reset" width="120" id="button" click="button_clickHandler(event)" height="20" top="368" left="523"/>
+	<s:Label text="Table activiy state" width="152" fontStyle="italic" fontSize="11" id="flagLabel" left="4" top="387"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" top="52" height="10" left="8"/>
+	<s:RadioButton x="546" y="105" label="SingleGeo" groupName="shockType" enabled="true" value="1"
 				   selected="true" click="radiobutton1_clickHandler(event)" width="100"/>
-	<s:RadioButton x="782" y="125" label="MultiGeo" groupName="shockType" enabled="true" value="0"
+	<s:RadioButton x="547" y="127" label="MultiGeo" groupName="shockType" enabled="true" value="0"
 				   click="radiobutton1_clickHandler(event)" width="100"/>
-	<utils:CTree width="220" height="400" id="countryListGrid" left="10" top="37">
-	</utils:CTree>
 	
 
 </s:Group>

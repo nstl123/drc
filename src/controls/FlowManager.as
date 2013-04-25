@@ -7,8 +7,8 @@ package controls
 	{
 		private static var dataList:ArrayCollection;
 		private static var dataListReg:ArrayCollection;
-		private static var useCluster:Boolean;
-		private static var openItems:Object;
+		
+		private var useCluster:Boolean = false;		
 		
 		private var tabList:ArrayCollection = new ArrayCollection();
 		
@@ -20,9 +20,10 @@ package controls
 			else Alert.show("cannot call contructor twise!");
 		}
 		
-		public function setDataList(data:ArrayCollection, regData:ArrayCollection):void {
+		public function setDataList(data:ArrayCollection, regData:ArrayCollection, flag:Boolean):void {
 			dataList = data;
 			dataListReg = regData;
+			useCluster = flag;
 			this.notifyAll();
 		}
 		
@@ -31,11 +32,11 @@ package controls
 			this.notifyAll();
 		}
 		
-		public function set useCluster(flag:Boolean):void {
+		public function setUseCluster(flag:Boolean):void {
 			useCluster = flag;			
 		}
 		
-		public function get useCluster():Boolean {
+		public function getUseCluster():Boolean {
 			return useCluster;			
 		}
 		
@@ -87,9 +88,9 @@ package controls
 		public function notifyAll():void {
 			for (var i:int; i < tabList.length; i++) {				
 				tabList[i].setDataList(dataList);	
-				if (i == 4) {
-					tabList[i].setDataListReg(dataListReg);
-					tabList[i].setDataListReg(useCluster);
+				if (i == 4) {					
+					tabList[i].setDataListReg(dataListReg);					
+					tabList[i].setUseCluster(useCluster);
 				} 
 			};		
 		}	

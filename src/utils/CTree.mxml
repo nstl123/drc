@@ -129,6 +129,9 @@
 				checkedCount = 0;				
 				addEventListener(CCheckBoxRendererADG.INCR_COUNT, onIncrValue);
 				addEventListener(CCheckBoxRendererADG.DECR_COUNT, onDecrValue);
+				
+				this.addEventListener(CCheckBoxGrid.CHECKED, onIncrValue);
+				this.addEventListener(CCheckBoxGrid.UNCHECKED, onDecrValue);
 			}
 			
 			public var dataServiceNames:Depot1;
@@ -222,6 +225,10 @@
 			}		
 			
 			[bindable] private var useCluster:Boolean = false;
+			public function getUseCluster():Boolean {
+				return this.useCluster;
+			}
+			
 			private function filterRegions(item:Object):Boolean {		
 				if (!useCluster)
 					return (item.id < 108);
@@ -303,3 +310,4 @@
 	</s:BorderContainer>
 	
 </s:Group>
+

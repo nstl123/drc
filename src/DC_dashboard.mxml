@@ -110,13 +110,13 @@
 			
 			protected function refreshAllTabs(evt:Event):void {
 				this.panelTabA2.refreshData(null);
-				/*this.panelTabB3.refreshData();		
+				this.panelTabB3.refreshData();		
 				if (this.panelTabC4.getWorkingScenario() == 0) 
 					this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);
 				this.panelTabC4.rewriteDeviceBase();				
 				this.panelTabD5.refreshData(null);				
 				this.panelTabF51.refreshData(null);
-				this.panelTabE61.refreshData(null);*/
+				this.panelTabE61.refreshData(null);
 			}
 
 			[bindable] public var changeMadeInScenario:Boolean = false;
@@ -128,7 +128,7 @@
 			protected function refreshDeviceBase(evt:Event):void {
 				this.firstDeviceBase = this.firstDeviceBase + 1;
 				//if (this.firstDeviceBase > 1) 
-				//this.panelTabC4.rewriteDeviceBase();				
+				this.panelTabC4.rewriteDeviceBase();				
 			}
 			
 			public function resetScenario(evt:Event):void {
@@ -139,9 +139,9 @@
 			public function digestUpdate(event:Event):void {	
 				var cntryData:ArrayCollection = this.cntryTree.getDataList();				
 				var regData:ArrayCollection = this.cntryTree.getRegionsDataList();
-				var useCluster:Boolean = this.cntryTree.get . .useCluster;
+				var uCluster:Boolean = this.cntryTree.getUseCluster();
 				
-				this.masterTab.setDataList(cntryData, regData);								
+				this.masterTab.setDataList(cntryData, regData, uCluster);								
 			}		
 
 			[bindable] private var selPath:String = "";

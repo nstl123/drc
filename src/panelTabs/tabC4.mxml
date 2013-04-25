@@ -36,7 +36,7 @@
 				//this.rewriteDeviceBase();			
 			}			
 
-			public var startInd:int = 0;
+			public var startInd:int = 0; 
 			public function rewriteDeviceBase():void {
 				startInd = startInd + 1;
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket

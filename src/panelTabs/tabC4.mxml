@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" height="670" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)"		  
 		 xmlns:depot1="services.depot1.*" 
@@ -283,26 +283,40 @@
 	
 	
 	
-	<utils:CTwoAxisChart width="521" height="277" id="testChart" top="84" left="11">
+	<utils:CTwoAxisChart width="747" height="277" id="testChart" top="84" left="10">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid width="635" height="227" id="testGrid" top="399" left="10">
+	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="440" left="10">
 	</utils:CInteractiveGrid>
 	<s:DropDownList width="243" id="indicatorsBox"
 					labelField="namen"	 top="22" selectedIndex="0" height="20" left="49"></s:DropDownList>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="14" top="52"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="52" fontFamily="Arial"/>
 	<s:Button label="refresh data" id="getSomeData" click="button3_clickHandler(event)" top="52" height="25" width="241" left="199" fontWeight="bold"/>
 	<s:Button x="494" y="55" label="writeViewToDB_1" width="148" id="button"
 			  click="button_clickHandler(event)" enabled="false" height="20"/>
-	<s:Button label="save changes" width="215" id="saveBtn"
-			  click="digestChanges(event)" height="20" fontWeight="bold" left="212" top="368"/>
-	<s:Button label="Reset" click="button4_clickHandler(event)" height="20" top="368" width="122" left="524"/>
+	<s:Button label="save changes" width="222" id="saveBtn"
+			  click="digestChanges(event)" height="27" fontWeight="bold" left="535" top="366"/>
+	<s:Button label="Reset" click="button4_clickHandler(event)" height="23" top="399" width="222" left="535"/>
 	<s:DropDownList id="deviceListDrop" labelField="namen" 
 					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="22" height="20" left="370" width="272"></s:DropDownList>
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" top="387" left="10"/>
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" top="427" left="11"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" top="59" left="61"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" top="59" left="61" fontFamily="Arial" fontSize="11"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1"
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="59" left="124"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="10" height="10" left="14"/>
-	<s:Label x="341" text="Select Device" fontStyle="italic" fontSize="11" top="10" height="10"/>
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="59" left="124" fontFamily="Arial" fontSize="11"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="10" height="10" left="10" fontFamily="Arial"/>
+	<s:Label x="341" text="Select Device" fontStyle="italic" fontSize="11" top="10" height="10" fontFamily="Arial"/>
+	<s:BorderContainer width="517" height="59" left="10" top="364" borderVisible="false">
+		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
+		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls" enabled="false">
+			<s:Label x="3" y="1" text="When (Year)" width="106" height="20" verticalAlign="middle" fontSize="10"/>
+			<s:Label x="110" y="1" text="Value (in % points)" width="133" height="20" verticalAlign="middle" fontSize="10"/>
+			<s:DropDownList id="shockYears" width="100" left="13" top="19">					
+			</s:DropDownList>
+			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19"/>
+		</s:BorderContainer>
+		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="false" value="1"
+					   selected="true" top="19" fontSize="11"/>
+		<s:RadioButton x="66" label="All countries  (left)" groupName="shockType" enabled="false" value="0"
+					   top="35" fontSize="11"/>
+	</s:BorderContainer>
 </s:Group> 

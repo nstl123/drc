@@ -256,20 +256,20 @@
 	
 	
 	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle" width="100%">
-		<s:Label text="Label" width="70%" fontWeight="normal" fontSize="11" id="lblName" height="100%" 
+		<s:Label text="Countries" width="70%" fontWeight="normal" fontSize="11" id="lblName" height="100%" 
 				 verticalAlign="middle" fontStyle="italic"/>
 		<mx:LinkButton label="Select all" width="15%" textAlign="right" id="lnkAll" 
 					   click="lnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal" 
 					   height="100%" fontSize="11"/>
-		<mx:LinkButton label="deSelectAll" width="15%" textAlign="right" id="rmAll" 
+		<mx:LinkButton label="DeselectAll" width="15%" textAlign="right" id="rmAll" 
 					   click="delnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal"
 					   height="100%" fontSize="11"/>
 	</s:HGroup>
 	
-	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="100%" 
+	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="90%" 
 						 horizontalCenter="0"  width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
-						 defaultLeafIcon="{null}" showHeaders="false" top="20">
+						 defaultLeafIcon="{null}" showHeaders="false" top="20" fontFamily="Arial" fontSize="12" borderVisible="true">
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
 				<mx:Grouping>
@@ -289,23 +289,23 @@
 		</mx:rendererProviders>
 	</mx:AdvancedDataGrid>	
 		
-	<s:BorderContainer width="100%" height="30">
+	<s:BorderContainer width="100%" height="30" borderVisible="false">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-		<s:Label x="11" y="344" text="Groups:" id="selDeviceLabel3"
+		<s:Label x="11" y="344" text="Grouping by" id="selDeviceLabel3"
 				 fontStyle="italic" fontSize="11" height="100%" width="30%"/>
 		<s:RadioButton x="64" y="342" label="Regions" groupName="regionType" selected="true" 
-					   enabled="true" value="0" click="radiobutton3_clickHandler(event)" height="100%" width="35%"/>
+					   enabled="true" value="0" click="radiobutton3_clickHandler(event)" height="100%" width="35%" fontFamily="Arial" fontSize="12"/>
 		<s:RadioButton x="136" y="342" label="Clusters" groupName="regionType" enabled="true"
-					   value="1" click="radiobutton3_clickHandler(event)" height="100%" width="35%"/>
+					   value="1" click="radiobutton3_clickHandler(event)" height="100%" width="35%" fontFamily="Arial" fontSize="12"/>
 	</s:BorderContainer>
-	<s:BorderContainer x="21" y="563" width="100%" height="40%">				
+	<s:BorderContainer x="21" y="563" width="100%" height="40%" borderVisible="false">				
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
 		<utils:CCheckBoxGrid id="regionsListGrid"
-							 labelText="Regions"  top="373" left="10" width="100%" height="100%">
+							 labelText="Regions"  top="373" left="10" width="100%" height="100%" fontSize="11" fontFamily="Arial">
 		</utils:CCheckBoxGrid>			
 	</s:BorderContainer>
 	

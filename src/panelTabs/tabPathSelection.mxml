@@ -39,30 +39,38 @@
 	<fx:Declarations>
 		<s:RadioButtonGroup id="pathTypes" enabled="false"/>	
 	</fx:Declarations>
-	
 
 	
-	<s:Label x="15" y="30" text="Possible Paths"/>	
+	<s:Label text="Possible Methods:" fontStyle="italic" left="15" top="15"/>	
 	<s:BorderContainer width="100%" height="100%" backgroundAlpha="0.0"
 					   horizontalCenter="0" verticalCenter="0">
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
-		<s:BorderContainer width="374" height="138" top="52" horizontalCenter="-234">
+		<s:BorderContainer height="133" top="5" left="145" borderVisible="false" width="362">
 			<s:layout>
 				<s:VerticalLayout paddingLeft="10" paddingTop="10"/>
 			</s:layout>
-			<s:RadioButton x="55" y="11" label="A1 (macro) + # of HHs" 
+			<s:RadioButton x="55" y="11" label="Macroeconomic via Households" 
 						   groupName="pathTypes" value="A1" click="radiobutton1_clickHandler(event)"/>
-			<s:RadioButton x="52" y="41" label="B (HH pen rate + dev. per HH)" value="B" 
+			<s:RadioButton x="52" y="41" label="Households" value="B" 
 						   groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)"/>
-			<s:RadioButton x="48" y="71" label="C (device base)" value="C"
+			<s:RadioButton x="48" y="71" label="Installed Base" value="C"
 						   groupName="pathTypes" click="radiobutton1_clickHandler(event)"/>
-			<s:RadioButton x="39" y="103" label="D (market size + depreciation)" value="D" 
-						   groupName="pathTypes" click="radiobutton1_clickHandler(event)" enabled="true"/>
-			<s:RadioButton x="41" y="128" label="D though A2 ((market size + depreciation) through macro)"
-						   groupName="pathTypes" value="A2" click="radiobutton1_clickHandler(event)"/>		
+			<s:RadioButton x="41" y="128" label="Macro-economic via Market Size"
+						   groupName="pathTypes" value="A2" click="radiobutton1_clickHandler(event)"/>
+			<s:RadioButton x="39" y="103" label="Market Size" value="D" 
+						   groupName="pathTypes" click="radiobutton1_clickHandler(event)" enabled="true"/>					
 		</s:BorderContainer>
+		
+		<s:BorderContainer width="747" height="500" left="0" top="130" borderVisible="false">		
+		
+			<mx:Image 
+					  source="{imgCls}" autoLoad="true" 
+					  scaleContent="false" width="100%" verticalCenter="0" height="100%" left="0"/>
+		
+		</s:BorderContainer>
+			
 	</s:BorderContainer>
 	
 </s:Group>

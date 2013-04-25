@@ -9,9 +9,9 @@
 			   creationComplete="initAll(event)"		   
 			   
 			   xmlns:panelTabs="panelTabs.*" 
-			   width="900" height="750" xmlns:utils="utils.*">
+			   width="100%" height="785" xmlns:utils="utils.*">
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center"/>
+		<s:VerticalLayout horizontalAlign="center" paddingTop="10" paddingBottom="20"/>
 	</s:layout>
 	<fx:Declarations>	
 		
@@ -181,7 +181,7 @@
 			
 			private function colorLabelsOnPath(arr:Array):void {
 				// try debuging the constructor?
-				var col1:String = '0xdfd3b3b'; //for active input
+				var col1:String = '0x83d342'; //for active input 83d342
 				var col2:String = '0xd1d1d1'; // grey
 				var prop:String = 'backgroundColor'; // 'backgroundColor'; color
 				
@@ -401,37 +401,25 @@
 		]]>
 	</fx:Script>
 		
-<s:BorderContainer width="900" height="100%">	
+<s:BorderContainer width="992" height="100%" borderVisible="false">	
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center"/>
 	</s:layout>
-	<s:BorderContainer width="100%" height="15" fontFamily="Verdana" horizontalCenter="0" top="0">
+	<s:BorderContainer width="992" height="15" fontFamily="Verdana" horizontalCenter="0" top="0" borderVisible="false">
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="justify"/>
 		</s:layout>
-		<s:Label text="Battery Demand Analysis Tool. v.04-19-12pm" width="50%" height="100%"/>
+		<s:Label text="Battery Demand Analysis Tool. v.04-25-5pm" width="50%" height="100%"/>
 		<s:Label text="info bar" id="statusLabel" width="50%" textAlign="right" height="100%"/>
 	</s:BorderContainer>	
-	<s:Label text="Selected Path" width="100%" height="15" verticalAlign="middle"
+	<s:Label text="Selected Path" width="992" height="15" verticalAlign="middle"
 			   id="pathLabel"/>
-	<s:BorderContainer width="100%" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1">
+	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" borderVisible="false">	
 		<s:layout>
-			<s:HorizontalLayout verticalAlign="justify"/>
-		</s:layout>
-		<s:Label id="lab0"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  width="95" fontFamily="Verdana" fontSize="11" paddingLeft="0" paddingTop="0"  fontWeight="normal" chromeColor="#D1D1D1"/>
-		<s:Label id="labA" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="162" fontWeight="normal"/>
-		<s:Label id="labB"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="68" fontWeight="normal"/>
-		<s:Label id="labC"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="100" fontWeight="normal"/>
-		<s:Label id="labD" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="95" fontWeight="normal"/>
-		<s:Label id="labF"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="84" fontWeight="normal"/>
-		<s:Label id="labE" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="77" fontWeight="normal"/>
-	</s:BorderContainer>
-	<s:BorderContainer id="mainBC" width="900" height="700" horizontalCenter="0" top="25">	
-		<s:layout>
-			<s:HorizontalLayout/>	
+			<s:HorizontalLayout gap="0" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
 		</s:layout>
 		
-		<s:BorderContainer width="25%" height="100%" horizontalCenter="0" top="">
+		<s:BorderContainer width="225" height="100%" horizontalCenter="0" top="" borderVisible="false">
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
@@ -441,28 +429,42 @@
 			
 		</s:BorderContainer>
 		
-		<s:BorderContainer width="75%" height="100%" left="0">
+		<s:BorderContainer width="770" height="100%" left="0" borderVisible="true">
 			<s:layout>
-				<s:BasicLayout/>
+				<s:VerticalLayout gap="0"/>
 			</s:layout>
+
+			<s:BorderContainer width="767" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1" borderVisible="false">
+				<s:layout>
+					<s:HorizontalLayout verticalAlign="justify" gap="0"/>
+				</s:layout>
+				<s:Label id="lab0"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  width="60" fontFamily="Verdana" fontSize="11" paddingLeft="0" paddingTop="0"  fontWeight="normal" chromeColor="#D1D1D1"/>
+				<s:Label id="labA" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="175" fontWeight="normal"/>
+				<s:Label id="labB"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="80" fontWeight="normal"/>
+				<s:Label id="labC"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="100" fontWeight="normal"/>
+				<s:Label id="labD" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="95" fontWeight="normal"/>
+				<s:Label id="labF"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="84" fontWeight="normal"/>
+				<s:Label id="labE" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="77" fontWeight="normal"/>
+			</s:BorderContainer>
+			
 			<mx:TabNavigator id="tabai" height="100%" fontFamily="Verdana"						
-							 creationPolicy="none" creationComplete="tabai_creationCompleteHandler(event)"  fontSize="11" dropShadowVisible="false" borderVisible="true" verticalCenter="0" horizontalCenter="0" width="100%">
+							 creationPolicy="none" creationComplete="tabai_creationCompleteHandler(event)"  fontSize="11" dropShadowVisible="false" borderVisible="false" verticalCenter="0" horizontalCenter="0" width="100%">
 	
-				<s:NavigatorContent id="nc_00" label="Path selection" width="100%" height="100%" 
+				<s:NavigatorContent id="nc_00" label="Method " width="100%" height="100%" 
 									creationPolicy="none">
 					<panelTabs:tabPathSelection id="panelTabPath" width="100%" height="100%"  enabled="true"
 												creationComplete="panelTabPath_creationCompleteHandler(event)" horizontalCenter="0" verticalCenter="0">
 					</panelTabs:tabPathSelection>				
 				</s:NavigatorContent>
 				
-				<s:NavigatorContent id="nc_A2" label="MacroIndicators (A1 + A2)" width="100%" height="100%" 
+				<s:NavigatorContent id="nc_A2" label="A. Macroeconomic Indicators" width="100%" height="100%" 
 									creationPolicy="none">
 					<panelTabs:tabA2 id="panelTabA2" width="100%" height="100%"  enabled="true"
 									 creationComplete="taba11_creationCompleteHandler(event)"  top="0" left="0">
 					</panelTabs:tabA2>
 				</s:NavigatorContent>
 				
-				<s:NavigatorContent id="nc_B3" label="B. Factors" width="100%" height="100%" 
+				<s:NavigatorContent id="nc_B3" label="B. Household" width="100%" height="100%" 
 									creationPolicy="none">
 					<panelTabs:tabB3 id="panelTabB3" width="100%" height="100%" enabled="true"
 									 creationComplete="tabb11_creationCompleteHandler(event)" top="0" left="0">					
@@ -483,14 +485,14 @@
 				</s:NavigatorContent>
 				
 				
-				<s:NavigatorContent id="nc_F51" label="F. batFactors" width="100%" height="100%" creationPolicy="none">
+				<s:NavigatorContent id="nc_F51" label="E. Other" width="100%" height="100%" creationPolicy="none">
 					<panelTabs:tabF51 id="panelTabF51" width="100%" 
 									  height="100%" enabled="true"
 									  creationComplete="tabf511_creationCompleteHandler(event)"  top="0" left="0">
 					</panelTabs:tabF51>
 				</s:NavigatorContent>
 				
-				<s:NavigatorContent id="nc_E61" label="E. Demand" width="100%" height="100%" creationPolicy="none">
+				<s:NavigatorContent id="nc_E61" label="F. Battery Demand" width="100%" height="100%" creationPolicy="none">
 					<panelTabs:tabE61 id="panelTabE61" enabled="false" 
 									  creationComplete="tabe11_creationCompleteHandler(event)" top="0" width="100%" height="100%" left="0">					
 					</panelTabs:tabE61> 					

@@ -125,9 +125,10 @@ class Depot3 {
 		$result = $this->connection->prepare($stmntProxy);
 		$result->execute();			
 		
-		$stmntProxy = "DELETE FROM `Consulting`.`DC_deviceBaseTable`
-						WHERE scenarioID < 9999";
-		$result = $this->connection->prepare($stmntProxy);
+		$stmntDvbt = "DELETE FROM `Consulting`.`DC_deviceBaseTable`
+						USING `Consulting`.`DC_scenarioNamesDead`, `Consulting`.`DC_deviceBaseTable`
+						WHERE id = scenarioID";
+		$result = $this->connection->prepare($stmntDvbt);
 		$result->execute();			
 		
 		$stmnt = "SELECT count(*) as cnt FROM `Consulting`.`DC_scenarioNames` WHERE id < 9999";

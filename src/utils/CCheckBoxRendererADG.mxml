@@ -2,17 +2,19 @@
 <s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 								  xmlns:s="library://ns.adobe.com/flex/spark" 
 								  xmlns:mx="library://ns.adobe.com/flex/mx" 
-								  focusEnabled="true"
-								  click="someAction(event)">
+								  focusEnabled="false"								   
+								  click="someAction(event)" 
+>
 	<fx:Script>
 		<![CDATA[			
 			public static const INCR_COUNT:String = 'incrCount';
 			public static const DECR_COUNT:String = 'decrCount';
 			
 			//when checkbox value is changed
-			protected function someAction(event:MouseEvent):void
-			{								
-				data.active = !data.active;				
+			protected function someAction(event:Event):void
+			{	
+				(chbID.selected) ? data.active = true : data.active = false;
+				
 				if (data.active)
 					dispatchEvent(new Event(CCheckBoxRendererADG.INCR_COUNT, true));
 				else
@@ -23,8 +25,7 @@
 		
 	</fx:Script>
 	
-	<s:CheckBox id="chbID" textAlign="center" width="18" height="18" 
-				horizontalCenter="0" verticalCenter="0"
-				selected="{data.active}"/>
+	<s:CheckBox id="chbID" textAlign="center" 
+				selected="{data.active}" enabled="true" height="18" verticalCenter="0" width="18" horizontalCenter="0"/>
 
 </s:MXAdvancedDataGridItemRenderer>

@@ -136,7 +136,9 @@
 				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(workingScenarioID);
 			}
 			
-			public function digestUpdate(event:Event):void {	
+			public function digestUpdate(event:Event):void {
+				//this.testLabel.text = cntryTree.lastSelection.id + " : " + cntryTree.lastSelection.namen;
+				
 				var cntryData:ArrayCollection = this.cntryTree.getDataList();				
 				var regData:ArrayCollection = this.cntryTree.getRegionsDataList();
 				var uCluster:Boolean = this.cntryTree.getUseCluster();
@@ -409,8 +411,9 @@
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="justify"/>
 		</s:layout>
-		<s:Label text="Battery Demand Analysis Tool. v.04-25-5pm" width="50%" height="100%"/>
-		<s:Label text="info bar" id="statusLabel" width="50%" textAlign="right" height="100%"/>
+		<s:Label text="Battery Demand Analysis Tool. v.04-25-5pm" width="40%" height="100%"/>
+		<s:Label text="testClick" width="30%" height="100%" id="testLabel"/>
+		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"/>
 	</s:BorderContainer>	
 	<s:Label text="Selected Path" width="992" height="15" verticalAlign="middle"
 			   id="pathLabel"/>

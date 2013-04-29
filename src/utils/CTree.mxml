@@ -142,9 +142,12 @@
 			}
 			
 			//increment number of checked elements
+			public var lastSelection:Object = {id:-1, namen:"null"};
 			private function onIncrValue(e:Event):void
 			{
-				checkedCount++;				
+				checkedCount++;		
+				this.lastSelection = {id:cntryListGridADG.selectedItem.id, 
+									namen:cntryListGridADG.selectedItem.namen};
 				//if (checkedCount == 1)
 					dispatchEvent(new Event(CTree.CHECKED, true));
 			}
@@ -266,10 +269,10 @@
 					   height="100%" fontSize="11"/>
 	</s:HGroup>
 	
-	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="90%" 
+	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="80%" 
 						 horizontalCenter="0"  width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
-						 defaultLeafIcon="{null}" showHeaders="false" top="20" fontFamily="Arial" fontSize="12" borderVisible="true">
+						 defaultLeafIcon="{null}" showHeaders="false" top="20" fontFamily="Arial" fontSize="12" borderVisible="true" dropShadowVisible="false" verticalAlign="middle" textAlign="left" borderColor="#A0A0A0">
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
 				<mx:Grouping>
@@ -279,9 +282,9 @@
 		</mx:dataProvider>  
 		<mx:columns>
 			<mx:AdvancedDataGridColumn headerText="Geography" dataField="namen" sortable="false"
-									    width="80"/>			
-			<mx:AdvancedDataGridColumn headerText="use" dataField="active" width="20" id="inputas"
-									  sortable="false"/>
+									    width="150"/>			
+			<mx:AdvancedDataGridColumn headerText="use" dataField="active" width="50" id="inputas"
+									  sortable="false" textAlign="center"/>
 		</mx:columns>
 		<mx:rendererProviders>
 			<mx:AdvancedDataGridRendererProvider column="{inputas}" columnSpan="1" depth="2"

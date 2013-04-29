@@ -14,7 +14,7 @@
 			//when checkbox value is changed
 			protected function mxdatagriditemrenderer1_clickHandler(event:MouseEvent):void
 			{
-				data.active = !data.active;
+				(chbID.selected) ? data.active = true : data.active = false;
 				
 				if (data.active)
 					dispatchEvent(new Event(CCheckBoxRenderer.INCR_COUNT, true));

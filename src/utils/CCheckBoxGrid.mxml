@@ -188,7 +188,7 @@
 		
 	<mx:DataGrid bottom="0" left="0" right="0" showHeaders="false" id="dgrData"
 				 dataProvider="{selectionList}" textAlign="left" fontSize="12" 
-				 verticalAlign="middle" top="20" borderVisible="true">
+				 verticalAlign="middle" top="20" borderVisible="true" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
 		<mx:columns>
 			<mx:DataGridColumn dataField="namen" resizable="false" width="150"/>
 			<!-- <mx:DataGridColumn dataField="id" resizable="false" width="50"/> !-->

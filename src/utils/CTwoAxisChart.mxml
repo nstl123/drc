@@ -194,9 +194,20 @@
 				return chartDGToolTip + (!this.isLevel ? "%" : "");            
 			}
 			
-			[bindable] public var chartTitle:String = "";
-			public function setChartTitle(tx:String):void {
-				this.testTitle.text = tx;
+			[bindable] public var chartTitleText:String = "";
+			/*public function setChartTitle(tx:String):void {
+				this.chartTitle.text = tx;
+			}*/
+			
+			public function updateChartTitle(baseName:String, selIndi:int, activityFlag:Boolean, isLv:Boolean, nm:String):void {
+				var tx:String = baseName;
+				var addTx:String = ", All Devices";
+				if ((selIndi >= 0) && (activityFlag)) 
+					tx = tx + ", " + nm;
+				else 
+					tx = tx +  ( (baseName == "Demand") ? addTx : "" );				
+				tx = tx + ( isLv ? (", units") : (", growth") );				
+				this.chartTitle.text = tx;			
 			}
 			
 		]]>
@@ -207,13 +218,13 @@
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-		<s:BorderContainer width="70%" height="100%">
+		<s:BorderContainer width="70%" height="100%" borderVisible="false">
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
-			<s:Label width="100%" height="20" fontStyle="normal"
-					 verticalAlign="middle" textAlign="center" fontSize="14" 
-					 fontFamily="Arial" id="testTitle" text=""/>
+			<s:Label width="100%" fontStyle="normal"
+					 verticalAlign="bottom" textAlign="center" fontSize="13" 
+					 fontFamily="Arial" id="chartTitle" text="testTextTestText" color="#000000" fontWeight="bold" height="20"/>
 			<mx:LineChart id="lineChart" width="100%" height="100%" 
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
 				 <!-- <mx:verticalAxisRenderers>
@@ -234,7 +245,7 @@
 			</mx:LineChart>
 		</s:BorderContainer>
 	
-	<mx:Legend dataProvider="{lineChart}" width="30%" height="100%" horizontalCenter="0" verticalCenter="139">
+	<mx:Legend dataProvider="{lineChart}" width="30%" height="100%" horizontalCenter="0" verticalCenter="139" fontWeight="normal" fontFamily="Arial" fontSize="11" borderVisible="false" textAlign="left">
 		<s:DataGroup width="100%" height="100%">
 			<s:layout>
 				<s:HorizontalLayout/>

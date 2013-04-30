@@ -120,6 +120,16 @@
 				this.dispatchEvent(new Event("refreshData", false));
 			}		
 			
+			/*public function updateChartTitle():void {
+				var tx:String = "Demand";
+				if ((deviceListDrop.selectedIndex >= 0) && (devicesActive)) 
+					tx = tx + ", " + this.deviceListDrop.selectedItem.namen;
+				else 
+					tx = tx +  ", All Devices";				
+				tx = tx + ( isLevel ? (", units") : (", growth") );				
+				this.testChart.setChartTitle(tx);			
+			}*/
+			
 			[bindable] public var useCluster:Boolean = false;
 			public function refreshData(evt:Event):void {
 				var countryIDs:Array = this.dataList.source;				
@@ -133,13 +143,6 @@
 				this.batTypesActiveFlag ? this.tmpBatTypes = this.selBatType : this.tmpBatTypes = -1;				
 				
 				trace("calling demand token");				
-				
-				/*var tx:String = "";
-				if (deviceListDrop.selectedIndex  > 0) 
-					tx = ", " + this.deviceListDrop.selectedItem.namen;
-				else 
-					tx  = "all devices";
-				this.testChart.setChartTitle("Demand" + tx);*/
 				
 				this.cursorManager.setBusyCursor();
 				
@@ -344,8 +347,11 @@
 				
 				this.currentDataExoChart.filterFunction = this.filterChartExo;
 				this.currentDataExoChart.refresh();				
-				this.testChartExo.setData(this.currentDataExoChart, isLevel);	
+				this.testChartExo.setData(this.currentDataExoChart, isLevel);
 				
+				//updateChartTitle();
+				this.testChart.updateChartTitle("Demand", this.deviceListDrop.selectedIndex, this.devicesActiveFlag, 
+					this.isLevel, this.deviceListDrop.selectedItem.namen);
 			}
 			
 			protected function deviceNamesList_resultHandler(event:ResultEvent):void
@@ -475,7 +481,11 @@
 				this.currentDataExoChart.filterFunction = this.filterChartExo;
 				this.currentDataExoChart.refresh();
 				
-				this.testChartExo.setData(this.currentDataExoChart, isLevel);				
+				this.testChartExo.setData(this.currentDataExoChart, isLevel);	
+				
+				//updateChartTitle()
+				this.testChart.updateChartTitle("Demand", this.deviceListDrop.selectedIndex, this.devicesActiveFlag, 
+					this.isLevel, this.deviceListDrop.selectedItem.namen);
 			}
 			
 			protected function updateChemistrySplit(evt:Event):void {

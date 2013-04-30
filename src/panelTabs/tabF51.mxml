@@ -267,6 +267,13 @@
 				
 				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
 				this.testGrid.setData(currentDataGrid, isLevel);
+				
+				this.testChart.updateChartTitle(
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "-"),
+					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+					(deviceListDrop.selectedIndex >= 0), 
+					this.isLevel, 
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
 			}
 			
 		]]>
@@ -296,7 +303,7 @@
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="112" top="58" fontSize="11" fontFamily="Arial"/>
 	<s:Label y="444" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial"/>
-	<s:BorderContainer width="517" height="59" left="10" top="381">
+	<s:BorderContainer width="517" height="59" left="10" top="381" borderVisible="false">
 		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
 		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls" enabled="false">
 			<s:Label x="3" y="1" text="When (Year)" width="106" height="20" verticalAlign="middle" fontSize="10"/>

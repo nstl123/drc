@@ -419,7 +419,7 @@
 			   id="pathLabel"/>
 	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" borderVisible="false">	
 		<s:layout>
-			<s:HorizontalLayout gap="0" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
+			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
 		</s:layout>
 		
 		<s:BorderContainer width="225" height="100%" horizontalCenter="0" top="" borderVisible="false">
@@ -432,7 +432,7 @@
 			
 		</s:BorderContainer>
 		
-		<s:BorderContainer width="770" height="100%" left="0" borderVisible="true">
+		<s:BorderContainer width="770" height="100%" left="0" borderVisible="true" borderColor="#C8C8C8">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>

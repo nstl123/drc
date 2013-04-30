@@ -173,7 +173,7 @@
 				 editable="false" itemEditBegin="{this.disableEditing(event)}"
 				 itemEditEnd="{this.checkForNewValues(event)}"
 				 lockedColumnCount="3"  horizontalScrollPolicy="on" 
-				 creationComplete="startGrid(event)" fontSize="11">
+				 creationComplete="startGrid(event)" fontSize="11" borderVisible="true" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
 		<mx:columns>
 			<mx:DataGridColumn headerText="countryID" dataField="countryID"/>
 			<mx:DataGridColumn headerText="indicatorID" dataField="indicatorID" />

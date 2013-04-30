@@ -272,7 +272,7 @@
 	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="80%" 
 						 horizontalCenter="0"  width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
-						 defaultLeafIcon="{null}" showHeaders="false" top="20" fontFamily="Arial" fontSize="12" borderVisible="true" dropShadowVisible="false" verticalAlign="middle" textAlign="left" borderColor="#A0A0A0">
+						 defaultLeafIcon="{null}" showHeaders="false" top="20" fontFamily="Arial" fontSize="12" borderVisible="true" dropShadowVisible="false" verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
 				<mx:Grouping>

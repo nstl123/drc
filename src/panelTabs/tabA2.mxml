@@ -218,7 +218,15 @@
 				this.currentData.filterFunction = filterGrid;
 				this.currentData.refresh();
 				
-				this.grid.setData(currentData, isLevel);				
+				this.grid.setData(currentData, isLevel);			
+
+				this.chart.updateChartTitle(
+					(indicatorsBox.selectedItem  ? indicatorsBox.selectedItem.namen : "macroIndicator#1"), 
+					(indicatorsBox.selectedIndex ? indicatorsBox.selectedIndex : 0), 
+					false, 
+					this.isLevel, 
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "")
+				);
 			}
 			
 		]]>

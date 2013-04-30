@@ -87,6 +87,9 @@
 				hlp = new helper();		
 				this.addEventListener("updateCharts", updateCharts);
 				this.addEventListener("refreshData", refreshData);
+				
+				//indicatorsBox_changeHandler(null);
+				//deviceListDrop_changeHandler(null);
 			}
 			
 			public function setDataList(data:ArrayCollection):void {
@@ -145,9 +148,10 @@
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
-				this.selectedIndi = this.indicatorsBox.selectedItem.id;
-				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
-				
+				if (event != null) {					
+					this.selectedIndi = this.indicatorsBox.selectedItem.id;
+				};
+				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;								
 				this.refreshData();
 			}			
 			
@@ -196,7 +200,9 @@
 			[bindable] private var selDevice:int = 1;
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
-				this.selDevice = this.deviceListDrop.selectedItem.id;
+				if (event != null) {
+					this.selDevice = this.deviceListDrop.selectedItem.id; 
+				};
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
@@ -220,6 +226,13 @@
 				
 				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
 				this.testGrid.setData(currentDataGrid, isLevel);
+				
+				this.testChart.updateChartTitle(
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "-"),
+					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+					(deviceListDrop.selectedIndex >= 0), 
+					this.isLevel, 
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
 			}
 
 		]]>

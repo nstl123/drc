@@ -186,6 +186,14 @@
 				
 				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
 				this.testGrid.setData(currentDataGrid, isLevel);
+				
+				this.testChart.updateChartTitle(
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "-"),
+					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+					(deviceListDrop.selectedIndex >= 0), 
+					this.isLevel, 
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
+
 			}
 			
 			private function filterGrid(item:Object):Boolean {				
@@ -285,7 +293,7 @@
 	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" top="399" height="23" left="535"/>
 	<s:Button label="save changes" click="digestChanges(event)" width="222" id="saveBtn" left="535" top="366" height="27" fontWeight="bold"/>
 	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="428"/>
-	<s:BorderContainer width="517" height="59" left="10" top="364">
+	<s:BorderContainer width="517" height="59" left="10" top="364" borderVisible="false">
 		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
 		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls" enabled="false">
 			<s:Label x="3" y="1" text="When (Year)" width="106" height="20" verticalAlign="middle" fontSize="10"/>

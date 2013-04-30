@@ -59,15 +59,22 @@
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				this.selDevice = this.deviceListDrop.selectedItem.id;
-
-				this.currentDataChart.filterFunction = filterChart;
+				this.dispatchEvent(new Event("updateCharts", false));
+				
+				/*this.currentDataChart.filterFunction = filterChart;
 				this.currentDataChart.refresh();		
 				this.currentDataGrid.filterFunction = filterGrid;
 				this.currentDataGrid.refresh();
 				
 				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
 				this.testGrid.setData(currentDataGrid, isLevel);
-
+				
+				this.testChart.updateChartTitle(
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "-"),
+					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+					(deviceListDrop.selectedIndex >= 0), 
+					this.isLevel, 
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));*/
 			}
 
 			protected function getDeviceNames_resultHandler(event:ResultEvent):void
@@ -228,6 +235,13 @@
 				
 				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
 				this.testGrid.setData(currentDataGrid, isLevel);
+
+				this.testChart.updateChartTitle(
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "-"),
+					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+					(deviceListDrop.selectedIndex >= 0), 
+					this.isLevel, 
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
 			}
 			
 			private function filterGrid(item:Object):Boolean {				

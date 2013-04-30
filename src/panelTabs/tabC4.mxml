@@ -237,7 +237,7 @@
 				this.testGrid.setData(currentDataGrid, isLevel);
 
 				this.testChart.updateChartTitle(
-					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "-"),
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "Device Base"),
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 

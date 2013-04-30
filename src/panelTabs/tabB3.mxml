@@ -131,11 +131,11 @@
 			}
 
 			public function refreshData():void {
-				var countryIDs:Array = this.dataList.source;			
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);	
-				if (tmp.length < 1) { 
-					Alert.show("Select at least one country", "Error B3"); 
+				if (!this.dataList) {
+					Alert.show("Select at least one country", "Error B3");
 				} else {
+					var countryIDs:Array = this.dataList.source;			
+					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);			 			
 					this.cursorManager.setBusyCursor();
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
 						workingScenarioID, 0, 0, 1); 
@@ -228,7 +228,7 @@
 				this.testGrid.setData(currentDataGrid, isLevel);
 				
 				this.testChart.updateChartTitle(
-					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "-"),
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "HHpen"),
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 

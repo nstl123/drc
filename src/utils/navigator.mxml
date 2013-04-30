@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" height="40"
+		 width="100%">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+
+			[bindable] private var selectedState:int = 0;			
+			
+			protected function btn1_clickHandler(event:MouseEvent):void
+			{
+				this.selectedState = 0;
+				dispatchEvent(new Event("stateChanged", true));
+				this.btn2.enabled = true;
+			}
+
+			protected function btn2_clickHandler(event:MouseEvent):void
+			{
+				this.selectedState = 1;
+				dispatchEvent(new Event("stateChanged", true));
+				this.btn3.enabled = true;
+			}
+
+			protected function btn3_clickHandler(event:MouseEvent):void
+			{
+				this.selectedState = 2;
+				dispatchEvent(new Event("stateChanged", true));
+			}
+
+			public function getState():int {
+				return this.selectedState;
+			}
+			
+			public function setState(ii:int):void {
+				this.selectedState = ii;			
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:Button label="BQ's list" width="120" height="25" horizontalCenter="-160" verticalCenter="0" id="btn1" click="btn1_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" color="#000000"/>
+	<s:Button label="Data Inputs" width="120" height="25" horizontalCenter="0" verticalCenter="0" id="btn2" click="btn2_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" enabled="false"/>
+	<s:Button label="Show Results" width="120" height="25" horizontalCenter="160" verticalCenter="0" id="btn3" click="btn3_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" enabled="false"/>
+	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="30" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-80"/>
+	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="30" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="80"/>
+</s:Group>

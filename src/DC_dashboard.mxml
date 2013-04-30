@@ -9,7 +9,7 @@
 			   creationComplete="initAll(event)"		   
 			   
 			   xmlns:panelTabs="panelTabs.*" 
-			   width="100%" height="785" xmlns:utils="utils.*">
+			   width="100%" height="850" xmlns:utils="utils.*" minHeight="850">
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" paddingTop="10" paddingBottom="20"/>
 	</s:layout>
@@ -69,26 +69,19 @@
 				this.currTime = this.IDgen.generateTimeStamp();
 				
 				cleanOldScenarios(); // clean DB from unneccesary scenarios
-				this.addEventListener("dbCleaned", initScenarioDB);
+				this.addEventListener("dbCleaned", initScenarioDB);				
 				
-				// remove this eventListener
-				this.addEventListener("CNTRY_CHANGED", digestUpdate);		
-				
+				this.addEventListener("CNTRY_CHANGED", digestUpdate);				
 				this.addEventListener("cntryChecked",   digestUpdate);
-				this.addEventListener("cntryUnChecked", digestUpdate);	
-				
-				this.addEventListener("updateClusterType", digestUpdate);
-				
-				/*this.addEventListener("countryListLoaded", setCntryListToTabs);				
-				this.addEventListener("tabaiCreated", setCntryListToTabs);*/
-				
-				this.addEventListener("pathChanged", digestPathChange);	
-				
+				this.addEventListener("cntryUnChecked", digestUpdate);				
+				this.addEventListener("updateClusterType", digestUpdate);				
 				this.addEventListener("NewScenarioUpdated", refreshDeviceBase);				
 				this.addEventListener("scenarioResetRequested", resetScenario);
 				this.addEventListener("scenarioResetDone", refreshAllTabs);
 				
 				this.addEventListener("changesMadeInScenario", recordState);
+				
+				this.addEventListener("pathChanged", digestPathChange);
 				
 				this.addEventListener("init", createNext);
 				this.addEventListener("cTree", createNext);
@@ -99,13 +92,35 @@
 				this.addEventListener("tabF", createNext);
 				this.addEventListener("tabE", createNext);
 				
+				this.addEventListener("stateChanged", changeState); // further get state from navControl				
+				
 				masterTab = new FlowManager();
 				
 				this.dispatchEvent(new Event("init", true));
 			}
 			
-			public function test(evt:Event) : void {
+			[bindable] private var currState:int;
+			public function changeState(evt:Event) : void {
+				this.currState = this.navigatorBox.getState();
+				this.digestStateChange(this.currState);
+				// take approprate action hide/show tabs
+			}
 			
+			private function digestStateChange(ind:int):void {
+				switch (ind) {
+					case 0:
+						this.tabai.selectedIndex = 0;
+						break;
+					case 1:
+						for (var i:int = 0; i < this.pathFlags.length; i++) {
+							if (this.pathFlags[i] == 1) break;
+						};						
+						this.tabai.selectedIndex = i + 1;
+						break;
+					case 2:
+						this.tabai.selectedIndex = 6;
+						break;
+				};
 			}
 			
 			protected function refreshAllTabs(evt:Event):void {
@@ -181,11 +196,12 @@
 				};
 			}
 			
-			private function colorLabelsOnPath(arr:Array):void {
-				// try debuging the constructor?
+			private function colorLabelsOnPath(arr:Array):void {				
 				var col1:String = '0x83d342'; //for active input 83d342
 				var col2:String = '0xd1d1d1'; // grey
 				var prop:String = 'backgroundColor'; // 'backgroundColor'; color
+				
+				var col3:String = '0x3e9a3e'; 
 				
 				//this.tabai.getElementAt(0)
 				this.lab0.setStyle(prop, col2);
@@ -193,8 +209,15 @@
 				(arr[1] == 1) ? labB.setStyle(prop, col1) : labB.setStyle(prop, col2);
 				(arr[2] == 1) ? labC.setStyle(prop, col1) : labC.setStyle(prop, col2);
 				(arr[3] == 1) ? labD.setStyle(prop, col1) : labD.setStyle(prop, col2);
-				(arr[4] == 1) ? labE.setStyle(prop, col1) : labE.setStyle(prop, col2);
+				(arr[4] == 1) ? labE.setStyle(prop, col3) : labE.setStyle(prop, col3);
 				(arr[5] == 1) ? labF.setStyle(prop, col1) : labF.setStyle(prop, col2);
+				
+				this.labAt.visible = (arr[0] == 1); 
+				this.labBt.visible = (arr[1] == 1);
+				this.labCt.visible = (arr[2] == 1);
+				this.labDt.visible = (arr[3] == 1);
+				this.labEt.visible = true; // = (arr[4] == 1);
+				this.labFt.visible = (arr[5] == 1);			
 				
 				this.invalidateDisplayList();
 			}
@@ -377,6 +400,7 @@
 						this.panelTabC4.enabled = true;					
 						this.panelTabE61.enabled = true;
 						this.panelTabF51.enabled = true;
+						this.panelTabPath.enabled = true;
 					break;
 				}				
 			}			
@@ -396,8 +420,7 @@
 			protected function deleteAllScenariosResult_faultHandler(event:FaultEvent):void
 			{
 				Alert.show("could not clean old scenarios from DB...", "Error");
-			}			
-			
+			}					
 
 			
 		]]>
@@ -411,12 +434,13 @@
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="justify"/>
 		</s:layout>
-		<s:Label text="Battery Demand Analysis Tool. v.04-25-5pm" width="40%" height="100%"/>
-		<s:Label text="testClick" width="30%" height="100%" id="testLabel"/>
+		<s:Label text="Battery Demand Analysis Tool. v.04-30-5pm" height="100%" width="40%"/>
+		<s:Label text="Selected Path" height="15" verticalAlign="middle"
+				   id="pathLabel" width="30%"/>
 		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"/>
 	</s:BorderContainer>	
-	<s:Label text="Selected Path" width="992" height="15" verticalAlign="middle"
-			   id="pathLabel"/>
+	<utils:navigator width="100%" id="navigatorBox">
+	</utils:navigator>
 	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" borderVisible="false">	
 		<s:layout>
 			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
@@ -437,30 +461,44 @@
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
 
-			<s:BorderContainer width="767" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1" borderVisible="false">
+			<s:BorderContainer width="100%" height="15" borderVisible="false">
 				<s:layout>
-					<s:HorizontalLayout verticalAlign="justify" gap="0"/>
+					<s:HorizontalLayout verticalAlign="contentJustify" gap="0"/>
 				</s:layout>
-				<s:Label id="lab0"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  width="60" fontFamily="Verdana" fontSize="11" paddingLeft="0" paddingTop="0"  fontWeight="normal" chromeColor="#D1D1D1"/>
-				<s:Label id="labA" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="175" fontWeight="normal"/>
-				<s:Label id="labB"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="80" fontWeight="normal"/>
-				<s:Label id="labC"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="100" fontWeight="normal"/>
-				<s:Label id="labD" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="95" fontWeight="normal"/>
-				<s:Label id="labF"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="84" fontWeight="normal"/>
-				<s:Label id="labE" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="77" fontWeight="normal"/>
+				<s:Label id="lab0t" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  width="109" fontFamily="Verdana" fontSize="10" fontWeight="normal" text="DATA INPUT HERE"/>
+				<s:Label id="labAt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
+				<s:Label id="labBt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
+				<s:Label id="labCt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
+				<s:Label id="labDt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
+				<s:Label id="labFt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
+				<s:Label id="labEt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="RESULTS"/>
 			</s:BorderContainer>
 			
-			<mx:TabNavigator id="tabai" height="100%" fontFamily="Verdana"						
-							 creationPolicy="none" creationComplete="tabai_creationCompleteHandler(event)"  fontSize="11" dropShadowVisible="false" borderVisible="false" verticalCenter="0" horizontalCenter="0" width="100%">
+			<s:BorderContainer width="100%" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1" borderVisible="false">
+				<s:layout>
+					<s:HorizontalLayout verticalAlign="contentJustify" gap="0"/>
+				</s:layout>
+				<s:Label id="lab0"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  width="109" fontFamily="Verdana" fontSize="11" paddingLeft="0" paddingTop="0"  fontWeight="normal" chromeColor="#D1D1D1"/>
+				<s:Label id="labA" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal" chromeColor="#3E9A3E"/>
+				<s:Label id="labB"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
+				<s:Label id="labC"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
+				<s:Label id="labD" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
+				<s:Label id="labF"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
+				<s:Label id="labE" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
+			</s:BorderContainer>
+			
+			<mx:TabNavigator id="tabai" height="100%" fontFamily="Arial"						
+							 creationPolicy="none" creationComplete="tabai_creationCompleteHandler(event)"  fontSize="11" dropShadowVisible="false" borderVisible="false" verticalCenter="0" horizontalCenter="0" width="100%" tabWidth="110" textAlign="left" chromeColor="#F8F8F8" backgroundAlpha="1.0" contentBackgroundAlpha="0.95">
 	
 				<s:NavigatorContent id="nc_00" label="Method " width="100%" height="100%" 
 									creationPolicy="none">
-					<panelTabs:tabPathSelection id="panelTabPath" width="100%" height="100%"  enabled="true"
+					<panelTabs:tabPathSelection id="panelTabPath" width="100%" height="100%"  enabled="false"
 												creationComplete="panelTabPath_creationCompleteHandler(event)" horizontalCenter="0" verticalCenter="0">
 					</panelTabs:tabPathSelection>				
 				</s:NavigatorContent>
 				
-				<s:NavigatorContent id="nc_A2" label="A. Macroeconomic Indicators" width="100%" height="100%" 
+				<s:NavigatorContent id="nc_A2" label="A. Macro Environment"
+									width="100%" height="100%" 
 									creationPolicy="none">
 					<panelTabs:tabA2 id="panelTabA2" width="100%" height="100%"  enabled="true"
 									 creationComplete="taba11_creationCompleteHandler(event)"  top="0" left="0">

@@ -132,34 +132,37 @@
 			
 			[bindable] public var useCluster:Boolean = false;
 			public function refreshData(evt:Event):void {
-				var countryIDs:Array = this.dataList.source;				
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
-				
-				var regionIDs:Array = this.dataListReg.source;
-				var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);			
-				
-				this.devicesActiveFlag ? this.tmpDevices = this.selDevice : this.tmpDevices = -1; 
-				this.pwrTypesActiveFlag ? this.tmpPwrTypes = this.selPwrType : this.tmpPwrTypes = -1; 
-				this.batTypesActiveFlag ? this.tmpBatTypes = this.selBatType : this.tmpBatTypes = -1;				
-				
-				trace("calling demand token");				
-				
-				this.cursorManager.setBusyCursor();
-				
-				if ((this.chemTypesActiveFlag)&&(tmp2.length > 0)) {
-					getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster));
-				} else if ((this.chemTypesActiveFlag)&&(tmp.length > 0)) {
-					getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
-				} else if (tmp2.length > 0) {
-					this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster));					
-				} else if (tmp.length > 0) {				
-					this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-						this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0);					
-				} else {
-					this.cursorManager.removeBusyCursor();
+				if (!this.dataList) {
 					Alert.show("select some countries and/or regions", "Error E61");
-				};								
+				} else {				
+					var countryIDs:Array = this.dataList.source;				
+					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+					
+					var regionIDs:Array = this.dataListReg.source;
+					var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);			
+					
+					this.devicesActiveFlag ? this.tmpDevices = this.selDevice : this.tmpDevices = -1; 
+					this.pwrTypesActiveFlag ? this.tmpPwrTypes = this.selPwrType : this.tmpPwrTypes = -1; 
+					this.batTypesActiveFlag ? this.tmpBatTypes = this.selBatType : this.tmpBatTypes = -1;				
+					
+					trace("calling demand token");				
+					
+					this.cursorManager.setBusyCursor();
+					
+					if ((this.chemTypesActiveFlag)&&(tmp2.length > 0)) {
+						getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster));
+					} else if ((this.chemTypesActiveFlag)&&(tmp.length > 0)) {
+						getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
+					} else if (tmp2.length > 0) {
+						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
+							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster));					
+					} else if (tmp.length > 0) {				
+						this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
+							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0);					
+					} else {
+						this.cursorManager.removeBusyCursor();						
+					};
+				};
 			}			
 			
 			[bindable] private var regList:ArrayCollection = new ArrayCollection();
@@ -484,8 +487,11 @@
 				this.testChartExo.setData(this.currentDataExoChart, isLevel);	
 				
 				//updateChartTitle()
-				this.testChart.updateChartTitle("Demand", this.deviceListDrop.selectedIndex, this.devicesActiveFlag, 
-					this.isLevel, this.deviceListDrop.selectedItem.namen);
+				this.testChart.updateChartTitle("Demand", 
+					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+					this.devicesActiveFlag,	this.isLevel, 
+					(deviceListDrop.selectedItem  ? deviceListDrop.selectedItem.namen : "")
+				);
 			}
 			
 			protected function updateChemistrySplit(evt:Event):void {

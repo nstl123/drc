@@ -103,13 +103,12 @@
 				//this.refreshData();			
 			}
 			
-			public function refreshData(evt:Event):void {				
-				var countryIDs:Array = this.dataList.source;
-				
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
-				if (tmp.length < 1) { 
-					Alert.show("Select at least one country", "Error A2"); 
+			public function refreshData(evt:Event):void {
+				if (!this.dataList) {
+					Alert.show("Select at least one country", "Error A2");
 				} else {
+					var countryIDs:Array = this.dataList.source;				
+					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
 					this.cursorManager.setBusyCursor();
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 1);
 				};

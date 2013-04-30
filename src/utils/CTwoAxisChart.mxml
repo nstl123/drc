@@ -224,16 +224,16 @@
 			</s:layout>
 			<s:Label width="100%" fontStyle="normal"
 					 verticalAlign="bottom" textAlign="center" fontSize="13" 
-					 fontFamily="Arial" id="chartTitle" text="testTextTestText" color="#000000" fontWeight="bold" height="20"/>
+					 fontFamily="Arial" id="chartTitle" color="#000000" fontWeight="bold" height="20"/>
 			<mx:LineChart id="lineChart" width="100%" height="100%" 
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
-				 <!-- <mx:verticalAxisRenderers>
+				 <mx:verticalAxisRenderers>
 					<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 						 <mx:axisStroke>
 							 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
 						 </mx:axisStroke>
 					 </mx:AxisRenderer>   
-					 <mx:AxisRenderer placement="right" axis="{this.vaxis2}"/>				 
+					 <!-- <mx:AxisRenderer placement="right" axis="{this.vaxis2}"/> !-->				 
 			 </mx:verticalAxisRenderers> 
 				<mx:horizontalAxisRenderers>
 					<mx:AxisRenderer axis="{this.hAxis}">
@@ -241,11 +241,11 @@
 							<s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
 						</mx:axisStroke>
 					</mx:AxisRenderer>
-				</mx:horizontalAxisRenderers> !-->
+				</mx:horizontalAxisRenderers> 
 			</mx:LineChart>
 		</s:BorderContainer>
 	
-	<mx:Legend dataProvider="{lineChart}" width="30%" height="100%" horizontalCenter="0" verticalCenter="139" fontWeight="normal" fontFamily="Arial" fontSize="11" borderVisible="false" textAlign="left">
+	<mx:Legend dataProvider="{lineChart}" width="30%" height="100%" horizontalCenter="0" verticalCenter="139" fontWeight="normal" fontFamily="Arial" fontSize="11" borderVisible="false" textAlign="left" fontStyle="normal" backgroundAlpha="0.5" contentBackgroundAlpha="0.5">
 		<s:DataGroup width="100%" height="100%">
 			<s:layout>
 				<s:HorizontalLayout/>

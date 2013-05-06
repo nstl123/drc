@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" height="40"
-		 width="100%">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" height="45"
+		 width="800">
+	<s:layout>
+		<s:HorizontalLayout gap="0" paddingLeft="40" paddingTop="10" paddingBottom="10" paddingRight="40"/>
+	</s:layout>
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
 
 			[bindable] private var selectedState:int = 0;			
-			
-			protected function btn1_clickHandler(event:MouseEvent):void
+
+			protected function btn0_clickHandler(event:MouseEvent):void
 			{
 				this.selectedState = 0;
 				dispatchEvent(new Event("stateChanged", true));
-				this.btn2.enabled = true;
+				//this.btn2.enabled = true;
+			}
+			
+			protected function btn1_clickHandler(event:MouseEvent):void
+			{
+				this.selectedState = 1;
+				dispatchEvent(new Event("stateChanged", true));
+				//this.btn2.enabled = true;
 			}
 
 			protected function btn2_clickHandler(event:MouseEvent):void
 			{
-				this.selectedState = 1;
+				this.selectedState = 2;
 				dispatchEvent(new Event("stateChanged", true));
-				this.btn3.enabled = true;
+				//this.btn3.enabled = true;
 			}
 
 			protected function btn3_clickHandler(event:MouseEvent):void
 			{
-				this.selectedState = 2;
+				this.selectedState = 3;
 				dispatchEvent(new Event("stateChanged", true));
 			}
 
@@ -34,7 +44,22 @@
 			}
 			
 			public function setState(ii:int):void {
-				this.selectedState = ii;			
+				this.selectedState = ii;	
+				switch (ii) {
+					case 1:
+						this.btn1.enabled = true;
+						break;
+					case 2:
+						this.btn2.enabled = true;
+						this.btn3.enabled = true;
+						break;
+				};				
+			}
+			
+			public function setStatesAll(flag:Boolean):void {
+				this.btn1.enabled = flag;
+				this.btn2.enabled = flag;
+				this.btn3.enabled = flag;
 			}
 
 		]]>
@@ -43,9 +68,16 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
-	<s:Button label="BQ's list" width="120" height="25" horizontalCenter="-160" verticalCenter="0" id="btn1" click="btn1_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" color="#000000"/>
-	<s:Button label="Data Inputs" width="120" height="25" horizontalCenter="0" verticalCenter="0" id="btn2" click="btn2_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" enabled="false"/>
-	<s:Button label="Show Results" width="120" height="25" horizontalCenter="160" verticalCenter="0" id="btn3" click="btn3_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" enabled="false"/>
-	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="30" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-80"/>
-	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="30" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="80"/>
+	<s:Button label="1. Geo List" width="24%" height="25" horizontalCenter="-318" 
+			  verticalCenter="0" id="btn0" click="btn0_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" color="#000000" enabled="true"/>
+	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-80"/>
+	<s:Button label="2. BQ's list" width="24%" height="25" horizontalCenter="-160" 
+			  verticalCenter="0" id="btn1" click="btn1_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" color="#000000" enabled="false"/>
+	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-239"/>
+	<s:Button label="3. Data Inputs" width="24%" height="25" horizontalCenter="0" verticalCenter="0" id="btn2" 
+			  click="btn2_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" enabled="false"/>
+	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="80"/>
+	<s:Button label="4. Show Results" width="24%" height="25" horizontalCenter="160" verticalCenter="0" id="btn3" 
+			  click="btn3_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" enabled="false"/>
 </s:Group>
+

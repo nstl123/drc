@@ -235,6 +235,12 @@
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
 			}
 
+			public function setActiveIndis(k:int):void {
+				this.indicatorsBox.selectedIndex = k;
+				this.selectedIndi = this.indicatorsBox.selectedItem.id;
+			}
+
+			
 		]]>
 	</fx:Script>
 	

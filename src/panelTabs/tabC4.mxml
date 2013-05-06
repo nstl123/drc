@@ -272,6 +272,10 @@
 				this.saveBtn.enabled = (tmp == 0 && this.tabEditable);
 			}
 			
+			protected function setActiveIndis(k:int):void {
+				this.indicatorsBox.selectedIndex = k;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -293,8 +297,7 @@
 		<s:CallResponder id="writeViewToTableResult" result="writeViewToTableResult_resultHandler(event)" fault="writeViewToTableResult_faultHandler(event)"/>
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)"  fault="updateData_faultHandler(event)"/>		
 		
-	</fx:Declarations>
-	
+	</fx:Declarations>	
 	
 	
 	<utils:CTwoAxisChart width="747" height="277" id="testChart" top="84" left="10">
@@ -302,7 +305,8 @@
 	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="440" left="10">
 	</utils:CInteractiveGrid>
 	<s:DropDownList width="243" id="indicatorsBox"
-					labelField="namen"	 top="22" selectedIndex="0" height="20" left="49"></s:DropDownList>
+					labelField="namen"	 top="22" selectedIndex="0" height="20" left="49">
+	</s:DropDownList>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="52" fontFamily="Arial"/>
 	<s:Button label="refresh data" id="getSomeData" click="button3_clickHandler(event)" top="52" height="25" width="241" left="199" fontWeight="bold"/>
 	<s:Button x="494" y="55" label="writeViewToDB_1" width="148" id="button"

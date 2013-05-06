@@ -10,9 +10,9 @@
 	<fx:Script>
 		<![CDATA[
 			
-			[Embed(source="schema.png")]
+			/*[Embed(source="schema.png")]
 			[Bindable]
-			public var imgCls:Class;
+			public var imgCls:Class;*/
 			
 			import mx.events.FlexEvent;
 			[bindable] public var selPath:String = "";			
@@ -41,36 +41,98 @@
 	</fx:Declarations>
 
 	
-	<s:Label text="Possible Methods:" fontStyle="italic" left="15" top="15"/>	
-	<s:BorderContainer width="100%" height="100%" backgroundAlpha="0.0"
+		
+	<s:BorderContainer width="100%" height="100%" backgroundAlpha="0.0"				   
 					   horizontalCenter="0" verticalCenter="0" borderVisible="false">
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
-		<s:BorderContainer height="133" top="5" left="145" borderVisible="false" width="362">
+		<s:BorderContainer height="499" top="40" borderVisible="false" width="669" horizontalCenter="0">
 			<s:layout>
-				<s:VerticalLayout paddingLeft="10" paddingTop="10"/>
-			</s:layout>
-			<s:RadioButton x="55" y="11" label="Macroeconomic via Households" 
-						   groupName="pathTypes" value="A1" click="radiobutton1_clickHandler(event)"/>
-			<s:RadioButton x="52" y="41" label="Households" value="B" 
-						   groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)"/>
-			<s:RadioButton x="48" y="71" label="Installed Base" value="C"
-						   groupName="pathTypes" click="radiobutton1_clickHandler(event)"/>
-			<s:RadioButton x="41" y="128" label="Macro-economic via Market Size"
-						   groupName="pathTypes" value="A2" click="radiobutton1_clickHandler(event)"/>
-			<s:RadioButton x="39" y="103" label="Market Size" value="D" 
-						   groupName="pathTypes" click="radiobutton1_clickHandler(event)" enabled="true"/>					
-		</s:BorderContainer>
-		
-		<s:BorderContainer width="747" height="500" left="0" top="130" borderVisible="false">		
-		
-			<mx:Image 
-					  source="{imgCls}" autoLoad="true" 
-					  scaleContent="false" width="100%" verticalCenter="0" height="100%" left="0"/>
-		
-		</s:BorderContainer>
+				<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" gap="4"/>
+			</s:layout>		
+			<s:Label text="1. How will changes to the macroeconomic environment impact device sales and, in-turn, battery demand? (Macro via Households, Macro-economic via Market Size)" 
+					 fontStyle="normal" width="100%" height="30" textAlign="left" verticalAlign="middle" fontFamily="Arial" fontSize="13"/>			
+			<s:BorderContainer width="100%" height="40" borderVisible="false">			
+				<s:layout>
+					<s:VerticalLayout paddingLeft="30" gap="0"/>
+				</s:layout>
+				<s:RadioButton label="a. Macro variable A" 
+						   groupName="pathTypes" value="A1" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>
+				<s:RadioButton label="b. Macro variable B" 
+						   groupName="pathTypes" value="A1" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>
+			</s:BorderContainer>
 			
+			
+				<s:Label text="2. How will changes to household device ownership levels impact battery demand? (Households)" fontStyle="normal" width="100%" height="30" textAlign="left" verticalAlign="middle" fontFamily="Arial" fontSize="13"/>
+			<s:BorderContainer width="100%" height="40" borderVisible="false">			
+				<s:layout>
+					<s:VerticalLayout paddingLeft="30" gap="0"/>
+				</s:layout>				
+				<s:RadioButton label="a. Penetration rate" value="B1" 
+						   groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>
+				<s:RadioButton label="b. # of device per owning household" value="B2" 
+						   groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>
+			</s:BorderContainer>
+				
+			<s:Label text="3. How will changes to household device usage habits impact battery demand?" fontStyle="normal" width="100%" height="30" textAlign="left" verticalAlign="middle" fontFamily="Arial" fontSize="13"/>
+			
+			<s:BorderContainer width="100%" height="40" borderVisible="false">			
+				<s:layout>
+					<s:VerticalLayout paddingLeft="30" gap="0"/>
+				</s:layout>				
+				<s:RadioButton label="a. Battery replacement rate"
+						   groupName="pathTypes" value="E1" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>
+				<s:RadioButton label="b. Share of power source (wall socket vs. general purpose batteries)"
+						   groupName="pathTypes" value="E2" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>
+			</s:BorderContainer>
+				
+			<s:Label text="4. How will changes in OEM device design impact battery demand?" fontStyle="normal" width="100%" height="30" textAlign="left" verticalAlign="middle" fontFamily="Arial" fontSize="13"/>
+			
+			<s:BorderContainer width="100%" height="60" borderVisible="false">			
+				<s:layout>
+					<s:VerticalLayout paddingLeft="30" gap="0"/>
+				</s:layout>				
+				<s:RadioButton label="a. Share of power source (wall socket vs. general purpose batteries)"
+						   groupName="pathTypes" value="E3" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>
+				<s:RadioButton label="b. # of batteries"
+						   groupName="pathTypes" value="E4" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>			
+				
+				<s:RadioButton label="c. Type of batteries  (AA, AAA, etc)"
+						   groupName="pathTypes" value="E5" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>			
+			</s:BorderContainer>				
+
+			<s:Label text="5. How will changes to device sales impact battery demand? -> Market Size method" 
+					 fontStyle="normal" width="100%" height="30" textAlign="left" verticalAlign="middle" fontFamily="Arial" fontSize="13"/>
+			<s:BorderContainer width="100%" height="60" borderVisible="false">			
+				<s:layout>
+					<s:VerticalLayout paddingLeft="30" gap="0"/>
+				</s:layout>				
+				<s:RadioButton label="a. Direct Market Size Vars"
+							   groupName="pathTypes" value="D1" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" fontFamily="Arial" fontSize="12"/>
+			</s:BorderContainer>
+			
+			
+			<mx:HRule width="100%" height="20"/>
+			
+			<s:RadioButton x="48" y="71" label="C. Installed Base" value="C"
+						   groupName="pathTypes" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" enabled="false"/>
+			<s:RadioButton x="39" y="103" label="E. Market Size" value="D" 
+						   groupName="pathTypes" click="radiobutton1_clickHandler(event)" enabled="false" width="100%" textAlign="left" height="20"/>					
+			<s:RadioButton label="D. Macro-economic via Market Size"
+						   groupName="pathTypes" value="A2" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" enabled="false"/>
+		</s:BorderContainer>
+
+		<s:Label text="Business Questions for Scenarios" fontStyle="italic" width="100%" height="40" fontSize="14" textAlign="left" verticalAlign="top" horizontalCenter="10" top="10"/>
+		
+		<!--
+		<s:BorderContainer width="747" height="500" left="0" top="130" borderVisible="false">
+			<mx:Image 
+					source="{imgCls}" autoLoad="true" 
+					scaleContent="false" width="100%" verticalCenter="0" 
+					height="100%" left="0"/>		
+		</s:BorderContainer>
+			!-->		
 	</s:BorderContainer>
 	
 </s:Group>

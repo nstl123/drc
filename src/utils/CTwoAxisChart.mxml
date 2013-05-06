@@ -130,9 +130,11 @@
 					series2.displayName = tmp.countryID + ", " 
 						+ (tmp.scenarioID == 10001 ? "Baseline" : "Scenario");
 					
-					/*var basisCol:uint = uint(this.intToHex(tmp.countryCode*2));
-					var s1:SolidColorStroke = new SolidColorStroke(basisCol, 3,.9); 
-					series2.setStyle("lineStroke", s1);*/				
+/* 					var stroke : SolidColorStroke = new SolidColorStroke();
+						stroke.color    = 0xFF0000 + 10 * i;
+						stroke.weight   = 1;
+					series2.setStyle( "lineStroke", stroke );
+ */					//series2.setStyle("lineStroke", s1);				
 					
 					hAxis.dataProvider = someData.getItemAt(i);
 					vaxis1.baseAtZero = false;
@@ -148,14 +150,19 @@
 				this.lineChart.series = mySeries;			
 				this.lineChart.dataProvider = mySeries;
 				this.lineChart.showDataTips = true;
-				this.lineChart.dataTipFunction = tooltips_formater;
-				
-				//this.testTitle = this.
+				this.lineChart.dataTipFunction = tooltips_formater;			
 				
 				this.lineChart.invalidateDisplayList();				
+				//this.redrawColors();
 			}
 			
-			
+			public function redrawColors():void {
+				for each (var series:LineSeries in this.lineChart.series) {
+					var series_stroke:SolidColorStroke = series.getStyle('lineStroke') as SolidColorStroke;
+					series_stroke.weight = 10;
+					series.setStyle('lineStroke', series_stroke);
+				};				
+			}
 			
 			public function changeStyle(s1:SolidColorStroke):void {
 				for (var k:int = 0; k < mySeries.length; k++) {
@@ -225,15 +232,16 @@
 			<s:Label width="100%" fontStyle="normal"
 					 verticalAlign="bottom" textAlign="center" fontSize="13" 
 					 fontFamily="Arial" id="chartTitle" color="#000000" fontWeight="bold" height="20"/>
-			<mx:LineChart id="lineChart" width="100%" height="100%" 
+			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
-				 <mx:verticalAxisRenderers>
+
+				
+			<!--	<mx:verticalAxisRenderers>
 					<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 						 <mx:axisStroke>
 							 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
 						 </mx:axisStroke>
-					 </mx:AxisRenderer>   
-					 <!-- <mx:AxisRenderer placement="right" axis="{this.vaxis2}"/> !-->				 
+					 </mx:AxisRenderer>									 
 			 </mx:verticalAxisRenderers> 
 				<mx:horizontalAxisRenderers>
 					<mx:AxisRenderer axis="{this.hAxis}">
@@ -241,7 +249,8 @@
 							<s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
 						</mx:axisStroke>
 					</mx:AxisRenderer>
-				</mx:horizontalAxisRenderers> 
+				</mx:horizontalAxisRenderers> !-->
+				
 			</mx:LineChart>
 		</s:BorderContainer>
 	

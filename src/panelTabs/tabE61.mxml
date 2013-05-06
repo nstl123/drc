@@ -506,6 +506,11 @@
 				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
+			protected function setActiveIndis(k:int):void {
+				//this.indicatorsBox.selectedIndex = k;
+			}
+
+			
 		]]>
 	</fx:Script>
 	

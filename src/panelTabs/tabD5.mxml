@@ -264,6 +264,11 @@
 				if (this.startInd > 1) writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 1);
 			}
 			
+			public function setActiveIndis(k:int):void {
+				this.indicatorsBox.selectedIndex = k;
+			}
+
+			
 		]]>
 	</fx:Script>
 	

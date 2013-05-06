@@ -15,7 +15,8 @@
 	<fx:Script>
 		<![CDATA[
 					
-			import flashx.textLayout.formats.Float;			
+			import flashx.textLayout.formats.Float;
+			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
@@ -24,10 +25,11 @@
 			import mx.graphics.SolidColorStroke;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
-			import spark.events.IndexChangeEvent;
 			
 			import services.depot1.Depot1;
-			import services.depot3.Depot3;		
+			import services.depot3.Depot3;
+			
+			import spark.events.IndexChangeEvent;
 			
 			import utils.helper;		
 			
@@ -226,6 +228,10 @@
 					this.isLevel, 
 					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "")
 				);
+			}
+			
+			public function setActiveIndis(k:int):void {
+				this.indicatorsBox.selectedIndex = k;
 			}
 			
 		]]>

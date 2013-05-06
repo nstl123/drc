@@ -116,28 +116,37 @@
 			}
 			
 			public function refreshData(evt:Event):void {
-				var countryIDs:Array = this.dataList.source;				
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
-				trace("calling macro data token");
+				if (!this.dataList) {}
 				
-				var tmpType:int = 1;
-				switch (this.selectedIndi) {
-					case 204: 
-						tmpType = this.selBatType; break;
-					case 205: 
-						tmpType = this.selPwrType; break;					
-					case 206: 
-						tmpType = this.selBatType; break;
-					case 207: 
-						tmpType = this.selPwrType; break;
-				};				
+				else {
 				
-				if (tmp.length > 0) {
-					this.cursorManager.setBusyCursor();
-					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
-						hasSplitFlag.selected, tmpType, 1);
-				} else {					
-					Alert.show("select at least one country", "Error F51");					
+					var countryIDs:Array = this.dataList.source;				
+					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+					trace("calling macro data token");
+				
+					var tmpType:int = 1;
+					var fl:Boolean = hasSplitFlag.selected;
+					switch (this.selectedIndi) {
+						case 204: 
+							tmpType = this.selBatType; break;
+						case 205: 
+							tmpType = this.selPwrType; break;					
+						case 206: 
+							tmpType = this.selBatType; break;
+						case 207: 
+							tmpType = this.selPwrType;
+							fl = false;
+							break;
+					};				
+				
+					if (tmp.length > 0) {
+						this.cursorManager.setBusyCursor();
+						getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
+							fl, tmpType, 1);
+					} else {					
+						Alert.show("select at least one country", "Error F51");					
+					};
+				
 				};
 			}
 			
@@ -223,7 +232,7 @@
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show(event.message.body.toString());
+				Alert.show("Error retrieving data from DB", "Error F51");
 			}
 
 			[bindable] private var selBatType:int = 3;
@@ -275,6 +284,12 @@
 					this.isLevel, 
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
 			}
+			
+			public function setActiveIndis(k:int):void {
+				this.indicatorsBox.selectedIndex = k;
+				this.selectedIndi = this.indicatorsBox.selectedItem.id;
+			}
+
 			
 		]]>
 	</fx:Script>

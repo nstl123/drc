@@ -53,7 +53,7 @@
 
 	
 	<fx:Declarations>
-		<s:RadioButtonGroup id="pathTypes" enabled="false"/>	
+		<s:RadioButtonGroup id="pathTypes"/>	
 		<s:RadioButtonGroup id="viewingMode"/>
 	</fx:Declarations>
 
@@ -67,7 +67,9 @@
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
-		<s:BorderContainer height="345" top="100" borderVisible="false" width="95%" horizontalCenter="0" top.scenarioState="119" horizontalCenter.scenarioState="-1">
+		<s:BorderContainer height="345" top="100" borderVisible="false" width="95%"
+						   horizontalCenter="0" top.scenarioState="119"
+						   horizontalCenter.scenarioState="0">
 			<s:layout>
 				<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" gap="4"/>
 			</s:layout>		
@@ -76,26 +78,35 @@
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
 				<s:RadioButton label="1. How will changes to the macroeconomic environment impact device sales and, in-turn, battery demand?" 
-						   	   	groupName="pathTypes" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="30" fontFamily="Arial" fontSize="12" lineThrough="false" 
-						   	   	value="A"  selected="false" enabled="true" includeIn="scenarioState"/>
+						   	   	groupName="pathTypes" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="30" 
+								fontFamily="Arial" fontSize="12" lineThrough="false" 
+						   	   	value="A"  selected="false" enabled.scenarioState="true" includeIn="scenarioState"/>
 				<s:Label text="(Macro via Households, Macro-economic via Market Size)"
-						 visible="true"
-						 width="100%" verticalAlign="middle" textAlign="center" fontStyle="italic" id="pathLabel1" includeIn="scenarioState"/>
+						 visible="true" 
+						 width="100%" verticalAlign="middle" textAlign="center" fontStyle="italic" id="pathLabel1" 
+						 includeIn="scenarioState"/>
+				
 				<s:RadioButton label="2. How will changes to household device ownership levels impact battery demand? (Households)" 
-							   	value="B" 
-						   	   	groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" fontFamily="Arial" fontSize="12" enabled="true" includeIn="scenarioState"/>
+							   	value="B" enabled.scenarioState="true" 
+						   	   	groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)" width="100%" 
+								textAlign="left" height="40" fontFamily="Arial" fontSize="12" includeIn="scenarioState"/>
 				<s:RadioButton label="3. How will changes to household device usage habits impact battery demand?"
-						   		groupName="pathTypes" 
-								value="E1" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" fontFamily="Arial" fontSize="12" selected="false" enabled="true" includeIn="scenarioState"/>
+						   		groupName="pathTypes" enabled.scenarioState="true"
+								value="E1" click="radiobutton1_clickHandler(event)" width="100%" 
+								textAlign="left" height="40" fontFamily="Arial" fontSize="12" selected="false"  includeIn="scenarioState"/>
 				<s:RadioButton label="4. How will changes in OEM device design impact battery demand?"
-						   		groupName="pathTypes" 
-								value="E2" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" fontFamily="Arial" fontSize="12" selected="false" enabled="true" includeIn="scenarioState"/>
+						   		groupName="pathTypes" enabled.scenarioState="true" 
+								value="E2" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" 
+								fontFamily="Arial" fontSize="12" selected="false"  includeIn="scenarioState"/>
 				<s:RadioButton label="5. How will changes to device sales impact battery demand? -&gt; Market Size method"
-							   	groupName="pathTypes" 
-								value="D" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" fontFamily="Arial" fontSize="12" selected="false" enabled="true" includeIn="scenarioState"/>
+							   	groupName="pathTypes" enabled.scenarioState="true"
+								value="D" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" 
+								fontFamily="Arial" fontSize="12" selected="false" includeIn="scenarioState"/>
+				
 				<mx:HRule width="100%" height="20" includeIn="scenarioState"/>
 				<s:RadioButton label="C. Installed Base" value="C"
-							   groupName="pathTypes" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="20" enabled="false" includeIn="scenarioState"/>
+							   groupName="pathTypes" click="radiobutton1_clickHandler(event)" width="100%"
+							   textAlign="left" height="20" includeIn="scenarioState" enabled="false"/>
 				<s:RadioButton label="E. Market Size" value="D" 
 							   groupName="pathTypes" click="radiobutton1_clickHandler(event)" enabled="false" width="100%" textAlign="left" height="20" includeIn="scenarioState"/>
 				<s:RadioButton label="D. Macro-economic via Market Size"
@@ -114,7 +125,7 @@
 						   change.scenarioState="modeSwitch_changeHandler(event)"						   
 						   label="VIEW DATA ONLY" 
 						   label.scenarioState="VIEW DATA ONLY" 						    
-						   selected.viewingState="true"/>
+ selected.viewingState="true"/>
 			
 			<s:RadioButton label="scenarioMode" groupName="viewingMode" left="190"
 						   enabled="true"

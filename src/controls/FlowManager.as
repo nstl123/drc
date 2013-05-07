@@ -8,6 +8,16 @@ package controls
 		private static var dataList:ArrayCollection;
 		private static var dataListReg:ArrayCollection;
 		
+		private var stateSpace:Array = new Array(
+			{id:0, label:"initState"},
+			{id:1, label:"selectCountry"},
+			{id:2, label:"selectBQ"},
+			{id:3, label:"provideInputs"},
+			{id:4, label:"viewResults"}
+		);
+		
+		private var currentStateSpace:int = 0;
+		
 		private var useCluster:Boolean = false;		
 		
 		private var tabList:ArrayCollection = new ArrayCollection();
@@ -18,6 +28,18 @@ package controls
 		{			
 			if (this.countSelf < 1) this.countSelf++
 			else Alert.show("cannot call contructor twise!");
+		}
+		
+		public function setStateSpacePos(nst:int):void {
+			this.currentStateSpace = nst;
+		}
+		
+		public function getStateSpacePos():int {
+			return this.currentStateSpace;
+		}
+		
+		public function getStateSpaceName():String {
+			return this.stateSpace[this.currentStateSpace].label;
 		}
 		
 		public function setDataList(data:ArrayCollection, regData:ArrayCollection, flag:Boolean):void {
@@ -138,6 +160,8 @@ package controls
 					if (arr[i] == 1) {
 						this.tabList[i].enableGrid(true, false);					
 						this.tabList[i].setActiveIndis(this.activeIndi);
+					} else {
+						this.tabList[i].enableGrid(false, false);
 					};
 				};
 			};		

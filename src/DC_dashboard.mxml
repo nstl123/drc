@@ -60,7 +60,8 @@
 			protected function startApp(event:FlexEvent):void
 			{
 				trace("starting init Depot1, Depot21, Depot3");
-				this.pathLabel.text = "Init";				
+				this.pathLabel.text = "Init";			
+				
 				this.dataServiceNames = new Depot1();
 				this.dataServiceData = new Depot21();
 				this.dataServiceUpdate = new Depot3();				
@@ -93,11 +94,19 @@
 				this.addEventListener("tabE", createNext);
 				
 				this.addEventListener("stateChanged", changeState); // further get state from navControl				
+				
 				this.addEventListener("viewingModeChanged", manageViewModeChanged);
 				
 				masterTab = new FlowManager();
 				
+				this.masterTab.setStateSpacePos(1);
+				updateStateSpaceLabel();
+				
 				this.dispatchEvent(new Event("init", true));
+			}
+			
+			public function updateStateSpaceLabel():void {
+				this.stateSpaceLabel.text = this.masterTab.getStateSpaceName();
 			}
 			
 			[bindable] private var currState:int;
@@ -156,6 +165,9 @@
 			[bindable] public var changeMadeInScenario:Boolean = false;
 			protected function recordState(evt:Event):void {
 				this.changeMadeInScenario = true;
+				
+				this.masterTab.setStateSpacePos(4);
+				this.updateStateSpaceLabel();
 				//or record cTree values here
 			}
 			
@@ -176,10 +188,17 @@
 				var uCluster:Boolean = this.cntryTree.getUseCluster();
 				
 				this.masterTab.setDataList(cntryData, regData, uCluster);	
-				if (isStart < 2) { // enable path selection and buttons
+				
+				if (isStart < 2) { // enable path selection and buttons									
 					this.navigatorBox.setState(1, this.currentState);					
 					this.panelTabPath.enablePaths(true);
-				}
+				};
+				
+				if (this.masterTab.getStateSpacePos() == 1) {					
+						this.masterTab.setStateSpacePos(2);
+						this.updateStateSpaceLabel();
+				};
+				
 			}		
 
 			[bindable] private var selPath:String = "";
@@ -193,8 +212,11 @@
 				};
 				if (isStart > 1) {
 					this.navigatorBox.setState(2, this.currentState);
-					//this.navigatorBox.setStatesAll(true);
-				}				
+				};
+				if ((isStart > 1)&&(this.masterTab.getStateSpacePos() == 2)) {
+						this.masterTab.setStateSpacePos(3);
+						this.updateStateSpaceLabel();
+				};				
 				
 				if (this.changeMadeInScenario) {
 					Alert.show("Changes were made in Working Scenario. Do you want to reset?", 
@@ -429,7 +451,7 @@
 					case 'tabF':				
 						this.pathLabel.text = "Loading Module: N00";
 						this.nc_00.createDeferredContent();
-						this.panelTabPath.enablePaths(false);
+						//this.panelTabPath.enablePaths(false);
 						this.pathLabel.text = "Content Loaded";
 						
 						this.panelTabA2.enabled = true;
@@ -444,7 +466,7 @@
 
 			protected function panelTabPath_creationCompleteHandler(event:FlexEvent):void
 			{
-				this.panelTabPath.enablePaths(false);
+				//this.panelTabPath.enablePaths(false);
 				trace("creation complete of tab pathSelections");				
 			}
 
@@ -483,6 +505,7 @@
 	</s:BorderContainer>	
 	<utils:navigator width="100%" id="navigatorBox">
 	</utils:navigator>
+	<s:Label text="current Pos:" id="stateSpaceLabel" width="100%" verticalAlign="middle" textAlign="left" fontStyle="italic"/>
 	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" borderVisible="false">	
 		<s:layout>
 			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
@@ -544,7 +567,7 @@
 									creationPolicy="none">
 					<panelTabs:tabPathSelection id="panelTabPath" width="100%" height="100%"  enabled="false"
 												creationComplete="panelTabPath_creationCompleteHandler(event)" horizontalCenter="0" verticalCenter="0"
-										    	currentState="viewingState">
+										    	currentState="scenarioState">
 					</panelTabs:tabPathSelection>				
 				</s:NavigatorContent>
 				

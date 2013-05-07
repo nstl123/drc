@@ -96,7 +96,9 @@
 							"id"      : res[i].id, 
 							"isRegion": res[i].isRegion, 
 							"active"  :(res[i].active ? res[i].active : false),
-							"region"  : res[i].region });
+							"region"  : res[i].region,
+							"modified":(res[i].modified ? res[i].modified : false)
+						});
 					}	
 				}		
 				this.preserveRefresh();
@@ -195,11 +197,12 @@
 				if (this.selectionList != null) {
 					for (i = 0; i < selectionList.length; i++)
 						selectionList[i].active = data.getItemAt(i).active;					
-					//this.preserveRefresh(data[0]["openItems"]);	
+									
 					dispatchEvent(new Event(CTree.CHECKED, true));
 				};
-			}
-		
+			}	
+			
+			
 			public function formDataList_adg(data:Array):void {
 				this.selectionList = new ArrayCollection(data);
 				//this.preserveRefresh();	
@@ -283,12 +286,16 @@
 		<mx:columns>
 			<mx:AdvancedDataGridColumn headerText="Geography" dataField="namen" sortable="false"
 									    width="150"/>			
-			<mx:AdvancedDataGridColumn headerText="use" dataField="active" width="50" id="inputas"
-									  sortable="false" textAlign="center"/>
+			<mx:AdvancedDataGridColumn headerText="use" dataField="active" width="40" 
+									   id="inputas" sortable="false" textAlign="center"/>
+			<mx:AdvancedDataGridColumn headerText="changed" dataField="modified" width="40"
+									   id="modFlag" sortable="false" textAlign="center"	/> 
 		</mx:columns>
 		<mx:rendererProviders>
 			<mx:AdvancedDataGridRendererProvider column="{inputas}" columnSpan="1" depth="2"
 												 renderer="utils.CCheckBoxRendererADG"/>
+			<mx:AdvancedDataGridRendererProvider column="{modFlag}" columnSpan="1" depth="2"
+												 renderer="utils.CCheckBoxRendererADG2"/>
 		</mx:rendererProviders>
 	</mx:AdvancedDataGrid>	
 		

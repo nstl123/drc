@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  focusEnabled="false"								   
+								  click="someAction(event)" 
+>
+	<fx:Script>
+		<![CDATA[			
+			public static const INCR_COUNT:String = 'incrCount';
+			public static const DECR_COUNT:String = 'decrCount';
+			
+			//when checkbox value is changed
+			protected function someAction(event:Event):void
+			{	
+				/*
+				(chbID.selected) ? data.active = true : data.active = false;
+				
+				if (data.active)
+					dispatchEvent(new Event(CCheckBoxRendererADG.INCR_COUNT, true));
+				else
+					dispatchEvent(new Event(CCheckBoxRendererADG.DECR_COUNT, true));
+			*/
+			}
+		]]>
+		
+	</fx:Script>
+	
+	<s:CheckBox id="chbID" textAlign="center" 
+				selected="{data.modified}" visible="true" enabled="false" height="18" 
+				verticalCenter="0" width="18" horizontalCenter="0"/>
+
+</s:MXAdvancedDataGridItemRenderer>

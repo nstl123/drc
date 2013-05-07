@@ -93,6 +93,7 @@
 				this.addEventListener("tabE", createNext);
 				
 				this.addEventListener("stateChanged", changeState); // further get state from navControl				
+				this.addEventListener("viewingModeChanged", manageViewModeChanged);
 				
 				masterTab = new FlowManager();
 				
@@ -104,6 +105,18 @@
 				this.currState = this.navigatorBox.getState();
 				this.digestStateChange(this.currState);
 				// take approprate action hide/show tabs
+			}
+			
+			private function manageViewModeChanged(evt:Event):void {
+				var crntSt:String = this.panelTabPath.getViewingState();
+				if (crntSt == "viewingState") {
+					// set state to viewing one
+					this.currentState = "viewingState";
+				} else {
+					// set to edit state
+					this.currentState = "scenarioState";
+				};		
+				this.dispatchEvent(new Event("pathChanged", true));				
 			}
 			
 			private function digestStateChange(ind:int):void {
@@ -143,6 +156,7 @@
 			[bindable] public var changeMadeInScenario:Boolean = false;
 			protected function recordState(evt:Event):void {
 				this.changeMadeInScenario = true;
+				//or record cTree values here
 			}
 			
 			[bindable] private var firstDeviceBase:int = 0;
@@ -163,7 +177,7 @@
 				
 				this.masterTab.setDataList(cntryData, regData, uCluster);	
 				if (isStart < 2) { // enable path selection and buttons
-					this.navigatorBox.setState(1);
+					this.navigatorBox.setState(1, this.currentState);					
 					this.panelTabPath.enablePaths(true);
 				}
 			}		
@@ -178,7 +192,7 @@
 					isStart = isStart + 1;					
 				};
 				if (isStart > 1) {
-					this.navigatorBox.setState(2);
+					this.navigatorBox.setState(2, this.currentState);
 					//this.navigatorBox.setStatesAll(true);
 				}				
 				
@@ -218,20 +232,29 @@
 				
 				//this.tabai.getElementAt(0)
 				this.lab0.setStyle(prop, col2);
-				(arr[0] == 1) ? labA.setStyle(prop, col1) : labA.setStyle(prop, col2); 
-				(arr[1] == 1) ? labB.setStyle(prop, col1) : labB.setStyle(prop, col2);
-				//(arr[2] == 1) ? labC.setStyle(prop, col1) : labC.setStyle(prop, col2);
-				(arr[3] == 1) ? labD.setStyle(prop, col1) : labD.setStyle(prop, col2);
-				(arr[4] == 1) ? labE.setStyle(prop, col3) : labE.setStyle(prop, col3);
-				(arr[5] == 1) ? labF.setStyle(prop, col1) : labF.setStyle(prop, col2);
+				if (this.currentState == "scenarioState") {		
+					(arr[0] == 1) ? labA.setStyle(prop, col1) : labA.setStyle(prop, col2); 
+					(arr[1] == 1) ? labB.setStyle(prop, col1) : labB.setStyle(prop, col2);
+					//(arr[2] == 1) ? labC.setStyle(prop, col1) : labC.setStyle(prop, col2);
+					(arr[3] == 1) ? labD.setStyle(prop, col1) : labD.setStyle(prop, col2);
+					(arr[4] == 1) ? labE.setStyle(prop, col3) : labE.setStyle(prop, col3);
+					(arr[5] == 1) ? labF.setStyle(prop, col1) : labF.setStyle(prop, col2);
+				} else {
+					labA.setStyle(prop, col2); 
+					labB.setStyle(prop, col2);					
+					labD.setStyle(prop, col2);
+					labE.setStyle(prop, col2);
+					labF.setStyle(prop, col2);
+				};
 				
-				this.labAt.visible = (arr[0] == 1); 
-				this.labBt.visible = (arr[1] == 1);
-//				this.labCt.visible = (arr[2] == 1);
-				this.labDt.visible = (arr[3] == 1);
-				this.labEt.visible = true; // = (arr[4] == 1);
-				this.labFt.visible = (arr[5] == 1);			
-				
+				if (this.currentState == "scenarioState") {				
+					this.labAt.visible = (arr[0] == 1); 
+					this.labBt.visible = (arr[1] == 1);
+	//				this.labCt.visible = (arr[2] == 1);
+					this.labDt.visible = (arr[3] == 1);
+					this.labEt.visible = true; // = (arr[4] == 1)
+					this.labFt.visible = (arr[5] == 1);			
+				};
 				this.invalidateDisplayList();
 			}
 			
@@ -440,6 +463,11 @@
 		]]>
 	</fx:Script>
 		
+	<s:states>
+		<s:State name="viewingState"/>
+		<s:State name="scenarioState"/>		
+	</s:states>
+	
 <s:BorderContainer width="992" height="100%" borderVisible="false">	
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center"/>
@@ -448,7 +476,7 @@
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="justify"/>
 		</s:layout>
-		<s:Label text="Battery Demand Analysis Tool. v.04-30-5pm" height="100%" width="40%"/>
+		<s:Label text="Battery Demand Analysis Tool. v.05-07-3pm" height="100%" width="40%"/>
 		<s:Label text="Selected Path" height="15" verticalAlign="middle"
 				   id="pathLabel" width="30%"/>
 		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"/>
@@ -479,13 +507,19 @@
 				<s:layout>
 					<s:HorizontalLayout verticalAlign="contentJustify" gap="0"/>
 				</s:layout>
-				<s:Label id="lab0t" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  width="109" fontFamily="Verdana" fontSize="10" fontWeight="normal" text="DATA INPUT HERE"/>
-				<s:Label id="labAt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
-				<s:Label id="labBt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
+				<s:Label id="lab0t" visible.viewingState="false" visible.scenarioState="false"
+						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  width="109" fontFamily="Verdana" fontSize="10" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
+				<s:Label id="labAt" visible.viewingState="false" visible.scenarioState="false"
+						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
+				<s:Label id="labBt" visible.viewingState="false" visible.scenarioState="false"
+						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
 <!--			<s:Label id="labCt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/> !-->
-				<s:Label id="labDt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
-				<s:Label id="labFt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
-				<s:Label id="labEt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="RESULTS"/>
+				<s:Label id="labDt" visible.viewingState="false" visible.scenarioState="false"
+						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
+				<s:Label id="labFt" visible.viewingState="false" visible.scenarioState="false"
+						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
+				<s:Label id="labEt" visible.viewingState="false" visible.scenarioState="false"
+						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="RESULTS" includeIn="scenarioState"/>
 			</s:BorderContainer>
 			
 			<s:BorderContainer width="100%" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1" borderVisible="false">
@@ -509,7 +543,8 @@
 				<s:NavigatorContent id="nc_00" label="Method " width="100%" height="100%" 
 									creationPolicy="none">
 					<panelTabs:tabPathSelection id="panelTabPath" width="100%" height="100%"  enabled="false"
-												creationComplete="panelTabPath_creationCompleteHandler(event)" horizontalCenter="0" verticalCenter="0">
+												creationComplete="panelTabPath_creationCompleteHandler(event)" horizontalCenter="0" verticalCenter="0"
+										    	currentState="viewingState">
 					</panelTabs:tabPathSelection>				
 				</s:NavigatorContent>
 				

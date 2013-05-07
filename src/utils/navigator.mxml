@@ -43,14 +43,15 @@
 				return this.selectedState;
 			}
 			
-			public function setState(ii:int):void {
+			public function setState(ii:int, mainState:String):void {
 				this.selectedState = ii;	
 				switch (ii) {
 					case 1:
-						this.btn1.enabled = true;
+						this.btn1.enabled = (true && (mainState == "scenarioState"));
 						break;
 					case 2:
-						this.btn2.enabled = true;
+						this.btn1.enabled = (true && (mainState == "scenarioState"));
+						this.btn2.enabled = (true && (mainState == "scenarioState"));
 						this.btn3.enabled = true;
 						break;
 				};				
@@ -64,11 +65,12 @@
 
 		]]>
 	</fx:Script>
+	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
+	</fx:Declarations>	
 	
-	<s:Button label="1. Geo List" width="24%" height="25" horizontalCenter="-318" 
+	<s:Button label="1. Geography List" width="24%" height="25" horizontalCenter="-318" 
 			  verticalCenter="0" id="btn0" click="btn0_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" color="#000000" enabled="true"/>
 	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-80"/>
 	<s:Button label="2. BQ's list" width="24%" height="25" horizontalCenter="-160" 

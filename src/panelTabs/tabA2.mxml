@@ -147,7 +147,8 @@
 				
 				var temp:Object = new Object();				
 				if (this.isSingleGeo) { 				
-					alteredData = this.grid.getData();					
+					alteredData = this.grid.getData();
+					//record modified values into cTree dataSet here?					
 				} else {
 					var yrs:int = 2010;
 					if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
@@ -155,10 +156,11 @@
 					//get selected Data
 					var rawData:ArrayCollection = this.grid.getAllData();
 					alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);					
+					//record modified values into cTree dataSet here
 				};
 				
 				temp = ({'id':1, data:this.alteredData});
-				//hasSplit by batteryTypes = false
+				//hasSplit by batteryTypes = false				
 				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, 0, 0);
 			}			
 

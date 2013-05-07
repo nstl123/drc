@@ -103,28 +103,17 @@ package controls
 			
 			this.selPath = np;
 			switch (this.selPath) {
-				case "A1":						
+				case "A":						
 					//          [A, B, C, D, E, F]
 					pathFlags = [1, 0, 0, 0, 0, 0];
 					activeIndi = 0;
 					break;
-				case "B1":					
+				case "B":					
 					pathFlags = [0, 1, 0, 0, 0, 0];
 					activeIndi = 0;
 					break;
-				case "B2":					
-					pathFlags = [0, 1, 0, 0, 0, 0];
-					activeIndi = 1;
-					break;
-				/*case "C":					
-					pathFlags = [0, 0, 1, 0, 0, 1];
-					break;*/
-				case "D1":
+				case "D":
 					pathFlags = [0, 0, 0, 1, 0, 0];
-					activeIndi = 0;
-					break;				
-				case "A2":
-					pathFlags = [1, 0, 0, 0, 0, 1];
 					activeIndi = 0;
 					break;				
 				case "E1": //batReplacement
@@ -134,18 +123,6 @@ package controls
 				case "E2": //pwrSplit
 					pathFlags = [0, 0, 0, 0, 0, 1];
 					activeIndi = 1;
-					break;					
-				case "E3": //per SPlit
-					pathFlags = [0, 0, 0, 0, 0, 1];
-					activeIndi = 1;
-					break;	
-				case "E4": //# of bat
-					pathFlags = [0, 0, 0, 0, 0, 1];
-					activeIndi = 2;
-					break;
-				case "E5": // size share
-					pathFlags = [0, 0, 0, 0, 0, 1];
-					activeIndi = 0;
 					break;
 				default:
 					pathFlags = [0, 0, 0, 0, 0, 0];

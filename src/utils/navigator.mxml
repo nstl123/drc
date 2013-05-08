@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" height="45"
-		 width="800">
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%">
 	<s:layout>
 		<s:HorizontalLayout gap="0" paddingLeft="40" paddingTop="10" paddingBottom="10" paddingRight="40"/>
 	</s:layout>
@@ -70,16 +70,16 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>	
 	
-	<s:Button label="1. Geography List" width="24%" height="25" horizontalCenter="-318" 
-			  verticalCenter="0" id="btn0" click="btn0_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" color="#000000" enabled="true"/>
-	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-80"/>
-	<s:Button label="2. BQ's list" width="24%" height="25" horizontalCenter="-160" 
-			  verticalCenter="0" id="btn1" click="btn1_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" color="#000000" enabled="false"/>
-	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-239"/>
-	<s:Button label="3. Data Inputs" width="24%" height="25" horizontalCenter="0" verticalCenter="0" id="btn2" 
-			  click="btn2_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" enabled="false"/>
-	<s:Label text="&gt;&gt;" height="25" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="80"/>
-	<s:Button label="4. Show Results" width="24%" height="25" horizontalCenter="160" verticalCenter="0" id="btn3" 
-			  click="btn3_clickHandler(event)" fontWeight="bold" fontFamily="Arial" fontSize="13" enabled="false"/>
+	<s:Button label="1. Geography List" width="24%" height="20" horizontalCenter="-318" 
+			  verticalCenter="0" id="btn0" click="btn0_clickHandler(event)" fontWeight="normal" fontFamily="Arial" fontSize="13" color="#3A3A3A" enabled="true"/>
+	<s:Label text="&gt;&gt;" height="20" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-80"/>
+	<s:Button label="2. BQ's list" width="24%" height="20" horizontalCenter="-160" 
+			  verticalCenter="0" id="btn1" click="btn1_clickHandler(event)" fontWeight="normal" fontFamily="Arial" fontSize="13" color="#3A3A3A" enabled="false"/>
+	<s:Label text="&gt;&gt;" height="20" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="-239"/>
+	<s:Button label="3. Data Inputs" width="24%" height="20" horizontalCenter="0" verticalCenter="0" id="btn2" 
+			  click="btn2_clickHandler(event)" fontWeight="normal" fontFamily="Arial" fontSize="13" enabled="false" color="#3A3A3A"/>
+	<s:Label text="&gt;&gt;" height="20" verticalCenter="0" verticalAlign="middle" textAlign="center" width="15%" fontFamily="Arial" fontSize="12" fontWeight="bold" horizontalCenter="80"/>
+	<s:Button label="4. Show Results" width="24%" height="20" horizontalCenter="160" verticalCenter="0" id="btn3" 
+			  click="btn3_clickHandler(event)" fontWeight="normal" fontFamily="Arial" fontSize="13" enabled="false" color="#3A3A3A"/>
 </s:Group>
 

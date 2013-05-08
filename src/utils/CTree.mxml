@@ -227,8 +227,10 @@
 				regList = this.regionNames.lastResult as ArrayCollection;
 				regList.filterFunction = filterRegions;
 				regList.refresh();
-				this.regionsListGrid.setDataList(this.regList);		
+				if (this.regionsListGrid) this.regionsListGrid.setDataList(this.regList);		
 			}		
+			
+			
 			
 			[bindable] private var useCluster:Boolean = false;
 			public function getUseCluster():Boolean {
@@ -247,7 +249,7 @@
 				this.useCluster = !this.useCluster;
 				this.dispatchEvent(new Event("updateClusterType", true));				
 				regList.refresh();
-				this.regionsListGrid.setDataList(regList);	
+				this.regionsListGrid.setDataList(regList);					
 			}	
 		]]>
 	</fx:Script>
@@ -314,8 +316,9 @@
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
-		<utils:CCheckBoxGrid id="regionsListGrid"
-							 labelText="Regions"  top="373" left="10" width="100%" height="100%" fontSize="11" fontFamily="Arial">
+		<utils:CCheckBoxGrid id="regionsListGrid" creationComplete="regionListNames_resultHandler(null)"
+							 labelText="Regions"  top="373" left="10" width="100%" height="100%" 
+							 fontSize="11" fontFamily="Arial">
 		</utils:CCheckBoxGrid>			
 	</s:BorderContainer>
 	

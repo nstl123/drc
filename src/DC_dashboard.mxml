@@ -116,7 +116,7 @@
 			}
 			
 			public function updateStateSpaceLabel():void {
-				this.stateSpaceLabel.text = this.masterTab.getStateSpaceName();
+				//this.stateSpaceLabel.text = this.masterTab.getStateSpaceName();
 			}
 			
 			[bindable] private var currState:int;
@@ -507,7 +507,8 @@
 					case "landingState" :
 						if (viewMode == "viewDataOnly") {							
 							this.currentState =  "geoList";
-							this.navigatorBox2.setButtonColors(null, 2, false);
+							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false);
+							this.navigatorBox2.setButtonColors(null,      2, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 							this.startApp(null);
 							this.invalidateDisplayList();
@@ -527,18 +528,23 @@
 							currentState = "viewingState"
 							this.navigatorBox2.setButtonColors("#000000", 2, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-							this.navigatorBox2.setButtonColors(null,      4, false);
+							this.navigatorBox2.setButtonColors(null,      4, false);							
 						} else {
 							currentState = "scenarioState";
 							this.navigatorBox2.setButtonColors(null, 3);
+							this.tabai.selectedIndex = 0;
 						};
-						if (isStart == 0) this.tabai.createDeferredContent();						
+						if (isStart == 0) {							
+							this.tabai.createDeferredContent();							
+						};
 						break;
 					case "viewingState" :
 						this.navigatorBox2.setButtonColors("#8c8c8c", 4);
+						if (this.tabaiCreationComplete) this.tabai.selectedIndex = 4;
 						break;					
 					case "scenarioState" :
 						this.navigatorBox2.setButtonColors(null, 4);
+						this.tabai.selectedIndex = 4;
 						break;					
 				}			
 				
@@ -564,14 +570,26 @@
 						} 
 						break;
 					case "viewingState" :
-						this.currentState = "geoList";
-						this.navigatorBox2.setButtonColors(null, 2, false);
-						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-						this.navigatorBox2.setButtonColors("#000000", 4, false);
+						if (this.tabai.selectedIndex == 4) {
+							this.tabai.selectedIndex = 0;
+							this.navigatorBox2.setButtonColors(null, 4);
+							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false); // data inputs disabled
+						} else {
+							this.currentState = "geoList";
+							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false); // data inputs disabled
+							this.navigatorBox2.setButtonColors(null, 2, false);
+							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false); // data inputs disabled
+							this.navigatorBox2.setButtonColors("#000000", 4, false);
+						};
 						break;					
 					case "scenarioState" :
-						this.currentState = "geoList";
-						this.navigatorBox2.setButtonColors(null, 2);
+						if (this.tabai.selectedIndex == 4) {
+							this.tabai.selectedIndex = 0;
+							this.navigatorBox2.setButtonColors(null, 3);
+						} else {
+							this.currentState = "geoList";
+							this.navigatorBox2.setButtonColors(null, 2);
+						};
 						break;					
 				}		
 				
@@ -589,8 +607,21 @@
 		<s:State name="viewingState" />
 		<s:State name="scenarioState" />		
 	</s:states>
-
-	<s:BorderContainer width="992" height="50" id="playBorder">
+	
+	<s:BorderContainer width="992" height="15" fontFamily="Verdana" 
+					   horizontalCenter="0" top="0" borderVisible="false" id="a">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="justify" />
+		</s:layout>
+		
+		<s:Label text="Battery Demand Analysis Tool. v.05-07-3pm" height="100%" width="40%"/>
+		<s:Label text="Selected Path" height="15" verticalAlign="middle"
+				 id="pathLabel" width="30%"/>
+		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"/>
+	</s:BorderContainer>	
+	
+	<s:BorderContainer width="992" height="50" id="playBorder" 
+					   borderWeight="2" borderColor="#A7A7A7" borderAlpha="0.5">
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
@@ -604,13 +635,14 @@
 				 fontFamily="Verdana" fontSize="15" />
 	</s:BorderContainer>
 
-	<s:BorderContainer height="30" width="992"  excludeFrom="landingState">	
+	<s:BorderContainer height="30" width="992"  excludeFrom="landingState" 
+					   borderVisible="false">	
 		<utils:navigatorLabels id="navigatorBox2" width="100%" height="100%"
 							    horizontalCenter="0" verticalCenter="0">
 		</utils:navigatorLabels>
 	</s:BorderContainer>	
 	
-	<s:BorderContainer includeIn="landingState" width="992" height="400">
+	<s:BorderContainer includeIn="landingState" width="992" height="400" borderVisible="false">
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
@@ -621,7 +653,7 @@
 		<s:RadioButton y="244" label="Run scenarios" value="runScenarios" 
 					   groupName="viewingModeGroup"
 					   click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#525252" fontWeight="bold" horizontalCenter="-238"/>
-		<s:Label y="20" text="intro / landing page" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-350"/>
+		<s:Label y="20" text="intro / landing page" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-340"/>
 		
 		<mx:Text width="671" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery-powered device data across 53 markets globally.  In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios.&#13;&#13;Please indicate below how you intend to use the tool:" y="50" height="117" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 		<mx:Text width="500" text="Click this selection to simply jump to output options" y="204" height="35" horizontalCenter="0" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565"/>
@@ -634,17 +666,7 @@
 		<s:VerticalLayout horizontalAlign="center"/>
 	</s:layout>
 
-	<s:BorderContainer width="992" height="15" fontFamily="Verdana" 
-					   horizontalCenter="0" top="0" borderVisible="false">
-		<s:layout>
-			<s:HorizontalLayout verticalAlign="justify" />
-		</s:layout>
-	
-		<s:Label text="Battery Demand Analysis Tool. v.05-07-3pm" height="100%" width="40%"/>
-		<s:Label text="Selected Path" height="15" verticalAlign="middle"
-				   id="pathLabel" width="30%"/>
-		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"/>
-	</s:BorderContainer>	
+
 
 	<!-- <utils:navigator id="navigatorBox" height="20" width="992"
 					  excludeFrom="landingState" itemCreationPolicy="immediate">
@@ -652,9 +674,7 @@
 			<s:HorizontalLayout paddingLeft="15" paddingRight="15"/>
 		</utils:layout>
 	</utils:navigator> !-->
-	
-	
-	<s:Label text="current Pos:" id="stateSpaceLabel" width="100%" verticalAlign="middle" textAlign="left" fontStyle="italic"/>
+
 	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" 
 					   borderVisible="false" 
 					 excludeFrom="landingState, BQList">	

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="30">
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			public function setButtonColors(col:String, k:int, single:Boolean = true):void {
+				if (!col) col = "#2f42fe"; // melyna				
+				var colBlack:String = "#000000"; // default juoda "#000000"				
+				
+				if (single) {
+					this.lab1.setStyle("color", colBlack);
+					this.lab2.setStyle("color", colBlack);
+					this.lab3.setStyle("color", colBlack);
+					this.lab4.setStyle("color", colBlack);
+				};
+				
+				switch (k) {
+					case 1:
+						this.lab1.setStyle("color", col);
+						break;
+					case 2:
+						this.lab2.setStyle("color", col);
+						break;
+					case 3:
+						this.lab3.setStyle("color", col);
+						break;
+					case 4:
+						this.lab4.setStyle("color", col);
+						break;
+				};
+			}
+				
+			
+		]]>
+	</fx:Script>
+	
+	<s:BorderContainer width="100%" height="30" horizontalCenter="0" verticalCenter="0">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+		<s:Label text="BQs" width="25%" height="30" verticalAlign="middle" textAlign="center" 
+				 id="lab1" color="#000000" fontWeight="bold"/>
+		<s:Label text="&lt;&lt; &gt;&gt;" height="30" verticalAlign="middle" textAlign="center" width="5%"/>
+		<s:Label text="Geography List" width="25%" height="30" verticalAlign="middle" textAlign="center" id="lab2" fontWeight="bold"/>
+		<s:Label text="&lt;&lt; &gt;&gt;" height="30" verticalAlign="middle" textAlign="center" width="5%"/>
+		<s:Label text="Data Inputs" width="25%" height="30" verticalAlign="middle" textAlign="center" id="lab3" fontWeight="bold"/>
+		<s:Label text="&lt;&lt; &gt;&gt;" height="30" verticalAlign="middle" textAlign="center" width="5%"/>
+		<s:Label text="Show Results" width="25%" height="30" verticalAlign="middle" textAlign="center" id="lab4" fontWeight="bold"/>
+		
+	</s:BorderContainer>
+</s:Group>

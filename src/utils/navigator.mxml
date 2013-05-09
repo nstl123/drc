@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="100%">
+		 width="100%" creationComplete="group1_creationCompleteHandler(event)">
 	<s:layout>
 		<s:HorizontalLayout gap="0" paddingLeft="40" paddingTop="10" paddingBottom="10" paddingRight="40"/>
 	</s:layout>
@@ -15,28 +15,28 @@
 			protected function btn0_clickHandler(event:MouseEvent):void
 			{
 				this.selectedState = 0;
-				dispatchEvent(new Event("stateChanged", true));
+				//dispatchEvent(new Event("stateChanged", true));
 				//this.btn2.enabled = true;
 			}
 			
 			protected function btn1_clickHandler(event:MouseEvent):void
 			{
 				this.selectedState = 1;
-				dispatchEvent(new Event("stateChanged", true));
+				//dispatchEvent(new Event("stateChanged", true));
 				//this.btn2.enabled = true;
 			}
 
 			protected function btn2_clickHandler(event:MouseEvent):void
 			{
 				this.selectedState = 2;
-				dispatchEvent(new Event("stateChanged", true));
+				//dispatchEvent(new Event("stateChanged", true));
 				//this.btn3.enabled = true;
 			}
 
 			protected function btn3_clickHandler(event:MouseEvent):void
 			{
 				this.selectedState = 3;
-				dispatchEvent(new Event("stateChanged", true));
+				//dispatchEvent(new Event("stateChanged", true));
 			}
 
 			public function getState():int {
@@ -61,6 +61,14 @@
 				this.btn1.enabled = flag;
 				this.btn2.enabled = flag;
 				this.btn3.enabled = flag;
+			}
+
+
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var s:String = "finished with navigator";
+				s = s + "_";
+				this.invalidateDisplayList();
 			}
 
 		]]>

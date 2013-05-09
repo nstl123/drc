@@ -67,52 +67,52 @@
 				this.currentStateLabel.text = "Current State: " + this.currentState;				
 			}
 			
+			public var flagApplicationStarted:int = 0;
 			protected function startApp(event:FlexEvent):void
 			{
-				trace("starting init Depot1, Depot21, Depot3");
-				this.pathLabel.text = "Init";			
-				
-				this.dataServiceNames = new Depot1();
-				this.dataServiceData = new Depot21();
-				this.dataServiceUpdate = new Depot3();				
-				
-				this.workingScenarioID = this.IDgen.generateID();	
-				this.currTime = this.IDgen.generateTimeStamp();
-				
-				cleanOldScenarios(); // clean DB from unneccesary scenarios
-				this.addEventListener("dbCleaned", initScenarioDB);				
-				
-				this.addEventListener("CNTRY_CHANGED", digestUpdate);				
-				this.addEventListener("cntryChecked",   digestUpdate);
-				this.addEventListener("cntryUnChecked", digestUpdate);				
-				this.addEventListener("updateClusterType", digestUpdate);				
-				this.addEventListener("NewScenarioUpdated", refreshDeviceBase);				
-				this.addEventListener("scenarioResetRequested", resetScenario);
-				this.addEventListener("scenarioResetDone", refreshAllTabs);
-				
-				this.addEventListener("changesMadeInScenario", recordState);
-				
-				this.addEventListener("pathChanged", digestPathChange);
-				
-				this.addEventListener("init", createNext);
-				this.addEventListener("cTree", createNext);
-				this.addEventListener("tabA", createNext);
-				this.addEventListener("tabB", createNext);
-				this.addEventListener("tabC", createNext);
-				this.addEventListener("tabD", createNext);				
-				this.addEventListener("tabF", createNext);
-				this.addEventListener("tabE", createNext);
-				
-				this.addEventListener("stateChanged", changeState); // further get state from navControl				
-				
-				this.addEventListener("viewingModeChanged", manageViewModeChanged);
-				
-				masterTab = new FlowManager();
-				
-				this.masterTab.setStateSpacePos(1);
-				updateStateSpaceLabel();
-				
-				this.dispatchEvent(new Event("init", true));
+				flagApplicationStarted = flagApplicationStarted + 1;
+				if (flagApplicationStarted == 1) {
+					trace("starting init Depot1, Depot21, Depot3");
+					//this.pathLabel.text = "Init";			
+					
+					this.dataServiceNames = new Depot1();
+					this.dataServiceData = new Depot21();
+					this.dataServiceUpdate = new Depot3();				
+					
+					this.workingScenarioID = this.IDgen.generateID();	
+					this.currTime = this.IDgen.generateTimeStamp();
+					
+					cleanOldScenarios(); // clean DB from unneccesary scenarios
+					this.addEventListener("dbCleaned", initScenarioDB);				
+					
+					this.addEventListener("CNTRY_CHANGED", digestUpdate);				
+					this.addEventListener("cntryChecked",   digestUpdate);
+					this.addEventListener("cntryUnChecked", digestUpdate);				
+					this.addEventListener("updateClusterType", digestUpdate);				
+					this.addEventListener("NewScenarioUpdated", refreshDeviceBase);				
+					this.addEventListener("scenarioResetRequested", resetScenario);
+					this.addEventListener("scenarioResetDone", refreshAllTabs);
+					
+					this.addEventListener("changesMadeInScenario", recordState);
+					
+					this.addEventListener("pathChanged", digestPathChange);
+					
+					this.addEventListener("init", createNext);
+					this.addEventListener("cTree", createNext);
+					this.addEventListener("tabA", createNext);
+					this.addEventListener("tabB", createNext);
+					this.addEventListener("tabC", createNext);
+					this.addEventListener("tabD", createNext);				
+					this.addEventListener("tabF", createNext);
+					this.addEventListener("tabE", createNext);
+					
+					this.addEventListener("stateChanged", changeState); // further get state from navControl					
+					this.addEventListener("viewingModeChanged", manageViewModeChanged);					
+					masterTab = new FlowManager();					
+					this.masterTab.setStateSpacePos(1);
+					//updateStateSpaceLabel();
+					this.dispatchEvent(new Event("init", true));
+				};
 			}
 			
 			public function updateStateSpaceLabel():void {
@@ -121,8 +121,8 @@
 			
 			[bindable] private var currState:int;
 			public function changeState(evt:Event) : void {
-				this.currState = this.navigatorBox.getState();
-				this.digestStateChange(this.currState);
+				//this.currState = this.navigatorBox.getState();
+				//this.digestStateChange(this.currState);
 				// take approprate action hide/show tabs
 			}
 			
@@ -200,7 +200,7 @@
 				this.masterTab.setDataList(cntryData, regData, uCluster);	
 				
 				if (isStart < 2) { // enable path selection and buttons									
-					this.navigatorBox.setState(1, this.currentState);					
+					//this.navigatorBox.setState(1, this.currentState);					
 					//this.panelTabPath.enablePaths(true);
 				};
 				
@@ -221,7 +221,7 @@
 					isStart = isStart + 1;					
 				};
 				if (isStart > 1) {
-					this.navigatorBox.setState(2, this.currentState);
+					//this.navigatorBox.setState(2, this.currentState);
 				};
 				if ((isStart > 1)&&(this.masterTab.getStateSpacePos() == 2)) {
 						this.masterTab.setStateSpacePos(3);
@@ -236,7 +236,7 @@
 					//this.selPath = this.panelTabPath.selPath;				
 					
 					pathFlags = this.masterTab.registerPath(this.selPath, isStart);					
-					this.colorLabelsOnPath(pathFlags);
+					//this.colorLabelsOnPath(pathFlags);
 				};				
 			}
 
@@ -290,7 +290,7 @@
 			}
 			
 			public function cleanOldScenarios():void {
-				this.statusLabel.text = "cleaning DB...";
+				//this.statusLabel.text = "cleaning DB...";
 				deleteAllScenariosResult.token = depot3.deleteAllScenarios();		
 			}
 			
@@ -429,7 +429,7 @@
 				var c:String = evt.type;
 				switch (c) {
 					case 'init':
-						this.pathLabel.text = "Loading Module: cTree";
+						//this.pathLabel.text = "Loading Module: cTree";
 						this.cntryTreeInit();
 						break;
 					case 'cTree':
@@ -492,43 +492,58 @@
 			}					
 
 			
-			[bindable] private var selState:String = "landingState";
+			[bindable] private var viewMode:String = "viewDataOnly";
 			protected function modeSwitch_clickHandler(event:Event):void
 			{
-				this.selState = String(this.viewingModeGroup.selection.value);				
+				this.viewMode = String(this.viewingModeGroup.selection.value);				
 			}			
 
 			protected function btnNext_clickHandler(event:MouseEvent):void		
 			{								
-				this.selState = String(this.viewingModeGroup.selection.value);
+				this.viewMode = String(this.viewingModeGroup.selection.value);
+				var tmp:String;				
 				
 				switch (this.currentState) {
 					case "landingState" :
-						this.currentState = "BQList";
+						if (viewMode == "viewDataOnly") {							
+							this.currentState =  "geoList";
+							this.navigatorBox2.setButtonColors(null, 2, false);
+							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
+							this.startApp(null);
+							this.invalidateDisplayList();
+						} else {
+							this.currentState =  "BQList"
+							this.navigatorBox2.setButtonColors(null, 1);
+						};
 						break;
 					case "BQList" :						
 						//this.dispatchEvent(new Event("init", true));						
 						this.currentState = "geoList";
-						if (isStart == 0) this.startApp(null);
+						this.navigatorBox2.setButtonColors(null, 2);
+						this.startApp(null);
 						break;
-					case "geoList" :
-						currentState = (this.selState == "viewDataOnly") ? 
-											"viewingState" :
-											"scenarioState";
-						//if (isStart == 0) this.initAll(null);
-						if (isStart == 0) this.tabai.createDeferredContent();		
+					case "geoList" :					
+						if (this.viewMode == "viewDataOnly") { 
+							currentState = "viewingState"
+							this.navigatorBox2.setButtonColors("#000000", 2, false);
+							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
+							this.navigatorBox2.setButtonColors(null,      4, false);
+						} else {
+							currentState = "scenarioState";
+							this.navigatorBox2.setButtonColors(null, 3);
+						};
+						if (isStart == 0) this.tabai.createDeferredContent();						
 						break;
 					case "viewingState" :
-						//null
+						this.navigatorBox2.setButtonColors("#8c8c8c", 4);
 						break;					
 					case "scenarioState" :
-						//null
+						this.navigatorBox2.setButtonColors(null, 4);
 						break;					
-				}				
+				}			
 				
 				this.currentStateLabel.text = "Current State: " + this.currentState;
-				//this.invalidateDisplayList();
-			
+				this.invalidateDisplayList();			
 			}
 
 			protected function btnBack_clickHandler(event:MouseEvent):void
@@ -538,23 +553,32 @@
 						//null
 						break;
 					case "BQList" :
-						this.currentState = "landingState";
+						this.currentState = "landingState";						
 						break;
 					case "geoList" :
-						this.currentState = "BQList";
+						if (viewMode == "viewDataOnly") {
+							currentState =  "landingState";							
+						} else {
+							currentState = "BQList";
+							this.navigatorBox2.setButtonColors(null, 1);
+						} 
 						break;
 					case "viewingState" :
 						this.currentState = "geoList";
+						this.navigatorBox2.setButtonColors(null, 2, false);
+						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
+						this.navigatorBox2.setButtonColors("#000000", 4, false);
 						break;					
 					case "scenarioState" :
 						this.currentState = "geoList";
+						this.navigatorBox2.setButtonColors(null, 2);
 						break;					
 				}		
 				
 				this.currentStateLabel.text = "Current State: " + this.currentState;
 				this.invalidateDisplayList();
 			}
-			
+
 		]]>
 	</fx:Script>
 		
@@ -579,13 +603,21 @@
 		<s:Label  text="emptyLabel" id="currentStateLabel" verticalCenter="0" 
 				 fontFamily="Verdana" fontSize="15" />
 	</s:BorderContainer>
-	<s:BorderContainer includeIn="landingState" width="992" height="733">
+
+	<s:BorderContainer height="30" width="992"  excludeFrom="landingState">	
+		<utils:navigatorLabels id="navigatorBox2" width="100%" height="100%"
+							    horizontalCenter="0" verticalCenter="0">
+		</utils:navigatorLabels>
+	</s:BorderContainer>	
+	
+	<s:BorderContainer includeIn="landingState" width="992" height="400">
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
 		<s:RadioButton y="182" label="View data only" value="viewDataOnly"
 					   groupName="viewingModeGroup" 
-					   selected="true" click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#525252" fontWeight="bold" horizontalCenter="-238"/>
+					   selected="true" click="modeSwitch_clickHandler(event)" 
+					   fontFamily="Arial" fontSize="14" color="#525252" fontWeight="bold" horizontalCenter="-238"/>
 		<s:RadioButton y="244" label="Run scenarios" value="runScenarios" 
 					   groupName="viewingModeGroup"
 					   click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#525252" fontWeight="bold" horizontalCenter="-238"/>
@@ -597,13 +629,13 @@
 	</s:BorderContainer>
 	
 <s:BorderContainer width="992" height="100%" borderVisible="false" 
-				   includeIn="BQList, geoList, viewingState, scenarioState">	
+				   excludeFrom="landingState" itemCreationPolicy="immediate">	
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center"/>
 	</s:layout>
 
 	<s:BorderContainer width="992" height="15" fontFamily="Verdana" 
-					   horizontalCenter="0" top="0" borderVisible="false" width.viewingState="992">
+					   horizontalCenter="0" top="0" borderVisible="false">
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="justify" />
 		</s:layout>
@@ -614,26 +646,29 @@
 		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"/>
 	</s:BorderContainer>	
 
-	<utils:navigator id="navigatorBox" height="20" width="992" includeIn="BQList, geoList, viewingState, scenarioState">
+	<!-- <utils:navigator id="navigatorBox" height="20" width="992"
+					  excludeFrom="landingState" itemCreationPolicy="immediate">
 		<utils:layout>
-			<s:HorizontalLayout verticalAlign="contentJustify" paddingLeft="15" paddingRight="15"/>
+			<s:HorizontalLayout paddingLeft="15" paddingRight="15"/>
 		</utils:layout>
-	</utils:navigator>
+	</utils:navigator> !-->
+	
 	
 	<s:Label text="current Pos:" id="stateSpaceLabel" width="100%" verticalAlign="middle" textAlign="left" fontStyle="italic"/>
 	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" 
-					   borderVisible="false"
-					   includeIn="geoList, viewingState, scenarioState" >	
+					   borderVisible="false" 
+					 excludeFrom="landingState, BQList">	
 		<s:layout>
 			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
 		</s:layout>
 		
-		<s:BorderContainer width="225" height="100%" horizontalCenter="0" top="" borderVisible="false">
+		<s:BorderContainer width="225" height="100%" horizontalCenter="0" top="" borderVisible="false"
+						   creationPolicy="auto" >
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
 			<utils:CTree id="cntryTree" width="100%" height="100%" horizontalCenter="0" 
-						 verticalCenter="0"	 includeIn="geoList, viewingState, scenarioState" >
+						 verticalCenter="0" >
 			</utils:CTree>			
 			
 		</s:BorderContainer>
@@ -738,15 +773,18 @@
 		</s:BorderContainer>
 		
 		<s:BorderContainer id="termpBrd" creationPolicy="none" borderVisible="false">
-			<panelTabs:tabC4 id = "panelTabC4" width="0%" height="100%"  top="0" left="0"
+			<panelTabs:tabC4 id = "panelTabC4" width="0%" height="0%"  top="0" left="0"
 							 enabled="false" visible="false"
 							 creationComplete="tabc11_creationCompleteHandler(event)">					
 			</panelTabs:tabC4> 
-		</s:BorderContainer>
-		
+		</s:BorderContainer>		
 	</s:BorderContainer>
-	<panelTabs:tabPathSelection includeIn="BQList" width="95%" height="100%">
-	</panelTabs:tabPathSelection>
+	
+	<s:BorderContainer borderVisible="false" width="90%" height="100%" includeIn="BQList">
+		<panelTabs:tabPathSelection width="95%" height="100%"
+									horizontalCenter="0" verticalCenter="0" visible="true">
+		</panelTabs:tabPathSelection>
+	</s:BorderContainer>
 </s:BorderContainer>
 	
 </s:Application>

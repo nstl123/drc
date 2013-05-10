@@ -9,12 +9,13 @@
 			   creationComplete="application1_creationCompleteHandler(event)"
 			   
 			   xmlns:panelTabs="panelTabs.*" 
-			   width="100%" height="850" xmlns:utils="utils.*" minHeight="850" pageTitle="Battery Demand Tool">
+			   width="100%" height="850" xmlns:utils="utils.*"
+			   minHeight="850" pageTitle="Battery Demand Tool">
 	
 	<!-- creationComplete="initAll(event)" !-->
 	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" paddingTop="10" paddingBottom="20"/>
+		<s:VerticalLayout horizontalAlign="center" paddingTop="10" paddingBottom="20" gap="0"/>
 	</s:layout>
 	<fx:Declarations>	
 		
@@ -26,6 +27,8 @@
 						 fault="createNewWorkingScenarioResult_faultHandler(event)"/>		
 		<s:CallResponder id="deleteAllScenariosResult" result="deleteAllScenariosResult_resultHandler(event)" 
 						 fault="deleteAllScenariosResult_faultHandler(event)"/>
+		<s:CallResponder id="indicatorsNamesList" result="indicatorsNamesList_resultHandler(event)" /> 
+		
 		<s:RadioButtonGroup id="viewingModeGroup"/>
 		
 	</fx:Declarations>
@@ -510,6 +513,7 @@
 							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false);
 							this.navigatorBox2.setButtonColors(null,      2, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
+							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);
 							this.startApp(null);
 							this.invalidateDisplayList();
 						} else {
@@ -528,23 +532,34 @@
 							currentState = "viewingState"
 							this.navigatorBox2.setButtonColors("#000000", 2, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-							this.navigatorBox2.setButtonColors(null,      4, false);							
+							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
+							this.navigatorBox2.setButtonColors(null,      5, false);
+							if (!tabaiCreationComplete) this.tabai.createDeferredContent();
+							this.cntryTree.setRegionsGridEnabled(true);
 						} else {
-							currentState = "scenarioState";
-							this.navigatorBox2.setButtonColors(null, 3);
-							this.tabai.selectedIndex = 0;
-						};
-						if (isStart == 0) {							
-							this.tabai.createDeferredContent();							
-						};
+							currentState = "indicatorsList";							
+							this.navigatorBox2.setButtonColors(null, 3);							
+						};									
 						break;
-					case "viewingState" :
-						this.navigatorBox2.setButtonColors("#8c8c8c", 4);
+					case "indicatorsList":
+						currentState = "scenarioState";
+						this.navigatorBox2.setButtonColors(null, 4);
+						if (!tabaiCreationComplete) this.tabai.createDeferredContent();
+						this.tabai.selectedIndex = 0;
+						this.cntryTree.setRegionsGridEnabled(true);
+						break;					
+					case "viewingState" :						
+						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
+						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);
+						//this.navigatorBox2.setButtonColors("#8c8c8c", 5, false);
 						if (this.tabaiCreationComplete) this.tabai.selectedIndex = 4;
+						
 						break;					
 					case "scenarioState" :
-						this.navigatorBox2.setButtonColors(null, 4);
+						this.navigatorBox2.setButtonColors(null, 5);
 						this.tabai.selectedIndex = 4;
+						this.btnNext.enabled = false;
+						
 						break;					
 				}			
 				
@@ -569,32 +584,51 @@
 							this.navigatorBox2.setButtonColors(null, 1);
 						} 
 						break;
+					case "indicatorsList" :
+						currentState = "geoList";
+						this.navigatorBox2.setButtonColors(null, 2);						 
+						break;					
 					case "viewingState" :
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = 0;
-							this.navigatorBox2.setButtonColors(null, 4);
-							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false); // data inputs disabled
+							//this.navigatorBox2.setButtonColors(null,      4, false);
+							//this.navigatorBox2.setButtonColors("#8c8c8c", 3, false); // data inputs disabled
 						} else {
 							this.currentState = "geoList";
 							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false); // data inputs disabled
-							this.navigatorBox2.setButtonColors(null, 2, false);
+							this.navigatorBox2.setButtonColors(null,      2, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false); // data inputs disabled
-							this.navigatorBox2.setButtonColors("#000000", 4, false);
+							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);
+							this.navigatorBox2.setButtonColors("#000000", 5, false);
+							this.cntryTree.setRegionsGridEnabled(false);
 						};
 						break;					
 					case "scenarioState" :
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = 0;
-							this.navigatorBox2.setButtonColors(null, 3);
+							this.navigatorBox2.setButtonColors(null, 4);
 						} else {
-							this.currentState = "geoList";
-							this.navigatorBox2.setButtonColors(null, 2);
+							this.currentState = "indicatorsList";
+							this.navigatorBox2.setButtonColors(null, 3);
+							this.cntryTree.setRegionsGridEnabled(false);
 						};
+						this.btnNext.enabled = true;					
 						break;					
 				}		
 				
 				this.currentStateLabel.text = "Current State: " + this.currentState;
 				this.invalidateDisplayList();
+			}
+			
+			
+			public function getTheData(evt:Event):void {
+				trace("init names inside panel A1");				
+				indicatorsNamesList.token = this.depot1.getIndicatorNames();			
+			}
+
+			protected function indicatorsNamesList_resultHandler(event:ResultEvent):void
+			{			
+				this.indicatorGrid.setDataList(this.indicatorsNamesList.lastResult as ArrayCollection);
 			}
 
 		]]>
@@ -604,6 +638,7 @@
 		<s:State name="landingState" />
 		<s:State name="BQList" />
 		<s:State name="geoList" />
+		<s:State name="indicatorsList" />
 		<s:State name="viewingState" />
 		<s:State name="scenarioState" />		
 	</s:states>
@@ -614,25 +649,32 @@
 			<s:HorizontalLayout verticalAlign="justify" />
 		</s:layout>
 		
-		<s:Label text="Battery Demand Analysis Tool. v.05-07-3pm" height="100%" width="40%"/>
+		<s:Label text="Battery Demand Analysis Tool. v.05-09-5pm" height="100%" width="40%" 
+				 fontFamily="Arial" fontSize="9"/>
 		<s:Label text="Selected Path" height="15" verticalAlign="middle"
-				 id="pathLabel" width="30%"/>
-		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"/>
+				 id="pathLabel" width="30%" fontFamily="Arial" fontSize="9"/>
+		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"
+				 fontFamily="Arial" fontSize="9"/>
+		
 	</s:BorderContainer>	
 	
-	<s:BorderContainer width="992" height="50" id="playBorder" 
-					   borderWeight="2" borderColor="#A7A7A7" borderAlpha="0.5">
+	<s:BorderContainer width="992" id="playBorder" 
+					   borderWeight="2" borderColor="#A7A7A7"
+					   borderAlpha="0.5" borderVisible="false" height="30">
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
 		<s:Button label="Next &gt;&gt;" width="110" height="25" id="btnNext" 
 				  click="btnNext_clickHandler(event)" 
-				  verticalCenter="0" right="15" />
+				  verticalCenter="0" right="15"  
+				  fontWeight="bold" fontFamily="Arial" fontSize="12" 
+				   />
 		<s:Button label="&lt;&lt; Back" width="110" height="25" 
-				  verticalCenter="0" id="btnBack"			   
-				  click="btnBack_clickHandler(event)"  right="140"/>
+				  verticalCenter="0" id="btnBack"  click="btnBack_clickHandler(event)"  
+				  right="140" fontWeight="bold" fontFamily="Arial" fontSize="12"
+				  enabled.landingState="false"/>
 		<s:Label  text="emptyLabel" id="currentStateLabel" verticalCenter="0" 
-				 fontFamily="Verdana" fontSize="15" />
+				 fontFamily="Verdana"  fontSize="12"/>
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" width="992"  excludeFrom="landingState" 
@@ -653,7 +695,7 @@
 		<s:RadioButton y="244" label="Run scenarios" value="runScenarios" 
 					   groupName="viewingModeGroup"
 					   click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#525252" fontWeight="bold" horizontalCenter="-238"/>
-		<s:Label y="20" text="intro / landing page" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-340"/>
+		<s:Label y="20" text="intro / landing page" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-310"/>
 		
 		<mx:Text width="671" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery-powered device data across 53 markets globally.  In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios.&#13;&#13;Please indicate below how you intend to use the tool:" y="50" height="117" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 		<mx:Text width="500" text="Click this selection to simply jump to output options" y="204" height="35" horizontalCenter="0" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565"/>
@@ -663,7 +705,7 @@
 <s:BorderContainer width="992" height="100%" borderVisible="false" 
 				   excludeFrom="landingState" itemCreationPolicy="immediate">	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center"/>
+		<s:VerticalLayout horizontalAlign="center" paddingTop.scenarioState="10"/>
 	</s:layout>
 
 
@@ -677,7 +719,7 @@
 
 	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" 
 					   borderVisible="false" 
-					 excludeFrom="landingState, BQList">	
+					 excludeFrom="landingState, BQList, indicatorsList">	
 		<s:layout>
 			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
 		</s:layout>
@@ -718,7 +760,7 @@
 						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="RESULTS" includeIn="scenarioState"/>
 			</s:BorderContainer>
 			
-			<s:BorderContainer width="100%" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1" borderVisible="false">
+			<s:BorderContainer width="100%" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1" borderVisible="false" color.scenarioState="#000000" backgroundColor.scenarioState="#F7F7F7">
 				<s:layout>
 					<s:HorizontalLayout verticalAlign="contentJustify" gap="0"/>
 				</s:layout>
@@ -802,9 +844,22 @@
 	
 	<s:BorderContainer borderVisible="false" width="90%" height="100%" includeIn="BQList">
 		<panelTabs:tabPathSelection width="95%" height="100%"
-									horizontalCenter="0" verticalCenter="0" visible="true">
+									horizontalCenter="0" visible="true" top="0">
 		</panelTabs:tabPathSelection>
 	</s:BorderContainer>
+	<mx:Text width="600" text="Step 3: Please select the inputs you would like to adjust in your scenario." height="34" fontSize="14" fontFamily="Arial" color="#656565" includeIn="indicatorsList"/>
+	<s:Label text="Note: you may select more than one input for manipulation." fontStyle="normal" fontSize="11" includeIn="indicatorsList" width="600"/>
+	
+	<utils:CCheckBoxGrid  id="indicatorGrid" creationComplete="getTheData(event)"
+		includeIn="indicatorsList" width="600" height="300"
+		labelText="Indicators">
+		
+	</utils:CCheckBoxGrid>
+	<s:TextArea includeIn="indicatorsList" width="600" 
+				text="INSERT ORIGINAL BUSINESS QUESTION HERE AS REMINDER
+							Input 1 (brief descriptor)
+							Input 2 (brief descriptor)
+							Input 3 (brief descriptor);" borderVisible="true" fontStyle="italic" borderAlpha="0.5" borderColor="#696868"/>
 </s:BorderContainer>
 	
 </s:Application>

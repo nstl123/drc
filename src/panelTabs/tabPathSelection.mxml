@@ -67,7 +67,7 @@
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
-		<s:BorderContainer height="345" top="100" borderVisible="false"
+		<s:BorderContainer height="345" top="85" borderVisible="false"
 						   left="115">
 			<s:layout>
 				<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" gap="4"/>
@@ -111,9 +111,9 @@
 			!-->
 			</s:BorderContainer>
 		</s:BorderContainer>
-		<s:Label y="20" text="Select business question&#xd;" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-340"/>
-		<mx:Text width="671" text="Step 1: Select the business question you would like to address." y="50" height="34" fontSize="14" fontFamily="Arial" color="#656565" left="115"/>
-		<s:Label y="87" text="Note: you may only select one business question at a time." fontStyle="normal" fontSize="11" left="115"/>
+		<s:Label y="4" text="Select business question&#xd;" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-310"/>
+		<mx:Text width="671" text="Step 1: Select the business question you would like to address." y="34" height="34" fontSize="14" fontFamily="Arial" color="#656565" left="115"/>
+		<s:Label y="71" text="Note: you may only select one business question at a time." fontStyle="normal" fontSize="11" left="115"/>
 
 <!--		<s:Label text="Mode Selection" fontStyle="italic" width="100%" fontSize="14" textAlign="left" verticalAlign="middle" left="10" top="4"/>
 	!-->

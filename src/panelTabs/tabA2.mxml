@@ -256,7 +256,8 @@
 	</fx:Declarations>
 	
 	<utils:CInteractiveGrid width="747" height="195" id="grid"
-						   left="10" top="440">
+						   left="10" top="440" 
+						 >
 	</utils:CInteractiveGrid>
 	<utils:CTwoAxisChart width="747" height="277" id="chart" top="84"
 						  isLineSeries="true" left="10">

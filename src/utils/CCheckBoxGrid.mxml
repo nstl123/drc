@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="200" height="250" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 		 creationComplete="startApp(event)"
 		 >
 	
@@ -79,9 +79,11 @@
 					var i:uint;						
 					for (i=0; i < res.length; i++) {							
 						selectionList.addItem({
-							"namen":res[i].namen, "id" : res[i].id, 
-							"isRegion" : res[i].isRegion, 
-							"active" : (res[i].active ? res[i].active : false) });
+							"namen"    :res[i].namen, 
+							"id"       : res[i].id, 
+							"isRegion" : (res[i].hasOwnProperty('isRegion') ? res[i].isRegion : null) , 
+							"active"   : ((res[i].hasOwnProperty('active') && res[i].active) ? res[i].active : false)
+						});
 					}	
 				}			
 			}			
@@ -188,7 +190,8 @@
 		
 	<mx:DataGrid bottom="0" left="0" right="0" showHeaders="false" id="dgrData"
 				 dataProvider="{selectionList}" textAlign="left" fontSize="12" 
-				 verticalAlign="middle" top="20" borderVisible="true" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
+				 verticalAlign="middle" top="20" borderVisible="true" 
+				 borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
 		<mx:columns>
 			<mx:DataGridColumn dataField="namen" resizable="false" width="150"/>
 			<!-- <mx:DataGridColumn dataField="id" resizable="false" width="50"/> !-->

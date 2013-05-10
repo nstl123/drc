@@ -328,6 +328,7 @@
 				this.panelTabA2.initNames();				
 				
 				this.masterTab.addTab(this.panelTabA2, 0);
+				this.panelTabA2.setFlowManagerRef(this.masterTab);
 				//this.panelTabPath.enablePaths(true);
 				
 				this.dispatchEvent(new Event("tabA", true));				
@@ -343,6 +344,7 @@
 				
 				this.panelTabB3.initNames();								
 				this.masterTab.addTab(this.panelTabB3, 1);
+				this.panelTabB3.setFlowManagerRef(this.masterTab);
 				
 				this.dispatchEvent(new Event("tabB", true));
 				trace("creation complete of tab B1");
@@ -373,6 +375,7 @@
 				
 				this.panelTabD5.initNames();							
 				this.masterTab.addTab(this.panelTabD5, 3);	
+				this.panelTabD5.setFlowManagerRef(this.masterTab);
 				
 				this.dispatchEvent(new Event("tabD", true));
 				trace("creation complete of tab D1");
@@ -407,6 +410,7 @@
 				this.panelTabF51.initNames();			
 				
 				this.masterTab.addTab(this.panelTabF51, 4);
+				this.panelTabF51.setFlowManagerRef(this.masterTab);
 				
 				this.dispatchEvent(new Event("tabF", true));
 				trace("creation complete of tab F5");
@@ -422,7 +426,7 @@
 				this.panelTabE61.dataServiceData = this.dataServiceData;
 				
 				this.panelTabE61.initNames();								
-				this.masterTab.addTab(this.panelTabE61, 5);
+				this.masterTab.addTab(this.panelTabE61, 5);			
 				
 				this.dispatchEvent(new Event("tabE", true));
 				trace("creation complete of tab E61");				
@@ -437,10 +441,10 @@
 						break;
 					case 'cTree':
 						this.pathLabel.text = "Loading Module: A2";
-						this.nc_A2.createDeferredContent();					
+						this.nc_A2.createDeferredContent();				
 						break;
 					case 'tabA':
-						this.pathLabel.text = "Loading Module: B3";
+						this.pathLabel.text = "Loading Module: B3";					
 						this.nc_B3.createDeferredContent();						
 						break;
 					case 'tabB':
@@ -543,9 +547,16 @@
 						break;
 					case "indicatorsList":
 						currentState = "scenarioState";
-						this.navigatorBox2.setButtonColors(null, 4);
-						if (!tabaiCreationComplete) this.tabai.createDeferredContent();
+						this.navigatorBox2.setButtonColors(null, 4);					
+						
+						if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
 						this.tabai.selectedIndex = 0;
+						
+						var z:ArrayCollection = getSelectedIndicators();
+						this.masterTab.recordSelectedIndicators(z);
+						
+						//this.panelTabA2.setActiveIndis(z.getItemAt(0).id);
+						
 						this.cntryTree.setRegionsGridEnabled(true);
 						break;					
 					case "viewingState" :						
@@ -618,18 +629,31 @@
 				
 				this.currentStateLabel.text = "Current State: " + this.currentState;
 				this.invalidateDisplayList();
-			}
-			
+			}			
 			
 			public function getTheData(evt:Event):void {
 				trace("init names inside panel A1");				
 				indicatorsNamesList.token = this.depot1.getIndicatorNames();			
 			}
 
+			private function filterByBQ(item:Object):Boolean {			
+				var fl:Boolean = true;				
+				(item.isOutputIndicator) ? fl = false : fl = true;				
+				return fl;
+			}	
+			
+			[bindable] public var indiListBQ:ArrayCollection;			
 			protected function indicatorsNamesList_resultHandler(event:ResultEvent):void
 			{			
-				this.indicatorGrid.setDataList(this.indicatorsNamesList.lastResult as ArrayCollection);
+				indiListBQ = this.indicatorsNamesList.lastResult as ArrayCollection
+				indiListBQ.filterFunction = filterByBQ;
+				indiListBQ.refresh();
+				this.indicatorGrid.setDataList(indiListBQ);
 			}
+			
+			protected function getSelectedIndicators():ArrayCollection {
+				return this.indicatorGrid.getActiveDataList();
+			}		
 
 		]]>
 	</fx:Script>

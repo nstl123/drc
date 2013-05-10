@@ -14,7 +14,8 @@
 	
 	<fx:Script>
 		<![CDATA[
-					
+			import controls.FlowManager;
+			
 			import flashx.textLayout.formats.Float;
 			
 			import mx.collections.ArrayCollection;
@@ -44,6 +45,11 @@
 			
 			public var cntryListLoaded:Boolean = false;
 			
+			[bindable] private var flMngr:FlowManager;
+			public function setFlowManagerRef(z:FlowManager):void {
+				flMngr = z;
+			}
+			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab A1");			
 				hlp = new helper();			
@@ -51,7 +57,7 @@
 				this.addEventListener("updateCharts", updateCharts);
 				this.addEventListener("refreshData", refreshData);
 				
-				initShockControls();				
+				initShockControls();		
 			}
 			
 			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
@@ -86,10 +92,14 @@
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
+				
 				var z:Object = {id : 101, namen : 'macroIndicator#1'};
 				var arrCol:ArrayCollection = new ArrayCollection();
 				arrCol.addItem(z);
 				this.indicatorsBox.dataProvider = arrCol;//this.indicatorsList;		
+				
+				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
+				this.setActiveIndis(0, rr.getItemAt(0).id);
 			}
 			
 			private function filterB(item:Object):Boolean {			
@@ -232,9 +242,15 @@
 				);
 			}
 			
-			public function setActiveIndis(k:int):void {
-				this.indicatorsBox.selectedIndex = k;
-			}
+			public function setActiveIndis(k:int, idd:int = -1):void {
+				if (idd > 0){				
+					for (var i:int = 0; i < this.indicatorsBox.dataProvider.length; i++) {
+						if (this.indicatorsBox.dataProvider.getItemAt(i).id == idd) break;
+					};
+					this.indicatorsBox.selectedIndex = i;
+				} else 
+					this.indicatorsBox.selectedIndex = k;
+			}		
 			
 		]]>
 	</fx:Script>
@@ -264,7 +280,8 @@
 	</utils:CTwoAxisChart>
 	
 	<s:DropDownList width="243" id="indicatorsBox" labelField="namen"
-					 change="indicatorsBox_changeHandler(event)" top="22" selectedIndex="1" height="20" left="43"></s:DropDownList>
+					 change="indicatorsBox_changeHandler(event)" top="22" 
+					 selectedIndex="1" height="20" left="43"></s:DropDownList>
 	<s:Button label="refresh data" click="button3_clickHandler(event)" top="51" width="218" height="25" fontWeight="bold" fontSize="13" left="318"/>
 	<s:Label text="Select Indicator" width="128" height="10" verticalAlign="middle" fontStyle="italic" fontSize="11" top="10" left="10" fontFamily="Arial"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"

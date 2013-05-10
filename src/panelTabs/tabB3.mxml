@@ -74,7 +74,12 @@
 			[bindable] private var dataList:ArrayCollection;
 			
 			public static const CNTRYCHANGED:String = "CNTRY_CHANGED";
-			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED"			
+			public static const CNTRYUNCHANGED:String = "CNTRY_UNCHANGED";			
+				
+			[bindable] private var flMngr:FlowManager;
+			public function setFlowManagerRef(z:FlowManager):void {
+				flMngr = z;
+			}
 				
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
@@ -113,7 +118,10 @@
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
-				this.indicatorsBox.dataProvider = this.indicatorsList;			
+				this.indicatorsBox.dataProvider = this.indicatorsList;		
+				
+				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
+				this.setActiveIndis(0, rr.getItemAt(0).id);
 			}
 			
 			private function filterB(item:Object):Boolean {
@@ -235,11 +243,16 @@
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
 			}
 
-			public function setActiveIndis(k:int):void {
-				this.indicatorsBox.selectedIndex = k;
+			public function setActiveIndis(k:int, idd:int = -1):void {
+				if (idd > 0){				
+					for (var i:int = 0; i < this.indicatorsBox.dataProvider.length; i++) {
+						if (this.indicatorsBox.dataProvider.getItemAt(i).id == idd) break;
+					};
+					this.indicatorsBox.selectedIndex = i;
+				} else 
+					this.indicatorsBox.selectedIndex = k;
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
 			}
-
 			
 		]]>
 	</fx:Script>

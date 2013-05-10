@@ -30,6 +30,15 @@ package controls
 			else Alert.show("cannot call contructor twise!");
 		}
 		
+		[bindable] private var selectedIndicatorsList:ArrayCollection;
+		public function recordSelectedIndicators(arr:ArrayCollection):void {
+			this.selectedIndicatorsList = arr;		
+		}
+
+		public function getRecordedSelectedIndicators():ArrayCollection {
+			return this.selectedIndicatorsList;		
+		}
+		
 		public function setStateSpacePos(nst:int):void {
 			this.currentStateSpace = nst;
 		}

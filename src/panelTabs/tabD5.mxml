@@ -79,6 +79,11 @@
 				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
+			[bindable] private var flMngr:FlowManager;
+			public function setFlowManagerRef(z:FlowManager):void {
+				flMngr = z;
+			}
+			
 			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
 				this.testGrid.setWorkingScenario(this.workingScenarioID, flag);				

@@ -121,7 +121,7 @@
 				this.indicatorsBox.dataProvider = this.indicatorsList;		
 				
 				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
-				this.setActiveIndis(0, rr.getItemAt(0).id);
+				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);
 			}
 			
 			private function filterB(item:Object):Boolean {

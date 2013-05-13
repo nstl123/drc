@@ -99,7 +99,7 @@
 				this.indicatorsBox.dataProvider = arrCol;//this.indicatorsList;		
 				
 				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
-				this.setActiveIndis(0, rr.getItemAt(0).id);
+				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);
 			}
 			
 			private function filterB(item:Object):Boolean {			
@@ -116,7 +116,7 @@
 			}
 			
 			public function refreshData(evt:Event):void {
-				if (!this.dataList) {
+				if (!this.dataList) {					
 					Alert.show("Select at least one country", "Error A2");
 				} else {
 					var countryIDs:Array = this.dataList.source;				

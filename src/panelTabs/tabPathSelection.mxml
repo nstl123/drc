@@ -9,17 +9,15 @@
 
 	<fx:Script>
 		<![CDATA[
-			
-			/*[Embed(source="schema.png")]
-			[Bindable]
-			public var imgCls:Class;*/
-			
+			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
-			[bindable] public var selPath:String = "";			
+			[bindable] public var selPath:String = "";
+			[bindable] public var selPathLabel:String = "";		
 			
 			protected function radiobutton1_clickHandler(event:Event):void
 			{
-				this.selPath = String(this.pathTypes.selectedValue);	
+				this.selPath = String(this.pathTypes.selectedValue);
+				this.selPathLabel = this.getSelPath();
 				this.dispatchEvent(new Event("pathChanged", true));
 			}
 
@@ -31,23 +29,41 @@
 			public function enablePaths(flag:Boolean):void {
 				this.pathTypes.enabled = flag;
 				//this.pathLabel1.visible = flag;
-			}		
-			
-
-			/*protected function modeSwitch_changeHandler(event:Event):void
-			{
-				if (this.currentState == "viewingState") 
-					this.currentState = "scenarioState";
-				else
-					this.currentState = "viewingState";
-				
-				this.dispatchEvent(new Event("viewingModeChanged", true));
-			}*/
+			}			
 			
 			public function getViewingState():String {
 				return this.currentState;
 			}
+			
+			public function getSelPath():String {
+				var i:int = 0;
+				switch (this.selPath) {
+					case 'A':
+						i = 0;
+						break;
+					case 'B':
+						i = 1;
+						break;
+					case 'E1':
+						i = 2;
+						break;
+					case 'E2':
+						i = 3;
+						break;
+					case 'D':
+						i = 4;
+						break;				
+				}				
+				return String(this.pathNames.getItemAt(i));
+			}
 
+			public var pathNames:ArrayCollection = new ArrayCollection([
+				"1. How will changes to the macroeconomic environment impact device sales and, in-turn, battery demand?",
+				"2. How will changes to household device ownership levels impact battery demand?",
+				"3. How will changes to household device usage habits impact battery demand?",
+				"4. How will changes in OEM device design impact battery demand?",
+				"5. How will changes to device sales impact battery demand?"]); 
+			
 		]]>
 	</fx:Script>
 
@@ -56,11 +72,6 @@
 		<s:RadioButtonGroup id="pathTypes"/>	
 		<s:RadioButtonGroup id="viewingMode"/>
 	</fx:Declarations>
-
-<!--	<s:states>
-		<s:State name="viewingState"/>
-		<s:State name="scenarioState"/>		
-	</s:states> !-->
 		
 	<s:BorderContainer width="100%" height="100%" backgroundAlpha="0.0"				   
 					   horizontalCenter="0" verticalCenter="0" borderVisible="false">
@@ -77,25 +88,24 @@
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
-				<s:RadioButton label="1. How will changes to the macroeconomic environment impact device sales and, in-turn, battery demand?" 
+				<s:RadioButton label="{this.pathNames.getItemAt(0)}" 
 						   	   	groupName="pathTypes" click="radiobutton1_clickHandler(event)" 
 								width="100%" textAlign="left" height="30" 
 								fontFamily="Arial" fontSize="12" lineThrough="false" 
-						   	   	value="A"  selected="false" enabled="true"/>
-				
-				<s:RadioButton label="2. How will changes to household device ownership levels impact battery demand?" 
+						   	   	value="A"  selected="false" enabled="true"/>				
+				<s:RadioButton label="{this.pathNames.getItemAt(1)}" 
 							   	value="B" enabled="true" 
 						   	   	groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)" width="100%" 
 								textAlign="left" height="40" fontFamily="Arial" fontSize="12" />
-				<s:RadioButton label="3. How will changes to household device usage habits impact battery demand?"
+				<s:RadioButton label="{this.pathNames.getItemAt(2)}"
 						   		groupName="pathTypes" enabled="true"
 								value="E1" click="radiobutton1_clickHandler(event)" width="100%" 
 								textAlign="left" height="40" fontFamily="Arial" fontSize="12" selected="false" />
-				<s:RadioButton label="4. How will changes in OEM device design impact battery demand?"
+				<s:RadioButton label="{this.pathNames.getItemAt(3)}"
 						   		groupName="pathTypes" enabled="true" 
 								value="E2" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" 
 								fontFamily="Arial" fontSize="12" selected="false" />
-				<s:RadioButton label="5. How will changes to device sales impact battery demand?"
+				<s:RadioButton label="{this.pathNames.getItemAt(4)}"
 							   	groupName="pathTypes" enabled="true"
 								value="D" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" 
 								fontFamily="Arial" fontSize="12" selected="false" />

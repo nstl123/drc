@@ -113,8 +113,9 @@
 					this.addEventListener("viewingModeChanged", manageViewModeChanged);					
 					masterTab = new FlowManager();					
 					this.masterTab.setStateSpacePos(1);
-					//updateStateSpaceLabel();
-					this.dispatchEvent(new Event("init", true));
+					//updateStateSpaceLabel();				
+				} else if (flagApplicationStarted == 2)	{				
+					this.dispatchEvent(new Event("init", true))
 				};
 			}
 			
@@ -200,7 +201,9 @@
 				var regData:ArrayCollection = this.cntryTree.getRegionsDataList();
 				var uCluster:Boolean = this.cntryTree.getUseCluster();
 				
-				this.masterTab.setDataList(cntryData, regData, uCluster);	
+				this.masterTab.setDataList(cntryData, regData, uCluster);				
+				
+				
 				
 				if (isStart < 2) { // enable path selection and buttons									
 					//this.navigatorBox.setState(1, this.currentState);					
@@ -217,9 +220,13 @@
 			[bindable] private var selPath:String = "";
 			[bindable] public static var isStart:int = 0;			
 			[bindable] public var selPathObj:Object;
+			[bindable] public var selPathObjLabel:String;
 			
 			public function digestPathChange(event:Event):void {
 				this.selPathObj = event.target.selPath;
+				this.selPathObjLabel = event.target.selPathLabel;
+				
+				
 				if (isStart  < 2) { 
 					isStart = isStart + 1;					
 				};
@@ -414,9 +421,12 @@
 				
 				this.dispatchEvent(new Event("tabF", true));
 				trace("creation complete of tab F5");
-				
+								
 				this.tabaiCreationComplete = true;
 				this.dispatchEvent(new Event("tabaiCreated", true));
+				this.masterTab.notifyAll();
+				
+				// here we get the dataList from Master
 			}
 
 			protected function tabe11_creationCompleteHandler(event:FlexEvent):void
@@ -517,22 +527,24 @@
 							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false);
 							this.navigatorBox2.setButtonColors(null,      2, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);
+							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
 							this.startApp(null);
-							this.invalidateDisplayList();
+							if (this.flagApplicationStarted < 2) this.dispatchEvent(new Event("init", true))
+							//this.invalidateDisplayList();
 						} else {
 							this.currentState =  "BQList"
 							this.navigatorBox2.setButtonColors(null, 1);
+							this.startApp(null);
 						};
 						break;
-					case "BQList" :						
-						//this.dispatchEvent(new Event("init", true));						
+					case "BQList" :											
 						this.currentState = "geoList";
 						this.navigatorBox2.setButtonColors(null, 2);
 						this.startApp(null);
 						break;
 					case "geoList" :					
 						if (this.viewMode == "viewDataOnly") { 
+							this.digestUpdate(null);
 							currentState = "viewingState"
 							this.navigatorBox2.setButtonColors("#000000", 2, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
@@ -542,10 +554,12 @@
 							this.cntryTree.setRegionsGridEnabled(true);
 						} else {
 							currentState = "indicatorsList";							
-							this.navigatorBox2.setButtonColors(null, 3);							
+							this.navigatorBox2.setButtonColors(null, 3);	
+							this.originalBQLabel.text = this.selPathObjLabel;
 						};									
 						break;
 					case "indicatorsList":
+						this.digestUpdate(null);
 						currentState = "scenarioState";
 						this.navigatorBox2.setButtonColors(null, 4);					
 						
@@ -563,8 +577,10 @@
 						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);
 						//this.navigatorBox2.setButtonColors("#8c8c8c", 5, false);
-						if (this.tabaiCreationComplete) this.tabai.selectedIndex = 4;
-						
+						if (this.tabaiCreationComplete) { 
+							this.tabai.selectedIndex = 4;
+							//this. this.masterTab.getDataList()
+						};						
 						break;					
 					case "scenarioState" :
 						this.navigatorBox2.setButtonColors(null, 5);
@@ -761,7 +777,8 @@
 			</s:layout.geoList>
 			<utils:CTree id="cntryTree" width="100%" height="100%" horizontalCenter="0" 
 						 verticalCenter="0" >
-			</utils:CTree>			
+			</utils:CTree>		
+			
 		</s:BorderContainer>
 		
 		<s:BorderContainer width="770" height="100%" left="0" borderVisible="true" borderColor="#C8C8C8"
@@ -862,8 +879,10 @@
 				
 			</mx:TabNavigator>
 		</s:BorderContainer>
-		<mx:Text id="qqq" text="Step 3: Please select your geographies of interest below and click “Next” to continue.&#13;&#13;(Note: you may also select regions or clusters (developed, developing, or emerging)."
-				 height.geoList="60%" width.geoList="416" textAlign.geoList="left" paddingTop.geoList="150" color.geoList="#00B050" paddingLeft.geoList="50" fontSize.geoList="14"/>
+		<s:BorderContainer height="100%" borderVisible="false" width.geoList="500">
+			<mx:Text text="Step 3: Please select your geographies of interest below and click “Next” to continue.&#13;&#13;(Note: you may also select regions or clusters (developed, developing, or emerging)." includeIn="geoList"  color="#00B050" verticalCenter="-115" horizontalCenter="-10" height="120" fontSize="13"/>
+		</s:BorderContainer>
+
 		<s:BorderContainer id="termpBrd" creationPolicy="none" borderVisible="false">
 			<panelTabs:tabC4 id = "panelTabC4" width="0%" height="0%"  top="0" left="0"
 							 enabled="false" visible="false"
@@ -880,6 +899,8 @@
 	<mx:Text width="600" text="Step 4: Please select the inputs you would like to adjust in your scenario." 
 			 height="34" fontSize="14" fontFamily="Arial" color="#00B050" includeIn="indicatorsList"/>
 	<s:Label text="Note: you may select more than one input for manipulation." fontStyle="normal" fontSize="11" includeIn="indicatorsList" width="600"/>
+	<mx:Text width="600" text="selected BQ here" 
+			 fontSize="14" fontFamily="Arial" includeIn="indicatorsList" id="originalBQLabel"/>
 	
 	<utils:CCheckBoxGrid  id="indicatorGrid" creationComplete="getTheData(event)"
 		includeIn="indicatorsList" width="600" height="300"

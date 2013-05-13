@@ -271,42 +271,43 @@
 		<s:RadioButtonGroup id="shockType"/>		
 	</fx:Declarations>
 	
-	<utils:CInteractiveGrid width="747" height="195" id="grid"
-						   left="10" top="440" 
+	<utils:CInteractiveGrid width="747" height="189" id="grid"
+						   left="10" top="446" 
 						 >
 	</utils:CInteractiveGrid>
-	<utils:CTwoAxisChart width="747" height="277" id="chart" top="84"
+	<utils:CTwoAxisChart width="747" height="277" id="chart" top="72"
 						  isLineSeries="true" left="10">
 	</utils:CTwoAxisChart>
 	
 	<s:DropDownList width="243" id="indicatorsBox" labelField="namen"
 					 change="indicatorsBox_changeHandler(event)" top="22" 
 					 selectedIndex="1" height="20" left="43"></s:DropDownList>
-	<s:Button label="refresh data" click="button3_clickHandler(event)" top="51" width="218" height="25" fontWeight="bold" fontSize="13" left="318"/>
-	<s:Label text="Select Indicator" width="128" height="10" verticalAlign="middle" fontStyle="italic" fontSize="11" top="10" left="10" fontFamily="Arial"/>
+	<s:Button label="refresh data" click="button3_clickHandler(event)" top="47" width="218" height="25" fontWeight="bold" fontSize="13" left="318"/>
+	<s:Label text="Step 5: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="5" left="10" fontFamily="Arial" color="#00B050"/>
+	<s:Label text="Step 6: Make data changes to shock the system using the drop down box or directly in the data set below. Once data has been adjusted click “save changes”" verticalAlign="middle" fontStyle="italic" fontSize="13" top="353" left="10" fontFamily="Arial" color="#00B050" width="650"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
-				   selected="true" height="19" change="radiobutton2_clickHandler(event)" top="55" left="77" fontSize="11" fontFamily="Arial"/>
+				   selected="true" height="19" change="radiobutton2_clickHandler(event)" top="51" left="77" fontSize="11" fontFamily="Arial"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_clickHandler(event)" top="55" left="140" fontSize="11" fontFamily="Arial"/>
-	<s:Button label="reset scenario" width="222" id="button" click="button_clickHandler(event)" height="23" top="399" left="535"/>
-	<s:Label text="Table activiy state" width="152" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="427"/>
+				   enabled="true" height="19" change="radiobutton2_clickHandler(event)" top="51" left="140" fontSize="11" fontFamily="Arial"/>
+	<s:Button label="reset scenario" width="222" id="button" click="button_clickHandler(event)" height="23" top="412" left="535"/>
+	<s:Label text="Table activiy state" width="152" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="436"/>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" top="48" height="10" left="10" fontFamily="Arial"/>
-	<s:BorderContainer width="517" height="59" left="10" top="364" borderVisible="false">
+	<s:BorderContainer width="517" height="59" left="10" top="377" borderVisible="false" backgroundAlpha="0.0">
 		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
 		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
 					   selected="true" click="radiobutton1_clickHandler(event)" top="19" fontSize="11"/>
-		<s:RadioButton x="66" label="All countries  (left)" groupName="shockType" enabled="true" value="0"
+		<s:RadioButton x="66" label="All countries  (right)" groupName="shockType" enabled="true" value="0"
 					   click="radiobutton1_clickHandler(event)" top="35" fontSize="11"/>
-		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls" enabled="false">
+		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls" enabled="false" borderVisible="false">
 			<s:Label x="3" y="1" text="Year" width="106" height="20" verticalAlign="middle" fontSize="10"/>
 			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>
-			<s:DropDownList id="shockYears" width="100" left="13" top="19">					
+			<s:DropDownList id="shockYears" width="100" left="13" top="19" contentBackgroundAlpha="1.0" borderVisible="false">					
 			</s:DropDownList>
 			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19"/>
 		</s:BorderContainer>
 	</s:BorderContainer>
 	<s:Button label="save changes" width="222" click="digestChanges(event)" 
-			  id="saveBtn" height="27" fontWeight="bold" left="535" top="366"/>
+			  id="saveBtn" height="27" fontWeight="bold" left="535" top="379"/>
 	
 
 </s:Group>

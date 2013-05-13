@@ -719,9 +719,12 @@
 		<s:RadioButton y="244" label="Run scenarios" value="runScenarios" 
 					   groupName="viewingModeGroup"
 					   click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#525252" fontWeight="bold" horizontalCenter="-238"/>
-		<s:Label y="20" text="intro / landing page" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-310"/>
+		<s:Label y="18" text="Home" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-331"/>
 		
-		<mx:Text width="671" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery-powered device data across 53 markets globally.  In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios.&#13;&#13;Please indicate below how you intend to use the tool:" y="50" height="117" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
+		<mx:Text width="671" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery-powered device data across 53 markets globally.  In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios." 
+				 y="44" height="85" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
+		<mx:Text width="671" text="Step 1: Indicate below how you intend to use the tool:" 
+				 y="141" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" color="#00B050"/>		
 		<mx:Text width="500" text="Click this selection to simply jump to output options" y="204" height="35" horizontalCenter="0" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565"/>
 		<mx:Text width="500" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="268" height="108" horizontalCenter="0" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565"/>
 	</s:BorderContainer>
@@ -729,7 +732,7 @@
 <s:BorderContainer width="992" height="100%" borderVisible="false" 
 				   excludeFrom="landingState" itemCreationPolicy="immediate">	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" paddingTop.scenarioState="10"/>
+		<s:VerticalLayout horizontalAlign="center" paddingTop.scenarioState="10" paddingTop.indicatorsList="10"/>
 	</s:layout>
 
 
@@ -753,10 +756,12 @@
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
+			<s:layout.geoList>
+				<s:HorizontalLayout/>
+			</s:layout.geoList>
 			<utils:CTree id="cntryTree" width="100%" height="100%" horizontalCenter="0" 
 						 verticalCenter="0" >
 			</utils:CTree>			
-			
 		</s:BorderContainer>
 		
 		<s:BorderContainer width="770" height="100%" left="0" borderVisible="true" borderColor="#C8C8C8"
@@ -857,7 +862,8 @@
 				
 			</mx:TabNavigator>
 		</s:BorderContainer>
-		
+		<mx:Text id="qqq" text="Step 3: Please select your geographies of interest below and click “Next” to continue.&#13;&#13;(Note: you may also select regions or clusters (developed, developing, or emerging)."
+				 height.geoList="60%" width.geoList="416" textAlign.geoList="left" paddingTop.geoList="150" color.geoList="#00B050" paddingLeft.geoList="50" fontSize.geoList="14"/>
 		<s:BorderContainer id="termpBrd" creationPolicy="none" borderVisible="false">
 			<panelTabs:tabC4 id = "panelTabC4" width="0%" height="0%"  top="0" left="0"
 							 enabled="false" visible="false"
@@ -868,10 +874,11 @@
 	
 	<s:BorderContainer borderVisible="false" width="90%" height="100%" includeIn="BQList">
 		<panelTabs:tabPathSelection width="95%" height="100%"
-									horizontalCenter="0" visible="true" top="0">
+									horizontalCenter="0" visible="true" top="10">
 		</panelTabs:tabPathSelection>
 	</s:BorderContainer>
-	<mx:Text width="600" text="Step 3: Please select the inputs you would like to adjust in your scenario." height="34" fontSize="14" fontFamily="Arial" color="#656565" includeIn="indicatorsList"/>
+	<mx:Text width="600" text="Step 4: Please select the inputs you would like to adjust in your scenario." 
+			 height="34" fontSize="14" fontFamily="Arial" color="#00B050" includeIn="indicatorsList"/>
 	<s:Label text="Note: you may select more than one input for manipulation." fontStyle="normal" fontSize="11" includeIn="indicatorsList" width="600"/>
 	
 	<utils:CCheckBoxGrid  id="indicatorGrid" creationComplete="getTheData(event)"
@@ -879,11 +886,6 @@
 		labelText="Indicators">
 		
 	</utils:CCheckBoxGrid>
-	<s:TextArea includeIn="indicatorsList" width="600" 
-				text="INSERT ORIGINAL BUSINESS QUESTION HERE AS REMINDER
-							Input 1 (brief descriptor)
-							Input 2 (brief descriptor)
-							Input 3 (brief descriptor);" borderVisible="true" fontStyle="italic" borderAlpha="0.5" borderColor="#696868"/>
 </s:BorderContainer>
 	
 </s:Application>

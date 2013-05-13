@@ -514,40 +514,31 @@
 		]]>
 	</fx:Script>
 	
-	<utils:CTwoAxisChart width="747" height="288" id="testChart" left="10" top="142">
+	<utils:CTwoAxisChart width="747" height="288" id="testChart" left="10" top="155">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid width="747" height="214" id="testGrid" left="10" top="433">
+	<utils:CInteractiveGrid width="747" height="214" id="testGrid" left="10" top="445">
 	</utils:CInteractiveGrid>
-	<s:Button x="327" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="106" width="285" height="25" fontWeight="bold"/>
-	<s:Label text="Selected Device" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="10" left="29" fontFamily="Arial"/>
-	<s:Label x="270" text="Battery type/size" id="selDeviceLabel0" fontStyle="italic" fontSize="11" top="55" verticalAlign="middle" fontFamily="Arial"/>
-	<s:Label y="109" text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="10" fontFamily="Arial"/>
-	<s:Label text="Battery Power Type" id="selDeviceLabel1" fontStyle="italic" fontSize="11" top="55" verticalAlign="middle" left="30" fontFamily="Arial"/>
+	<s:Button x="327" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="116" width="285" height="25" fontWeight="bold"/>
+	<s:Label text="Selected Device" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="38" left="29" fontFamily="Arial"/>
+	<s:Label x="270" text="Battery type/size" id="selDeviceLabel0" fontStyle="italic" fontSize="11" top="63" verticalAlign="middle" fontFamily="Arial"/>
+	<s:Label y="117" text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="10" fontFamily="Arial"/>
+	<s:Label text="Battery Power Type" id="selDeviceLabel1" fontStyle="italic" fontSize="11" top="63" verticalAlign="middle" left="30" fontFamily="Arial"/>
 	<s:DropDownList width="280" id="deviceListDrop"
-					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="23" left="62"/>
-	<s:BorderContainer x="264" width="224" height="21" fontSize="11" fontFamily="Verdana" top="67" borderVisible="false">
+					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="31" left="118"/>
+	<s:BorderContainer x="264" width="224" height="21" fontSize="11" fontFamily="Verdana" top="67" borderVisible="false" backgroundAlpha="0.0">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5" gap="7"/>
 		</s:layout>
-		<s:RadioButton x="14" y="62" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" selected="true" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="14" y="114" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>		
-		<s:RadioButton x="14" y="10" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="14" y="36" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>		
-		<s:RadioButton x="14" y="88" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
 	</s:BorderContainer>
-	<s:BorderContainer width="208" height="34" x="44" fontSize="11" fontFamily="Verdana" top="67" borderVisible="false">
+	<s:BorderContainer width="208" x="44" fontSize="11" fontFamily="Verdana" top="67" borderVisible="false" backgroundAlpha="0.0">
 		<s:layout>
 			<s:VerticalLayout gap="1"/>
 		</s:layout>
-		<s:RadioButton x="14" y="10" label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="true"
-					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial"/>
-		<s:RadioButton x="14" y="36" label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
-					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial"/>			
 	</s:BorderContainer>
-	<s:Label x="477" text="some exogenous var" fontStyle="italic" fontSize="11" top="10" fontFamily="Arial"/>
+	<s:Label x="477" text="some exogenous var" fontStyle="italic" fontSize="11" top="18" fontFamily="Arial"/>
 	<s:DropDownList x="488" width="226" id="exoListDrop" labelField="namen" 
-					change="exoListDrop_changeHandler(event)" selectedIndex="0" height="20" top="22" enabled="false"/>
-	<s:Button x="620" y="108" label="refresh exo data" width="129" 
+					change="exoListDrop_changeHandler(event)" selectedIndex="0" height="20" top="30" enabled="false"/>
+	<s:Button x="620" y="118" label="refresh exo data" width="129" 
 			  click="exoIndi_clickHandler(event)" id="button" enabled="false"/>
 	<utils:CTwoAxisChart x="598" y="461" height="154" id="testChartExo" width="267"
 						 visible="false" >
@@ -558,30 +549,40 @@
 	</utils:CInteractiveGrid>
 	<s:CheckBox fontSize="11" fontStyle="italic" 
 				id="pwrTypesActive" enabled="true" selected="true" 
-				 click="pwrTypesActive_clickHandler(event)" top="51" left="10"/>
+				 click="pwrTypesActive_clickHandler(event)" top="59" left="10"/>
 	<s:CheckBox x="249" fontSize="11" fontStyle="italic" 
 				id="batTypesActive" enabled="true" selected="true" 
-			 	click="batTypesActive_clickHandler(event)"	 top="51"/>
+			 	click="batTypesActive_clickHandler(event)"	 top="59"/>
 	<s:CheckBox x="482" fontSize="11" fontStyle="italic" 
 				id="chemistryActive" enabled="true" selected="false" 
-			 	click="chemTypesActive_clickHandler(event)"	 top="51"/>
+			 	click="chemTypesActive_clickHandler(event)"	 top="59"/>
 	<s:CheckBox fontSize="11" fontStyle="italic" id="devicesActive" 
 				enabled="true" selected="true"
-			     click="devicesActive_clickHandler(event)" top="4" left="10"/>
-	<s:RadioButton x="43" y="120" label="Levels" groupName="growthType" enabled="true" 
+			     click="devicesActive_clickHandler(event)" top="32" left="10"/>
+	<s:RadioButton x="43" y="128" label="Levels" groupName="growthType" enabled="true" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
-	<s:RadioButton x="106" y="120" label="Growths" groupName="growthType" 
+	<s:RadioButton x="106" y="128" label="Growths" groupName="growthType" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
-	<s:Label x="502" text="Chemistry" fontStyle="italic" fontSize="11" top="55" verticalAlign="middle" fontFamily="Arial"/>
-	<s:BorderContainer width="203" height="21" x="512" fontFamily="Verdana" fontSize="11" top="67" borderVisible="false">
+	<s:Label x="502" text="Chemistry" fontStyle="italic" fontSize="11" top="63" verticalAlign="middle" fontFamily="Arial"/>
+	<s:BorderContainer width="203" height="21" x="512" fontFamily="Verdana" fontSize="11" top="67" borderVisible="false" backgroundAlpha="0.0">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="5"/>
 		</s:layout>
-		<s:RadioButton x="3" y="11" label="Alkaline" groupName="chemTypes" value="1" selected="true" 
-					   click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="92" y="25" label="Zinc" groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="151" y="28" label="Lithium" groupName="chemTypes" value="3" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
 	</s:BorderContainer>
+	<s:RadioButton x="269" y="75" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" selected="true" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="318" y="75" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="359" y="75" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="391" y="75" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="44" y="75" label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="true"
+				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial"/>
+	<s:RadioButton x="44" y="93" label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
+				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial"/>
+	<s:RadioButton x="517" y="75" label="Alkaline" groupName="chemTypes" value="1" selected="true" 
+				   click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="578" y="75" label="Zinc" groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="623" y="75" label="Lithium" groupName="chemTypes" value="3" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:Label text="Step 7: You can adjust any battery type, size and chemistry below." verticalAlign="middle" fontStyle="italic" fontSize="13" top="5" left="10" fontFamily="Arial" color="#00B050"/>
 
 
 </s:Group>

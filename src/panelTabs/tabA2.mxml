@@ -86,10 +86,21 @@
 			
 			public function setDataList(data:ArrayCollection):void {
 				this.dataList = data;				
+			}	
+			
+			private var fullIndiList:ArrayCollection;
+			public function getFullIndiList():ArrayCollection {
+				this.fullIndiList.filterFunction = null;
+				this.fullIndiList.refresh();
+				return new ArrayCollection(fullIndiList.source);				
 			}			
 			
 			public function setIndicatorsList(evt:ResultEvent):void {
 				this.indicatorsList = this.indicatorsNamesList.lastResult;
+				this.fullIndiList = this.indicatorsList;
+				
+				this.dispatchEvent(new Event("indicatorsLoaded", true));
+				
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
 				
@@ -98,9 +109,14 @@
 				arrCol.addItem(z);
 				this.indicatorsBox.dataProvider = arrCol;//this.indicatorsList;		
 				
+				this.setSelectedIndicators();
+			}
+			
+			public function setSelectedIndicators():void {
 				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
 				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);
 			}
+				
 			
 			private function filterB(item:Object):Boolean {			
 				var fl:Boolean = true;				
@@ -243,14 +259,25 @@
 			}
 			
 			public function setActiveIndis(k:int, idd:int = -1):void {
-				if (idd > 0){				
-					for (var i:int = 0; i < this.indicatorsBox.dataProvider.length; i++) {
-						if (this.indicatorsBox.dataProvider.getItemAt(i).id == idd) break;
-					};
-					this.indicatorsBox.selectedIndex = i;
-				} else 
+				var kk:int = 0;
+				var i:int = 0;				
+				if (idd > 0) {				
+					while (i < this.indicatorsBox.dataProvider.length) {				    						
+						if (this.indicatorsBox.dataProvider.getItemAt(i).id == idd)	break;						
+						i++;
+					};					
+				} else {
 					this.indicatorsBox.selectedIndex = k;
-			}		
+					kk = k;
+				};
+				if (this.indicatorsBox.dataProvider.length > i) {				
+					this.indicatorsBox.selectedIndex = i;
+					kk = i;
+				};
+				
+				this.indicatorsBox.selectedItem = this.indicatorsBox.dataProvider.getItemAt(kk);
+				this.selectedIndi = this.indicatorsBox.selectedItem.id;
+			}
 			
 		]]>
 	</fx:Script>

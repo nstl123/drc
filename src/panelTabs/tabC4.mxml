@@ -136,7 +136,7 @@
 			
 			public function initNames():void {
 				trace("init names inside panel C");				
-				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
+				//indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				this.getDeviceNames.token = this.dataServiceNames.getDeviceNames();
 			}
 			
@@ -175,8 +175,8 @@
 			}	
 			
 			
-			public function setIndicatorsList(evt:ResultEvent):void {
-				this.indicatorsList = this.indicatorsNamesList.lastResult;
+			public function setIndicatorsList(arr:ArrayCollection):void {
+				this.indicatorsList = arr;
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
 				this.indicatorsBox.dataProvider = this.indicatorsList;			
@@ -272,9 +272,32 @@
 				this.saveBtn.enabled = (tmp == 0 && this.tabEditable);
 			}
 			
-			protected function setActiveIndis(k:int):void {
-				this.indicatorsBox.selectedIndex = k;
+			public function setActiveIndis(k:int, idd:int = -1):void {
+				var kk:int = 0;
+				var i:int = 0;				
+				if (idd > 0) {				
+					while (i < this.indicatorsBox.dataProvider.length) {				    						
+						if (this.indicatorsBox.dataProvider.getItemAt(i).id == idd)	break;						
+						i++;
+					};					
+				} else {
+					this.indicatorsBox.selectedIndex = k;
+					kk = k;
+				};
+				if (this.indicatorsBox.dataProvider.length > i) {				
+					this.indicatorsBox.selectedIndex = i;
+					kk = i;
+				};
+				
+				this.indicatorsBox.selectedItem = this.indicatorsBox.dataProvider.getItemAt(kk);
+				this.selectedIndi = this.indicatorsBox.selectedItem.id;
 			}
+			
+			public function setSelectedIndicators():void {
+				/*var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
+				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);*/
+			}
+			
 			
 		]]>
 	</fx:Script>
@@ -290,7 +313,7 @@
 					   showBusyCursor="true"/>
 		
 
-		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>		
+		<!-- <s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/> !-->		
 		<s:CallResponder id="getDeviceNames" result="getDeviceNames_resultHandler(event)" />
 		
 		<s:CallResponder id="getDeviceBase" result="getDeviceBase_resultHandler(event)" fault="getDeviceBase_faultHandler(event)" />		

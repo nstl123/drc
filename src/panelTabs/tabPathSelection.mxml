@@ -53,7 +53,8 @@
 					case 'D':
 						i = 4;
 						break;				
-				}				
+				}			
+				
 				return String(this.pathNames.getItemAt(i));
 			}
 

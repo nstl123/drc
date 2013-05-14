@@ -75,7 +75,7 @@
 			
 			public function initNames():void {
 				trace("init names inside panel D");				
-				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
+//				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
@@ -100,11 +100,18 @@
 				this.dataList = data;
 			}
 			
-			public function setIndicatorsList(evt:ResultEvent):void {
-				this.indicatorsList = this.indicatorsNamesList.lastResult;
+			public function setIndicatorsList(arr:ArrayCollection):void {
+				this.indicatorsList = arr;
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
-				this.indicatorsBox.dataProvider = this.indicatorsList;			
+				this.indicatorsBox.dataProvider = this.indicatorsList;		
+				
+				this.setSelectedIndicators();
+			}
+			
+			public function setSelectedIndicators():void {
+				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
+				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);
 			}
 			
 			private function filterB(item:Object):Boolean {						
@@ -269,10 +276,26 @@
 				if (this.startInd > 1) writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 1);
 			}
 			
-			public function setActiveIndis(k:int):void {
-				this.indicatorsBox.selectedIndex = k;
+			public function setActiveIndis(k:int, idd:int = -1):void {
+				var kk:int = 0;
+				var i:int = 0;				
+				if (idd > 0) {				
+					while (i < this.indicatorsBox.dataProvider.length) {				    						
+						if (this.indicatorsBox.dataProvider.getItemAt(i).id == idd)	break;						
+						i++;
+					};					
+				} else {
+					this.indicatorsBox.selectedIndex = k;
+					kk = k;
+				};
+				if (this.indicatorsBox.dataProvider.length > i) {				
+					this.indicatorsBox.selectedIndex = i;
+					kk = i;
+				};
+				
+				this.indicatorsBox.selectedItem = this.indicatorsBox.dataProvider.getItemAt(kk);
+				this.selectedIndi = this.indicatorsBox.selectedItem.id;
 			}
-
 			
 		]]>
 	</fx:Script>
@@ -285,7 +308,7 @@
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 						 showBusyCursor="true"/>		
 
-		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
+<!--		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/> !-->
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
 		<s:CallResponder id="getDeviceList" result="getDeviceLits_resultHandler(event)" fault="getDeviceLits_faultHandler(event)" />
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />

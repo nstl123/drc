@@ -7,6 +7,7 @@ package controls
 	{
 		private static var dataList:ArrayCollection;
 		private static var dataListReg:ArrayCollection;
+		private static var indicatorList:ArrayCollection;		
 		
 		private var stateSpace:Array = new Array(
 			{id:0, label:"initState"},
@@ -117,14 +118,30 @@ package controls
 		}
 		
 		public function notifyAll():void {
-			for (var i:int; i < tabList.length; i++) {				
-				tabList[i].setDataList(dataList);	
+			for (var i:int = 0; i < tabList.length; i++) {				
+				
+				tabList[i].setDataList(dataList);
+				//tabList[i].setSelectedIndicators();
+				
 				if (i == 4) {	// output tab			
 					tabList[i].setDataListReg(dataListReg);					
 					tabList[i].setUseCluster(useCluster);
 				} 
 			};		
-		}	
+		}
+		
+		
+		public function recordIndicatorNames(arr:ArrayCollection):void {		
+			indicatorList = arr;
+		}
+
+		public function setIndicatorNamesAll():void {
+			for (var i:int = 1; i < tabList.length; i++) {	
+				indicatorList.filterFunction = null;
+				indicatorList.refresh();
+				tabList[i].setIndicatorsList(new ArrayCollection(indicatorList.source.slice()));		 
+			};
+		}		
 		
 		[bindable] public var selPath:String = "";
 		[bindable] private var pathFlags:Array = new Array(); 

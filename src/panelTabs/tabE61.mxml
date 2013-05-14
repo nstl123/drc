@@ -510,6 +510,11 @@
 				//this.indicatorsBox.selectedIndex = k;
 			}
 
+			public function setIndicatorsList(arr:ArrayCollection):void {
+				/*var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
+				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);*/
+			}		
+			
 			
 		]]>
 	</fx:Script>

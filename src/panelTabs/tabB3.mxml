@@ -103,7 +103,7 @@
 			
 			public function initNames():void {
 				trace("init names inside panel B");				
-				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();			
+				//indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();			
 				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
 			
@@ -114,12 +114,16 @@
 			
 		 // ----- COMMUNICATION PART ---------------/////		
 			
-			public function setIndicatorsList(evt:ResultEvent):void {
-				this.indicatorsList = this.indicatorsNamesList.lastResult;
+			public function setIndicatorsList(arr:ArrayCollection):void {
+				this.indicatorsList = arr;
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
 				this.indicatorsBox.dataProvider = this.indicatorsList;		
 				
+				this.setSelectedIndicators();
+			}
+
+			public function setSelectedIndicators():void {
 				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
 				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);
 			}
@@ -241,16 +245,26 @@
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
-			}
-
+			}		
+			
 			public function setActiveIndis(k:int, idd:int = -1):void {
-				if (idd > 0){				
-					for (var i:int = 0; i < this.indicatorsBox.dataProvider.length; i++) {
-						if (this.indicatorsBox.dataProvider.getItemAt(i).id == idd) break;
-					};
-					this.indicatorsBox.selectedIndex = i;
-				} else 
+				var kk:int = 0;
+				var i:int = 0;				
+				if (idd > 0) {				
+					while (i < this.indicatorsBox.dataProvider.length) {				    						
+						if (this.indicatorsBox.dataProvider.getItemAt(i).id == idd)	break;						
+						i++;
+					};					
+				} else {
 					this.indicatorsBox.selectedIndex = k;
+					kk = k;
+				};
+				if (this.indicatorsBox.dataProvider.length > i) {				
+					this.indicatorsBox.selectedIndex = i;
+					kk = i;
+				};
+				
+				this.indicatorsBox.selectedItem = this.indicatorsBox.dataProvider.getItemAt(kk);
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;
 			}
 			
@@ -263,7 +277,7 @@
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 						 showBusyCursor="true"/>		
 
-		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>
+<!-- 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/> !-->
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		<s:CallResponder id="getDeviceList" result="getDeviceList_resultHandler(event)" />

@@ -23,7 +23,7 @@
 
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{				
-				this.dispatchEvent(new Event("pathChanged", true));
+				//this.dispatchEvent(new Event("pathChanged", true));
 			}
 
 			public function enablePaths(flag:Boolean):void {

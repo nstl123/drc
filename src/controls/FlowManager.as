@@ -76,8 +76,7 @@ package controls
 			return dataList;
 		}
 		
-		public function addTab(A:Object, jk:int):void {
-			//tabList.addItemAt(A, jk);
+		public function addTab(A:Object, jk:int):void {			
 			tabList.addItem(A);
 		}
 		
@@ -89,8 +88,7 @@ package controls
 		private var tmp:Object;
 		public function manageUpdate(className:String):void {
 			
-			switch(className) {
-				// what if pass the openState? 
+			switch(className) {				 
 			 	case "tabA2":
 					tmp = this.tabList[0].getDataList();					
 					break;
@@ -112,16 +110,14 @@ package controls
 					
 			};			
 			
-			this.setDataList0(tmp[0]["res"]);
-			//this.setOpenItems(tmp[0]["openItems"]);
+			this.setDataList0(tmp[0]["res"]);			
 			this.notifyAll();
 		}
 		
 		public function notifyAll():void {
 			for (var i:int = 0; i < tabList.length; i++) {				
 				
-				tabList[i].setDataList(dataList);
-				//tabList[i].setSelectedIndicators();
+				tabList[i].setDataList(dataList);				
 				
 				if (i == 4) {	// output tab			
 					tabList[i].setDataListReg(dataListReg);					
@@ -146,6 +142,10 @@ package controls
 		[bindable] public var selPath:String = "";
 		[bindable] private var pathFlags:Array = new Array(); 
 		[bindable] private var activeIndi:int;
+		
+		public function getPathFlags():Array {dataList
+			return this.pathFlags;
+		}
 		
 		public function registerPath(np:String, isStart:int):Array {		
 			
@@ -180,12 +180,12 @@ package controls
 			return pathFlags;
 		}
 		
-		public function enableGrids(arr:Array):void {
+		public function enableGrids(arr:Array):void {			
 			if (this.tabList.length > 0) {
 				for (var i:int = 0; i < arr.length; i++) {	
 					if (arr[i] == 1) {
 						this.tabList[i].enableGrid(true, false);					
-						this.tabList[i].setActiveIndis(this.activeIndi);
+						//this.tabList[i].setActiveIndis(this.activeIndi);
 					} else {
 						this.tabList[i].enableGrid(false, false);
 					};

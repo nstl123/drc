@@ -125,6 +125,7 @@
 			public function finalTouches(evt:Event):void {
 				this.masterTab.notifyAll();
 				this.masterTab.setIndicatorNamesAll();
+				this.masterTab.enableGrids(this.masterTab.getPathFlags());						
 			}
 			
 			public function fillIndicatorNames(evt:Event):void {				
@@ -235,39 +236,30 @@
 			
 			public function digestPathChange(event:Event):void {
 				this.selPathObj = String(event.target.selPath);
-				this.selPathObjLabel = event.target.selPathLabel;
-				
+				this.selPathObjLabel = event.target.selPathLabel;				
 				
 				if (isStart  < 2) { 
-					isStart = isStart + 1;					
-				};
-				if (isStart > 1) {
-					//this.navigatorBox.setState(2, this.currentState);
-				};
-				if ((isStart > 1)&&(this.masterTab.getStateSpacePos() == 2)) {
-						this.masterTab.setStateSpacePos(3);
-						this.updateStateSpaceLabel();
+					isStart = isStart + 1;							
+					
+					//this.pathLabel.text = "Selected Path: " + this.selPathObj;
+					//pathFlags = this.masterTab.registerPath(this.selPathObj, isStart);
 				};				
 				
 				if (this.changeMadeInScenario) {
 					Alert.show("Changes were made in Working Scenario. Do you want to reset?", 
 						"Info", Alert.OK | Alert.CANCEL, this, alertListener, null, Alert.OK);
 				} else {					
-					this.pathLabel.text = "Selected Path: " + this.selPathObj;					
-					//this.selPath = this.panelTabPath.selPath;				
-					
+					this.pathLabel.text = "Selected Path: " + this.selPathObj;				
 					pathFlags = this.masterTab.registerPath(this.selPathObj, isStart);					
-					//this.colorLabelsOnPath(pathFlags);
 				};				
 			}
 
 			private var pathFlags:Array;
 			private function alertListener(eventObj:CloseEvent):void {				
 				if (eventObj.detail==Alert.OK) {
-					this.pathLabel.text = "Selected Path: " + this.selPathObj;					
-					//this.selPath = this.panelTabPath.selPath;				
+					this.pathLabel.text = "Selected Path: " + this.selPathObj;								
 					
-					pathFlags = this.masterTab.registerPath(this.selPath, isStart);					
+					pathFlags = this.masterTab.registerPath(this.selPathObj, isStart);					
 					this.colorLabelsOnPath(pathFlags);
 					
 					this.dispatchEvent(new Event("scenarioResetRequested", true));			
@@ -577,6 +569,7 @@
 						var z:ArrayCollection = getSelectedIndicators();
 						this.masterTab.recordSelectedIndicators(z);
 						this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus					
+							
 						
 						this.cntryTree.setRegionsGridEnabled(true);
 						break;					

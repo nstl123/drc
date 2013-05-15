@@ -71,6 +71,8 @@
 				
 				this.addEventListener("deviceBaseWritten", refreshData);
 				this.rewriteDeviceBase();
+				
+				initShockControls();		
 			}
 			
 			public function initNames():void {
@@ -78,6 +80,17 @@
 //				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();
 				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
+			
+			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
+			protected function initShockControls():void {
+				for (var i:int = 2004; i < 2021; i++) {
+					yrsList.addItem({"yrs":i});
+				};
+				this.shockYears.dataProvider = yrsList;
+				this.shockYears.labelField = "yrs";
+				
+				this.shockValue.value = 10;
+			}	
 			
 			[bindable] private var flMngr:FlowManager;
 			public function setFlowManagerRef(z:FlowManager):void {
@@ -160,11 +173,22 @@
 
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
-				this.dispatchEvent(new Event("changesMadeInScenario", true));				
-				alteredData = this.testGrid.getData();
-				var temp:Object = new Object();
-				temp = ({'id':1, data:this.alteredData});			
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);			
+				this.dispatchEvent(new Event("changesMadeInScenario", true));	
+				
+				var temp:Object = new Object();				
+				if (this.isSingleGeo) { 				
+					alteredData = this.testGrid.getData();									
+				} else {
+					var yrs:int = 2010;
+					if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
+					var val:Number = this.shockValue.value;		
+					
+					var rawData:ArrayCollection = this.testGrid.getAllData();
+					alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);				
+				};
+				
+				temp = ({'id':1, data:this.alteredData});				
+				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);		
 			}
 
 			[bindable] public var tabEditable:Boolean;			
@@ -173,6 +197,9 @@
 				this.testGrid.isEditable = flag && isLevel;
 				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 				this.saveBtn.enabled = (flag && isLevel);
+				
+				this.shockBtn1.enabled = (flag && isLevel); 
+				this.shockBtn2.enabled = (flag && isLevel);
 			}
 			
 			[bindable] private var isLevel:Boolean = true;
@@ -207,6 +234,13 @@
 					this.isLevel, 
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
 
+			}
+			
+			[bindable] private var isSingleGeo:Boolean = true;
+			protected function changeShockType_handler(event:MouseEvent):void
+			{
+				this.isSingleGeo = this.shockType.selectedValue;
+				this.shockControls.enabled = !this.isSingleGeo;
 			}
 			
 			private function filterGrid(item:Object):Boolean {				
@@ -303,6 +337,7 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="growthType" />
+		<s:RadioButtonGroup id="shockType"/>
 		
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 					   showBusyCursor="true"/>
@@ -337,10 +372,10 @@
 			</s:DropDownList>
 			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19"/>
 		</s:BorderContainer>
-		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="false" value="1"
-					   selected="true" top="19" fontSize="11"/>
-		<s:RadioButton x="66" label="All countries  (left)" groupName="shockType" enabled="false" value="0"
-					   top="35" fontSize="11"/>
+		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
+					   selected="true" top="19" fontSize="11" click="changeShockType_handler(event)" id="shockBtn1"/>
+		<s:RadioButton x="66" label="All countries  (left)" groupName="shockType" enabled="true" value="0"
+					   top="35" fontSize="11" click="changeShockType_handler(event)" id="shockBtn2"/>
 	</s:BorderContainer>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="61" top="59" fontFamily="Arial" fontSize="11"/>

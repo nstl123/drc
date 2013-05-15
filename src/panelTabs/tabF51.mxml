@@ -24,6 +24,7 @@
 		<s:RadioButtonGroup id="batTypes"/>		
 		<s:RadioButtonGroup id="pwrTypes"/>
 		<s:RadioButtonGroup id="growthType" />
+		<s:RadioButtonGroup id="shockType"/>
 		
 	</fx:Declarations>
 	
@@ -66,6 +67,8 @@
 				hlp = new helper();	
 				this.addEventListener("updateCharts", updateCharts);	
 				this.addEventListener("refreshData", refreshData);
+				
+				initShockControls();		
 			}
 			
 			public function initNames():void {
@@ -73,6 +76,17 @@
 //				indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();				
 				this.getDeviceList.token = this.dataServiceNames.getDeviceNames();
 			}
+			
+			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
+			protected function initShockControls():void {
+				for (var i:int = 2004; i < 2021; i++) {
+					yrsList.addItem({"yrs":i});
+				};
+				this.shockYears.dataProvider = yrsList;
+				this.shockYears.labelField = "yrs";
+				
+				this.shockValue.value = 10;
+			}	
 			
 			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
@@ -203,12 +217,30 @@
 				return f;
 			}			
 			
+			[bindable] private var isSingleGeo:Boolean = true;
+			protected function changeShockType_handler(event:MouseEvent):void
+			{
+				this.isSingleGeo = this.shockType.selectedValue;
+				this.shockControls.enabled = !this.isSingleGeo;
+			}
+			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
 				this.dispatchEvent(new Event("changesMadeInScenario", true));
-				
-				alteredData = this.testGrid.getData();
+			
 				var temp:Object = new Object();
+				
+				if (this.isSingleGeo) { 				
+					alteredData = this.testGrid.getData();									
+				} else {
+					var yrs:int = 2010;
+					if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
+					var val:Number = this.shockValue.value;		
+					
+					var rawData:ArrayCollection = this.testGrid.getAllData();
+					alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);				
+				};
+				
 				temp = ({'id':1, data:this.alteredData});
 				
 				var tmpType:int = 0;
@@ -268,6 +300,9 @@
 				this.testGrid.isEditable = flag && isLevel;
 				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
 				this.saveBtn.enabled = (flag && isLevel);
+				
+				this.shockBtn1.enabled = (flag && isLevel); 
+				this.shockBtn2.enabled = (flag && isLevel);
 			}
 			
 			[bindable] private var isLevel:Boolean = true;
@@ -356,10 +391,10 @@
 			</s:DropDownList>
 			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19"/>
 		</s:BorderContainer>
-		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="false" value="1"
-					   selected="true" top="19" fontSize="11"/>
-		<s:RadioButton x="66" label="All countries  (left)" groupName="shockType" enabled="false" value="0"
-					   top="35" fontSize="11"/>
+		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
+					   selected="true" top="19" fontSize="11" click="changeShockType_handler(event)" id="shockBtn1"/>
+		<s:RadioButton x="66" label="All countries  (left)" groupName="shockType" enabled="true" value="0"
+					   top="35" fontSize="11" click="changeShockType_handler(event)" id="shockBtn2"/>
 	</s:BorderContainer>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="46" fontFamily="Arial"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="10" height="10" left="10" fontFamily="Arial"/>

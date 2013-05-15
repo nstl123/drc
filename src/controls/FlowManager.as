@@ -106,8 +106,7 @@ package controls
 					break;			
 				case "tabE61": // demand view
 					tmp = this.tabList[3].getDataList();
-					break;
-					
+					break;				
 			};			
 			
 			this.setDataList0(tmp[0]["res"]);			
@@ -116,9 +115,7 @@ package controls
 		
 		public function notifyAll():void {
 			for (var i:int = 0; i < tabList.length; i++) {				
-				
-				tabList[i].setDataList(dataList);				
-				
+				tabList[i].setDataList(dataList);							
 				if (i == 4) {	// output tab			
 					tabList[i].setDataListReg(dataListReg);					
 					tabList[i].setUseCluster(useCluster);

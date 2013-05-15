@@ -235,15 +235,10 @@
 			[bindable] public var selPathObjLabel:String;
 			
 			public function digestPathChange(event:Event):void {
-				this.selPathObj = String(event.target.selPath);
-				this.selPathObjLabel = event.target.selPathLabel;				
+				this.selPathObj = (event) ? String(event.target.selPath) : "none";
+				//this.selPathObjLabel = (event) ? event.target.selPathLabel : "none";				
 				
-				if (isStart  < 2) { 
-					isStart = isStart + 1;							
-					
-					//this.pathLabel.text = "Selected Path: " + this.selPathObj;
-					//pathFlags = this.masterTab.registerPath(this.selPathObj, isStart);
-				};				
+				if (isStart  < 2) { isStart = isStart + 1;	};	
 				
 				if (this.changeMadeInScenario) {
 					Alert.show("Changes were made in Working Scenario. Do you want to reset?", 
@@ -509,7 +504,8 @@
 			[bindable] private var viewMode:String = "viewDataOnly";
 			protected function modeSwitch_clickHandler(event:Event):void
 			{
-				this.viewMode = String(this.viewingModeGroup.selection.value);				
+				this.viewMode = String(this.viewingModeGroup.selection.value);		
+				this.dispatchEvent(new Event("pathChanged", true));
 			}			
 
 			protected function btnNext_clickHandler(event:MouseEvent):void		
@@ -548,10 +544,16 @@
 							this.navigatorBox2.setButtonColors(null,      5, false);
 							
 							if (!tabaiCreationComplete) this.tabai.createDeferredContent();
+							
+							//this.dispatchEvent(new Event("pathChanged", true));
+							if (tabaiCreationComplete) this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);
+							
 							this.tabai.selectedIndex = 0;														
 							this.masterTab.notifyAll();	
 							
 							this.cntryTree.setRegionsGridEnabled(true);
+							
+									
 						} else {
 							currentState = "indicatorsList";							
 							this.navigatorBox2.setButtonColors(null, 3);	
@@ -568,8 +570,7 @@
 						
 						var z:ArrayCollection = getSelectedIndicators();
 						this.masterTab.recordSelectedIndicators(z);
-						this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus					
-							
+						this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus							
 						
 						this.cntryTree.setRegionsGridEnabled(true);
 						break;					

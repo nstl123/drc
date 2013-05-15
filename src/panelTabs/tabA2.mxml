@@ -222,6 +222,7 @@
 				
 				this.shockBtn1.enabled = (flag && isLevel); 
 				this.shockBtn2.enabled = (flag && isLevel);
+				this.shockControls.enabled = (flag && isLevel && !isSingleGeo);
 			}		
 			
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void

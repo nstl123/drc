@@ -303,6 +303,7 @@
 				
 				this.shockBtn1.enabled = (flag && isLevel); 
 				this.shockBtn2.enabled = (flag && isLevel);
+				this.shockControls.enabled = (flag && isLevel && !isSingleGeo);
 			}
 			
 			[bindable] private var isLevel:Boolean = true;

@@ -125,7 +125,8 @@
 			public function finalTouches(evt:Event):void {
 				this.masterTab.notifyAll();
 				this.masterTab.setIndicatorNamesAll();
-				this.masterTab.enableGrids(this.masterTab.getPathFlags());						
+				this.masterTab.enableGrids(this.masterTab.getPathFlags());		
+				this.tabai.selectedIndex = this.selActiveTab;
 			}
 			
 			public function fillIndicatorNames(evt:Event):void {				
@@ -162,7 +163,7 @@
 						//this.tabai.selectedIndex = 0;
 						break;
 					case 1:
-						this.tabai.selectedIndex = 0;					
+						//this.tabai.selectedIndex = 0;					
 						break;
 					case 2:						
 						for (var i:int = 0; i < this.pathFlags.length; i++) {
@@ -215,12 +216,7 @@
 				var regData:ArrayCollection = this.cntryTree.getRegionsDataList();
 				var uCluster:Boolean = this.cntryTree.getUseCluster();
 				
-				this.masterTab.setDataList(cntryData, regData, uCluster);				
-				
-				if (isStart < 2) { // enable path selection and buttons									
-					//this.navigatorBox.setState(1, this.currentState);					
-					//this.panelTabPath.enablePaths(true);
-				};
+				this.masterTab.setDataList(cntryData, regData, uCluster);			
 				
 				if (this.masterTab.getStateSpacePos() == 1) {					
 						this.masterTab.setStateSpacePos(2);
@@ -233,12 +229,16 @@
 			[bindable] public static var isStart:int = 0;			
 			[bindable] public var selPathObj:String;
 			[bindable] public var selPathObjLabel:String;
+			[bindable] public var selActiveTab:int;
 			
 			public function digestPathChange(event:Event):void {
 				this.selPathObj = (event) ? String(event.target.selPath) : "none";
-				//this.selPathObjLabel = (event) ? event.target.selPathLabel : "none";				
+				this.selPathObjLabel = (event.target.hasOwnProperty("selPathLabel")) ?
+											event.target.selPathLabel :	"none";			
 				
-				if (isStart  < 2) { isStart = isStart + 1;	};	
+				selActiveTab = ((event.target.hasOwnProperty("selTabIndex")) ? event.target.selTabIndex : 0); 
+				//if (isStart  < 2) { isStart = isStart + 1;	};
+				isStart = isStart + 1;
 				
 				if (this.changeMadeInScenario) {
 					Alert.show("Changes were made in Working Scenario. Do you want to reset?", 
@@ -543,17 +543,11 @@
 							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
 							this.navigatorBox2.setButtonColors(null,      5, false);
 							
-							if (!tabaiCreationComplete) this.tabai.createDeferredContent();
-							
-							//this.dispatchEvent(new Event("pathChanged", true));
-							if (tabaiCreationComplete) this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);
-							
-							this.tabai.selectedIndex = 0;														
-							this.masterTab.notifyAll();	
-							
-							this.cntryTree.setRegionsGridEnabled(true);
-							
-									
+							if (!tabaiCreationComplete) this.tabai.createDeferredContent();						
+							if (tabaiCreationComplete) this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);					
+												
+							this.masterTab.notifyAll();							
+							this.cntryTree.setRegionsGridEnabled(true);								
 						} else {
 							currentState = "indicatorsList";							
 							this.navigatorBox2.setButtonColors(null, 3);	
@@ -566,13 +560,13 @@
 						this.navigatorBox2.setButtonColors(null, 4);					
 						
 						if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
-						this.tabai.selectedIndex = 0;
+						if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;
 						
 						var z:ArrayCollection = getSelectedIndicators();
 						this.masterTab.recordSelectedIndicators(z);
 						this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus							
 						
-						this.cntryTree.setRegionsGridEnabled(true);
+						this.cntryTree.setRegionsGridEnabled(true);												
 						break;					
 					case "viewingState" :						
 						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
@@ -616,9 +610,7 @@
 						break;					
 					case "viewingState" :
 						if (this.tabai.selectedIndex == 4) {
-							this.tabai.selectedIndex = 0;
-							//this.navigatorBox2.setButtonColors(null,      4, false);
-							//this.navigatorBox2.setButtonColors("#8c8c8c", 3, false); // data inputs disabled
+							this.tabai.selectedIndex = this.selActiveTab;
 						} else {
 							this.currentState = "geoList";
 							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false); // data inputs disabled
@@ -631,7 +623,7 @@
 						break;					
 					case "scenarioState" :
 						if (this.tabai.selectedIndex == 4) {
-							this.tabai.selectedIndex = 0;
+							this.tabai.selectedIndex = this.selActiveTab;
 							this.navigatorBox2.setButtonColors(null, 4);
 						} else {
 							this.currentState = "indicatorsList";
@@ -688,7 +680,7 @@
 			<s:HorizontalLayout verticalAlign="justify" />
 		</s:layout>
 		
-		<s:Label text="Battery Demand Analysis Tool. v.05-13-2pm" height="100%" width="40%" 
+		<s:Label text="Battery Demand Analysis Tool. v.05-15-6pm" height="100%" width="40%" 
 				 fontFamily="Arial" fontSize="9"/>
 		<s:Label text="Selected Path" height="15" verticalAlign="middle"
 				 id="pathLabel" width="30%" fontFamily="Arial" fontSize="9"/>
@@ -750,14 +742,6 @@
 		<s:VerticalLayout horizontalAlign="center" paddingTop.scenarioState="10" paddingTop.indicatorsList="10"/>
 	</s:layout>
 
-
-
-	<!-- <utils:navigator id="navigatorBox" height="20" width="992"
-					  excludeFrom="landingState" itemCreationPolicy="immediate">
-		<utils:layout>
-			<s:HorizontalLayout paddingLeft="15" paddingRight="15"/>
-		</utils:layout>
-	</utils:navigator> !-->
 
 	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" 
 					   borderVisible="false" 
@@ -823,15 +807,6 @@
 							 textAlign="left" chromeColor="#F8F8F8"
 							 backgroundAlpha="1.0" contentBackgroundAlpha="0.95" tabWidth="110">
 	
-			<!--	<s:NavigatorContent id="nc_00" label="Method " width="100%" height="100%" 
-									creationPolicy="none">
-					<panelTabs:tabPathSelection id="panelTabPath" width="100%" height="100%" 
-												enabled.scenarioState="true"
-											 	enabled.viewingState = "false"
-												creationComplete="panelTabPath_creationCompleteHandler(event)" 
-												horizontalCenter="0" verticalCenter="0">
-					</panelTabs:tabPathSelection>				
-				</s:NavigatorContent> !-->
 				
 				<s:NavigatorContent id="nc_A2" label="A. Macro Environment"
 									width="100%" height="100%" 
@@ -847,13 +822,6 @@
 									 creationComplete="tabb11_creationCompleteHandler(event)" top="0" left="0">					
 					</panelTabs:tabB3> 
 				</s:NavigatorContent>
-				
-				<!-- <s:NavigatorContent id="nc_C4" label="C. Device Base" width="0%" height="100%" 
-									creationPolicy="none" visible="false">
-					<panelTabs:tabC4 id = "panelTabC4" width="0%" height="100%" enabled="false" visible="false"
-									 creationComplete="tabc11_creationCompleteHandler(event)" top="0" left="0">					
-					</panelTabs:tabC4> 
-				</s:NavigatorContent> !--> 				
 				
 				<s:NavigatorContent id="nc_D5" label="D. Market Size" width="100%" height="100%" 
 									creationPolicy="none">

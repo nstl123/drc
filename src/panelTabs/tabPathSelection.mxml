@@ -13,6 +13,7 @@
 			import mx.events.FlexEvent;
 			[bindable] public var selPath:String = "";
 			[bindable] public var selPathLabel:String = "";		
+			[bindable] public var selTabIndex:int = 0;
 			
 			protected function radiobutton1_clickHandler(event:Event):void
 			{
@@ -34,27 +35,31 @@
 			public function getViewingState():String {
 				return this.currentState;
 			}
-			
+						
 			public function getSelPath():String {
 				var i:int = 0;
 				switch (this.selPath) {
 					case 'A':
 						i = 0;
+						selTabIndex = 0;
 						break;
 					case 'B':
 						i = 1;
+						selTabIndex = 1;
 						break;
 					case 'E1':
-						i = 2;
+						i = 2;						
+						selTabIndex = 3;
 						break;
 					case 'E2':
 						i = 3;
+						selTabIndex = 3;
 						break;
 					case 'D':
 						i = 4;
+						selTabIndex = 2;
 						break;				
-				}			
-				
+				}				
 				return String(this.pathNames.getItemAt(i));
 			}
 

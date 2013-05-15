@@ -534,8 +534,7 @@
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
 							this.startApp(null);
-							if (this.flagApplicationStarted < 2) this.dispatchEvent(new Event("init", true))
-							//this.invalidateDisplayList();
+							if (this.flagApplicationStarted < 2) this.dispatchEvent(new Event("init", true))							
 						} else {
 							this.currentState =  "BQList"
 							this.navigatorBox2.setButtonColors(null, 1);
@@ -555,7 +554,11 @@
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
 							this.navigatorBox2.setButtonColors(null,      5, false);
+							
 							if (!tabaiCreationComplete) this.tabai.createDeferredContent();
+							this.tabai.selectedIndex = 0;														
+							this.masterTab.notifyAll();	
+							
 							this.cntryTree.setRegionsGridEnabled(true);
 						} else {
 							currentState = "indicatorsList";							
@@ -573,17 +576,15 @@
 						
 						var z:ArrayCollection = getSelectedIndicators();
 						this.masterTab.recordSelectedIndicators(z);
-						this.masterTab.notifyAll();						
+						this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus					
 						
 						this.cntryTree.setRegionsGridEnabled(true);
 						break;					
 					case "viewingState" :						
 						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);
-						//this.navigatorBox2.setButtonColors("#8c8c8c", 5, false);
+						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);						
 						if (this.tabaiCreationComplete) { 
-							this.tabai.selectedIndex = 4;
-							//this. this.masterTab.getDataList()
+							this.tabai.selectedIndex = 4;							
 						};						
 						break;					
 					case "scenarioState" :

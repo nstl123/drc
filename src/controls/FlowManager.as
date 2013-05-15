@@ -31,7 +31,7 @@ package controls
 			else Alert.show("cannot call contructor twise!");
 		}
 		
-		[bindable] private var selectedIndicatorsList:ArrayCollection;
+		[bindable] private var selectedIndicatorsList:ArrayCollection; // = new ArrayCollection();
 		public function recordSelectedIndicators(arr:ArrayCollection):void {
 			this.selectedIndicatorsList = arr;		
 		}

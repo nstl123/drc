@@ -115,6 +115,7 @@
 			public function setSelectedIndicators():void {
 				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
 				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);
+				else this.setActiveIndis(0);
 			}
 				
 			

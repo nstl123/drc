@@ -112,6 +112,7 @@
 			public function setSelectedIndicators():void {
 				var rr:ArrayCollection = this.flMngr.getRecordedSelectedIndicators();
 				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);
+				else this.setActiveIndis(0);
 			}
 			
 			private function filterB(item:Object):Boolean {				
@@ -137,10 +138,10 @@
 					trace("calling macro data token");
 				
 					var tmpType:int = 1;
-					var fl:Boolean = hasSplitFlag.selected;
+					var fl:Boolean = true; //hasSplitFlag.selected;
 					switch (this.selectedIndi) {
 						case 204: 
-							tmpType = this.selBatType; break;
+							tmpType = this.selBatType; break;							
 						case 205: 
 							tmpType = this.selPwrType; break;					
 						case 206: 

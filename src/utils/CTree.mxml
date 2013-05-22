@@ -277,11 +277,21 @@
 					   click="delnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal"
 					   height="100%" fontSize="11"/>
 	</s:HGroup>
+	<s:BorderContainer width="100%" height="20" borderVisible="false">
+		<s:layout>
+			<s:HorizontalLayout gap="0"/>
+		</s:layout>
+		<s:Label x="95" verticalCenter="0" width="150" height="100%" fontFamily="Arial" fontSize="10" verticalAlign="middle" textAlign="center"/>
+		<s:Label x="215" y="-1" text="Use?" width="40" height="100%" fontFamily="Arial" fontSize="10" verticalAlign="middle" textAlign="center"/>
+		<s:Label x="302" y="5" text="Altered?" width="40" height="100%" fontFamily="Arial" fontSize="10" verticalAlign="middle" textAlign="center"/>
+	</s:BorderContainer>
 	
 	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="80%" 
 						 horizontalCenter="0"  width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
-						 defaultLeafIcon="{null}" showHeaders="false" top="20" fontFamily="Arial" fontSize="12" borderVisible="true" dropShadowVisible="false" verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
+						 defaultLeafIcon="{null}" 
+						 showHeaders="false" 
+						 top="20" fontFamily="Arial" fontSize="12" borderVisible="true" dropShadowVisible="false" verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
 				<mx:Grouping>
@@ -290,11 +300,11 @@
 			</mx:GroupingCollection2>
 		</mx:dataProvider>  
 		<mx:columns>
-			<mx:AdvancedDataGridColumn headerText="Geography" dataField="namen" sortable="false"
+			<mx:AdvancedDataGridColumn headerText="" dataField="namen" sortable="false"
 									    width="150"/>			
-			<mx:AdvancedDataGridColumn headerText="use" dataField="active" width="40" 
+			<mx:AdvancedDataGridColumn headerText="Use?" dataField="active" width="40" 
 									   id="inputas" sortable="false" textAlign="center"/>
-			<mx:AdvancedDataGridColumn headerText="changed" dataField="modified" width="40"
+			<mx:AdvancedDataGridColumn headerText="Is changed" dataField="modified" width="40"
 									   id="modFlag" sortable="false" textAlign="center"	/> 
 		</mx:columns>
 		<mx:rendererProviders>

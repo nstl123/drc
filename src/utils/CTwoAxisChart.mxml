@@ -234,14 +234,13 @@
 					 fontFamily="Arial" id="chartTitle" color="#000000" fontWeight="bold" height="20"/>
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
-
 				
-				<mx:verticalAxisRenderers>
-					<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
-						 <mx:axisStroke>
-							 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
-						 </mx:axisStroke>
-					 </mx:AxisRenderer>									 
+<!--			<mx:verticalAxisRenderers>
+				<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
+					 <mx:axisStroke>
+						 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
+					 </mx:axisStroke>
+				 </mx:AxisRenderer>									 
 			 </mx:verticalAxisRenderers> 
 				<mx:horizontalAxisRenderers>
 					<mx:AxisRenderer axis="{this.hAxis}">
@@ -250,7 +249,7 @@
 						</mx:axisStroke>
 					</mx:AxisRenderer>
 				</mx:horizontalAxisRenderers> 
-				
+	!-->			
 			</mx:LineChart>
 		</s:BorderContainer>
 	

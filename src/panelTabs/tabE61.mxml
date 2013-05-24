@@ -73,8 +73,7 @@
 				trace("app start panelTab E");			
 				hlp = new helper();			
 				this.addEventListener("updateCharts", updateCharts);	
-				this.addEventListener("demandAggChanged", updateChemistrySplit);
-				
+				this.addEventListener("demandAggChanged", updateChemistrySplit);				
 				this.addEventListener("refreshData", refreshData);
 			}
 			
@@ -88,8 +87,7 @@
 			
 			public function setWorkingScenario(nv:int, flag:Boolean):void {
 				this.workingScenarioID = nv;
-				this.testGrid.setWorkingScenario(this.workingScenarioID, flag);	
-				this.testGridExo.setWorkingScenario(this.workingScenarioID, false);
+				//this.testGrid.setWorkingScenario(this.workingScenarioID, flag);				
 			}					
 			
 			// ----- COMMUNICATION PART ---------------/////
@@ -363,18 +361,19 @@
 				//this.selDeviceLabel.text = this.deviceListDrop.selectedItem.namen;
 								
 				this.currentDataChart.filterFunction = this.filterChart;
-				this.currentDataGrid.filterFunction  = this.filterGrid;				
+				//this.currentDataGrid.filterFunction  = this.filterGrid;				
 				this.currentDataChart.refresh();
-				this.currentDataGrid.refresh();				
-				this.testChart.setData(currentDataChart, isLevel);
-				this.testGrid.setData(currentDataGrid, isLevel);
+				//this.currentDataGrid.refresh();				
+				this.demandChart.setData(currentDataChart, isLevel);
+				//this.testGrid.setData(currentDataGrid, isLevel);
 				
 				this.currentDataExoChart.filterFunction = this.filterChartExo;
-				this.currentDataExoChart.refresh();				
-				this.testChartExo.setData(this.currentDataExoChart, isLevel);
+				this.currentDataExoChart.refresh();	
+				
+				this.exoChart.setData(this.currentDataExoChart, isLevel);
 				
 				//updateChartTitle();
-				this.testChart.updateChartTitle("Demand", this.deviceListDrop.selectedIndex, this.devicesActiveFlag, 
+				this.demandChart.updateChartTitle("Demand", this.deviceListDrop.selectedIndex, this.devicesActiveFlag, 
 					this.isLevel, this.deviceListDrop.selectedItem.namen);
 			}
 			
@@ -441,16 +440,20 @@
 				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 				var typeID:int = 0;
 				var tmpDev:int = 0;
-				var tmpSplit:int = 0;
+				var tmpSplit:int = 0;				
 				
-				if ((this.selExoIndi == 204)||(this.selExoIndi == 206)) typeID = this.selBatType;
+				if ( (this.selExoIndi == 204)||(this.selExoIndi == 206) ) 
+					typeID = this.selBatType;
 				else 
-					if ((this.selExoIndi == 205)||(this.selExoIndi == 207)) typeID = this.selPwrType;
-				
-				if ((this.selExoIndi >= 204) && (this.selExoIndi <= 206)) tmpSplit = 1; else tmpSplit = aggType;
+				if ( (this.selExoIndi == 205)||(this.selExoIndi == 207) ) 
+					typeID = this.selPwrType;				
+				if ( (this.selExoIndi >= 204) && (this.selExoIndi <= 206) ) 
+						tmpSplit = 1; 
+				else tmpSplit = aggType;
 				
 				if ( this.selExoIndi == 101 ) { 
-					tmpDev = 0; tmpSplit = 0; 
+					tmpDev = 0; 
+					tmpSplit = 0; 
 				} else tmpDev = this.selDevice; 				
 				
 				getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
@@ -479,7 +482,8 @@
 				var f:Boolean = true;				
 				if ((item.deviceID == this.selDevice)||(this.selExoIndi < 200)) {					
 					f = true
-				}  else f = false;				
+				}  else 
+					f = false;				
 				return f;
 			}
 			
@@ -491,7 +495,7 @@
 			}	
 			
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {
-				this.testGrid.isEditable = flag;			
+				//this.testGrid.isEditable = flag;			
 			}
 			
 			[bindable] private var isLevel:Boolean = true;
@@ -503,21 +507,18 @@
 			
 			protected function updateCharts(evt:Event):void {
 				this.currentDataChart.filterFunction = this.filterChart;
-				this.currentDataGrid.filterFunction  = this.filterGrid;
-				
+				//this.currentDataGrid.filterFunction  = this.filterGrid;				
 				this.currentDataChart.refresh();
-				this.currentDataGrid.refresh();
-				
-				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid, isLevel);
-				
+				//this.currentDataGrid.refresh();				
+				this.demandChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
+				//this.testGrid.setData(currentDataGrid, isLevel);				
 				this.currentDataExoChart.filterFunction = this.filterChartExo;
-				this.currentDataExoChart.refresh();
+				this.currentDataExoChart.refresh();				
 				
-				this.testChartExo.setData(this.currentDataExoChart, isLevel);	
+				this.exoChart.setData(this.currentDataExoChart, isLevel);				
 				
 				//updateChartTitle()
-				this.testChart.updateChartTitle("Demand", 
+				this.demandChart.updateChartTitle("Demand", 
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					this.devicesActiveFlag,	this.isLevel, 
 					(deviceListDrop.selectedItem  ? deviceListDrop.selectedItem.namen : "")
@@ -549,26 +550,24 @@
 		]]>
 	</fx:Script>
 	
-	<utils:CTwoAxisChart width="747" height="274" id="testChart" left="10" top="169">
+	<utils:CTwoAxisChart width="747" height="255" id="demandChart" left="10" top="161">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid width="747" height="194" id="testGrid" left="10" top="489">
-	</utils:CInteractiveGrid>
 	<s:Button x="326" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="136" width="285" height="25" fontWeight="bold"/>
 	<s:Label text="Devices Aggeragtion Level" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="21" left="11" fontFamily="Arial"/>
 	<s:Label y="132" text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="14" fontFamily="Arial"/>
 	<s:Label text="Battery Types" id="selDeviceLabel3" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="57"/>
 	<s:DropDownList width="280" id="deviceListDrop"
-					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="34" left="441" enabled="false"/>
+					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="34" left="441" enabled="false" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
 	<s:BorderContainer x="253" height="59" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210">
 		<s:layout>
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
 		</s:layout>
-		<s:RadioButton x="269" y="75" label="All battery sizes"  value="0" groupName="batTypes" click="batTypes_clickHandler(event)" selected="true" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="269" y="75" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" selected="false" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="318" y="75" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="359" y="75" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="391" y="75" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+		<s:RadioButton x="269" y="75" label="All battery sizes"  value="0" groupName="batTypes" click="batTypes_clickHandler(event)" selected="true" fontFamily="Arial" fontSize="11" enabled="true"/>
+		<s:RadioButton x="269" y="75" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" selected="false" fontFamily="Arial" fontSize="11" enabled="true"/>
+		<s:RadioButton x="318" y="75" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
+		<s:RadioButton x="359" y="75" label="C"  value="1" groupName="batTypes" selected="false" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true"/>
+		<s:RadioButton x="391" y="75" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
+		<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
 
 	</s:BorderContainer>
 	<s:BorderContainer width="192" x="32" fontSize="11" fontFamily="Verdana" top="72" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height="53">
@@ -583,18 +582,16 @@
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="true"/>
 
 	</s:BorderContainer>
-	<s:Label x="10" text="some exogenous var" fontStyle="italic" fontSize="11" top="451" fontFamily="Arial"/>
+	<s:Label x="10" text="some exogenous var" fontStyle="italic" fontSize="11" top="412" fontFamily="Arial"/>
+	
 	<s:DropDownList x="39" width="226" id="exoListDrop" labelField="namen" 
-					change="exoListDrop_changeHandler(event)" selectedIndex="0" height="20" top="462" enabled="false"/>
-	<s:Button x="628" y="462" label="refresh exo data" width="129" 
-			  click="exoIndi_clickHandler(event)" id="button" enabled="false"/>
-	<utils:CTwoAxisChart x="598" y="461" height="154" id="testChartExo" width="267"
-						 visible="false" >
-	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid x="528" y="585" height="58" id="testGridExo" width="254"
-							 visible="false" enabled="false"
-							>
-	</utils:CInteractiveGrid>
+					change="exoListDrop_changeHandler(event)" 
+					selectedIndex="0" height="20" top="423" enabled="true" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
+	
+	<s:Button x="628" y="423" label="refresh exo data" width="129" 
+			  click="exoIndi_clickHandler(event)" id="button" enabled="true"/>
+	
+
 	<s:RadioButton x="74" y="144" label="Levels" groupName="growthType" enabled="true" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
 	<s:RadioButton x="137" y="144" label="Growths" groupName="growthType" 
@@ -629,6 +626,8 @@
 	<s:RadioButton x="535" value="0" label="All chemistry" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" selected="true" top="73"/>
 	<s:RadioButton x="631" y="73" value="1" label="Use split by:" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true"/>
 	<s:Label text="Chemistry" id="selDeviceLabel0" fontStyle="italic" fontSize="11" fontFamily="Arial" x="517" top="59"/>
+	<utils:CTwoAxisChart id="exoChart" top="444" left="10" width="746" height="200">
+	</utils:CTwoAxisChart>
 
 
 </s:Group>

@@ -10,7 +10,7 @@
 			   
 			   xmlns:panelTabs="panelTabs.*" 
 			   width="100%" height="850" xmlns:utils="utils.*"
-			   minHeight="850" pageTitle="Battery Demand Tool">
+			   minHeight="850" pageTitle="Battery Demand Tool" minHeight.landingState="1100" height.landingState="1100">
 	
 	<!-- creationComplete="initAll(event)" !-->
 	

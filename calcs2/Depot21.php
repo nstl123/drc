@@ -22,6 +22,7 @@ class Depot21 {
 		return $a;
 	}
 	
+	// scenarioProxy data is distinct that uses proxy countries
 	public function getMacroData($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames) {
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
@@ -32,23 +33,24 @@ class Depot21 {
 		}
 		$countryList = $countryList." )";
 		
+		$stmnt = "";
+		
 		if ($hasSplit == 0) { // hasSplitByTypes		
 			$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, typeID, unitID,
 				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015,
 				Y2016, Y2017, Y2018, Y2019, Y2020, Y2021 ". 
 				($wNames > 0 ? ", nc.namen" : ", 'NA'")." AS namen				
 			    FROM Consulting.DC_scenarioData sd ".
-				($wNames > 0 ? "
-				JOIN Consulting.DC_namesCountries nc
-				ON sd.countryID = nc.id " : "").
+				($wNames > 0 ? " 
+					JOIN Consulting.DC_namesCountries nc 
+					ON sd.countryID = nc.id " : "").
 			   "WHERE scenarioID IN (".$scenarioID.", 10001) 				
-					AND countryID IN ".$countryList."
+					AND nc.id IN ".$countryList."
 					AND indicatorID = ".$indicatorID;				
 			if ($indicatorID == 207) {
 				$stmnt = $stmnt." AND typeID = ".$typeID;
 			};					
-		} else { 
-					
+		} else { 					
 			$joinOn = "";
 			switch($indicatorID) {
 				case '204': 
@@ -59,18 +61,18 @@ class Depot21 {
 					$joinOn = 'avg_number'; break;
 			};
 			
-			$stmnt = "SELECT sdp.scenarioID, nc.id as countryID, sdp.indicatorID, sdp.deviceID, 
-				sdp.Y2004, sdp.Y2005, sdp.Y2006, sdp.Y2007, sdp.Y2008, sdp.Y2009, sdp.Y2010, sdp.Y2011, sdp.Y2012, 
-				sdp.Y2013, sdp.Y2014, sdp.Y2015, sdp.Y2016, sdp.Y2017, sdp.Y2018, sdp.Y2019, sdp.Y2020, sdp.Y2021,
+			$stmnt = "SELECT sd.scenarioID, nc.id as countryID, sd.indicatorID, sd.deviceID, typeID, unitID,
+				sd.Y2004, sd.Y2005, sd.Y2006, sd.Y2007, sd.Y2008, sd.Y2009, sd.Y2010, sd.Y2011, sd.Y2012, 
+				sd.Y2013, sd.Y2014, sd.Y2015, sd.Y2016, sd.Y2017, sd.Y2018, sd.Y2019, sd.Y2020, sd.Y2021,
 				nc.namen				
-				FROM `Consulting`.`DC_scenarioDataProxy` sdp
+				FROM `Consulting`.`DC_scenarioDataProxy` sd
 					JOIN `Consulting`.`DC_namesCountries` nc
-				ON sdp.countryID = nc.".$joinOn."
+				ON sd.countryID = nc.".$joinOn."
 				WHERE 
-					nc.id IN ".$countryList." 
-					AND sdp.indicatorID = ".$indicatorID."
-					AND typeID = ".$typeID."
-					AND scenarioID IN (".$scenarioID.", 10001)";					
+					scenarioID IN (".$scenarioID.", 10001)
+					AND nc.id IN ".$countryList." 
+					AND sd.indicatorID = ".$indicatorID."
+					AND typeID = ".$typeID;					
 		}		
 		
 		$result = $this->connection->fetchAll($stmnt); 

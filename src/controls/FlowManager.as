@@ -121,8 +121,7 @@ package controls
 					tabList[i].setUseCluster(useCluster);
 				} 
 			};		
-		}
-		
+		}		
 		
 		public function recordIndicatorNames(arr:ArrayCollection):void {		
 			indicatorList = arr;

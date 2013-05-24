@@ -680,7 +680,7 @@
 			<s:HorizontalLayout verticalAlign="justify" />
 		</s:layout>
 		
-		<s:Label text="Battery Demand Analysis Tool. v.05-15-6pm" height="100%" width="40%" 
+		<s:Label text="Battery Demand Analysis Tool. v.05-22-5pm" height="100%" width="40%" 
 				 fontFamily="Arial" fontSize="9"/>
 		<s:Label text="Selected Path" height="15" verticalAlign="middle"
 				 id="pathLabel" width="30%" fontFamily="Arial" fontSize="9"/>

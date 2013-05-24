@@ -12,7 +12,7 @@ import mx.rpc.AsyncToken;
 import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
-import valueObjects.DeviceNameObject;
+import valueObjects.DeviceNames;
 import valueObjects.IndicatorNameObject;
 
 import mx.collections.ItemResponder;
@@ -31,7 +31,7 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
         // initialize RemoteClass alias for all entities returned by functions of this service
         valueObjects.CountryName._initRemoteClassAlias();
         valueObjects.IndicatorNameObject._initRemoteClassAlias();
-        valueObjects.DeviceNameObject._initRemoteClassAlias();
+        valueObjects.DeviceNames._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -43,7 +43,7 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
          operation.resultElementType = valueObjects.IndicatorNameObject;
         operations["getIndicatorNames"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDeviceNames");
-         operation.resultElementType = valueObjects.DeviceNameObject;
+         operation.resultElementType = valueObjects.DeviceNames;
         operations["getDeviceNames"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getCountryListTree");
          operation.resultType = Object;

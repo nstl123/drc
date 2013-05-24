@@ -14,8 +14,8 @@ import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
 import valueObjects.CustomDatatype10;
 import valueObjects.CustomDatatype11;
-import valueObjects.CustomDatatype12;
 import valueObjects.CustomDatatype15;
+import valueObjects.CustomDatatype16;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -33,7 +33,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         // initialize RemoteClass alias for all entities returned by functions of this service
         valueObjects.CustomDatatype11._initRemoteClassAlias();
         valueObjects.CountryName._initRemoteClassAlias();
-        valueObjects.CustomDatatype12._initRemoteClassAlias();
+        valueObjects.CustomDatatype16._initRemoteClassAlias();
         valueObjects.CustomDatatype10._initRemoteClassAlias();
         valueObjects.CustomDatatype15._initRemoteClassAlias();
 
@@ -47,7 +47,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CountryName;
         operations["getMacroDataFormat"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandData");
-         operation.resultElementType = valueObjects.CustomDatatype12;
+         operation.resultElementType = valueObjects.CustomDatatype16;
         operations["getDemandData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDeviceBase");
          operation.resultElementType = valueObjects.CustomDatatype10;
@@ -116,10 +116,10 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getDemandData(countryIDs:Object, scenarioID:Object, deviceID:Object, typeID:Object, pwrID:Object, isRegion:Object) : mx.rpc.AsyncToken
+    public function getDemandData(countryIDs:Object, scenarioID:int, deviceID:int, typeID:int, pwrID:int, isRegion:int, showAtDeviceLevel:int) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDemandData");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,deviceID,typeID,pwrID,isRegion) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,deviceID,typeID,pwrID,isRegion,showAtDeviceLevel) ;
 
         return _internal_token;
     }

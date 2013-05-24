@@ -17,7 +17,7 @@
 		
 		<s:CallResponder id="deviceNamesList" result="deviceNamesList_resultHandler(event)" />		
 		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" fault="getDemandData_faultHandler(event)" />
-		<s:CallResponder id="getDemandRegions" result="getDemandRegions_resultHandler(event)" />
+		<s:CallResponder id="getDemandRegions" result="getDemandRegions_resultHandler(event)" fault="getDemandRegions_faultHandler(event)" />
 		<s:CallResponder id="getIndicatorNames" result="getIndicatorNames_resultHandler(event)" />		
 		
 		<s:RadioButtonGroup id="demandTypes"/>
@@ -157,10 +157,10 @@
 						getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
 					} else if (tmp2.length > 0) {
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster));					
+							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), int(showAtDeviceLevel));					
 					} else if (tmp.length > 0) {				
 						this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0);					
+							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0,  int(showAtDeviceLevel));					
 					} else {
 						this.cursorManager.removeBusyCursor();						
 					};
@@ -222,46 +222,54 @@
 
 			[bindable] private var selDeviceAggLevel:int = 0;
 			protected function devicesActive_clickHandler(event:MouseEvent):void
-			{
+			{				
 				this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);			
+				if 		(this.selDeviceAggLevel == 1) 	this.showAtDeviceLevel = false;
+				else if (this.selDeviceAggLevel == 2) 	this.showAtDeviceLevel = true;			
 				
 				this.devicesActiveFlag = (this.selDeviceAggLevel > 0);				
-				this.deviceListDrop.enabled = this.devicesActiveFlag;
+				this.deviceListDrop.enabled = this.devicesActiveFlag;				
+				this.deviceNamesFullList.refresh();
 				
 				this.dispatchEvent(new Event("demandAggChanged", true));				
 			}
-
+			
+			private var showAtDeviceLevel:Boolean = true;
+			private function filterDeviceList(item:Object):Boolean {
+				var f:Boolean = false;
+				if   ( (this.showAtDeviceLevel)&&(item.categoryID > 0) )
+					f = true;
+				else 
+				if ( (!this.showAtDeviceLevel)&&(!item.categoryID) )
+					f = true;
+				return f;
+			}			
+			
 			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = true;	
 				
+				var z:int;
+				z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );
+				
 				if (chemTypesActiveFlag) {
-					if ((item.chemistryID == this.selChemType)&&
-						(item.scenarioID == this.workingScenarioID))
-							f = true;
-					else 
-							f = false;
-				} else {									
-					if ( (item.scenarioID == this.workingScenarioID) &&
-						( (item.deviceID == this.selDevice) || (!devicesActiveFlag) ) ) {					
-						f = true
-					}  else 
-						f = false;		
+					f = ((item.chemistryID == this.selChemType)&&(item.scenarioID == this.workingScenarioID));
+				} else {				
+					f = ( (item.scenarioID == this.workingScenarioID) && 
+						( (z == this.selDevice) || (!devicesActiveFlag) ) ); 					
 				};
 				
 				return f;
 			}	
 			
-			private function filterChart(item:Object):Boolean {				
+			protected function filterChart(item:Object):Boolean {				
 				var f:Boolean = true;
+				var z:int;
+				z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );				
 				
 				if (chemTypesActiveFlag) {
-					if (item.chemistryID == this.selChemType) f = true;
-					else f = false;
-				} else {
-					if ((item.deviceID == this.selDevice)||(!devicesActiveFlag)) {					
-						f = true
-					}  else 
-						f = false;				
+					f = (item.chemistryID == this.selChemType);					
+				} else {					
+					f = ((z == this.selDevice)||(!devicesActiveFlag));   															
 				};			
 				
 				return f;
@@ -290,11 +298,16 @@
 
 			protected function getDemandData_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not get Demand data", "Error E61");
+				Alert.show("could not get Demand data for cntry level", "Error E61");
+			}
+			
+			
+
+			protected function getDemandRegions_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("could not get Demand data for regions", "Error E62");
 			}
 
-			
-			
 		]]>
 	</fx:Script>
 	
@@ -365,9 +378,13 @@
 					this.isLevel, this.deviceListDrop.selectedItem.namen);
 			}
 			
+			private var deviceNamesFullList:ArrayCollection;
 			protected function deviceNamesList_resultHandler(event:ResultEvent):void
 			{
-				this.deviceListDrop.dataProvider = this.deviceNamesList.lastResult as ArrayCollection;
+				deviceNamesFullList = this.deviceNamesList.lastResult as ArrayCollection;
+				this.deviceNamesFullList.filterFunction = this.filterDeviceList;
+				this.deviceNamesFullList.refresh();
+				this.deviceListDrop.dataProvider = this.deviceNamesFullList;
 			}
 			
 			[bindable] private var selBatType:int = 0;
@@ -600,9 +617,12 @@
 		<s:layout>
 			<s:HorizontalLayout gap="20"/>
 		</s:layout>
-		<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices" selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="201" y="118" value="1" label="Device category" groupName="splitByDevices" selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat"/>
-		<s:RadioButton x="201" y="144" value="2" label="Single device" groupName="splitByDevices" selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle"/>
+		<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices" 
+					   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+		<s:RadioButton x="201" y="118" value="1" label="Device category" groupName="splitByDevices" 
+					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat"/>
+		<s:RadioButton x="201" y="144" value="2" label="Single device" groupName="splitByDevices" 
+					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle"/>
 	</s:BorderContainer>
 	<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11" 
 			 verticalAlign="middle" fontFamily="Arial" x="220" top="57"/>

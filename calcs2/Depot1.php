@@ -46,8 +46,6 @@ class Depot1 {
 	}			
 	
 	public function getIndicatorNames() {
-	// $splitByDevices, $splitByTypes - this is done locally
-	// form query depending on detail level needed
 		$a = array('a'=>"");
 		$stmnt = "
 			SELECT * 
@@ -59,10 +57,14 @@ class Depot1 {
 		return $result;
 	}
 
+// here we need additional parameter, so the query returns both device and categories names&IDs. 
+// locally it will be filtered out upon selection
 	public function getDeviceNames() {
 		$a = array('a'=>"");
 		$stmnt = "
-			SELECT * FROM `Consulting`.`DC_namesDevices`;";
+			SELECT id, namen, categoryID FROM `Consulting`.`DC_namesDevices`
+			UNION
+			SELECT id, namen, null as categoryID FROM `Consulting`.`DC_namesDeviceCategories`;";
 		$result = $this->connection->fetchAll($stmnt);		
 		array_push($a, $result);		
 		return $result;

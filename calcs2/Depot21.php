@@ -79,7 +79,7 @@ class Depot21 {
 		//return ($stmnt);
 	}
 	
-	public function getDemandData($countryIDs, $scenarioID, $deviceID, $typeID, $pwrID, $isRegion) { 				
+	public function getDemandData($countryIDs, $scenarioID, $deviceID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel) { 				
 		$getWorldData = 0;
 		$hasOtherCountries = 0;
 		
@@ -102,9 +102,9 @@ class Depot21 {
 		$countryList = $countryList." )";		
 		$stmnt = "";
 
-		if ($hasOtherCountries > 0 ) {				
+		if ($hasOtherCountries > 0 ) {	// flag showing there are countries besides World aggregate			
 			$stmnt = $stmnt."
-				SELECT scenarioID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID, ".
+				SELECT scenarioID, 301 AS indicatorID, deviceID, devNam.categoryID AS categoryID, batTypeID, pwrTypeID, ".
 					($isRegion > 0 ? " rg.namen as namen, rg.id AS countryID, " : "nc.namen AS namen, countryID, ")."					
 					sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
 					sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
@@ -113,7 +113,9 @@ class Depot21 {
 					sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
 				FROM Consulting.DC_demand AS dm
 				JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) ".                    
-					($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."						
+					($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."				
+				JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
+				JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID				
 				WHERE scenarioID IN (".$scenarioID.", 10001)".				
 					($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").
 					($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").
@@ -121,13 +123,14 @@ class Depot21 {
 				"GROUP BY scenarioID ".
 					($isRegion > 0 ? ", nc.".$useCluster : ", countryID").				
 					($typeID   > 0 ? ", batTypeID": "").
-					($pwrID    > 0 ? ", pwrTypeID": "").
-					($deviceID > 0 ? ", deviceID" : "");	
+					($pwrID    > 0 ? ", pwrTypeID": "");
+					if ( ($showAtDeviceLevel  > 0) and ($deviceID > 0)) $stmnt = $stmnt.", deviceID;";
+					if ( ($showAtDeviceLevel == 0) and ($deviceID > 0)) $stmnt = $stmnt.", categoryID;";										
 		};
 		if ($getWorldData > 0) {		
 				$stmnt = $stmnt.
 					($hasOtherCountries > 0 ? " UNION " : " ")."				
-					SELECT scenarioID, 301 AS indicatorID, deviceID, batTypeID, pwrTypeID, ".
+					SELECT scenarioID, 301 AS indicatorID, deviceID, devNam.categoryID AS categoryID, batTypeID, pwrTypeID, ".
 						"'World' as namen, 1111 AS countryID, 
 						sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
 						sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
@@ -136,13 +139,16 @@ class Depot21 {
 						sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
 					FROM Consulting.DC_demand AS dm
 					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) 
+					JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
+					JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID
 					WHERE scenarioID IN (".$scenarioID.", 10001)".				
 						($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").
 						($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").						
 				  " GROUP BY scenarioID ".						
 						($typeID   > 0 ? ", batTypeID": "").
-						($pwrID    > 0 ? ", pwrTypeID": "").
-						($deviceID > 0 ? ", deviceID" : "");							
+						($pwrID    > 0 ? ", pwrTypeID": "");
+						if ( ($showAtDeviceLevel  > 0) and ($deviceID > 0)) $stmnt = $stmnt.", deviceID;";
+						if ( ($showAtDeviceLevel == 0) and ($deviceID > 0)) $stmnt = $stmnt.", categoryID;";								
 		};
 		
 		$result = $this->connection->fetchAll($stmnt); 

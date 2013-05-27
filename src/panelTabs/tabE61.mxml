@@ -16,9 +16,13 @@
 						 showBusyCursor="true"/>	
 		
 		<s:CallResponder id="deviceNamesList" result="deviceNamesList_resultHandler(event)" />		
-		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" fault="getDemandData_faultHandler(event)" />
-		<s:CallResponder id="getDemandRegions" result="getDemandRegions_resultHandler(event)" fault="getDemandRegions_faultHandler(event)" />
-		<s:CallResponder id="getIndicatorNames" result="getIndicatorNames_resultHandler(event)" />		
+		<s:CallResponder id="getDemandData" result="getDemandData_resultHandler(event)" 
+						 fault="getDemandData_faultHandler(event)" />
+		<s:CallResponder id="getDemandRegions" result="getDemandRegions_resultHandler(event)"
+						 fault="getDemandRegions_faultHandler(event)" />
+				
+		<s:CallResponder id="getAllIndiNames" result="getAllIndiNames_resultHandler(event)" 
+						 fault="getAllIndiNames_faultHandler(event)" />						 
 		
 		<s:RadioButtonGroup id="demandTypes"/>
 		<s:RadioButtonGroup id="batTypes" enabled="true"/>
@@ -27,7 +31,10 @@
 		
 		<s:CallResponder id="getMacroData" result="getMacroDataResult_resultHandler(event)" 
 						 fault="getMacroData_faultHandler(event)"/>		
-		<s:CallResponder id="getDemandByChemistryResult" result="getDemandByChemistryResult_resultHandler(event)"/>
+		<s:CallResponder id="getDemandByChemistry" result="getDemandByChemistryResult_resultHandler(event)"/>
+		<s:CallResponder id="getDeviceBase" result="getDeviceBase_resultHandler(event)" 
+						 fault="getDeviceBase_faultHandler(event)"/> 
+		
 		<s:RadioButtonGroup id="regionType"/>
 		<s:RadioButtonGroup id="splitByDevices"/>
 		<s:RadioButtonGroup id="splitByChemistry"/>
@@ -69,6 +76,8 @@
 			[bindable] private var chemTypesActiveFlag:Boolean = false;
 			[bindable] private var devicesActiveFlag:Boolean = false;			
 			
+			private var ccii:int = 0;
+			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab E");			
 				hlp = new helper();			
@@ -82,7 +91,7 @@
 				
 				this.deviceNamesList.token = this.dataServiceNames.getDeviceNames();				
 				//this.regionListNames.token = this.dataServiceNames.getCountryList(1);								
-				this.getIndicatorNames.token = this.dataServiceNames.getIndicatorNames();
+				this.getAllIndiNames.token = this.dataServiceNames.getIndicatorNames();
 			}
 			
 			public function setWorkingScenario(nv:int, flag:Boolean):void {
@@ -114,9 +123,9 @@
 			private var tmpBatTypes:int = 0;
 			
 			protected function getSomeData_clickHandler(event:MouseEvent):void
-			{			
-				trace("calling demand token");				
-				//this.refreshData();
+			{		
+				ccii = ccii + 1;				
+				trace("calling demand token: " + ccii);			
 				this.dispatchEvent(new Event("refreshData", false));
 			}		
 			
@@ -145,14 +154,15 @@
 					this.pwrTypesActiveFlag ? this.tmpPwrTypes = this.selPwrType : this.tmpPwrTypes = -1; 
 					this.batTypesActiveFlag ? this.tmpBatTypes = this.selBatType : this.tmpBatTypes = -1;				
 					
-					trace("calling demand token");				
+					ccii = ccii + 1;
+					trace("calling demand token" + ccii);				
 					
-					this.cursorManager.setBusyCursor();
+					//this.cursorManager.setBusyCursor();
 					
 					if ((this.chemTypesActiveFlag)&&(tmp2.length > 0)) {
-						getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster));
+						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster));
 					} else if ((this.chemTypesActiveFlag)&&(tmp.length > 0)) {
-						getDemandByChemistryResult.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
+						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
 					} else if (tmp2.length > 0) {
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
 							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), int(showAtDeviceLevel));					
@@ -170,15 +180,12 @@
 			protected function getDemandRegions_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getDemandRegions.lastResult as ArrayCollection;				
-				
 				this.currentDataChart.source = this.currentData.source;
-				this.currentDataGrid.source = this.currentData.source;
-				
+				//this.currentDataGrid.source = this.currentData.source;				
 				this.dispatchEvent(new Event("updateCharts", false));
 				
 				this.cursorManager.removeBusyCursor();
 			}
-
 
 			protected function pwrTypesActive_clickHandler(event:MouseEvent):void
 			{
@@ -187,7 +194,6 @@
 
 				this.dispatchEvent(new Event("demandAggChanged", true));
 			}
-
 
 			protected function batTypesActive_clickHandler(event:MouseEvent):void
 			{
@@ -232,7 +238,7 @@
 				this.dispatchEvent(new Event("demandAggChanged", true));				
 			}
 			
-			private var showAtDeviceLevel:Boolean = true;
+			private var showAtDeviceLevel:Boolean = false;
 			private function filterDeviceList(item:Object):Boolean {
 				var f:Boolean = false;
 				if   ( (this.showAtDeviceLevel)&&(item.categoryID > 0) )
@@ -275,11 +281,11 @@
 
 			protected function getDemandByChemistryResult_resultHandler(event:ResultEvent):void
 			{
-				currentData = this.getDemandByChemistryResult.lastResult as ArrayCollection;				
-				
+				currentData = this.getDemandByChemistry.lastResult as ArrayCollection;				
 				this.currentDataChart.source = this.currentData.source;
-				this.currentDataGrid.source = this.currentData.source;				
-				this.dispatchEvent(new Event("updateCharts", false));				
+				//this.currentDataGrid.source = this.currentData.source;				
+				this.dispatchEvent(new Event("updateCharts", false));
+				
 				this.cursorManager.removeBusyCursor();
 			}
 
@@ -297,13 +303,47 @@
 			protected function getDemandData_faultHandler(event:FaultEvent):void
 			{
 				Alert.show("could not get Demand data for cntry level", "Error E61");
+				this.cursorManager.removeBusyCursor();
 			}
 			
 			
 
 			protected function getDemandRegions_faultHandler(event:FaultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				Alert.show("could not get Demand data for regions", "Error E62");
+			}
+
+
+			protected function getDeviceBase_resultHandler(event:ResultEvent):void
+			{
+				currentDataExo = this.getDeviceBase.lastResult as ArrayCollection;				
+				this.currentDataExoChart.source = this.currentDataExo.source;								
+				
+				this.dispatchEvent(new Event("updateCharts", false));		
+				this.cursorManager.removeBusyCursor();
+			}
+
+			protected function getDeviceBase_faultHandler(event:FaultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();				
+			}
+
+			[bindable] protected var strtID:int = 0;
+			protected function getAllIndiNames_resultHandler(event:ResultEvent):void
+			{
+				strtID = strtID + 1;
+				if (strtID < 2) {
+					this.indicatorsList = this.getAllIndiNames.lastResult;
+					this.indicatorsList.filterFunction = filterB;
+					this.indicatorsList.refresh();
+					this.exoListDrop.dataProvider = this.indicatorsList;
+				};
+			}
+
+			protected function getAllIndiNames_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
 			}
 
 		]]>
@@ -325,13 +365,10 @@
 			protected function getDemandData_resultHandler(event:ResultEvent):void
 			{
 				currentData = this.getDemandData.lastResult as ArrayCollection;				
-				
-				this.currentDataChart.source = this.currentData.source;
-				this.currentDataGrid.source = this.currentData.source;
-				
-				this.dispatchEvent(new Event("updateCharts", false));
-							
+				this.currentDataChart.source = this.currentData.source;								
+				this.dispatchEvent(new Event("updateCharts", false)); 							
 				this.cursorManager.removeBusyCursor();
+				//Alert.show("got demand data", "info" );
 			}
 			
 			protected function radiobutton1_clickHandler(event:MouseEvent):void
@@ -387,7 +424,7 @@
 			}
 			
 			[bindable] private var selBatType:int = 0;
-			[bindable] private var selPwrType:int = 1;
+			[bindable] private var selPwrType:int = 0;
 			[bindable] private var selChemType:int = 1;
 			
 			protected function batTypes_clickHandler(event:MouseEvent):void
@@ -404,19 +441,23 @@
 			{
 				this.selPwrType = int(this.pwrTypes.selectedValue);				
 				this.pwrTypesActiveFlag = (this.selPwrType > 0);		
-				if (this.selPwrType == 0) { this.dispatchEvent(new Event("demandAggChanged", true)); };				
+				if (this.selPwrType == 0) { 
+					this.dispatchEvent(new Event("demandAggChanged", true)); 
+				};				
 				this.dispatchEvent(new Event("refreshData", false));			
 				
 				exoIndi_clickHandler(null);
-			}
+			}			
 			
-			protected function getIndicatorNames_resultHandler(event:ResultEvent):void
-			{
-				this.indicatorsList = this.getIndicatorNames.lastResult;
-				this.indicatorsList.filterFunction = filterB;
-				this.indicatorsList.refresh();
-				this.exoListDrop.dataProvider = this.indicatorsList;				
-			}
+			// protected function getIndicatorNames_resultHandler(event:ResultEvent):void		{
+				/*strtID = strtID + 1;
+				if (strtID < 2) {
+					this.indicatorsList = this.getIndicatorNames.lastResult;
+					this.indicatorsList.filterFunction = filterB;
+					this.indicatorsList.refresh();
+					this.exoListDrop.dataProvider = this.indicatorsList;
+				};*/
+			//}
 			
 			private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
@@ -454,44 +495,52 @@
 				if ( this.selExoIndi == 101 ) { 
 					tmpDev = 0; 
 					tmpSplit = 0; 
-				} else tmpDev = this.selDevice; 				
+				} else 
+					tmpDev = this.selDevice; 				
 				
-				getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
-					tmpSplit, typeID, 1);				
+				//this.cursorManager.setBusyCursor();
+				if (this.selExoIndi == 401) {		
+					if (!this.showAtDeviceLevel) tmpDev = 0;
+					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, int(showAtDeviceLevel), tmpDev);
+				} else {				
+					getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
+						tmpSplit, typeID, 1);
+				};
 			}
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
 				currentDataExo = this.getMacroData.lastResult as ArrayCollection;				
-				this.currentDataExoChart.source = this.currentDataExo.source;
-				//this.currentDataExoGrid.source = this.currentDataExo.source;				
-				this.dispatchEvent(new Event("updateCharts", false));				
+				this.currentDataExoChart.source = this.currentDataExo.source;								
+				/*this.currentDataExoChart.filterFunction = this.filterGridExo;
+				this.currentDataExoChart.refresh();*/
+				
+				this.dispatchEvent(new Event("updateCharts", false));	
+				//Alert.show("got exo macro data", "info");
 				this.cursorManager.removeBusyCursor();
 			}			
 			
-			private function filterGridExo(item:Object):Boolean {				
+			/*private function filterGridExo(item:Object):Boolean {				
 				var f:Boolean = true;				
 				if (((item.scenarioID == this.workingScenarioID)
 					&& (item.deviceID == this.selDevice))||(this.selExoIndi < 200)) {					
 					f = true
 				}  else f = false;				
 				return f;
-			}	
+			}	*/
 			
 			private function filterChartExo(item:Object):Boolean {				
-				var f:Boolean = true;				
-				if ((item.deviceID == this.selDevice)||(this.selExoIndi < 200)) {					
-					f = true
-				}  else 
-					f = false;				
+				var f:Boolean = true;
+				var z:int;
+				z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );				
+				f = ((z == this.selDevice)||(this.selExoIndi < 200));										
 				return f;
 			}
 			
 			protected function getMacroData_faultHandler(event:FaultEvent):void
-			{
-				var z:int = 0;
-				z = z + 1;
+			{				
 				Alert.show("error in macroData SQL query", "Error E61");
+				this.cursorManager.removeBusyCursor();
 			}	
 			
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {
@@ -505,24 +554,23 @@
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
-			protected function updateCharts(evt:Event):void {
-				this.currentDataChart.filterFunction = this.filterChart;
-				//this.currentDataGrid.filterFunction  = this.filterGrid;				
+			// this is used for drawing update only
+			protected function updateCharts(evt:Event):void {			
+				this.currentDataChart.filterFunction = this.filterChart;				
 				this.currentDataChart.refresh();
-				//this.currentDataGrid.refresh();				
-				this.demandChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
-				//this.testGrid.setData(currentDataGrid, isLevel);				
+				this.demandChart.setData(currentDataChart, isLevel); 
+				// transformation is performed inside chart component								
+				
 				this.currentDataExoChart.filterFunction = this.filterChartExo;
 				this.currentDataExoChart.refresh();				
-				
-				this.exoChart.setData(this.currentDataExoChart, isLevel);				
+				this.exoChart.setData(currentDataExoChart, isLevel);				
 				
 				//updateChartTitle()
-				this.demandChart.updateChartTitle("Demand", 
+				/*this.demandChart.updateChartTitle("Demand", 
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					this.devicesActiveFlag,	this.isLevel, 
 					(deviceListDrop.selectedItem  ? deviceListDrop.selectedItem.namen : "")
-				);
+				);*/
 			}
 			
 			protected function updateChemistrySplit(evt:Event):void {
@@ -586,7 +634,9 @@
 	
 	<s:DropDownList x="39" width="226" id="exoListDrop" labelField="namen" 
 					change="exoListDrop_changeHandler(event)" 
-					selectedIndex="0" height="20" top="423" enabled="true" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
+					selectedIndex="0" height="20" top="423" enabled="true" 
+					fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9"
+					borderVisible="false"/>
 	
 	<s:Button x="628" y="423" label="refresh exo data" width="129" 
 			  click="exoIndi_clickHandler(event)" id="button" enabled="true"/>

@@ -12,10 +12,10 @@ import mx.rpc.AsyncToken;
 import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
-import valueObjects.CustomDatatype10;
 import valueObjects.CustomDatatype11;
 import valueObjects.CustomDatatype15;
 import valueObjects.CustomDatatype16;
+import valueObjects.CustomDatatype17;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -34,7 +34,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         valueObjects.CustomDatatype11._initRemoteClassAlias();
         valueObjects.CountryName._initRemoteClassAlias();
         valueObjects.CustomDatatype16._initRemoteClassAlias();
-        valueObjects.CustomDatatype10._initRemoteClassAlias();
+        valueObjects.CustomDatatype17._initRemoteClassAlias();
         valueObjects.CustomDatatype15._initRemoteClassAlias();
 
         var operations:Object = new Object();
@@ -50,7 +50,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CustomDatatype16;
         operations["getDemandData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDeviceBase");
-         operation.resultElementType = valueObjects.CustomDatatype10;
+         operation.resultElementType = valueObjects.CustomDatatype17;
         operations["getDeviceBase"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandByChemistry");
          operation.resultElementType = valueObjects.CustomDatatype15;
@@ -135,10 +135,10 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getDeviceBase(countryIDs:Object, scenarioID:Object) : mx.rpc.AsyncToken
+    public function getDeviceBase(countryIDs:Object, scenarioID:Object, pwrType:Object, showAtDeviceLevel:Object, deviceID:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDeviceBase");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,pwrType,showAtDeviceLevel,deviceID) ;
 
         return _internal_token;
     }

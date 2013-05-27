@@ -159,7 +159,7 @@ class Depot21 {
 		//return $stmnt;		
 	}
 	
-	public function getDeviceBase($countryIDs, $scenarioID) {
+	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $showAtDeviceLevel, $deviceID) {
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
 		$countryList = " (";
@@ -170,20 +170,40 @@ class Depot21 {
 		$countryList = $countryList." )";
 		
 		$stmnt = "
-			SELECT scenarioID, countryID, indicatorID, deviceID, namen,
-				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015,
-				Y2016, Y2017, Y2018, Y2019, Y2020, Y2021
-			FROM Consulting.DC_deviceBaseTable dbt
-			JOIN Consulting.DC_namesCountries  nc
-				ON dbt.countryID = nc.id
-			WHERE scenarioID IN (".$scenarioID.", 10001) 				
-				AND countryID IN ".$countryList;				
-				//AND deviceID = 1;";
+			SELECT dbt.scenarioID, dbt.countryID, dbt.indicatorID, sdp.indicatorID, 
+				dbt.deviceID, sdp.deviceID,	nc.namen, sdp.typeID, devNam.categoryID AS categoryID,
+				sum(dbt.Y2004*sdp.Y2004) as Y2004, sum(dbt.Y2005*sdp.Y2005) as Y2005, sum(dbt.Y2006*sdp.Y2006) as Y2006,
+				sum(dbt.Y2007*sdp.Y2007) as Y2007, sum(dbt.Y2008*sdp.Y2008) as Y2008, sum(dbt.Y2009*sdp.Y2009) as Y2009,
+				sum(dbt.Y2010*sdp.Y2010) as Y2010, sum(dbt.Y2011*sdp.Y2011) as Y2011, sum(dbt.Y2012*sdp.Y2012) as Y2012,
+				sum(dbt.Y2013*sdp.Y2013) as Y2013, sum(dbt.Y2014*sdp.Y2014) as Y2014, sum(dbt.Y2015*sdp.Y2015) as Y2015,    
+				sum(dbt.Y2016*sdp.Y2016) as Y2016, sum(dbt.Y2017*sdp.Y2017) as Y2017, sum(dbt.Y2018*sdp.Y2018) as Y2018,    
+				sum(dbt.Y2019*sdp.Y2019) as Y2019, sum(dbt.Y2020*sdp.Y2020) as Y2020, sum(dbt.Y2021*sdp.Y2021) as Y2021
 		
+			FROM Consulting.DC_deviceBaseTable dbt
+			JOIN Consulting.DC_namesCountries nc ON dbt.countryID = nc.id    
+			
+			JOIN Consulting.DC_namesDevices devNam ON devNam.id = dbt.deviceID
+			JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID	
+			
+			JOIN Consulting.DC_scenarioDataProxy sdp	
+				ON  (sdp.countryID = nc.pwr_DPP) 
+				AND (sdp.deviceID  = dbt.deviceID)
+				AND (sdp.scenarioID = dbt.scenarioID)    
+
+			WHERE dbt.scenarioID IN (".$scenarioID.", 10001) 				
+				AND nc.id IN ".$countryList."
+				AND sdp.indicatorID = 205".
+				($pwrType > 0 ? " AND sdp.typeID = ".$pwrType : "")."
+			GROUP BY 
+				scenarioID, countryID".
+				($pwrType > 0 ? ", typeID" : "");
+				if ( ($showAtDeviceLevel  > 0) and ($deviceID > 0)) $stmnt = $stmnt.", dbt.deviceID;";
+				if ( ($showAtDeviceLevel == 0) and ($deviceID > 0)) $stmnt = $stmnt.", categoryID;";		
+			
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		
 		return $result;
-		//return $countryList;
+		//return $stmnt;
 	}
 	
 	public function getDemandByChemistry($countryIDs, $scenarioID, $isRegion) {

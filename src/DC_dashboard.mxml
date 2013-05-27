@@ -578,8 +578,7 @@
 					case "scenarioState" :
 						this.navigatorBox2.setButtonColors(null, 5);
 						this.tabai.selectedIndex = 4;
-						this.btnNext.enabled = false;
-						
+						this.btnNext.enabled = false;						
 						break;					
 				}			
 				

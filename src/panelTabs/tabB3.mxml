@@ -164,7 +164,7 @@
 				} else {
 					var countryIDs:Array = this.dataList.source;			
 					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);			 			
-					this.cursorManager.setBusyCursor();
+					//this.cursorManager.setBusyCursor();
 					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
 						workingScenarioID, 0, 0, 1); 
 				};

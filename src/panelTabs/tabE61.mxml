@@ -124,10 +124,9 @@
 			private var tmpBatTypes:int = 0;
 			
 			protected function getSomeData_clickHandler(event:MouseEvent):void
-			{		
-				ccii = ccii + 1;				
-				trace("calling demand token: " + ccii);			
+			{								
 				this.dispatchEvent(new Event("refreshData", false));
+				exoIndi_clickHandler(null);
 			}		
 			
 			/*public function updateChartTitle():void {
@@ -353,6 +352,10 @@
 			{
 				this.showPerHHFlag = int(this.granGroup.selectedValue);
 				// call refresh data event here;
+				this.dispatchEvent(new Event("refreshData", false));
+				// for demand
+				exoIndi_clickHandler(null);
+				// for exo chart part
 			}
 
 		]]>
@@ -419,8 +422,15 @@
 				this.exoChart.setData(this.currentDataExoChart, isLevel);
 				
 				//updateChartTitle();
-				this.demandChart.updateChartTitle("Demand", this.deviceListDrop.selectedIndex, this.devicesActiveFlag, 
-					this.isLevel, this.deviceListDrop.selectedItem.namen);
+				this.demandChart.updateChartTitle("Demand", 
+					deviceListDrop.selectedIndex, devicesActiveFlag, 
+					isLevel, deviceListDrop.selectedItem.namen);
+				
+				this.exoChart.updateChartTitle(
+					(exoListDrop.selectedItem ? exoListDrop.selectedItem.namen : "-"),
+					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+					(deviceListDrop.selectedIndex >= 0), isLevel, 
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));	
 			}
 			
 			private var deviceNamesFullList:ArrayCollection;
@@ -482,6 +492,13 @@
 			{
 				this.selExoIndi = this.exoListDrop.selectedItem.id;
 				exoIndi_clickHandler(null);
+				
+				this.exoChart.updateChartTitle(
+					(this.exoListDrop.selectedItem ? this.exoListDrop.selectedItem.namen : "-"),
+					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+					(deviceListDrop.selectedIndex >= 0), 
+					this.isLevel, 
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));		
 			}
 			
 			protected function 	exoIndi_clickHandler(event:MouseEvent):void
@@ -509,7 +526,7 @@
 				
 				if (this.selExoIndi == 401) {					
 					if (selDeviceAggLevel == 0) tmpDev = -1; else tmpDev = int(showAtDeviceLevel);
-					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, tmpDev);
+					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, tmpDev, showPerHHFlag);
 				} else {				
 					getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
 						tmpSplit, typeID, 1);
@@ -545,7 +562,7 @@
 					z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );				
 					f = ((z == this.selDevice)||(this.selExoIndi < 200));
 				} else {
-					f = ((item.deviceID == this.selDevice)||(this.selExoIndi < 200));
+					f = true; //(this.selExoIndi < 200);
 				};
 				return f;
 			}
@@ -611,28 +628,31 @@
 		]]>
 	</fx:Script>
 	
-	<utils:CTwoAxisChart width="747" height="255" id="demandChart" left="10" top="161">
+	<utils:CTwoAxisChart width="747" height="250" id="demandChart" left="10" top="182">
 	</utils:CTwoAxisChart>
-	<s:Button x="345" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="137" width="285" height="25" fontWeight="bold"/>
+	<s:Button x="472" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="152" width="285" height="25" fontWeight="bold"/>
 	<s:Label text="Devices Aggeragtion Level" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="21" left="11" fontFamily="Arial"/>
-	<s:Label y="132" text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="14" fontFamily="Arial"/>
-	<s:Label y="133" text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="181" fontFamily="Arial"/>
+	<s:Label text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="149"/>
+	<s:Label text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="197" fontFamily="Arial" top="149"/>
 	<s:Label text="Battery Types" id="selDeviceLabel3" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="57"/>
-	<s:DropDownList width="280" id="deviceListDrop"
-					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="34" left="441" enabled="false" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
-	<s:BorderContainer x="253" height="59" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210">
+	<s:DropDownList width="289" id="deviceListDrop"
+					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="29" left="472" enabled="false" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
+	<s:BorderContainer x="253" height="70" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210">
 		<s:layout>
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
 		</s:layout>
+		
 		<s:RadioButton x="269" y="75" label="All battery sizes"  value="0" groupName="batTypes" click="batTypes_clickHandler(event)" selected="true" fontFamily="Arial" fontSize="11" enabled="true"/>
 		<s:RadioButton x="269" y="75" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" selected="false" fontFamily="Arial" fontSize="11" enabled="true"/>
 		<s:RadioButton x="318" y="75" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
 		<s:RadioButton x="359" y="75" label="C"  value="1" groupName="batTypes" selected="false" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true"/>
 		<s:RadioButton x="391" y="75" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
 		<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
-
+		<s:RadioButton x="430" y="75" label="Hearing Aids"  value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>
+		<s:RadioButton x="440" y="75" label="Coin And Button"  value="6" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>		
+		
 	</s:BorderContainer>
-	<s:BorderContainer width="192" x="32" fontSize="11" fontFamily="Verdana" top="72" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height="53">
+	<s:BorderContainer width="192" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height="67">
 		<s:layout>
 			<s:VerticalLayout gap="1"/>
 		</s:layout>
@@ -643,23 +663,25 @@
 		<s:RadioButton x="44" y="93" label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="true"/>
 
+		<s:RadioButton x="44" y="105" label="Built-in Rechargeable" value="3" groupName="pwrTypes"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
 	</s:BorderContainer>
-	<s:Label x="10" text="some exogenous var" fontStyle="italic" fontSize="11" top="412" fontFamily="Arial"/>
+	<s:Label x="10" text="some exogenous var" fontStyle="italic" fontSize="11" top="439" fontFamily="Arial"/>
 	
 	<s:DropDownList x="39" width="226" id="exoListDrop" labelField="namen" 
 					change="exoListDrop_changeHandler(event)" 
-					selectedIndex="0" height="20" top="423" enabled="true" 
+					selectedIndex="0" height="20" top="450" enabled="true" 
 					fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9"
 					borderVisible="false"/>
 	
-	<s:Button x="628" y="423" label="refresh exo data" width="129" 
+	<s:Button x="472" y="450" label="refresh exo data" width="285" 
 			  click="exoIndi_clickHandler(event)" id="button" enabled="true"/>
 	
 
-	<s:RadioButton x="32" label="Levels" groupName="growthType" enabled="true" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11" top="143"/>
-	<s:RadioButton x="90" label="Growths" groupName="growthType" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11" top="143"/>
+	<s:RadioButton x="31" label="Levels" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="160"/>
+	<s:RadioButton x="89" label="Growths" groupName="growthType" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="160"/>
 	<s:BorderContainer width="124" x="657" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height="53">
 		<s:layout>
 			<s:VerticalLayout gap="1"/>
@@ -674,28 +696,28 @@
 
 	<s:Label text="Step 7: You can adjust any battery type, size and chemistry below." verticalAlign="middle" fontStyle="italic" fontSize="13" top="5" left="10" fontFamily="Arial" color="#00B050"/>
 	
-	<s:BorderContainer x="33" width="391" backgroundAlpha="0.0" borderVisible="false" height="25" top="34">
+	<s:BorderContainer x="33" width="400" backgroundAlpha="0.0" borderVisible="false" height="25" top="34">
 		<s:layout>
-			<s:HorizontalLayout gap="20"/>
+			<s:HorizontalLayout gap="30"/>
 		</s:layout>
 		<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices" 
 					   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
 		<s:RadioButton x="201" y="118" value="1" label="Device category" groupName="splitByDevices" 
 					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat"/>
-		<s:RadioButton x="201" y="144" value="2" label="Single device" groupName="splitByDevices" 
+		<s:RadioButton value="2" label="Single device" groupName="splitByDevices" 
 					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle"/>
 	</s:BorderContainer>
 	<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11" 
 			 verticalAlign="middle" fontFamily="Arial" x="220" top="57"/>
-	<s:RadioButton x="535" value="0" label="All chemistry" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" selected="true" top="73"/>
-	<s:RadioButton x="631" y="73" value="1" label="Use split by:" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true"/>
-	<s:Label text="Chemistry" id="selDeviceLabel0" fontStyle="italic" fontSize="11" fontFamily="Arial" x="517" top="59"/>
-	<utils:CTwoAxisChart id="exoChart" top="444" left="10" width="746" height="200">
+	<s:RadioButton x="535" value="0" label="All chemistry" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" selected="true" top="70"/>
+	<s:RadioButton x="631" value="1" label="Use split by:" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" top="70"/>
+	<s:Label text="Chemistry" id="selDeviceLabel0" fontStyle="italic" fontSize="11" fontFamily="Arial" x="517" top="57"/>
+	<utils:CTwoAxisChart id="exoChart" top="473" left="10" width="747" height="250">
 	</utils:CTwoAxisChart>
-	<s:RadioButton x="195" label="total" groupName="granGroup" value="0" top="143" 
-				   selected="true" click="radiobutton3_changeHandler(event)"/>
-	<s:RadioButton x="252" label="per HH" groupName="granGroup" value="1" top="143" 
-				   click="radiobutton3_changeHandler(event)"/>
+	<s:RadioButton x="224" label="Devices in Total" groupName="granGroup" value="0" top="160" 
+				   selected="true" click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="326" label="Devices per HH" groupName="granGroup" value="1" top="160" 
+				   click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
 
 
 </s:Group>

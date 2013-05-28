@@ -9,8 +9,8 @@
 			   creationComplete="application1_creationCompleteHandler(event)"
 			   
 			   xmlns:panelTabs="panelTabs.*" 
-			   width="100%" height="850" xmlns:utils="utils.*"
-			   minHeight="850" pageTitle="Battery Demand Tool" minHeight.landingState="1100" height.landingState="1100">
+			   width="100%"  xmlns:utils="utils.*"
+			  pageTitle="Battery Demand Tool" minHeight="900" height="900">
 	
 	<!-- creationComplete="initAll(event)" !-->
 	
@@ -610,10 +610,10 @@
 							this.navigatorBox2.setButtonColors(null, 1);
 						} 
 						break;
-					case "indicatorsList" :
+					/*case "indicatorsList" :
 						currentState = "geoList";
 						this.navigatorBox2.setButtonColors(null, 2);						 
-						break;					
+						break;*/					
 					case "viewingState" :
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = this.selActiveTab;
@@ -632,8 +632,8 @@
 							this.tabai.selectedIndex = this.selActiveTab;
 							this.navigatorBox2.setButtonColors(null, 4);
 						} else {
-							this.currentState = "indicatorsList";
-							this.navigatorBox2.setButtonColors(null, 3);
+							currentState = "geoList";
+							this.navigatorBox2.setButtonColors(null, 2);			
 							this.cntryTree.setRegionsGridEnabled(false);
 						};
 						this.btnNext.enabled = true;					
@@ -685,7 +685,7 @@
 			<s:HorizontalLayout verticalAlign="justify" />
 		</s:layout>
 		
-		<s:Label text="Battery Demand Analysis Tool. v.05-28-1pm" height="100%" width="40%" 
+		<s:Label text="Battery Demand Analysis Tool. v.05-28-6pm" height="100%" width="40%" 
 				 fontFamily="Arial" fontSize="9"/>
 		<s:Label text="Selected Path" height="15" verticalAlign="middle"
 				 id="pathLabel" width="30%" fontFamily="Arial" fontSize="9"/>
@@ -748,9 +748,9 @@
 	</s:layout>
 
 
-	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" 
+	<s:BorderContainer id="mainBC" width="992" height="800" horizontalCenter="0" top="25" 
 					   borderVisible="false" 
-					 excludeFrom="landingState, BQList">	
+					 excludeFrom="landingState, BQList" height.scenarioState="100%">	
 		<s:layout>
 			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
 		</s:layout>

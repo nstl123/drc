@@ -38,6 +38,7 @@
 		<s:RadioButtonGroup id="regionType"/>
 		<s:RadioButtonGroup id="splitByDevices"/>
 		<s:RadioButtonGroup id="splitByChemistry"/>
+		<s:RadioButtonGroup id="granGroup"/>
 		
 	</fx:Declarations>
 
@@ -165,10 +166,10 @@
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
 					} else if (tmp2.length > 0) {
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), int(showAtDeviceLevel));					
+							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), int(showAtDeviceLevel), showPerHHFlag);					
 					} else if (tmp.length > 0) {				
 						this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0,  int(showAtDeviceLevel));					
+							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0,  int(showAtDeviceLevel), showPerHHFlag);					
 					} else {
 						this.cursorManager.removeBusyCursor();						
 					};
@@ -345,6 +346,13 @@
 			protected function getAllIndiNames_faultHandler(event:FaultEvent):void
 			{
 				// TODO Auto-generated method stub
+			}
+
+			[bindable] public var showPerHHFlag:int = 0; // means false
+			protected function radiobutton3_changeHandler(event:Event):void
+			{
+				this.showPerHHFlag = int(this.granGroup.selectedValue);
+				// call refresh data event here;
 			}
 
 		]]>
@@ -605,9 +613,10 @@
 	
 	<utils:CTwoAxisChart width="747" height="255" id="demandChart" left="10" top="161">
 	</utils:CTwoAxisChart>
-	<s:Button x="326" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="136" width="285" height="25" fontWeight="bold"/>
+	<s:Button x="345" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="137" width="285" height="25" fontWeight="bold"/>
 	<s:Label text="Devices Aggeragtion Level" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="21" left="11" fontFamily="Arial"/>
 	<s:Label y="132" text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="14" fontFamily="Arial"/>
+	<s:Label y="133" text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="181" fontFamily="Arial"/>
 	<s:Label text="Battery Types" id="selDeviceLabel3" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="57"/>
 	<s:DropDownList width="280" id="deviceListDrop"
 					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="34" left="441" enabled="false" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
@@ -647,10 +656,10 @@
 			  click="exoIndi_clickHandler(event)" id="button" enabled="true"/>
 	
 
-	<s:RadioButton x="74" y="144" label="Levels" groupName="growthType" enabled="true" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
-	<s:RadioButton x="137" y="144" label="Growths" groupName="growthType" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:RadioButton x="32" label="Levels" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11" top="143"/>
+	<s:RadioButton x="90" label="Growths" groupName="growthType" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11" top="143"/>
 	<s:BorderContainer width="124" x="657" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height="53">
 		<s:layout>
 			<s:VerticalLayout gap="1"/>
@@ -683,6 +692,10 @@
 	<s:Label text="Chemistry" id="selDeviceLabel0" fontStyle="italic" fontSize="11" fontFamily="Arial" x="517" top="59"/>
 	<utils:CTwoAxisChart id="exoChart" top="444" left="10" width="746" height="200">
 	</utils:CTwoAxisChart>
+	<s:RadioButton x="195" label="total" groupName="granGroup" value="0" top="143" 
+				   selected="true" click="radiobutton3_changeHandler(event)"/>
+	<s:RadioButton x="252" label="per HH" groupName="granGroup" value="1" top="143" 
+				   click="radiobutton3_changeHandler(event)"/>
 
 
 </s:Group>

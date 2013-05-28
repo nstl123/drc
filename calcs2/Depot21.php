@@ -81,7 +81,7 @@ class Depot21 {
 		//return ($stmnt);
 	}
 	
-	public function getDemandData($countryIDs, $scenarioID, $deviceID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel) { 				
+	public function getDemandData($countryIDs, $scenarioID, $deviceID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH) { 				
 		$getWorldData = 0;
 		$hasOtherCountries = 0;
 		
@@ -103,26 +103,45 @@ class Depot21 {
 		}
 		$countryList = $countryList." )";		
 		$stmnt = "";
+			
+		if ($perHH) {
+			$sumStmnt = "
+				    sum(dm.Y2004/sdt.Y2004) AS Y2004, sum(dm.Y2005/sdt.Y2005) AS Y2005, sum(dm.Y2006/sdt.Y2006) AS Y2006, 
+					sum(dm.Y2007/sdt.Y2007) AS Y2007, sum(dm.Y2008/sdt.Y2008) AS Y2008, sum(dm.Y2009/sdt.Y2009) AS Y2009, 
+					sum(dm.Y2010/sdt.Y2010) AS Y2010, sum(dm.Y2011/sdt.Y2011) AS Y2011, sum(dm.Y2012/sdt.Y2012) AS Y2012, 
+					sum(dm.Y2013/sdt.Y2013) AS Y2013, sum(dm.Y2014/sdt.Y2014) AS Y2014, sum(dm.Y2015/sdt.Y2015) AS Y2015,
+					sum(dm.Y2016/sdt.Y2016) AS Y2016, sum(dm.Y2017/sdt.Y2017) AS Y2017, sum(dm.Y2018/sdt.Y2018) AS Y2018,
+					sum(dm.Y2019/sdt.Y2019) AS Y2019, sum(dm.Y2020/sdt.Y2020) AS Y2020, sum(dm.Y2021/sdt.Y2021) AS Y2021
+					";		
+		} else {
+			$sumStmnt = "
+				    sum(dm.Y2004) AS Y2004, sum(dm.Y2005) AS Y2005, sum(dm.Y2006) AS Y2006, sum(dm.Y2007) AS Y2007, 
+					sum(dm.Y2008) AS Y2008, sum(dm.Y2009) AS Y2009, sum(dm.Y2010) AS Y2010, sum(dm.Y2011) AS Y2011, 
+					sum(dm.Y2012) AS Y2012, sum(dm.Y2013) AS Y2013, sum(dm.Y2014) AS Y2014, sum(dm.Y2015) AS Y2015,
+					sum(dm.Y2016) AS Y2016, sum(dm.Y2017) AS Y2017, sum(dm.Y2018) AS Y2018, sum(dm.Y2019) AS Y2019,
+					sum(dm.Y2020) AS Y2020, sum(dm.Y2021) AS Y2021
+					";
+		};
 
 		if ($hasOtherCountries > 0 ) {	// flag showing there are countries besides World aggregate			
 			$stmnt = $stmnt."
-				SELECT scenarioID, 301 AS indicatorID, deviceID, devNam.categoryID AS categoryID, batTypeID, pwrTypeID, ".
-					($isRegion > 0 ? " rg.namen as namen, rg.id AS countryID, " : "nc.namen AS namen, countryID, ")."					
-					sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
-					sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
-					sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
-					sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
-					sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
-				FROM Consulting.DC_demand AS dm
+				SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID, devNam.categoryID AS categoryID, batTypeID, pwrTypeID, ".
+					($isRegion > 0 ? " rg.namen as namen, rg.id AS countryID, " : "nc.namen AS namen, dm.countryID, ").	
+					$sumStmnt.
+				"FROM Consulting.DC_demand AS dm
 				JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) ".                    
 					($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."				
 				JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
-				JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID				
-				WHERE scenarioID IN (".$scenarioID.", 10001)".				
+				JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID					
+				".($perHH > 0 ? "
+					JOIN Consulting.DC_scenarioData sdt 
+					ON ((sdt.countryID = dm.countryID) AND (sdt.scenarioID = dm.scenarioID))" : "")."
+				WHERE dm.scenarioID IN (".$scenarioID.", 10001)".				
 					($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").
 					($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").
-					($isRegion > 0 ? " AND nc.".$useCluster." " : " AND countryID ")." IN ".$countryList.				
-				"GROUP BY scenarioID ".
+					($isRegion > 0 ? " AND nc.".$useCluster." " : " AND dm.countryID ")." IN ".$countryList.
+					($perHH    > 0 ? " AND sdt.indicatorID = 101" : "")."
+				GROUP BY scenarioID ".
 					($isRegion > 0 ? ", nc.".$useCluster : ", countryID").				
 					($typeID   > 0 ? ", batTypeID": "").
 					($pwrID    > 0 ? ", pwrTypeID": "");
@@ -132,21 +151,21 @@ class Depot21 {
 		if ($getWorldData > 0) {		
 				$stmnt = $stmnt.
 					($hasOtherCountries > 0 ? " UNION " : " ")."				
-					SELECT scenarioID, 301 AS indicatorID, deviceID, devNam.categoryID AS categoryID, batTypeID, pwrTypeID, ".
+					SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID, devNam.categoryID AS categoryID, batTypeID, pwrTypeID, ".
 						"'World' as namen, 1111 AS countryID, 
-						sum(Y2004) AS Y2004, sum(Y2005) AS Y2005, sum(Y2006) AS Y2006, sum(Y2007) AS Y2007, 
-						sum(Y2008) AS Y2008, sum(Y2009) AS Y2009, sum(Y2010) AS Y2010, sum(Y2011) AS Y2011, 
-						sum(Y2012) AS Y2012, sum(Y2013) AS Y2013, sum(Y2014) AS Y2014, sum(Y2015) AS Y2015,
-						sum(Y2016) AS Y2016, sum(Y2017) AS Y2017, sum(Y2018) AS Y2018, sum(Y2019) AS Y2019,
-						sum(Y2020) AS Y2020, sum(Y2021) AS Y2021
+						".$sumStmnt."
 					FROM Consulting.DC_demand AS dm
 					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) 
 					JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
 					JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID
-					WHERE scenarioID IN (".$scenarioID.", 10001)".				
+					".($perHH > 0 ? "
+						JOIN Consulting.DC_scenarioData sdt 
+						ON ((sdt.countryID = dm.countryID) AND (sdt.scenarioID = dm.scenarioID))" : "")."
+					WHERE dm.scenarioID IN (".$scenarioID.", 10001)".				
 						($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").
-						($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").						
-				  " GROUP BY scenarioID ".						
+						($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").
+						($perHH    > 0 ? " AND sdt.indicatorID = 101" : "")."						
+				    GROUP BY scenarioID ".						
 						($typeID   > 0 ? ", batTypeID": "").
 						($pwrID    > 0 ? ", pwrTypeID": "");
 						if ( ($showAtDeviceLevel  > 0) and ($deviceID > 0)) $stmnt = $stmnt.", deviceID;";

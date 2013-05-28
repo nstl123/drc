@@ -1,6 +1,6 @@
 /**
  * This is a generated class and is not intended for modification.  To customize behavior
- * of this value object you may modify the generated sub-class of this class - CustomDatatype17.as.
+ * of this value object you may modify the generated sub-class of this class - CustomDatatype18.as.
  */
 
 package valueObjects
@@ -23,7 +23,7 @@ import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
 use namespace model_internal;
 
 [ExcludeClass]
-public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
+public class _Super_CustomDatatype18 extends flash.events.EventDispatcher implements com.adobe.fiber.valueobjects.IValueObject
 {
     model_internal static function initRemoteClassAliasSingle(cz:Class) : void
     {
@@ -33,35 +33,36 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
     {
     }
 
-    model_internal var _dminternal_model : _CustomDatatype17EntityMetadata;
+    model_internal var _dminternal_model : _CustomDatatype18EntityMetadata;
 
     /**
      * properties
      */
-    private var _internal_Y2013 : Number;
+    private var _internal_Y2013 : Number = Number(0);
     private var _internal_indicatorID : int;
-    private var _internal_Y2012 : Number;
-    private var _internal_Y2015 : Number;
-    private var _internal_Y2014 : Number;
-    private var _internal_Y2017 : Number;
+    private var _internal_Y2012 : Number = Number(0);
+    private var _internal_Y2015 : Number = Number(0);
+    private var _internal_Y2014 : Number = Number(0);
+    private var _internal_Y2017 : Number = Number(0);
     private var _internal_categoryID : int;
-    private var _internal_Y2016 : Number;
+    private var _internal_Y2016 : Number = Number(0);
     private var _internal_countryID : int;
-    private var _internal_Y2019 : Number;
+    private var _internal_Y2019 : Number = Number(0);
     private var _internal_deviceID : int;
-    private var _internal_Y2018 : Number;
-    private var _internal_Y2011 : Number;
-    private var _internal_Y2010 : Number;
+    private var _internal_Y2018 : Number = Number(0);
+    private var _internal_Y2011 : Number = Number(0);
+    private var _internal_Y2010 : Number = Number(0);
     private var _internal_scenarioID : int;
-    private var _internal_Y2009 : Number;
+    private var _internal_Y2009 : Number = Number(0);
+    private var _internal_unitID : Object;
     private var _internal_typeID : int;
-    private var _internal_Y2004 : Number;
-    private var _internal_Y2008 : Number;
-    private var _internal_Y2007 : Number;
-    private var _internal_Y2006 : Number;
-    private var _internal_Y2005 : Number;
-    private var _internal_Y2021 : Object;
-    private var _internal_Y2020 : Number;
+    private var _internal_Y2004 : Number = Number(0);
+    private var _internal_Y2008 : Number = Number(0);
+    private var _internal_Y2007 : Number = Number(0);
+    private var _internal_Y2006 : Number = Number(0);
+    private var _internal_Y2005 : Number = Number(0);
+    private var _internal_Y2021 : Number = Number(0);
+    private var _internal_Y2020 : Number = Number(0);
     private var _internal_namen : String;
 
     private static var emptyArray:Array = new Array();
@@ -76,12 +77,12 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
 
     model_internal var _changeWatcherArray:Array = new Array();
 
-    public function _Super_CustomDatatype17()
+    public function _Super_CustomDatatype18()
     {
-        _model = new _CustomDatatype17EntityMetadata(this);
+        _model = new _CustomDatatype18EntityMetadata(this);
 
         // Bind to own data properties for cache invalidation triggering
-        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "Y2021", model_internal::setterListenerY2021));
+        model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "unitID", model_internal::setterListenerUnitID));
         model_internal::_changeWatcherArray.push(mx.binding.utils.ChangeWatcher.watch(this, "namen", model_internal::setterListenerNamen));
 
     }
@@ -187,6 +188,12 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
     }
 
     [Bindable(event="propertyChange")]
+    public function get unitID() : Object
+    {
+        return _internal_unitID;
+    }
+
+    [Bindable(event="propertyChange")]
     public function get typeID() : int
     {
         return _internal_typeID;
@@ -223,7 +230,7 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
     }
 
     [Bindable(event="propertyChange")]
-    public function get Y2021() : Object
+    public function get Y2021() : Number
     {
         return _internal_Y2021;
     }
@@ -404,6 +411,16 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
         }
     }
 
+    public function set unitID(value:Object) : void
+    {
+        var oldValue:Object = _internal_unitID;
+        if (oldValue !== value)
+        {
+            _internal_unitID = value;
+            this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "unitID", oldValue, _internal_unitID));
+        }
+    }
+
     public function set typeID(value:int) : void
     {
         var oldValue:int = _internal_typeID;
@@ -464,10 +481,10 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
         }
     }
 
-    public function set Y2021(value:Object) : void
+    public function set Y2021(value:Number) : void
     {
-        var oldValue:Object = _internal_Y2021;
-        if (oldValue !== value)
+        var oldValue:Number = _internal_Y2021;
+        if (isNaN(_internal_Y2021) == true || Math.abs(oldValue - value) > epsilon)
         {
             _internal_Y2021 = value;
             this.dispatchEvent(mx.events.PropertyChangeEvent.createUpdateEvent(this, "Y2021", oldValue, _internal_Y2021));
@@ -506,9 +523,9 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
      *  - the validity of the property (and the containing entity) if the given data property is required.
      */
 
-    model_internal function setterListenerY2021(value:flash.events.Event):void
+    model_internal function setterListenerUnitID(value:flash.events.Event):void
     {
-        _model.invalidateDependentOnY2021();
+        _model.invalidateDependentOnUnitID();
     }
 
     model_internal function setterListenerNamen(value:flash.events.Event):void
@@ -537,10 +554,10 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
         var validationFailureMessages:Array = new Array();
 
         var propertyValidity:Boolean = true;
-        if (!_model.Y2021IsValid)
+        if (!_model.unitIDIsValid)
         {
             propertyValidity = false;
-            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_Y2021ValidationFailureMessages);
+            com.adobe.fiber.util.FiberUtils.arrayAdd(validationFailureMessages, _model.model_internal::_unitIDValidationFailureMessages);
         }
         if (!_model.namenIsValid)
         {
@@ -574,14 +591,14 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
 
     [Transient]
     [Bindable(event="propertyChange")]
-    public function get _model() : _CustomDatatype17EntityMetadata
+    public function get _model() : _CustomDatatype18EntityMetadata
     {
         return model_internal::_dminternal_model;
     }
 
-    public function set _model(value : _CustomDatatype17EntityMetadata) : void
+    public function set _model(value : _CustomDatatype18EntityMetadata) : void
     {
-        var oldValue : _CustomDatatype17EntityMetadata = model_internal::_dminternal_model;
+        var oldValue : _CustomDatatype18EntityMetadata = model_internal::_dminternal_model;
         if (oldValue !== value)
         {
             model_internal::_dminternal_model = value;
@@ -626,29 +643,29 @@ public class _Super_CustomDatatype17 extends flash.events.EventDispatcher implem
         }
     }
 
-    model_internal var _doValidationCacheOfY2021 : Array = null;
-    model_internal var _doValidationLastValOfY2021 : Object;
+    model_internal var _doValidationCacheOfUnitID : Array = null;
+    model_internal var _doValidationLastValOfUnitID : Object;
 
-    model_internal function _doValidationForY2021(valueIn:Object):Array
+    model_internal function _doValidationForUnitID(valueIn:Object):Array
     {
         var value : Object = valueIn as Object;
 
-        if (model_internal::_doValidationCacheOfY2021 != null && model_internal::_doValidationLastValOfY2021 == value)
-           return model_internal::_doValidationCacheOfY2021 ;
+        if (model_internal::_doValidationCacheOfUnitID != null && model_internal::_doValidationLastValOfUnitID == value)
+           return model_internal::_doValidationCacheOfUnitID ;
 
-        _model.model_internal::_Y2021IsValidCacheInitialized = true;
+        _model.model_internal::_unitIDIsValidCacheInitialized = true;
         var validationFailures:Array = new Array();
         var errorMessage:String;
         var failure:Boolean;
 
         var valRes:ValidationResult;
-        if (_model.isY2021Available && _internal_Y2021 == null)
+        if (_model.isUnitIDAvailable && _internal_unitID == null)
         {
-            validationFailures.push(new ValidationResult(true, "", "", "Y2021 is required"));
+            validationFailures.push(new ValidationResult(true, "", "", "unitID is required"));
         }
 
-        model_internal::_doValidationCacheOfY2021 = validationFailures;
-        model_internal::_doValidationLastValOfY2021 = value;
+        model_internal::_doValidationCacheOfUnitID = validationFailures;
+        model_internal::_doValidationLastValOfUnitID = value;
 
         return validationFailures;
     }

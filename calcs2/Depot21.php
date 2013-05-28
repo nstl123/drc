@@ -36,7 +36,7 @@ class Depot21 {
 		$stmnt = "";
 		
 		if ($hasSplit == 0) { // hasSplitByTypes		
-			$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, typeID, unitID,
+			$stmnt = "SELECT scenarioID, countryID, indicatorID, deviceID, typeID, unitID, 0 AS categoryID,
 				Y2004, Y2005, Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014, Y2015,
 				Y2016, Y2017, Y2018, Y2019, Y2020, Y2021 ". 
 				($wNames > 0 ? ", nc.namen" : ", 'NA'")." AS namen				
@@ -61,7 +61,7 @@ class Depot21 {
 					$joinOn = 'avg_number'; break;
 			};
 			
-			$stmnt = "SELECT sd.scenarioID, nc.id as countryID, sd.indicatorID, sd.deviceID, typeID, unitID,
+			$stmnt = "SELECT sd.scenarioID, nc.id as countryID, sd.indicatorID, sd.deviceID, typeID, unitID, 0 AS categoryID,
 				sd.Y2004, sd.Y2005, sd.Y2006, sd.Y2007, sd.Y2008, sd.Y2009, sd.Y2010, sd.Y2011, sd.Y2012, 
 				sd.Y2013, sd.Y2014, sd.Y2015, sd.Y2016, sd.Y2017, sd.Y2018, sd.Y2019, sd.Y2020, sd.Y2021,
 				nc.namen				
@@ -159,7 +159,7 @@ class Depot21 {
 		//return $stmnt;		
 	}
 	
-	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $showAtDeviceLevel, $deviceID) {
+	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $showAtDeviceLevel) {
 		$a = array('a'=>"");		
 		$countryArray = (array)($countryIDs);		
 		$countryList = " (";
@@ -197,8 +197,8 @@ class Depot21 {
 			GROUP BY 
 				scenarioID, countryID".
 				($pwrType > 0 ? ", typeID" : "");
-				if ( ($showAtDeviceLevel  > 0) and ($deviceID > 0)) $stmnt = $stmnt.", dbt.deviceID;";
-				if ( ($showAtDeviceLevel == 0) and ($deviceID > 0)) $stmnt = $stmnt.", categoryID;";		
+				if ($showAtDeviceLevel  > 0)  $stmnt = $stmnt.", dbt.deviceID;";
+				if ($showAtDeviceLevel == 0)  $stmnt = $stmnt.", categoryID;";		
 			
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		

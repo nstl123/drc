@@ -19,7 +19,7 @@
 				if (single) {
 					this.lab1.setStyle("color", colBlack);
 					this.lab2.setStyle("color", colBlack);
-					this.lab3.setStyle("color", colBlack);
+					//this.lab3.setStyle("color", colBlack);
 					this.lab4.setStyle("color", colBlack);
 					this.lab5.setStyle("color", colBlack);
 				};
@@ -31,9 +31,9 @@
 					case 2:
 						this.lab2.setStyle("color", col);
 						break;
-					case 3:
+					/*case 3:
 						this.lab3.setStyle("color", col);
-						break;
+						break;*/
 					case 4:
 						this.lab4.setStyle("color", col);
 						break;
@@ -56,9 +56,6 @@
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<s:Label text="Geography List" width="17%" height="30" verticalAlign="middle" textAlign="center"
 				 id="lab2" fontWeight="bold"/>
-		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
-		<s:Label text="Indicators List" width="17%" height="30" verticalAlign="middle" textAlign="center" 
-				 id="lab3" fontWeight="bold"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<s:Label text="Data Inputs" width="17%" height="30" verticalAlign="middle" textAlign="center" 
 				 id="lab4" fontWeight="bold"/>

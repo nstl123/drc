@@ -548,13 +548,20 @@
 												
 							this.masterTab.notifyAll();							
 							this.cntryTree.setRegionsGridEnabled(true);								
-						} else {
-							currentState = "indicatorsList";							
-							this.navigatorBox2.setButtonColors(null, 3);	
-							this.originalBQLabel.text = this.selPathObjLabel;
+						} else {														
+							this.digestUpdate(null);
+							currentState = "scenarioState";
+							this.navigatorBox2.setButtonColors(null, 4);					
+							
+							if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
+							if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;
+							this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus
+							this.cntryTree.setRegionsGridEnabled(true);
+							//this.navigatorBox2.setButtonColors(null, 3);	
+							//this.originalBQLabel.text = this.selPathObjLabel;
 						};									
 						break;
-					case "indicatorsList":
+					/*case "indicatorsList":
 						this.digestUpdate(null);
 						currentState = "scenarioState";
 						this.navigatorBox2.setButtonColors(null, 4);					
@@ -562,12 +569,12 @@
 						if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
 						if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;
 						
-						var z:ArrayCollection = getSelectedIndicators();
-						this.masterTab.recordSelectedIndicators(z);
+						//var z:ArrayCollection = getSelectedIndicators();
+						//this.masterTab.recordSelectedIndicators(z);
 						this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus							
 						
 						this.cntryTree.setRegionsGridEnabled(true);												
-						break;					
+						break;*/					
 					case "viewingState" :						
 						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);						
@@ -654,12 +661,12 @@
 				indiListBQ = this.indicatorsNamesList.lastResult as ArrayCollection
 				indiListBQ.filterFunction = filterByBQ;
 				indiListBQ.refresh();
-				this.indicatorGrid.setDataList(indiListBQ);
+				//this.indicatorGrid.setDataList(indiListBQ);
 			}
 			
-			protected function getSelectedIndicators():ArrayCollection {
+			/*protected function getSelectedIndicators():ArrayCollection {
 				return this.indicatorGrid.getActiveDataList();
-			}		
+			}*/		
 
 		]]>
 	</fx:Script>
@@ -667,8 +674,7 @@
 	<s:states>
 		<s:State name="landingState" />
 		<s:State name="BQList" />
-		<s:State name="geoList" />
-		<s:State name="indicatorsList" />
+		<s:State name="geoList" />	
 		<s:State name="viewingState" />
 		<s:State name="scenarioState" />		
 	</s:states>
@@ -679,7 +685,7 @@
 			<s:HorizontalLayout verticalAlign="justify" />
 		</s:layout>
 		
-		<s:Label text="Battery Demand Analysis Tool. v.05-22-5pm" height="100%" width="40%" 
+		<s:Label text="Battery Demand Analysis Tool. v.05-28-11am" height="100%" width="40%" 
 				 fontFamily="Arial" fontSize="9"/>
 		<s:Label text="Selected Path" height="15" verticalAlign="middle"
 				 id="pathLabel" width="30%" fontFamily="Arial" fontSize="9"/>
@@ -738,13 +744,13 @@
 <s:BorderContainer width="992" height="100%" borderVisible="false" 
 				   excludeFrom="landingState" itemCreationPolicy="immediate">	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" paddingTop.scenarioState="10" paddingTop.indicatorsList="10"/>
+		<s:VerticalLayout horizontalAlign="center" paddingTop="10" />
 	</s:layout>
 
 
 	<s:BorderContainer id="mainBC" width="992" height="700" horizontalCenter="0" top="25" 
 					   borderVisible="false" 
-					 excludeFrom="landingState, BQList, indicatorsList">	
+					 excludeFrom="landingState, BQList">	
 		<s:layout>
 			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
 		</s:layout>
@@ -861,18 +867,7 @@
 		<panelTabs:tabPathSelection width="95%" height="100%"
 									horizontalCenter="0" visible="true" top="10">
 		</panelTabs:tabPathSelection>
-	</s:BorderContainer>
-	<mx:Text width="600" text="Step 4: Please select the inputs you would like to adjust in your scenario." 
-			 height="34" fontSize="14" fontFamily="Arial" color="#00B050" includeIn="indicatorsList"/>
-	<s:Label text="Note: you may select more than one input for manipulation." fontStyle="normal" fontSize="11" includeIn="indicatorsList" width="600"/>
-	<mx:Text width="600" text="selected BQ here" 
-			 fontSize="14" fontFamily="Arial" includeIn="indicatorsList" id="originalBQLabel"/>
-	
-	<utils:CCheckBoxGrid  id="indicatorGrid" creationComplete="getTheData(event)"
-		includeIn="indicatorsList" width="600" height="300"
-		labelText="Indicators">
-		
-	</utils:CCheckBoxGrid>
+	</s:BorderContainer>	
 </s:BorderContainer>
 	
 </s:Application>

@@ -235,6 +235,7 @@
 				this.deviceListDrop.enabled = this.devicesActiveFlag;				
 				this.deviceNamesFullList.refresh();
 				
+				exoIndi_clickHandler(null); // refresh data for exogenous chart
 				this.dispatchEvent(new Event("demandAggChanged", true));				
 			}
 			
@@ -496,12 +497,11 @@
 					tmpDev = 0; 
 					tmpSplit = 0; 
 				} else 
-					tmpDev = this.selDevice; 				
+					tmpDev = this.selDevice;				
 				
-				//this.cursorManager.setBusyCursor();
-				if (this.selExoIndi == 401) {		
-					if (!this.showAtDeviceLevel) tmpDev = 0;
-					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, int(showAtDeviceLevel), tmpDev);
+				if (this.selExoIndi == 401) {					
+					if (selDeviceAggLevel == 0) tmpDev = -1; else tmpDev = int(showAtDeviceLevel);
+					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, tmpDev);
 				} else {				
 					getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
 						tmpSplit, typeID, 1);
@@ -532,8 +532,13 @@
 			private function filterChartExo(item:Object):Boolean {				
 				var f:Boolean = true;
 				var z:int;
-				z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );				
-				f = ((z == this.selDevice)||(this.selExoIndi < 200));										
+				
+				if (this.selDeviceAggLevel > 0) {
+					z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );				
+					f = ((z == this.selDevice)||(this.selExoIndi < 200));
+				} else {
+					f = ((item.deviceID == this.selDevice)||(this.selExoIndi < 200));
+				};
 				return f;
 			}
 			

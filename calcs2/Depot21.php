@@ -82,10 +82,11 @@ class Depot21 {
 	}
 	
 	public function getDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH) { 				
-		$getWorldData = 0;
+		$getWorldData = "";
 		$hasOtherCountries = 0;
 		
 		$countryArray = (array)($countryIDs);	
+		//$countryArray = explode(",",$countryIDs);
 		$useCluster = 0;
 		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
 	// aggType = 0 for device level, 1 - for country level
@@ -93,25 +94,26 @@ class Depot21 {
 		$countryList = " (";				
 		
 		for ($i = 0; $i < count($countryArray); $i++) {		
-			if ($countryArray[$i] > 3000) {
-				$getWorldData = 1; 
-			} else {
+			if ($countryArray[$i] < 3000) {
 				$hasOtherCountries = 1;
-				if ($i > 0) $countryList = $countryList.", ".$countryArray[$i]; 
-				else 		$countryList = $countryList.$countryArray[$i];
-			};
-		}
+				if ($i > 0)  $countryList = $countryList.", ".$countryArray[$i]; 
+				else 		 $countryList = $countryList.$countryArray[$i]; 
+			} else {
+				$getWorldData = 1;
+			}			
+		};	
+		
 		$countryList = $countryList." )";		
 		$stmnt = "";
 			
 		if ($perHH) {
 			$sumStmnt = "
-				    sum(dm.Y2004/sdt.Y2004) AS Y2004, sum(dm.Y2005/sdt.Y2005) AS Y2005, sum(dm.Y2006/sdt.Y2006) AS Y2006, 
-					sum(dm.Y2007/sdt.Y2007) AS Y2007, sum(dm.Y2008/sdt.Y2008) AS Y2008, sum(dm.Y2009/sdt.Y2009) AS Y2009, 
-					sum(dm.Y2010/sdt.Y2010) AS Y2010, sum(dm.Y2011/sdt.Y2011) AS Y2011, sum(dm.Y2012/sdt.Y2012) AS Y2012, 
-					sum(dm.Y2013/sdt.Y2013) AS Y2013, sum(dm.Y2014/sdt.Y2014) AS Y2014, sum(dm.Y2015/sdt.Y2015) AS Y2015,
-					sum(dm.Y2016/sdt.Y2016) AS Y2016, sum(dm.Y2017/sdt.Y2017) AS Y2017, sum(dm.Y2018/sdt.Y2018) AS Y2018,
-					sum(dm.Y2019/sdt.Y2019) AS Y2019, sum(dm.Y2020/sdt.Y2020) AS Y2020, sum(dm.Y2021/sdt.Y2021) AS Y2021
+				    sum(dm.Y2004)/sum(sdt.Y2004) AS Y2004, sum(dm.Y2005)/sum(sdt.Y2005) AS Y2005, sum(dm.Y2006)/sum(sdt.Y2006) AS Y2006, 
+					sum(dm.Y2007)/sum(sdt.Y2007) AS Y2007, sum(dm.Y2008)/sum(sdt.Y2008) AS Y2008, sum(dm.Y2009)/sum(sdt.Y2009) AS Y2009, 
+					sum(dm.Y2010)/sum(sdt.Y2010) AS Y2010, sum(dm.Y2011)/sum(sdt.Y2011) AS Y2011, sum(dm.Y2012)/sum(sdt.Y2012) AS Y2012, 
+					sum(dm.Y2013)/sum(sdt.Y2013) AS Y2013, sum(dm.Y2014)/sum(sdt.Y2014) AS Y2014, sum(dm.Y2015)/sum(sdt.Y2015) AS Y2015,
+					sum(dm.Y2016)/sum(sdt.Y2016) AS Y2016, sum(dm.Y2017)/sum(sdt.Y2017) AS Y2017, sum(dm.Y2018)/sum(sdt.Y2018) AS Y2018,
+					sum(dm.Y2019)/sum(sdt.Y2019) AS Y2019, sum(dm.Y2020)/sum(sdt.Y2020) AS Y2020, sum(dm.Y2021)/sum(sdt.Y2021) AS Y2021
 					";		
 		} else {
 			$sumStmnt = "
@@ -123,6 +125,7 @@ class Depot21 {
 					";
 		};
 
+		
 		if ($hasOtherCountries > 0 ) {	// flag showing there are countries besides World aggregate			
 			$stmnt = $stmnt."
 				SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID 				
@@ -147,15 +150,14 @@ class Depot21 {
 					($isRegion > 0 ? ", nc.".$useCluster : ", countryID").				
 					($typeID   > 0 ? ", batTypeID": "").
 					($pwrID    > 0 ? ", pwrTypeID": "");
-					if ($showAtDeviceLevel == 1)  $stmnt = $stmnt.", deviceID;";
-					if ($showAtDeviceLevel == 2)  $stmnt = $stmnt.", categoryID;";										
+			if ($showAtDeviceLevel == 1)  $stmnt = $stmnt.", deviceID";
+			if ($showAtDeviceLevel == 2)  $stmnt = $stmnt.", categoryID";										
 		};
 		if ($getWorldData > 0) {		
-				$stmnt = $stmnt.
-					($hasOtherCountries > 0 ? " UNION " : " ")."				
-					SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID, 
+				$stmnt = $stmnt.($hasOtherCountries > 0 ? " UNION " : " ")."				
+					SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID 
 					".($showAtDeviceLevel == 0 ? ", 0 as categoryID" : ", devNam.categoryID AS categoryID").
-					"batTypeID, pwrTypeID, 'World' as namen, 1111 AS countryID, 
+					", batTypeID, pwrTypeID, 'World' as namen, 1111 AS countryID, 
 					".$sumStmnt."
 					FROM Consulting.DC_demand AS dm
 					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) 
@@ -171,14 +173,14 @@ class Depot21 {
 				    GROUP BY scenarioID ".						
 						($typeID   > 0 ? ", batTypeID": "").
 						($pwrID    > 0 ? ", pwrTypeID": "");
-						if ($showAtDeviceLevel == 1) $stmnt = $stmnt.", deviceID;";
-						if ($showAtDeviceLevel == 2) $stmnt = $stmnt.", categoryID;";								
+				if ($showAtDeviceLevel == 1) $stmnt = $stmnt.", deviceID;";
+				if ($showAtDeviceLevel == 2) $stmnt = $stmnt.", categoryID;";								
 		};
 		
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		
-		return $result;
-		//return $stmnt;		
+		return $result;		
+		//return  $stmnt;		
 	}
 	
 	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $showAtDeviceLevel, $perHH) {

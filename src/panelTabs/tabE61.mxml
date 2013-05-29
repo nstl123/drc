@@ -165,10 +165,10 @@
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
 					} else if (tmp2.length > 0) {
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), int(showAtDeviceLevel), showPerHHFlag);					
+							this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), this.selDeviceAggLevel, showPerHHFlag);					
 					} else if (tmp.length > 0) {				
 						this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-							this.tmpDevices, this.tmpBatTypes, this.tmpPwrTypes, 0,  int(showAtDeviceLevel), showPerHHFlag);					
+							this.tmpBatTypes, this.tmpPwrTypes, 0,  this.selDeviceAggLevel, showPerHHFlag);					
 					} else {
 						this.cursorManager.removeBusyCursor();						
 					};
@@ -227,9 +227,7 @@
 			[bindable] private var selDeviceAggLevel:int = 0;
 			protected function devicesActive_clickHandler(event:MouseEvent):void
 			{				
-				this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);			
-				if 		(this.selDeviceAggLevel == 1) 	this.showAtDeviceLevel = false;
-				else if (this.selDeviceAggLevel == 2) 	this.showAtDeviceLevel = true;			
+				this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);						
 				
 				this.devicesActiveFlag = (this.selDeviceAggLevel > 0);				
 				this.deviceListDrop.enabled = this.devicesActiveFlag;				
@@ -239,42 +237,29 @@
 				this.dispatchEvent(new Event("demandAggChanged", true));				
 			}
 			
-			private var showAtDeviceLevel:Boolean = false;
+			private var showAtDeviceLevel:int = 0;
 			private function filterDeviceList(item:Object):Boolean {
 				var f:Boolean = false;
-				if   ( (this.showAtDeviceLevel)&&(item.categoryID > 0) )
+				if  ( (selDeviceAggLevel == 1)&&(item.categoryID > 0) )
 					f = true;
 				else 
-				if ( (!this.showAtDeviceLevel)&&(!item.categoryID) )
+				if  ( (selDeviceAggLevel == 2)&&(!item.categoryID)  )
 					f = true;
 				return f;
-			}			
-			
-			private function filterGrid(item:Object):Boolean {				
-				var f:Boolean = true;	
-				
-				var z:int;
-				z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );
-				
-				if (chemTypesActiveFlag) {
-					f = ((item.chemistryID == this.selChemType)&&(item.scenarioID == this.workingScenarioID));
-				} else {				
-					f = ( (item.scenarioID == this.workingScenarioID) && 
-						( (z == this.selDevice) || (!devicesActiveFlag) ) ); 					
-				};
-				
-				return f;
-			}	
+			}		
 			
 			protected function filterChart(item:Object):Boolean {				
-				var f:Boolean = true;
+				var f:Boolean = false;
 				var z:int;
-				z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );				
+				z = ( (selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );				
 				
 				if (chemTypesActiveFlag) {
 					f = (item.chemistryID == this.selChemType);					
-				} else {					
-					f = ((z == this.selDevice)||(!devicesActiveFlag));   															
+				} else 
+				if (this.selDeviceAggLevel > 0) {					
+					f = (z == this.selDevice);   															
+				} else {
+					f = (z == 0); 
 				};			
 				
 				return f;
@@ -406,8 +391,9 @@
 			
 			protected function dropdownlist1_changeHandler(event:IndexChangeEvent):void
 			{
-				this.selDevice = this.deviceListDrop.selectedItem.id;
-				//this.selDeviceLabel.text = this.deviceListDrop.selectedItem.namen;
+				this.selDevice = deviceListDrop.selectedItem.id; 
+									
+				//this.selDevice = this.deviceListDrop.selectedItem.id;				
 								
 				this.currentDataChart.filterFunction = this.filterChart;
 				//this.currentDataGrid.filterFunction  = this.filterGrid;				
@@ -524,9 +510,8 @@
 				} else 
 					tmpDev = this.selDevice;				
 				
-				if (this.selExoIndi == 401) {					
-					if (selDeviceAggLevel == 0) tmpDev = -1; else tmpDev = int(showAtDeviceLevel);
-					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, tmpDev, showPerHHFlag);
+				if (this.selExoIndi == 401) {				
+					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, this.selDeviceAggLevel, showPerHHFlag);
 				} else {				
 					getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
 						tmpSplit, typeID, 1);
@@ -555,15 +540,15 @@
 			}	*/
 			
 			private function filterChartExo(item:Object):Boolean {				
-				var f:Boolean = true;
-				var z:int;
-				
-				if (this.selDeviceAggLevel > 0) {
-					z = ( showAtDeviceLevel ? item.deviceID : item.categoryID );				
-					f = ((z == this.selDevice)||(this.selExoIndi < 200));
-				} else {
-					f = true; //(this.selExoIndi < 200);
-				};
+				var f:Boolean = false;								
+				if (this.selDeviceAggLevel == 0) {									
+					f = ( (item.categoryID == 0) && ((selExoIndi == 101)||(selExoIndi == 401)) );
+				} else 
+				if (this.selDeviceAggLevel == 1) {									
+					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi == 101) );
+				} else {					
+					f = ( (item.categoryID == this.selDevice)|| (this.selExoIndi == 101) );
+				};				
 				return f;
 			}
 			
@@ -702,9 +687,9 @@
 		</s:layout>
 		<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices" 
 					   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-		<s:RadioButton x="201" y="118" value="1" label="Device category" groupName="splitByDevices" 
+		<s:RadioButton x="201" y="118" value="2" label="Device category" groupName="splitByDevices" 
 					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat"/>
-		<s:RadioButton value="2" label="Single device" groupName="splitByDevices" 
+		<s:RadioButton value="1" label="Single device" groupName="splitByDevices" 
 					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle"/>
 	</s:BorderContainer>
 	<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11" 

@@ -64,7 +64,7 @@ class Depot1 {
 		$stmnt = "
 			SELECT id, namen, categoryID FROM `Consulting`.`DC_namesDevices`
 			UNION
-			SELECT id, namen, null as categoryID FROM `Consulting`.`DC_namesDeviceCategories`;";
+			SELECT id, namen, NULL as categoryID FROM `Consulting`.`DC_namesDeviceCategories`;";
 		$result = $this->connection->fetchAll($stmnt);		
 		array_push($a, $result);		
 		return $result;

@@ -179,7 +179,7 @@
 
 	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle">
 		<s:Label text="Label" width="70%" fontWeight="normal" fontSize="11" id="lblName" height="100%" 
-				 verticalAlign="middle" fontStyle="italic"/>
+				 verticalAlign="middle" fontStyle="normal"/>
 		<mx:LinkButton label="Select all" width="15%" textAlign="right" id="lnkAll" 
 					   click="lnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal" 
 					   height="100%" fontSize="11"/>

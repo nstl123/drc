@@ -47,7 +47,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:BorderContainer width="100%" height="30" horizontalCenter="0" verticalCenter="0" borderVisible="false" backgroundColor="#F7F7F7" rollOverColor="#B3C4DD" backgroundAlpha="0.8">
+	<s:BorderContainer width="100%" height="30" horizontalCenter="0" verticalCenter="0" borderVisible="false" backgroundColor="#F7F7F7" rollOverColor="#B3C4DD" backgroundAlpha="0.75">
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="10" paddingRight="10"/>
 		</s:layout>

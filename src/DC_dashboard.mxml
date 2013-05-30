@@ -10,12 +10,13 @@
 			   
 			   xmlns:panelTabs="panelTabs.*" 
 			   width="100%"  xmlns:utils="utils.*"
-			  pageTitle="Battery Demand Tool" minHeight="900" height="900">
+			   pageTitle="Battery Demand Tool" minHeight="900" height="900">
 	
 	<!-- creationComplete="initAll(event)" !-->
 	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" paddingTop="10" paddingBottom="20" gap="0"/>
+		<s:VerticalLayout horizontalAlign="center" 
+						  paddingBottom="20" gap="5" paddingTop="5"/>
 	</s:layout>
 	<fx:Declarations>	
 		
@@ -67,7 +68,7 @@
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.currentState = "landingState";
-				this.currentStateLabel.text = "Current State: " + this.currentState;				
+				//this.currentStateLabel.text = "Current State: " + this.currentState;				
 			}
 			
 			public var flagApplicationStarted:int = 0;
@@ -76,8 +77,7 @@
 				flagApplicationStarted = flagApplicationStarted + 1;
 				if (flagApplicationStarted == 1) {
 					trace("starting init Depot1, Depot21, Depot3");
-					//this.pathLabel.text = "Init";			
-					
+					//this.pathLabel.text = "Init";						
 					this.dataServiceNames = new Depot1();
 					this.dataServiceData = new Depot21();
 					this.dataServiceUpdate = new Depot3();				
@@ -127,6 +127,11 @@
 				this.masterTab.setIndicatorNamesAll();
 				this.masterTab.enableGrids(this.masterTab.getPathFlags());		
 				this.tabai.selectedIndex = this.selActiveTab;
+				
+				this.tabai.enabled = true;
+				this.cursorManager.removeBusyCursor();
+				
+				Alert.show("Module preparation is done", "Info");
 			}
 			
 			public function fillIndicatorNames(evt:Event):void {				
@@ -211,12 +216,23 @@
 				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(workingScenarioID);
 			}
 			
+			[bindable] private var atLeastOneCntrySelected:Boolean = false;
 			public function digestUpdate(event:Event):void {			
 				var cntryData:ArrayCollection = this.cntryTree.getDataList();				
 				var regData:ArrayCollection = this.cntryTree.getRegionsDataList();
-				var uCluster:Boolean = this.cntryTree.getUseCluster();
+				var uCluster:Boolean = this.cntryTree.getUseCluster();			
 				
 				this.masterTab.setDataList(cntryData, regData, uCluster);			
+								
+				switch (this.currentState) {
+					case "geoList":
+						this.atLeastOneCntrySelected = (cntryData.length > 0);
+						this.btnNext.enabled = this.atLeastOneCntrySelected;
+						break;
+					default:
+						this.btnNext.enabled = true;
+						break;
+				}						
 				
 				if (this.masterTab.getStateSpacePos() == 1) {					
 						this.masterTab.setStateSpacePos(2);
@@ -231,7 +247,10 @@
 			[bindable] public var selPathObjLabel:String;
 			[bindable] public var selActiveTab:int;
 			
+			[bindable] public var isBQSelected:Boolean = false;
 			public function digestPathChange(event:Event):void {
+				this.isBQSelected = true;
+				this.btnNext.enabled = true;
 				this.selPathObj = (event) ? String(event.target.selPath) : "none";
 				this.selPathObjLabel = (event.target.hasOwnProperty("selPathLabel")) ?
 											event.target.selPathLabel :	"none";			
@@ -244,7 +263,7 @@
 					Alert.show("Changes were made in Working Scenario. Do you want to reset?", 
 						"Info", Alert.OK | Alert.CANCEL, this, alertListener, null, Alert.OK);
 				} else {					
-					this.pathLabel.text = "Selected Path: " + this.selPathObj;				
+					//this.pathLabel.text = "Selected Path: " + this.selPathObj;				
 					pathFlags = this.masterTab.registerPath(this.selPathObj, isStart);					
 				};				
 			}
@@ -252,11 +271,9 @@
 			private var pathFlags:Array;
 			private function alertListener(eventObj:CloseEvent):void {				
 				if (eventObj.detail==Alert.OK) {
-					this.pathLabel.text = "Selected Path: " + this.selPathObj;								
-					
+					//this.pathLabel.text = "Selected Path: " + this.selPathObj;					
 					pathFlags = this.masterTab.registerPath(this.selPathObj, isStart);					
-					this.colorLabelsOnPath(pathFlags);
-					
+					this.colorLabelsOnPath(pathFlags);					
 					this.dispatchEvent(new Event("scenarioResetRequested", true));			
 				} else {
 					//this.panelTabPath.pathTypes.selectedValue = selPath;
@@ -313,14 +330,14 @@
 				scenarioCreatedFlag = true;
 				startas = startas + 1;
 				if (startas > 1) dispatchEvent(new Event("scenarioResetDone", true));
-				this.statusLabel.text = "new scenario created: " + this.workingScenarioID + "  ";
+				//this.statusLabel.text = "new scenario created: " + this.workingScenarioID + "  ";
 			}		
 
 			protected function createNewWorkingScenarioResult_faultHandler(event:FaultEvent):void
 			{ 
 				scenarioCreatedFlag = false;	
 				dispatchEvent(new Event("scenarioCreationFailed", true));
-				this.statusLabel.text = "new scenario not created"
+				//this.statusLabel.text = "new scenario not created"
 			}	
 			
 			protected function taba11_creationCompleteHandler(event:FlexEvent):void
@@ -336,8 +353,11 @@
 				this.panelTabA2.setFlowManagerRef(this.masterTab);
 				//this.panelTabPath.enablePaths(true);
 				
+				this.tabai.enabled = false;
+				this.cursorManager.setBusyCursor();
+				
 				this.dispatchEvent(new Event("tabA", true));				
-				trace("creation complete of tab A1");
+				trace("creation complete of tab A1");				
 			}
 			
 			protected function tabb11_creationCompleteHandler(event:FlexEvent):void
@@ -388,7 +408,7 @@
 
 			protected function deleteAllScenariosResult_resultHandler(event:ResultEvent):void
 			{
-			     this.statusLabel.text = "data cleaned from DB";
+			     //this.statusLabel.text = "data cleaned from DB";
 				 this.dispatchEvent(new Event("dbCleaned"));
 				 
 			}
@@ -443,35 +463,35 @@
 						this.cntryTreeInit();
 						break;
 					case 'cTree':
-						this.pathLabel.text = "Loading Module: A2";
+						//this.pathLabel.text = "Loading Module: A2";
 						this.nc_A2.createDeferredContent();				
 						break;
 					case 'tabA':
-						this.pathLabel.text = "Loading Module: B3";					
+						//this.pathLabel.text = "Loading Module: B3";					
 						this.nc_B3.createDeferredContent();						
 						break;
 					case 'tabB':
-						this.pathLabel.text = "Loading Module: C4";
+						//this.pathLabel.text = "Loading Module: C4";
 						this.termpBrd.createDeferredContent();
 						//here should go code for deviceBase write procedure
 						break;
 					case 'tabC':
-						this.pathLabel.text = "Loading Module: D5";
+						//this.pathLabel.text = "Loading Module: D5";
 						this.nc_D5.createDeferredContent();						
 						break;
 					case 'tabD':
-						this.pathLabel.text = "Loading Module: E61";
+						//this.pathLabel.text = "Loading Module: E61";
 						this.nc_E61.createDeferredContent();												
 						break;
 					case 'tabE':
-						this.pathLabel.text = "Loading Module: F51";
+						//this.pathLabel.text = "Loading Module: F51";
 						this.nc_F51.createDeferredContent();						
 						break;					
 					case 'tabF':				
-						this.pathLabel.text = "Loading Module: N00";
+						//this.pathLabel.text = "Loading Module: N00";
 						//this.nc_00.createDeferredContent();
 						//this.panelTabPath.enablePaths(false);
-						this.pathLabel.text = "Content Loaded";						
+						//this.pathLabel.text = "Content Loaded";						
 						this.panelTabA2.enabled = true;
 						this.panelTabB3.enabled = true;
 						//this.panelTabC4.enabled = false;					
@@ -522,7 +542,8 @@
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
 							this.startApp(null);
-							if (this.flagApplicationStarted < 2) this.dispatchEvent(new Event("init", true))							
+							if (this.flagApplicationStarted < 2) this.dispatchEvent(new Event("init", true))	
+							this.btnNext.enabled = this.atLeastOneCntrySelected;
 						} else {
 							this.currentState =  "BQList"
 							this.navigatorBox2.setButtonColors(null, 1);
@@ -533,33 +554,37 @@
 						this.currentState = "geoList";
 						this.navigatorBox2.setButtonColors(null, 2);
 						this.startApp(null);
+						this.btnNext.enabled = this.atLeastOneCntrySelected;
 						break;
-					case "geoList" :					
-						if (this.viewMode == "viewDataOnly") { 
-							this.digestUpdate(null);
-							currentState = "viewingState"
-							this.navigatorBox2.setButtonColors("#000000", 2, false);
-							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
-							this.navigatorBox2.setButtonColors(null,      5, false);
-							
-							if (!tabaiCreationComplete) this.tabai.createDeferredContent();						
-							if (tabaiCreationComplete) this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);					
-												
-							this.masterTab.notifyAll();							
-							this.cntryTree.setRegionsGridEnabled(true);								
-						} else {														
-							this.digestUpdate(null);
-							currentState = "scenarioState";
-							this.navigatorBox2.setButtonColors(null, 4);					
-							
-							if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
-							if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;
-							this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus
-							this.cntryTree.setRegionsGridEnabled(true);
-							//this.navigatorBox2.setButtonColors(null, 3);	
-							//this.originalBQLabel.text = this.selPathObjLabel;
-						};									
+					case "geoList" :				
+						if (atLeastOneCntrySelected) {
+							//this.btnNext.enabled = true;
+							if (this.viewMode == "viewDataOnly") {							
+								this.digestUpdate(null);														
+								currentState = "viewingState";
+								this.navigatorBox2.setButtonColors("#000000", 2, false);
+								this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
+								this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
+								this.navigatorBox2.setButtonColors(null,      5, false);
+								
+								if (!tabaiCreationComplete) this.tabai.createDeferredContent();						
+								if (tabaiCreationComplete) this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);					
+													
+								this.masterTab.notifyAll();							
+								this.cntryTree.setRegionsGridEnabled(true);								
+							} else {														
+								this.digestUpdate(null);
+								currentState = "scenarioState";
+								this.navigatorBox2.setButtonColors(null, 4);					
+								
+								if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
+								if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;
+								this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus
+								this.cntryTree.setRegionsGridEnabled(true);
+								//this.navigatorBox2.setButtonColors(null, 3);	
+								//this.originalBQLabel.text = this.selPathObjLabel;
+							};									
+						};
 						break;
 					/*case "indicatorsList":
 						this.digestUpdate(null);
@@ -587,9 +612,8 @@
 						this.tabai.selectedIndex = 4;
 						this.btnNext.enabled = false;						
 						break;					
-				}			
-				
-				this.currentStateLabel.text = "Current State: " + this.currentState;
+				}				
+				//this.currentStateLabel.text = "Current State: " + this.currentState;
 				this.invalidateDisplayList();			
 			}
 
@@ -608,8 +632,9 @@
 						} else {
 							currentState = "BQList";
 							this.navigatorBox2.setButtonColors(null, 1);
-						} 
-						break;
+						};
+						this.btnNext.enabled = true;
+						break;					
 					/*case "indicatorsList" :
 						currentState = "geoList";
 						this.navigatorBox2.setButtonColors(null, 2);						 
@@ -638,9 +663,8 @@
 						};
 						this.btnNext.enabled = true;					
 						break;					
-				}		
-				
-				this.currentStateLabel.text = "Current State: " + this.currentState;
+				}				
+				//this.currentStateLabel.text = "Current State: " + this.currentState;
 				this.invalidateDisplayList();
 			}			
 			
@@ -679,7 +703,7 @@
 		<s:State name="scenarioState" />		
 	</s:states>
 	
-	<s:BorderContainer width="992" height="15" fontFamily="Verdana" 
+	<!-- <s:BorderContainer width="992" height="15" fontFamily="Verdana" 
 					   horizontalCenter="0" top="0" borderVisible="false" id="a">
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="justify" />
@@ -690,31 +714,31 @@
 		<s:Label text="Selected Path" height="15" verticalAlign="middle"
 				 id="pathLabel" width="30%" fontFamily="Arial" fontSize="9"/>
 		<s:Label text="info bar" id="statusLabel" width="30%" textAlign="right" height="100%"
-				 fontFamily="Arial" fontSize="9"/>
-		
-	</s:BorderContainer>	
+				 fontFamily="Arial" fontSize="9"/>		
+	</s:BorderContainer>	!-->
 	
-	<s:BorderContainer width="992" id="playBorder" 
-					   borderWeight="2" borderColor="#A7A7A7"
-					   borderAlpha="0.5" borderVisible="false" height="30">
+	<s:BorderContainer id="playBorder" borderWeight="2" borderColor="#A7A7A7"
+					   borderAlpha="0.5" borderVisible="false" height="35"
+					   width="1012">
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
 		<s:Button label="Next &gt;&gt;" width="110" height="25" id="btnNext" 
 				  click="btnNext_clickHandler(event)" 
 				  verticalCenter="0" right="15"  
-				  fontWeight="bold" fontFamily="Arial" fontSize="12" 
-				   />
+				  fontWeight="bold" fontFamily="Arial" fontSize="12" />
 		<s:Button label="&lt;&lt; Back" width="110" height="25" 
 				  verticalCenter="0" id="btnBack"  click="btnBack_clickHandler(event)"  
 				  right="140" fontWeight="bold" fontFamily="Arial" fontSize="12"
-				  enabled.landingState="false"/>
-		<s:Label  text="emptyLabel" id="currentStateLabel" verticalCenter="0" 
-				 fontFamily="Verdana"  fontSize="12"/>
+				  enabled.landingState="false" />
+		<!-- <s:Label  text="emptyLabel" id="currentStateLabel" verticalCenter="0" 
+				 fontFamily="Verdana"  fontSize="12"/> !-->
+		<s:Label id="topTitle" text="Battery Demand Analysis Tool v.1.0" verticalCenter="0" 			
+				fontFamily="Arial" fontSize="14" fontWeight="bold" fontSize.scenarioState="13"/> 
 	</s:BorderContainer>
 
-	<s:BorderContainer height="30" width="992"  excludeFrom="landingState" 
-					   borderVisible="false">	
+	<s:BorderContainer height="30" excludeFrom="landingState" 
+					   borderVisible="false" width="1012" >	
 		<utils:navigatorLabels id="navigatorBox2" width="100%" height="100%"
 							    horizontalCenter="0" verticalCenter="0">
 		</utils:navigatorLabels>
@@ -736,7 +760,7 @@
 		<mx:Text width="671" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery-powered device data across 53 markets globally.  In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios." 
 				 y="44" height="85" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 		<mx:Text width="671" text="Step 1: Indicate below how you intend to use the tool:" 
-				 y="141" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" color="#00B050"/>		
+				 y="141" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" color="#50B848"/>		
 		<mx:Text width="500" text="Click this selection to simply jump to output options" y="204" height="35" horizontalCenter="0" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565"/>
 		<mx:Text width="500" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="268" height="108" horizontalCenter="0" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565"/>
 	</s:BorderContainer>
@@ -744,13 +768,13 @@
 <s:BorderContainer width="992" height="100%" borderVisible="false" 
 				   excludeFrom="landingState" itemCreationPolicy="immediate">	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" paddingTop="10" />
+		<s:VerticalLayout horizontalAlign="center" paddingTop="10"  gap="0"/>
 	</s:layout>
 
 
-	<s:BorderContainer id="mainBC" width="992" height="800" horizontalCenter="0" top="25" 
+	<s:BorderContainer id="mainBC" width="992" horizontalCenter="0" top="25" 
 					   borderVisible="false" 
-					 excludeFrom="landingState, BQList" height.scenarioState="100%">	
+					 excludeFrom="landingState, BQList" height="100%">	
 		<s:layout>
 			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
 		</s:layout>
@@ -851,8 +875,9 @@
 				
 			</mx:TabNavigator>
 		</s:BorderContainer>
-		<s:BorderContainer height="100%" borderVisible="false" width.geoList="500">
-			<mx:Text text="Step 3: Please select your geographies of interest below and click “Next” to continue.&#13;&#13;(Note: you may also select regions or clusters (developed, developing, or emerging)." includeIn="geoList"  color="#00B050" verticalCenter="-115" horizontalCenter="-10" height="120" fontSize="13"/>
+		<s:BorderContainer height="100%" borderVisible="false">
+			<mx:Text text="Step 3: Please select your geographies of interest on the right and click “Next” to continue.&#13;You may also select regions or clusters (developed, developing, or emerging) by changing the grouping below." 
+					 includeIn="geoList"  color="#50B848" verticalCenter="-115" horizontalCenter="-10" height="120" fontSize="14"/>
 		</s:BorderContainer>
 
 		<s:BorderContainer id="termpBrd" creationPolicy="none" borderVisible="false">

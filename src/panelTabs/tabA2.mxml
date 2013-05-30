@@ -313,8 +313,8 @@
 					 change="indicatorsBox_changeHandler(event)" top="22" 
 					 selectedIndex="1" height="20" left="43"></s:DropDownList>
 	<s:Button label="refresh data" click="button3_clickHandler(event)" top="47" width="218" height="25" fontWeight="bold" fontSize="13" left="318"/>
-	<s:Label text="Step 5: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="5" left="10" fontFamily="Arial" color="#00B050"/>
-	<s:Label text="Step 6: Make data changes to shock the system using the drop down box or directly in the data set below. Once data has been adjusted click “save changes”" verticalAlign="middle" fontStyle="italic" fontSize="13" top="353" left="10" fontFamily="Arial" color="#00B050" width="650"/>
+	<s:Label text="Step 5: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="5" left="10" fontFamily="Arial" color="#50B848"/>
+	<s:Label text="Step 6: Make data changes to shock the system using the drop down box or directly in the data set below. Once data has been adjusted click “save changes”" verticalAlign="middle" fontStyle="italic" fontSize="13" top="353" left="10" fontFamily="Arial" color="#50B848" width="650"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
 				   selected="true" height="19" change="radiobutton2_clickHandler(event)" top="51" left="77" fontSize="11" fontFamily="Arial"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 

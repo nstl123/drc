@@ -143,10 +143,9 @@
 			}
 			
 			public function refreshData(evt:Event):void {
-				if (!this.dataList) {}
-				
-				else {
-				
+				if ((!this.dataList)||(this.dataList.length < 1)) {					
+					Alert.show("Please select at least one country", "Selection error");
+				} else {			
 					var countryIDs:Array = this.dataList.source;				
 					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 					trace("calling macro data token");
@@ -359,57 +358,62 @@
 		]]>
 	</fx:Script>
 
-	<utils:CTwoAxisChart width="747" height="277" id="testChart" top="101" left="10">
+	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="107" left="10">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="457" left="10">
+	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="492" left="10">
 	</utils:CInteractiveGrid>
+	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="363" left="10" fontFamily="Arial" color="#50B848" width="747"/>
 	
 	<s:DropDownList width="242" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="22" left="50"/>
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" left="50"/>
 	
-	<s:CheckBox x="300" y="24" label="hasSplit" enabled="false" id="hasSplitFlag"/>
-	<s:Button label="save changes" width="222" click="digestChanges(event)" id="saveBtn" left="535" top="383" fontWeight="bold" height="27"/>
-	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" left="535" top="416" height="23"/>
+	<s:CheckBox x="300" y="34" label="hasSplit" enabled="false" id="hasSplitFlag" visible="false"/>
+	<s:Button label="Update Chart" width="222" click="digestChanges(event)" id="saveBtn" left="535" top="412" fontWeight="bold" height="27"/>
+	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" left="535" top="445" height="23"/>
 	<s:DropDownList width="272" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="22" left="371"></s:DropDownList>
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371"></s:DropDownList>
 	
-	<s:Button label="refresh data" click="button3_clickHandler(event)" id="button" width="122" height="25" fontWeight="bold" left="191" top="51"/>
+	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" width="122" height="25" 
+			  fontWeight="bold" left="607" top="0" visible="false"/>
 	
-	<s:Label x="515" text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="48" fontFamily="Arial"/>
-	<s:Label x="343" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="48" fontFamily="Arial"/>
+	<s:Label x="542" text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial"/>
+	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="45" top="58" fontSize="11" fontFamily="Arial"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="112" top="58" fontSize="11" fontFamily="Arial"/>
-	<s:Label y="444" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial"/>
-	<s:BorderContainer width="517" height="59" left="10" top="381" borderVisible="false">
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial"/>
+	<s:Label y="479" text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial"/>
+	<s:BorderContainer width="517" height="59" left="10" top="410" borderVisible="false">
 		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
-		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls" enabled="false">
-			<s:Label x="3" y="1" text="When (Year)" width="106" height="20" verticalAlign="middle" fontSize="10"/>
-			<s:Label x="110" y="1" text="Value (in % points)" width="133" height="20" verticalAlign="middle" fontSize="10"/>
-			<s:DropDownList id="shockYears" width="100" left="13" top="19">					
+		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls" enabled="false" borderVisible="false">
+			<s:Label x="3" y="1" text="Year" width="106" height="20" verticalAlign="middle" fontSize="10"/>
+			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>
+			<s:DropDownList id="shockYears" width="100" left="13" top="19" height="20">					
 			</s:DropDownList>
-			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19"/>
+			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19" height="20"/>
 		</s:BorderContainer>
 		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
 					   selected="true" top="19" fontSize="11" click="changeShockType_handler(event)" id="shockBtn1"/>
-		<s:RadioButton x="66" label="All countries  (left)" groupName="shockType" enabled="true" value="0"
+		<s:RadioButton x="66" label="All countries  (right)" groupName="shockType" enabled="true" value="0"
 					   top="35" fontSize="11" click="changeShockType_handler(event)" id="shockBtn2"/>
 	</s:BorderContainer>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="46" fontFamily="Arial"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="10" height="10" left="10" fontFamily="Arial"/>
-	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="10" height="10" left="342" fontFamily="Arial"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial"/>
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial"/>
 	<s:RadioButton label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="true"
-				   click="pwrTypes_clickHandler(event)" top="61" fontSize="11" fontFamily="Arial" left="353"/>
+				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" left="245"/>
 	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" top="80" fontSize="11" fontFamily="Arial" left="353"/>	
+				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="243"/>	
+	<s:RadioButton y="69" label="Built-in Rechargeable" value="3" groupName="pwrTypes"
+				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false" left="380"/>
 
-	<s:RadioButton x="537" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" top="60" selected="true" fontSize="11" fontFamily="Arial"/>
-	<s:RadioButton x="585" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" top="60" fontSize="11" fontFamily="Arial"/>	
-	<s:RadioButton x="626" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" top="60" fontSize="11" fontFamily="Arial"/>
-	<s:RadioButton x="661" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" top="60" fontSize="11" fontFamily="Arial"/>	
-	<s:RadioButton x="697" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" top="60" fontSize="11" fontFamily="Arial"/>
+	<s:RadioButton x="564" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" selected="true" fontSize="11" fontFamily="Arial"/>
+	<s:RadioButton x="612" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial"/>	
+	<s:RadioButton x="653" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial"/>
+	<s:RadioButton x="688" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial"/>	
+	<s:RadioButton x="724" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial"/>
 
 
 </s:Group>

@@ -106,7 +106,7 @@ class Depot21 {
 		$countryList = $countryList." )";		
 		$stmnt = "";
 			
-		if ($perHH) {
+		if ($perHH > 0) {
 			$sumStmnt = "
 				    sum(dm.Y2004)/sum(sdt.Y2004) AS Y2004, sum(dm.Y2005)/sum(sdt.Y2005) AS Y2005, sum(dm.Y2006)/sum(sdt.Y2006) AS Y2006, 
 					sum(dm.Y2007)/sum(sdt.Y2007) AS Y2007, sum(dm.Y2008)/sum(sdt.Y2008) AS Y2008, sum(dm.Y2009)/sum(sdt.Y2009) AS Y2009, 
@@ -193,7 +193,7 @@ class Depot21 {
 		}
 		$countryList = $countryList." )";
 		
-		if ($perHH) {
+		if ($perHH > 0) {
 			$sumStmnt = "
 				   ,sum(dbt.Y2004*sdp.Y2004/sdt.Y2004) as Y2004, sum(dbt.Y2005*sdp.Y2005/sdt.Y2005) as Y2005, sum(dbt.Y2006*sdp.Y2006/sdt.Y2006) as Y2006,
 					sum(dbt.Y2007*sdp.Y2007/sdt.Y2007) as Y2007, sum(dbt.Y2008*sdp.Y2008/sdt.Y2008) as Y2008, sum(dbt.Y2009*sdp.Y2009/sdt.Y2009) as Y2009,
@@ -248,7 +248,7 @@ class Depot21 {
 		//return $stmnt;
 	}
 	
-	public function getDemandByChemistry($countryIDs, $scenarioID, $isRegion) {
+	public function getDemandByChemistry($countryIDs, $scenarioID, $isRegion, $perHH) {
 		$useCluster = 0;
 		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
 	
@@ -261,21 +261,49 @@ class Depot21 {
 			else 		$countryList = $countryList.$countryArray[$i];
 		}
 		$countryList = $countryList." )";	
+		
+		$sumStmnt = "";
+		if ($perHH > 0) {
+			$sumStmnt = "
+				sum(dma.Y2004 * chm.shr)/sum(sdt.Y2004) as Y2004, sum(dma.Y2005 * chm.shr)/sum(sdt.Y2005) as Y2005, 
+				sum(dma.Y2006 * chm.shr)/sum(sdt.Y2006) as Y2006, sum(dma.Y2007 * chm.shr)/sum(sdt.Y2007) as Y2007,  
+				sum(dma.Y2008 * chm.shr)/sum(sdt.Y2008) as Y2008, sum(dma.Y2009 * chm.shr)/sum(sdt.Y2009) as Y2009, 
+				sum(dma.Y2010 * chm.shr)/sum(sdt.Y2010) as Y2010, sum(dma.Y2011 * chm.shr)/sum(sdt.Y2011) as Y2011,  
+				sum(dma.Y2012 * chm.shr)/sum(sdt.Y2012) as Y2012, sum(dma.Y2013 * chm.shr)/sum(sdt.Y2013) as Y2013, 
+				sum(dma.Y2014 * chm.shr)/sum(sdt.Y2014) as Y2014, sum(dma.Y2015 * chm.shr)/sum(sdt.Y2015) as Y2015,  
+				sum(dma.Y2016 * chm.shr)/sum(sdt.Y2016) as Y2016, sum(dma.Y2017 * chm.shr)/sum(sdt.Y2017) as Y2017, 
+				sum(dma.Y2018 * chm.shr)/sum(sdt.Y2018) as Y2018, sum(dma.Y2019 * chm.shr)/sum(sdt.Y2019) as Y2019,  
+				sum(dma.Y2020 * chm.shr)/sum(sdt.Y2020) as Y2020, sum(dma.Y2021 * chm.shr)/sum(sdt.Y2021) as Y2021
+				";
+		} else {
+			$sumStmnt = "
+				sum(dma.Y2004 * chm.shr) as Y2004, sum(dma.Y2005 * chm.shr) as Y2005, 
+				sum(dma.Y2006 * chm.shr) as Y2006, sum(dma.Y2007 * chm.shr) as Y2007,  
+				sum(dma.Y2008 * chm.shr) as Y2008, sum(dma.Y2009 * chm.shr) as Y2009, 
+				sum(dma.Y2010 * chm.shr) as Y2010, sum(dma.Y2011 * chm.shr) as Y2011,  
+				sum(dma.Y2012 * chm.shr) as Y2012, sum(dma.Y2013 * chm.shr) as Y2013, 
+				sum(dma.Y2014 * chm.shr) as Y2014, sum(dma.Y2015 * chm.shr) as Y2015,  
+				sum(dma.Y2016 * chm.shr) as Y2016, sum(dma.Y2017 * chm.shr) as Y2017, 
+				sum(dma.Y2018 * chm.shr) as Y2018, sum(dma.Y2019 * chm.shr) as Y2019,  
+				sum(dma.Y2020 * chm.shr) as Y2020, sum(dma.Y2021 * chm.shr) as Y2021
+				";	
+		};		
+		
 		$stmnt = "
-			SELECT scenarioID, 301 AS indicatorID, chm.id as chemistryID, 0 AS deviceID, ". 
-				($isRegion > 0 ? " rg.namen as namen, rg.id AS countryID, " : "nc.namen AS namen, dma.countryID, ")."	
-				Y2004 * chm.shr as Y2004, Y2005 * chm.shr as Y2005, Y2006 * chm.shr as Y2006, Y2007 * chm.shr as Y2007,  
-				Y2008 * chm.shr as Y2008, Y2009 * chm.shr as Y2009, Y2010 * chm.shr as Y2010, Y2011 * chm.shr as Y2011,  
-				Y2012 * chm.shr as Y2012, Y2013 * chm.shr as Y2013, Y2014 * chm.shr as Y2014, Y2015 * chm.shr as Y2015,  
-				Y2016 * chm.shr as Y2016, Y2017 * chm.shr as Y2017, Y2018 * chm.shr as Y2018, Y2019 * chm.shr as Y2019,  
-				Y2020 * chm.shr as Y2020, Y2021 * chm.shr as Y2021  
+			SELECT dma.scenarioID, 301 AS indicatorID, chm.id as chemistryID, 0 AS deviceID, 0 as categoryID, ". 
+				($isRegion > 0 ? " rg.namen as namen, rg.id AS countryID, " : "nc.namen AS namen, dma.countryID, ").
+				 $sumStmnt."
 			FROM `Consulting`.`DC_demandAggregated` dma
 				JOIN Consulting.DC_chemistry chm ON  chm.countryID = dma.countryID
 			JOIN Consulting.DC_namesCountries AS nc ON (dma.countryID = nc.id) ".                    
-				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."						
-			WHERE scenarioID IN (".$scenarioID.", 10001)".				
-				($isRegion > 0 ? " AND nc.".$useCluster : " AND dma.countryID ")." IN ".$countryList.	
-			"GROUP BY scenarioID, chemistryID ".
+				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "").
+			    ($perHH    > 0 ? "
+					JOIN Consulting.DC_scenarioData sdt 
+					ON ((sdt.countryID = dma.countryID) AND (sdt.scenarioID = dma.scenarioID))" : "")."					
+			WHERE dma.scenarioID IN (".$scenarioID.", 10001)".				
+				($isRegion > 0 ? " AND nc.".$useCluster : " AND dma.countryID ")." IN ".$countryList.
+				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "")."				
+			GROUP BY dma.scenarioID, chemistryID ".
 				($isRegion > 0 ? ", nc.".$useCluster : ", dma.countryID");
 			
 		$result = $this->connection->fetchAll($stmnt); 

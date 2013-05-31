@@ -12,10 +12,10 @@ import mx.rpc.AsyncToken;
 import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
-import valueObjects.CustomDatatype15;
 import valueObjects.CustomDatatype16;
 import valueObjects.CustomDatatype17;
 import valueObjects.CustomDatatype18;
+import valueObjects.CustomDatatype19;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -35,7 +35,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         valueObjects.CountryName._initRemoteClassAlias();
         valueObjects.CustomDatatype16._initRemoteClassAlias();
         valueObjects.CustomDatatype17._initRemoteClassAlias();
-        valueObjects.CustomDatatype15._initRemoteClassAlias();
+        valueObjects.CustomDatatype19._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -53,7 +53,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CustomDatatype17;
         operations["getDeviceBase"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandByChemistry");
-         operation.resultElementType = valueObjects.CustomDatatype15;
+         operation.resultElementType = valueObjects.CustomDatatype19;
         operations["getDemandByChemistry"] = operation;
 
         _serviceControl.operations = operations;
@@ -154,10 +154,10 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getDemandByChemistry(countryIDs:Object, scenarioID:Object, isRegion:Object) : mx.rpc.AsyncToken
+    public function getDemandByChemistry(countryIDs:Object, scenarioID:Object, isRegion:Object, perHH:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDemandByChemistry");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,isRegion) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,isRegion,perHH) ;
 
         return _internal_token;
     }

@@ -141,8 +141,8 @@
 			
 			[bindable] public var useCluster:Boolean = false;
 			public function refreshData(evt:Event):void {
-				if (!this.dataList) {
-					Alert.show("select some countries and/or regions", "Error E61");
+				if ((!this.dataList)||(this.dataList.length < 1)) {					
+					Alert.show("Please select at least one country", "Selection error");
 				} else {				
 					var countryIDs:Array = this.dataList.source;				
 					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
@@ -157,12 +157,12 @@
 					ccii = ccii + 1;
 					trace("calling demand token" + ccii);				
 					
-					//this.cursorManager.setBusyCursor();
+					this.cursorManager.setBusyCursor();
 					
 					if ((this.chemTypesActiveFlag)&&(tmp2.length > 0)) {
-						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster));
+						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster), showPerHHFlag);
 					} else if ((this.chemTypesActiveFlag)&&(tmp.length > 0)) {
-						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0);					
+						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0, showPerHHFlag);					
 					} else if (tmp2.length > 0) {
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
 							this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), this.selDeviceAggLevel, showPerHHFlag);					
@@ -217,8 +217,10 @@
 										
 					this.devicesActiveFlag = (!this.chemTypesActiveFlag) && (this.selDeviceAggLevel > 0);
 					this.deviceListDrop.enabled = !this.chemTypesActiveFlag;					
+					
 					this.radioDevCat.enabled = !this.chemTypesActiveFlag;
 					this.radioDevSingle.enabled = !this.chemTypesActiveFlag;
+					this.radioDevAll.enabled = !this.chemTypesActiveFlag;
 				//};
 				
 				this.dispatchEvent(new Event("refreshData", false));
@@ -251,7 +253,9 @@
 			protected function filterChart(item:Object):Boolean {				
 				var f:Boolean = false;
 				var z:int;
-				z = ( (selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );				
+				if (!this.chemTypesActiveFlag) {				
+					z = ( (selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );
+				};
 				
 				if (chemTypesActiveFlag) {
 					f = (item.chemistryID == this.selChemType);					
@@ -279,6 +283,8 @@
 			{
 				this.selChemType = int(this.chemTypes.selectedValue);
 				this.dispatchEvent(new Event("updateCharts", false));
+				
+				//need to get data for chemistry?
 				
 				this.chemTypesActiveFlag = (this.selChemType > 0);
 				//need to disable pwrSplit and sizeSplit accordingly
@@ -488,33 +494,37 @@
 			}
 			
 			protected function 	exoIndi_clickHandler(event:MouseEvent):void
-			{					
-				var countryIDs:Array = this.dataList.source;		
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
-				var typeID:int = 0;
-				var tmpDev:int = 0;
-				var tmpSplit:int = 0;				
-				
-				if ( (this.selExoIndi == 204)||(this.selExoIndi == 206) ) 
-					typeID = this.selBatType;
-				else 
-				if ( (this.selExoIndi == 205)||(this.selExoIndi == 207) ) 
-					typeID = this.selPwrType;				
-				if ( (this.selExoIndi >= 204) && (this.selExoIndi <= 206) ) 
-						tmpSplit = 1; 
-				else tmpSplit = aggType;
-				
-				if ( this.selExoIndi == 101 ) { 
-					tmpDev = 0; 
-					tmpSplit = 0; 
-				} else 
-					tmpDev = this.selDevice;				
-				
-				if (this.selExoIndi == 401) {				
-					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, this.selDeviceAggLevel, showPerHHFlag);
+			{		
+				if ((!this.dataList)||(this.dataList.length < 1)) {					
+					//Alert.show("Please Select at least one country", "Selection Error");
 				} else {				
-					getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
-						tmpSplit, typeID, 1);
+					var countryIDs:Array = this.dataList.source;		
+					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+					var typeID:int = 0;
+					var tmpDev:int = 0;
+					var tmpSplit:int = 0;				
+				
+					if ( (this.selExoIndi == 204)||(this.selExoIndi == 206) ) 
+						typeID = this.selBatType;
+					else 
+					if ( (this.selExoIndi == 205)||(this.selExoIndi == 207) ) 
+						typeID = this.selPwrType;				
+					if ( (this.selExoIndi >= 204) && (this.selExoIndi <= 206) ) 
+							tmpSplit = 1; 
+					else tmpSplit = aggType;
+					
+					if ( this.selExoIndi == 101 ) { 
+						tmpDev = 0; 
+						tmpSplit = 0; 
+					} else 
+						tmpDev = this.selDevice;				
+					
+					if (this.selExoIndi == 401) {				
+						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, this.selDeviceAggLevel, showPerHHFlag);
+					} else {				
+						getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
+							tmpSplit, typeID, 1);
+					};
 				};
 			}
 			
@@ -633,7 +643,7 @@
 		<s:RadioButton x="359" y="75" label="C"  value="1" groupName="batTypes" selected="false" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true"/>
 		<s:RadioButton x="391" y="75" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
 		<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
-		<s:RadioButton x="430" y="75" label="Hearing Aids"  value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>
+		<s:RadioButton x="430" y="75" label="Hearing Aid"  value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>
 		<s:RadioButton x="440" y="75" label="Coin And Button"  value="6" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>		
 		
 	</s:BorderContainer>
@@ -659,7 +669,7 @@
 					fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9"
 					borderVisible="false"/>
 	
-	<s:Button x="472" y="450" label="refresh exo data" width="285" 
+	<s:Button x="472" y="450" label="Update Chart" width="285" 
 			  click="exoIndi_clickHandler(event)" id="button" enabled="true"/>
 	
 
@@ -667,26 +677,27 @@
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="160"/>
 	<s:RadioButton x="89" label="Growths" groupName="growthType" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="160"/>
-	<s:BorderContainer width="124" x="657" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height="53">
+	<s:BorderContainer width="236" x="603" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height="69">
 		<s:layout>
-			<s:VerticalLayout gap="1"/>
+			<s:TileLayout horizontalGap="0" verticalGap="4"/>
 		</s:layout>
-		
-			<s:RadioButton x="4" y="10" label="Alkaline" groupName="chemTypes" value="1" selected="true" 
-						   click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-			<s:RadioButton x="4" y="28" label="Zinc" groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
-			<s:RadioButton x="4" y="46" label="Lithium" groupName="chemTypes" value="3" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+			<s:RadioButton label="Alkaline" groupName="chemTypes" value="1" selected="true" 
+					   click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+			<s:RadioButton label="Lithium" groupName="chemTypes" value="3" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+			<s:RadioButton x="629" y="106" label="Zinc" groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+			<s:RadioButton x="629" y="106" label="Hearing Aid " groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false"/>
+			<s:RadioButton x="629" y="106" label="Coin and Button" groupName="chemTypes" value="2" click="chemTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false"/>		
 		
 	</s:BorderContainer>
 
-	<s:Label text="Step 7: You can adjust any battery type, size and chemistry below." verticalAlign="middle" fontStyle="italic" fontSize="13" top="5" left="10" fontFamily="Arial" color="#00B050"/>
+	<s:Label text="Step 6: You can adjust any battery type, size and chemistry below." verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
 	
 	<s:BorderContainer x="33" width="400" backgroundAlpha="0.0" borderVisible="false" height="25" top="34">
 		<s:layout>
 			<s:HorizontalLayout gap="30"/>
 		</s:layout>
 		<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices" 
-					   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11"/>
+					   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevAll"/>
 		<s:RadioButton x="201" y="118" value="2" label="Device category" groupName="splitByDevices" 
 					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat"/>
 		<s:RadioButton value="1" label="Single device" groupName="splitByDevices" 
@@ -694,9 +705,9 @@
 	</s:BorderContainer>
 	<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11" 
 			 verticalAlign="middle" fontFamily="Arial" x="220" top="57"/>
-	<s:RadioButton x="535" value="0" label="All chemistry" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" selected="true" top="70"/>
-	<s:RadioButton x="631" value="1" label="Use split by:" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" top="70"/>
-	<s:Label text="Chemistry" id="selDeviceLabel0" fontStyle="italic" fontSize="11" fontFamily="Arial" x="517" top="57"/>
+	<s:RadioButton x="470" value="0" label="All chemistry" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" selected="true" top="70"/>
+	<s:RadioButton x="575" value="1" label="Use split by:" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" top="70"/>
+	<s:Label text="Chemistry" id="selDeviceLabel0" fontStyle="italic" fontSize="11" fontFamily="Arial" x="452" top="57"/>
 	<utils:CTwoAxisChart id="exoChart" top="473" left="10" width="747" height="250">
 	</utils:CTwoAxisChart>
 	<s:RadioButton x="224" label="Devices in Total" groupName="granGroup" value="0" top="160" 

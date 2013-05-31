@@ -271,8 +271,8 @@
 			public function refreshData(evt:Event):void {
 				this.rewriteDeviceBase();								
 					
-				if (!this.dataList) { 
-					Alert.show("Select at least one country", "Error D5"); 
+				if ((!this.dataList)||(this.dataList.length < 1)) {					
+					Alert.show("Please select at least one country", "Selection error");
 				} else {
 					var countryIDs:Array = this.dataList.source;
 					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
@@ -354,41 +354,43 @@
 		
 	</fx:Declarations>
 	
-	<utils:CTwoAxisChart width="747" height="277" id="testChart" top="84" left="10">
+	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="93" left="10">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="440" left="10">
+	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="465" left="10">
 	</utils:CInteractiveGrid>
 	
-	<s:DropDownList width="243" id="indicatorsBox"  labelField="namen" top="22" left="49" 
+	<s:DropDownList width="243" id="indicatorsBox"  labelField="namen" top="32" left="49" 
 					change="indicatorsBox_changeHandler(event)"/>
 	
-	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" top="399" height="23" left="535"/>
-	<s:Button label="save changes" click="digestChanges(event)" width="222" id="saveBtn" left="535" top="366" height="27" fontWeight="bold"/>
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="428"/>
-	<s:BorderContainer width="517" height="59" left="10" top="364" borderVisible="false">
+	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" top="427" height="23" left="535"/>
+	<s:Button label="Update Chart" click="digestChanges(event)" width="222" id="saveBtn" left="535" top="394" height="27" fontWeight="bold"/>
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="439" height="20"/>
+	<s:BorderContainer width="517" height="59" left="10" top="389" borderVisible="false">
 		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
 		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls"
-						   enabled="false">
-			<s:Label x="3" y="1" text="When (Year)" width="106" height="20" verticalAlign="middle" fontSize="10"/>
-			<s:Label x="110" y="1" text="Value (in % points)" width="133" height="20" verticalAlign="middle" fontSize="10"/>
-			<s:DropDownList id="shockYears" width="100" left="13" top="19">					
+						   enabled="false" borderVisible="false">
+			<s:Label x="3" y="1" text="Year" width="106" height="20" verticalAlign="middle" fontSize="10"/>
+			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>
+			<s:DropDownList id="shockYears" width="100" left="13" top="19" height="20">					
 			</s:DropDownList>
-			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19"/>
+			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19" height="20"/>
 		</s:BorderContainer>
 		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
 					   selected="true" top="19" fontSize="11" click="changeShockType_handler(event)" id="shockBtn1"/>
-		<s:RadioButton x="66" label="All countries  (left)" groupName="shockType" enabled="true" value="0"
+		<s:RadioButton x="66" label="All countries  (right)" groupName="shockType" enabled="true" value="0"
 					   top="35" fontSize="11" click="changeShockType_handler(event)" id="shockBtn2"/>
 	</s:BorderContainer>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="61" top="59" fontFamily="Arial" fontSize="11"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="62" fontFamily="Arial" fontSize="11"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="59" left="124" fontFamily="Arial" fontSize="11"/>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" y="52" left="10" fontFamily="Arial"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="10" height="10" left="10" fontFamily="Arial"/>
-	<s:Button label="refresh data" left="199" top="52" height="25" width="241" fontWeight="bold"
-			   click="button6_clickHandler(event)"/>
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" top="62" left="140" fontFamily="Arial" fontSize="11"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" fontFamily="Arial" top="57"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial"/>
+	<s:Button label="Update Chart" left="222" top="61" height="25" width="241" fontWeight="bold"
+			   click="button6_clickHandler(event)" visible="false"/>
 	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
-					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="22" height="20" left="370"></s:DropDownList>
-	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="10" height="10" left="341" fontFamily="Arial"/>
+					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="32" height="20" left="370"></s:DropDownList>
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="341" fontFamily="Arial"/>
+	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="347" left="10" fontFamily="Arial" color="#50B848" width="747"/>
 </s:Group>

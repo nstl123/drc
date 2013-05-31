@@ -5,9 +5,10 @@ package controls
 	
 	public class FlowManager
 	{
-		private static var dataList:ArrayCollection;
-		private static var dataListReg:ArrayCollection;
-		private static var indicatorList:ArrayCollection;		
+		private var dataList:ArrayCollection;
+		private var scenarioCountryList:ArrayCollection;		
+		private var dataListReg:ArrayCollection;
+		private var indicatorList:ArrayCollection;		
 		
 		private var stateSpace:Array = new Array(
 			{id:0, label:"initState"},
@@ -55,7 +56,41 @@ package controls
 		public function setDataList(data:ArrayCollection, regData:ArrayCollection, flag:Boolean):void {
 			dataList = data;
 			dataListReg = regData;
-			useCluster = flag;
+			useCluster = flag;					
+			this.notifyAll();			
+		}
+		
+		public function getScenarioCountryListData():ArrayCollection {
+			return this.scenarioCountryList;
+		}			
+		
+		public function saveScenarioCountries():void {
+			var found:Boolean;
+			var newCntry:Object;
+			trace("in saveScenarioCOuntries in FlowManager");
+			if (!scenarioCountryList) {		
+				scenarioCountryList = new ArrayCollection();
+				for (var i:int = 0; i < dataList.length; i++) {
+					newCntry = dataList.getItemAt(i);
+					scenarioCountryList.addItem(newCntry);
+				};
+			} else {			
+				//only add if cntry not there; cannot remove;
+				found = true;
+				for (var iOut:int = 0; iOut < dataList.length; iOut++) {
+					newCntry = dataList.getItemAt(iOut);
+					for (var iIn:int = 0; iIn < scenarioCountryList.length; iIn++) {
+						found = (newCntry.id == scenarioCountryList.getItemAt(iIn).id);
+						if (found) break;
+					};
+					if ((!found)||(iIn == scenarioCountryList.length)) scenarioCountryList.addItem(newCntry);
+				};
+			};
+		}		
+		
+		public function resetScenarioCountries():void {
+			scenarioCountryList.removeAll();
+			
 			this.notifyAll();
 		}
 		

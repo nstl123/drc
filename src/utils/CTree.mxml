@@ -108,10 +108,11 @@
 				//adg.dataProvider is IHierarchicalCollectionView)
 				//if (this.cntryListGridADG.dataProvider is IHierarchicalCollectionView) {
 					//var openNodes:Object = IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes;
-				this.gc.refresh();
-					//adg2.dataProvider = gc;
-					//adg2.validateNow();
-				//IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes = openNodes;				
+					this.gc.refresh();
+					//cntryListGridADG.dataProvider = gc;
+					//cntryListGridADG.validateNow();
+					//IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes = openNodes;		
+				//};
 			}			
 			
 			public function reset():void
@@ -161,6 +162,28 @@
 				//if (checkedCount == 0)
 					dispatchEvent(new Event(CTree.UNCHECKED, true));
 			}
+			
+			//modified
+			public function setScenarioCountries(scenarioData:ArrayCollection):void {				
+				if (this.selectionList != null) {
+					for (var k:uint = 0; k < scenarioData.length; k++)	{
+						var cr:int = scenarioData.getItemAt(k).id; 
+						for (var j:uint = 0; j < selectionList.length; j++)	{	
+							if (cr == selectionList[j].id) { 
+								selectionList[j].modified = true;
+							};
+						};
+					};
+				//this.preserveRefresh();				
+				};					
+			}			
+			
+			public function resetScenarioCountries():void {
+				if (this.selectionList != null) {
+					for (var j:uint = 0; j < selectionList.length; j++)	selectionList[j].modified = false;				
+					//this.preserveRefresh();					
+				};					
+			}		
 			
 			//when the link button is clicked, select all checkboxes
 			protected function lnkAll_clickHandler(event:MouseEvent):void
@@ -291,7 +314,9 @@
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
 						 defaultLeafIcon="{null}" 
 						 showHeaders="false" 
-						 top="20" fontFamily="Arial" fontSize="12" borderVisible="true" dropShadowVisible="false" verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
+						 top="20" fontFamily="Arial" fontSize="12" 
+						 borderVisible="true" dropShadowVisible="false" 
+						 verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
 				<mx:Grouping>
@@ -299,7 +324,7 @@
 				</mx:Grouping>				
 			</mx:GroupingCollection2>
 		</mx:dataProvider>  
-		<mx:columns>
+		<mx:columns>			
 			<mx:AdvancedDataGridColumn headerText="" dataField="namen" sortable="false"
 									    width="150"/>			
 			<mx:AdvancedDataGridColumn headerText="Use?" dataField="active" width="40" 

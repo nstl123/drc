@@ -206,14 +206,15 @@
 				this.chartTitle.text = tx;
 			}*/
 			
-			public function updateChartTitle(baseName:String, selIndi:int, activityFlag:Boolean, isLv:Boolean, nm:String):void {
+			public function updateChartTitle(baseName:String, selIndi:int, activityFlag:Boolean, isLv:Boolean, nm:String, perHH:Boolean):void {
 				var tx:String = baseName;
 				var addTx:String = ", All Devices";
 				if ((selIndi >= 0) && (activityFlag)) 
 					tx = tx + ", " + nm;
 				else 
 					tx = tx +  ( (baseName == "Demand") ? addTx : "" );				
-				tx = tx + ( isLv ? (", units") : (", growth") );				
+				tx = tx + ( isLv ? (", units") : (", growth") );
+				tx = tx + ( perHH ? (", per HH") : "");
 				this.chartTitle.text = tx;			
 			}
 			

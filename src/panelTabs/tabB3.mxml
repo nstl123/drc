@@ -90,6 +90,7 @@
 			{
 				var rez:Object = this.updateData.lastResult;
 				this.dispatchEvent(new Event("NewScenarioUpdated", true));
+				this.dispatchEvent(new Event("refreshData", true));
 			}				
 				
 			protected function startApp(event:FlexEvent):void {
@@ -277,7 +278,8 @@
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
-					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
+					false);
 			}		
 			
 			public function setActiveIndis(k:int, idd:int = -1):void {

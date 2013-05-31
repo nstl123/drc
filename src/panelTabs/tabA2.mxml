@@ -257,7 +257,8 @@
 					(indicatorsBox.selectedIndex ? indicatorsBox.selectedIndex : 0), 
 					false, 
 					this.isLevel, 
-					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "")
+					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : ""),
+					false
 				);
 			}
 			

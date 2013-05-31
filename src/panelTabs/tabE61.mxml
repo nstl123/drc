@@ -416,13 +416,15 @@
 				//updateChartTitle();
 				this.demandChart.updateChartTitle("Demand", 
 					deviceListDrop.selectedIndex, devicesActiveFlag, 
-					isLevel, deviceListDrop.selectedItem.namen);
+					isLevel, deviceListDrop.selectedItem.namen, 
+					(this.showPerHHFlag == 1));
 				
 				this.exoChart.updateChartTitle(
 					(exoListDrop.selectedItem ? exoListDrop.selectedItem.namen : "-"),
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), isLevel, 
-					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));	
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
+					(this.showPerHHFlag == 0));	
 			}
 			
 			private var deviceNamesFullList:ArrayCollection;
@@ -490,10 +492,11 @@
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
-					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));		
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
+					false);		
 			}
 			
-			protected function 	exoIndi_clickHandler(event:MouseEvent):void
+			public function exoIndi_clickHandler(event:MouseEvent):void
 			{		
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					//Alert.show("Please Select at least one country", "Selection Error");
@@ -591,11 +594,13 @@
 				this.exoChart.setData(currentDataExoChart, isLevel);				
 				
 				//updateChartTitle()
-				/*this.demandChart.updateChartTitle("Demand", 
+				this.demandChart.updateChartTitle("Demand", 
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
-					this.devicesActiveFlag,	this.isLevel, 
-					(deviceListDrop.selectedItem  ? deviceListDrop.selectedItem.namen : "")
-				);*/
+					this.devicesActiveFlag,	
+					this.isLevel, 
+					(deviceListDrop.selectedItem  ? deviceListDrop.selectedItem.namen : ""),
+					(this.showPerHHFlag == 1)
+				);
 			}
 			
 			protected function updateChemistrySplit(evt:Event):void {
@@ -670,7 +675,7 @@
 					borderVisible="false"/>
 	
 	<s:Button x="472" y="450" label="Update Chart" width="285" 
-			  click="exoIndi_clickHandler(event)" id="button" enabled="true"/>
+			  click="exoIndi_clickHandler(event)" id="button" enabled="true" visible="false"/>
 	
 
 	<s:RadioButton x="31" label="Levels" groupName="growthType" enabled="true" 
@@ -690,7 +695,7 @@
 		
 	</s:BorderContainer>
 
-	<s:Label text="Step 6: You can adjust any battery type, size and chemistry below." verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
+	<s:Label text="Step 6: Select battery parameters." verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
 	
 	<s:BorderContainer x="33" width="400" backgroundAlpha="0.0" borderVisible="false" height="25" top="34">
 		<s:layout>

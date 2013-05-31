@@ -234,7 +234,8 @@
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
-					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""));
+					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
+					false);
 
 			}
 			

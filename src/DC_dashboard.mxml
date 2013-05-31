@@ -586,7 +586,9 @@
 								if (tabaiCreationComplete) this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);					
 													
 								this.masterTab.notifyAll();							
-								this.cntryTree.setRegionsGridEnabled(true);								
+								this.cntryTree.setRegionsGridEnabled(true);				
+								
+								if (tabaiCreationComplete) this.panelTabA2.refreshData(null);
 							} else {														
 								this.digestUpdate(null);
 								currentState = "scenarioState";
@@ -596,6 +598,7 @@
 								if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;
 								this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus
 								this.cntryTree.setRegionsGridEnabled(true);
+								if (tabaiCreationComplete) tabai_changeHandler(null);
 								//this.navigatorBox2.setButtonColors(null, 3);	
 								//this.originalBQLabel.text = this.selPathObjLabel;
 							};									
@@ -731,6 +734,7 @@
 					case 4:
 						//tab E - Demand
 						this.panelTabE61.refreshData(null);
+						this.panelTabE61.exoIndi_clickHandler(null);
 						break;		
 				};				
 				//Alert.show("Selected Tab:" + f,"info"); 
@@ -778,7 +782,7 @@
 		<!-- <s:Label  text="emptyLabel" id="currentStateLabel" verticalCenter="0" 
 				 fontFamily="Verdana"  fontSize="12"/> !-->
 		<s:Label id="topTitle" text="Battery Demand Analysis Tool v.1.0" verticalCenter="0" 			
-				fontFamily="Arial" fontSize="14" fontWeight="bold" fontSize.scenarioState="13"/> 
+				fontFamily="Arial" fontSize="14" fontWeight="bold" fontSize.scenarioState="13" text.viewingState="Battery Demand Analysis Tool v.1.02"/> 
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 

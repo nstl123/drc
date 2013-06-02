@@ -170,23 +170,29 @@
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
-				this.dispatchEvent(new Event("changesMadeInScenario", true));
-				
-				var temp:Object = new Object();		
-				
-				if (this.isSingleGeo) { 				
-					alteredData = this.grid.getData();									
+				//var tmp:int = 1 - int(this.growthType.selection.value);
+				if (this.tabEditable) {									
+					var temp:Object = new Object();				
+					if (this.isSingleGeo) { 				
+						alteredData = this.grid.getData();									
+					} else {
+						var yrs:int = 2010;
+						if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
+						var val:Number = this.shockValue.value;		
+	
+						var rawData:ArrayCollection = this.grid.getAllData();
+						alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);				
+					};					
+					temp = ({'id':1, data:this.alteredData});		
+					if (this.alteredData.length  > 0) {
+						this.updateData.token = this.dataServiceUpdate.updateData(temp, false, 0, 0);						
+						this.dispatchEvent(new Event("changesMadeInScenario", true));
+					} else {
+						this.dispatchEvent(new Event("refreshData", false));
+					};
 				} else {
-					var yrs:int = 2010;
-					if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
-					var val:Number = this.shockValue.value;		
-
-					var rawData:ArrayCollection = this.grid.getAllData();
-					alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);				
+					this.dispatchEvent(new Event("refreshData", false));
 				};
-				
-				temp = ({'id':1, data:this.alteredData});				
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, 0, 0);
 			}			
 
 			protected function updateData_resultHandler(event:ResultEvent):void
@@ -218,7 +224,7 @@
 				if (!isLocal) this.tabEditable = flag; //&& isLevel;
 				this.grid.isEditable = flag && isLevel;
 				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
-				this.saveBtn.enabled = (flag && isLevel);
+				//this.saveBtn.enabled = (flag && isLevel);
 				
 				this.shockBtn1.enabled = (flag && isLevel); 
 				this.shockBtn2.enabled = (flag && isLevel);
@@ -239,7 +245,7 @@
 				this.dispatchEvent(new Event("updateCharts", false));	
 				// 0 for levels, 1 for growth				 
 				this.enableGrid(tmp == 0 && this.tabEditable, true);	
-				this.saveBtn.enabled = (tmp == 0 && this.tabEditable);
+				this.saveBtn.enabled = (tmp == 0); // && this.tabEditable);
 			}
 			
 			protected function updateCharts(evt:Event):void {				
@@ -315,7 +321,7 @@
 					 selectedIndex="1" height="20" left="43"></s:DropDownList>
 	<s:Button label="Refresh View" click="button3_clickHandler(event)" top="60" 
 			  width="218" height="25" fontWeight="bold" fontSize="13" left="213"
-			   visible="true"/>
+			  visible="false"/>
 	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial"/>
 	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="347" left="10" fontFamily="Arial" color="#50B848" width="747"/>

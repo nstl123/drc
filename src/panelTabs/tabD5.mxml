@@ -172,23 +172,29 @@
 
 
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
-			public function digestChanges(evt:Event):void {
-				this.dispatchEvent(new Event("changesMadeInScenario", true));	
-				
-				var temp:Object = new Object();				
-				if (this.isSingleGeo) { 				
-					alteredData = this.testGrid.getData();									
+			public function digestChanges(evt:Event):void {				
+				if (this.tabEditable) {									
+					var temp:Object = new Object();				
+					if (this.isSingleGeo) { 				
+						alteredData = this.testGrid.getData();									
+					} else {
+						var yrs:int = 2010;
+						if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
+						var val:Number = this.shockValue.value;		
+						
+						var rawData:ArrayCollection = this.testGrid.getAllData();
+						alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);				
+					};					
+					temp = ({'id':1, data:this.alteredData});
+					if (this.alteredData.length > 0) {						
+						this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);
+						this.dispatchEvent(new Event("changesMadeInScenario", true));
+					} else {
+						this.dispatchEvent(new Event("refreshData", false));
+					};
 				} else {
-					var yrs:int = 2010;
-					if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
-					var val:Number = this.shockValue.value;		
-					
-					var rawData:ArrayCollection = this.testGrid.getAllData();
-					alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);				
+					this.dispatchEvent(new Event("refreshData", false));
 				};
-				
-				temp = ({'id':1, data:this.alteredData});				
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);		
 			}
 
 			[bindable] public var tabEditable:Boolean;			
@@ -196,8 +202,7 @@
 				if (!isLocal) this.tabEditable = flag; // && isLevel;
 				this.testGrid.isEditable = flag && isLevel;
 				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
-				this.saveBtn.enabled = (flag && isLevel);
-				
+				//this.saveBtn.enabled = (flag && isLevel);				
 				this.shockBtn1.enabled = (flag && isLevel); 
 				this.shockBtn2.enabled = (flag && isLevel);
 				
@@ -212,7 +217,7 @@
 
 				var tmp:int = 1 - int(this.growthType.selection.value);
 				this.enableGrid(tmp == 0 && this.tabEditable, true);	
-				this.saveBtn.enabled = (tmp == 0 && this.tabEditable);
+				this.saveBtn.enabled = (tmp == 0);// && this.tabEditable);
 			}			
 			
 			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();

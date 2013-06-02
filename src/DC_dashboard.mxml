@@ -189,7 +189,7 @@
 			
 			protected function refreshAllTabs(evt:Event):void {
 				this.panelTabA2.refreshData(null);
-				this.panelTabB3.refreshData();		
+				this.panelTabB3.refreshData(null);		
 				if (this.panelTabC4.getWorkingScenario() == 0) 
 					this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);
 				this.panelTabC4.rewriteDeviceBase();				
@@ -721,7 +721,7 @@
 						break;
 					case 1:
 						//tab B - HHs
-						this.panelTabB3.refreshData();
+						this.panelTabB3.refreshData(null);
 						break;
 					case 2:
 						//tab D - Market Size
@@ -781,8 +781,9 @@
 				  enabled.landingState="false" />
 		<!-- <s:Label  text="emptyLabel" id="currentStateLabel" verticalCenter="0" 
 				 fontFamily="Verdana"  fontSize="12"/> !-->
-		<s:Label id="topTitle" text="Battery Demand Analysis Tool v.1.0" verticalCenter="0" 			
-				fontFamily="Arial" fontSize="14" fontWeight="bold" fontSize.scenarioState="13" text.viewingState="Battery Demand Analysis Tool v.1.02"/> 
+		<s:Label id="topTitle" verticalCenter="0" 			
+				fontFamily="Arial"  fontWeight="bold" 
+				fontSize="13" text="Battery Demand Analysis Tool v.1.02"/> 
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 

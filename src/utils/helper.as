@@ -19,7 +19,7 @@ package utils
 				var fin:Object = rawData.getItemAt(i);
 				rez.addItem({
 					"scenarioID" : workingScenarioID,
-					"countryID"  : fin.countryID, "indicatorID" : selectedIndi, 
+					"countryID"  : fin.countryID, "indicatorID" : selectedIndi,
 					
 					"Y2004": (yrs <= 2004) ? (fin.Y2004 * mult) : fin.Y2004,										
 					"Y2005": (yrs <= 2005) ? (fin.Y2005 * mult) : fin.Y2005,

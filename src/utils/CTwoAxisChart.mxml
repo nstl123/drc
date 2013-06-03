@@ -84,6 +84,17 @@
 				return this.dataSet;			
 			}
 			
+			public function getBaseData(scen:int):ArrayCollection {
+				var rez:ArrayCollection = new ArrayCollection();				
+				for (var i:uint = 0; i < this.dataSet.length; i++) {
+					var z:Object = this.dataSet.getItemAt(i);
+					if (z.scenarioID == scen) {
+						rez.addItem(z);
+					};				
+				};
+				return rez;			
+			}
+			
 			public function prepareDataForChart(raw:ArrayCollection):ArrayCollection {
 				// iterate to change Y200x to yrs field
 				return raw;

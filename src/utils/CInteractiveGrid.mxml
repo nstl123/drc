@@ -45,8 +45,7 @@
 			}
 			
 			public function setData(data:ArrayCollection, isLevel:Boolean):void {
-				this.dataSet = data;
-				// need level vs growth transform here as well
+				this.dataSet = data;				
 				refreshView(isLevel);
 			}
 			
@@ -55,6 +54,7 @@
 			}
 			
 			public function getAllData():ArrayCollection {
+				// is there a filter function here?
 				return (this.testGrid.dataProvider as ArrayCollection);
 			}
 			
@@ -146,7 +146,7 @@
 			{				
 				var tmp:ArrayCollection = hlp.transformGridData(this.dataSet, isLevel);				
 				this.testGrid.dataProvider = tmp;
-				this.testGrid.invalidateDisplayList();
+				//this.testGrid.invalidateDisplayList();
 			}				
 
 			protected function appStart(event:FlexEvent):void

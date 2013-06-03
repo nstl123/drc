@@ -144,9 +144,10 @@
 			}
 			
 			[bindable] private var selectedIndi:int = 101;
-			[bindable] private var currentData:ArrayCollection = new ArrayCollection();			
-			[bindable] private var currentDataGrowth:ArrayCollection = new ArrayCollection();
-			
+			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
+			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
+				
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;		
 				//this.dispatchEvent(new Event("refreshData", false));
@@ -155,9 +156,12 @@
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{					
 				this.cursorManager.removeBusyCursor();
-				this.currentData = this.getMacroDataResult.lastResult as ArrayCollection;
-				//this.currentDataGrowth.source = temp.source;
-				this.dispatchEvent(new Event("updateCharts", false));				
+				this.currentData = this.getMacroDataResult.lastResult as ArrayCollection;							
+				
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source  = this.currentData.source;
+				
+				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
 			private function filterGrid(item:Object):Boolean {				
@@ -177,10 +181,10 @@
 						alteredData = this.grid.getData();									
 					} else {
 						var yrs:int = 2010;
-						if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
-						var val:Number = this.shockValue.value;		
-	
-						var rawData:ArrayCollection = this.grid.getAllData();
+						yrs = (this.shockYears.selectedItem ? this.shockYears.selectedItem.yrs : 2010);					
+						var val:Number = this.shockValue.value;							
+						//var rawData:ArrayCollection = this.grid.getAllData();
+						var rawData:ArrayCollection = this.chart.getBaseData(this.flMngr.baselineScenarioID);
 						alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);				
 					};					
 					temp = ({'id':1, data:this.alteredData});		
@@ -249,14 +253,14 @@
 			}
 			
 			protected function updateCharts(evt:Event):void {				
-				this.currentData.filterFunction =  null;
-				this.currentData.refresh();
-				this.chart.setData(currentData, isLevel);// transformation is performed inside chart component
+				this.currentDataChart.filterFunction =  null;
+				this.currentDataChart.refresh();
+				this.chart.setData(currentDataChart, isLevel);// transformation is performed inside chart component
 				
-				this.currentData.filterFunction = filterGrid;
-				this.currentData.refresh();
+				this.currentDataGrid.filterFunction = filterGrid;
+				this.currentDataGrid.refresh();
 				
-				this.grid.setData(currentData, isLevel);			
+				this.grid.setData(currentDataGrid, isLevel);			
 
 				this.chart.updateChartTitle(
 					(indicatorsBox.selectedItem  ? indicatorsBox.selectedItem.namen : "macroIndicator#1"), 

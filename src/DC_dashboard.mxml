@@ -57,6 +57,7 @@
 			public  var masterTab:FlowManager;
 			
 			private var workingScenarioID:int;
+//			public static var baselineScenarioID:int = 10001; 
 			private var currTime:String;
 			protected var IDgen:IDgenerator = new IDgenerator();
 									
@@ -588,7 +589,7 @@
 								this.masterTab.notifyAll();							
 								this.cntryTree.setRegionsGridEnabled(true);				
 								
-								if (tabaiCreationComplete) this.panelTabA2.refreshData(null);
+								if (tabaiCreationComplete) tabai_changeHandler(null);
 							} else {														
 								this.digestUpdate(null);
 								currentState = "scenarioState";

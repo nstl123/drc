@@ -10,6 +10,8 @@ package controls
 		private var dataListReg:ArrayCollection;
 		private var indicatorList:ArrayCollection;		
 		
+		public var baselineScenarioID:int = 10001;
+		
 		private var stateSpace:Array = new Array(
 			{id:0, label:"initState"},
 			{id:1, label:"selectCountry"},
@@ -17,6 +19,10 @@ package controls
 			{id:3, label:"provideInputs"},
 			{id:4, label:"viewResults"}
 		);
+		
+		public function getBaselineScenarioID() : int {
+			return baselineScenarioID;				
+		}
 		
 		private var currentStateSpace:int = 0;
 		

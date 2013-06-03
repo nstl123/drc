@@ -231,13 +231,12 @@
 						alteredData = this.testGrid.getData();									
 					} else {
 						var yrs:int = 2010;
-						if (this.shockYears.selectedItem.yrs) yrs = this.shockYears.selectedItem.yrs;
-						var val:Number = this.shockValue.value;		
-						
-						var rawData:ArrayCollection = this.testGrid.getAllData();
-						alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);				
-					};
-					
+						yrs = (this.shockYears.selectedItem ? this.shockYears.selectedItem.yrs : 2010);					
+						var val:Number = this.shockValue.value;							
+						//var rawData:ArrayCollection = this.grid.getAllData();
+						var rawData:ArrayCollection = this.testChart.getBaseData(this.flMngr.baselineScenarioID);
+						alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);					
+					};					
 					temp = ({'id':1, data:this.alteredData});
 					
 					var tmpType:int = 0;

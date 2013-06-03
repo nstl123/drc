@@ -2,13 +2,18 @@
 <s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 								  xmlns:s="library://ns.adobe.com/flex/spark" 
 								  xmlns:mx="library://ns.adobe.com/flex/mx" 
-								  focusEnabled="false"								   
-								  click="someAction(event)" 
->
+								  focusEnabled="false"							  
+ 								 width="20" height="20" contentBackgroundAlpha="0.5">
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
 	<fx:Script>
 		<![CDATA[			
 			public static const INCR_COUNT:String = 'incrCount';
 			public static const DECR_COUNT:String = 'decrCount';
+			
+			[Embed(source="newIcon.png")]
+			[Bindable] public var imgCls:Class;
 			
 			//when checkbox value is changed
 			protected function someAction(event:Event):void
@@ -25,9 +30,23 @@
 		]]>
 		
 	</fx:Script>
+	<s:BorderContainer width="20" height="20" borderVisible="false" contentBackgroundAlpha="0.0" backgroundAlpha="0.0">
+		<s:Label text="M" width="100%" height="100%" 
+				 verticalAlign="middle" textAlign="center" fontWeight="bold" fontSize="13" 
+				 fontFamily="Arial" color="#50B848"
+				 visible="{data.modified}" y="0" x="0" paddingTop="2"
+				 toolTip="Modified Country"/>
+	</s:BorderContainer>
 	
-	<s:CheckBox id="chbID" textAlign="center" 
+	<!-- <s:CheckBox id="chbID" textAlign="center" 
 				selected="{data.modified}" visible="true" enabled="false" height="18" 
-				verticalCenter="0" width="18" horizontalCenter="0"/>
+				verticalCenter="0" width="18" horizontalCenter="0"/> !-->
+	
+	<!--		
+		<mx:Image id="chbImg"  visible="{data.modified}"  source="{imgCls}"  
+		scaleContent="true" autoLoad="true" width="100%" height="100%"/> !-->
+	
+	
 
+	
 </s:MXAdvancedDataGridItemRenderer>

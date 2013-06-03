@@ -104,15 +104,15 @@
 				this.preserveRefresh();
 			}			
 			
-			public function preserveRefresh():void {
-				//adg.dataProvider is IHierarchicalCollectionView)
-				//if (this.cntryListGridADG.dataProvider is IHierarchicalCollectionView) {
-					//var openNodes:Object = IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes;
+			public function preserveRefresh():void {				
+				if (this.cntryListGridADG.dataProvider is IHierarchicalCollectionView) {
+					var openNodes:Object = IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes;
+					iCount = 0; // reset the counter
 					this.gc.refresh();
-					//cntryListGridADG.dataProvider = gc;
-					//cntryListGridADG.validateNow();
-					//IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes = openNodes;		
-				//};
+					cntryListGridADG.dataProvider = gc;
+					cntryListGridADG.validateNow();
+					IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes = openNodes;		
+				};
 			}			
 			
 			public function reset():void
@@ -149,10 +149,12 @@
 			private function onIncrValue(e:Event):void
 			{
 				checkedCount++;		
-				this.lastSelection = {id:cntryListGridADG.selectedItem.id, 
-									namen:cntryListGridADG.selectedItem.namen};
+				if (cntryListGridADG.selectedItem) {
+					this.lastSelection = {id:cntryListGridADG.selectedItem.id, 
+										namen:cntryListGridADG.selectedItem.namen};
+				};
 				//if (checkedCount == 1)
-					dispatchEvent(new Event(CTree.CHECKED, true));
+				dispatchEvent(new Event(CTree.CHECKED, true));
 			}
 			
 			//decrement number of checked elements
@@ -174,14 +176,14 @@
 							};
 						};
 					};
-				//this.preserveRefresh();				
+				this.preserveRefresh();				
 				};					
 			}			
 			
 			public function resetScenarioCountries():void {
 				if (this.selectionList != null) {
 					for (var j:uint = 0; j < selectionList.length; j++)	selectionList[j].modified = false;				
-					//this.preserveRefresh();					
+					this.preserveRefresh();					
 				};					
 			}		
 			
@@ -278,7 +280,8 @@
 			
 			public function setRegionsGridEnabled(flag:Boolean):void {
 				this.regionsListGrid.enabled = flag;
-			}
+			}			
+			
 		]]>
 	</fx:Script>
 
@@ -301,6 +304,9 @@
 					   click="delnkAll_clickHandler(event)" color="#1A69D5" fontWeight="normal"
 					   height="100%" fontSize="11"/>
 	</s:HGroup>
+
+	<!--
+	
 	<s:BorderContainer width="100%" height="20" borderVisible="false">
 		<s:layout>
 			<s:HorizontalLayout gap="0" verticalAlign="justify"/>
@@ -309,6 +315,8 @@
 		<s:Label x="302" y="5" text="Altered?" width="40" height="100%" fontFamily="Arial" fontSize="10" verticalAlign="middle" textAlign="center"/>
 	</s:BorderContainer>
 	
+	!-->
+	
 	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="80%" 
 						 horizontalCenter="0"  width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
@@ -316,10 +324,10 @@
 						 showHeaders="false" 
 						 top="20" fontFamily="Arial" fontSize="12" 
 						 borderVisible="true" dropShadowVisible="false" 
-						 verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8">
+						 verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8" verticalGridLines="false">
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
-				<mx:Grouping>
+				<mx:Grouping groupingObjectFunction="grpObjFunc">
 					<mx:GroupingField name="region"/>									
 				</mx:Grouping>				
 			</mx:GroupingCollection2>

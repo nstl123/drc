@@ -4,7 +4,10 @@
 								  xmlns:mx="library://ns.adobe.com/flex/mx" 
 								  focusEnabled="false"								   
 								  click="someAction(event)" 
->
+ width="20" height="20">
+	<s:layout>
+		<s:HorizontalLayout/>
+	</s:layout>
 	<fx:Script>
 		<![CDATA[			
 			public static const INCR_COUNT:String = 'incrCount';
@@ -26,6 +29,6 @@
 	</fx:Script>
 	
 	<s:CheckBox id="chbID" textAlign="center" 
-				selected="{data.active}" enabled="true" height="18" verticalCenter="0" width="18" horizontalCenter="0"/>
+				selected="{data.active}" enabled="true" verticalCenter="0" width="100%" horizontalCenter="0" height="100%"/>
 
 </s:MXAdvancedDataGridItemRenderer>

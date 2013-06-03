@@ -95,8 +95,7 @@ package controls
 		}		
 		
 		public function resetScenarioCountries():void {
-			scenarioCountryList.removeAll();
-			
+			scenarioCountryList.removeAll();			
 			this.notifyAll();
 		}
 		

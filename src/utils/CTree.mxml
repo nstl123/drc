@@ -7,6 +7,11 @@
 		<s:VerticalLayout/>
 	</s:layout>
 
+<s:states>
+	<s:State name="default"/>	
+	<s:State name="slicing" />
+</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			
@@ -34,6 +39,15 @@
 			private var checkedCount:uint;
 			[bindable] 
 			private var regList:ArrayCollection;
+			
+			
+			[bindable] private var selDeviceAggLevel:int = 0;
+			[bindable] private var batTypesActiveFlag:Boolean = false;
+			[bindable] private var pwrTypesActiveFlag:Boolean = false;
+			[bindable] private var chemTypesActiveFlag:Boolean = false;
+			[bindable] private var devicesActiveFlag:Boolean = false;	
+			
+			private var deviceNamesFullList:ArrayCollection;
 			
 			protected function cntryNames_resultHandler(event:ResultEvent):void
 			{
@@ -280,13 +294,29 @@
 			
 			public function setRegionsGridEnabled(flag:Boolean):void {
 				this.regionsListGrid.enabled = flag;
-			}			
+			}
+			
+			
+			protected function devicesActive_clickHandler(event:MouseEvent):void
+			{				
+				this.selDeviceAggLevel = int(this.splitByDevices_C.selectedValue);			
+				this.devicesActiveFlag = (this.selDeviceAggLevel > 0);				
+				//this.deviceListDrop.enabled = this.devicesActiveFlag;				
+				//this.deviceNamesFullList.refresh();				
+				//exoIndi_clickHandler(null); // refresh data for exogenous chart
+				this.dispatchEvent(new Event("demandAggChanged", true));				
+			}
 			
 		]]>
 	</fx:Script>
 
 	
 	<fx:Declarations>
+		<s:RadioButtonGroup id="splitByDevices_C"/>
+		<s:RadioButtonGroup id="splitByChemistry_C"/>
+		<s:RadioButtonGroup id="granGroup_C"/>
+		
+		
 		<s:CallResponder id="cntryNames" result="cntryNames_resultHandler(event)" 
 						 fault="cntryNames_faultHandler(event)" />
 		<s:CallResponder id="regionNames" result="regionListNames_resultHandler(event)"
@@ -294,7 +324,7 @@
 	</fx:Declarations>
 	
 	
-	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle" width="100%">
+	<s:HGroup height="20" top="0" left="0" right="0" verticalAlign="middle" width="100%" includeIn="default">
 		<s:Label text="Countries" width="70%" fontWeight="normal" fontSize="11" id="lblName" height="100%" 
 				 verticalAlign="middle" fontStyle="normal"/>
 		<mx:LinkButton label="Select all" width="15%" textAlign="right" id="lnkAll" 
@@ -317,6 +347,95 @@
 	
 	!-->
 	
+	<s:BorderContainer width="100%" height="80%" borderVisible="false" includeIn="slicing">
+		<s:layout>
+			<s:VerticalLayout paddingLeft="10"/>
+		</s:layout>
+		<s:Label text="Step 6: Select battery parameters." verticalAlign="middle" fontStyle="italic" fontSize="13" top="10" left="10" fontFamily="Arial" color="#50B848" width="100%"/>		
+		<s:Label text="Devices Aggeragtion Level" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="40" left="11" fontFamily="Arial" width="100%" backgroundColor="#FFFFFF" 
+				 backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
+		<s:BorderContainer x="33" backgroundAlpha="0.0" borderVisible="false" top="34" width="100%" height="80">
+			<s:layout>
+				<s:VerticalLayout gap="1"/>
+			</s:layout>
+			<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices_C" 
+						   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevAll_C"/>
+			<s:RadioButton x="201" y="118" value="2" label="Device category" groupName="splitByDevices_C" 
+						   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat_C"/>
+			<s:RadioButton value="1" label="Single device" groupName="splitByDevices_C" 
+						   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle_C"/>			
+			
+			<s:DropDownList width="100%" id="deviceListDrop_C"							
+							labelField="namen" selectedIndex="1" height="20" top="29" left="472" 
+							enabled="false" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
+		
+		</s:BorderContainer>
+		
+		<s:Label text="Battery Types" id="selDeviceLabel0" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="104" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
+		<s:BorderContainer width="100%" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height.default="67" height="80">
+			<s:layout>
+				<s:VerticalLayout gap="1"/>
+			</s:layout>
+			<s:RadioButton x="44" y="50" label="All battery types" value="0" groupName="pwrTypes" selected="true"
+						  fontSize="11" fontFamily="Arial" enabled="true"/>	
+			<s:RadioButton x="44" y="75" label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="false"
+						   fontSize="11" fontFamily="Arial" enabled="true"/>
+			<s:RadioButton x="44" y="93" label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
+						 fontSize="11" fontFamily="Arial" selected="false" enabled="true"/>
+			
+			<s:RadioButton x="44" y="105" label="Built-in Rechargeable" value="3" groupName="pwrTypes"
+						 fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
+		</s:BorderContainer>
+
+		
+		<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11"
+				 verticalAlign="middle" fontFamily="Arial" x="10" top="169" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
+		
+		<s:BorderContainer x="253" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210" height.default="70" height="80">
+			<s:layout>
+				<s:TileLayout horizontalGap="5" verticalGap="1"/>
+			</s:layout>
+			
+			<s:RadioButton x="269" y="75" label="All battery sizes"  value="0" groupName="batTypes"  selected="true" fontFamily="Arial" fontSize="11" enabled="true"/>
+			<s:RadioButton x="269" y="75" label="AAA"  value="3" groupName="batTypes" selected="false" fontFamily="Arial" fontSize="11" enabled="true"/>
+			<s:RadioButton x="318" y="75" label="AA" value="5" groupName="batTypes" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
+			<s:RadioButton x="359" y="75" label="C"  value="1" groupName="batTypes" selected="false"  fontFamily="Arial" fontSize="11" enabled="true"/>
+			<s:RadioButton x="391" y="75" label="D"  value="2" groupName="batTypes"  fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
+			<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
+			<s:RadioButton x="430" y="75" label="Hearing Aid"  value="5" groupName="batTypes"  fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>
+			<s:RadioButton x="440" y="75" label="Coin And Button"  value="6" groupName="batTypes" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>	
+			
+		</s:BorderContainer>
+
+		
+		<s:Label text="Chemistry" id="selDeviceLabel2" fontStyle="italic" fontSize="11" fontFamily="Arial" x="10" top="244" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
+
+		<s:BorderContainer width="100%" height="20" borderVisible="false">	
+			<s:layout>
+				<s:TileLayout/>
+			</s:layout>
+			<s:RadioButton value="0" label="All chemistry" groupName="splitByChemistry" enabled="true" 
+						   selected="true" y="10" top="70"/>
+			<s:RadioButton x="575" value="1" label="Use split by:" groupName="splitByChemistry" enabled="true" 
+						   top="70"/>
+
+		</s:BorderContainer>
+			
+		<s:BorderContainer x="603" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height.default="69" height="60" width="100%">			
+			<s:layout>
+				<s:TileLayout/>
+			</s:layout>
+			<s:RadioButton label="Alkaline" groupName="chemTypes_C" value="1" selected="true" 
+						   fontFamily="Arial" fontSize="11"/>
+			<s:RadioButton label="Lithium" groupName="chemTypes_C" value="3"  fontFamily="Arial" fontSize="11"/>
+			<s:RadioButton x="629" y="106" label="Zinc" groupName="chemTypes_C" value="2" fontFamily="Arial" fontSize="11"/>
+			<s:RadioButton x="629" y="106" label="Hearing Aid " groupName="chemTypes_C" value="2" fontFamily="Arial" fontSize="11" enabled="false"/>
+			<s:RadioButton x="629" y="106" label="Coin and Button" groupName="chemTypes_C" value="2" fontFamily="Arial" fontSize="11" enabled="false"/>	
+			
+		</s:BorderContainer>
+		
+	</s:BorderContainer>
+	
 	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="80%" 
 						 horizontalCenter="0"  width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
@@ -324,7 +443,7 @@
 						 showHeaders="false" 
 						 top="20" fontFamily="Arial" fontSize="12" 
 						 borderVisible="true" dropShadowVisible="false" 
-						 verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8" verticalGridLines="false">
+						 verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8" verticalGridLines="false" includeIn="default">
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
 				<mx:Grouping groupingObjectFunction="grpObjFunc">

@@ -229,12 +229,10 @@
 			[bindable] private var selDeviceAggLevel:int = 0;
 			protected function devicesActive_clickHandler(event:MouseEvent):void
 			{				
-				this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);						
-				
+				this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);			
 				this.devicesActiveFlag = (this.selDeviceAggLevel > 0);				
 				this.deviceListDrop.enabled = this.devicesActiveFlag;				
-				this.deviceNamesFullList.refresh();
-				
+				this.deviceNamesFullList.refresh();				
 				exoIndi_clickHandler(null); // refresh data for exogenous chart
 				this.dispatchEvent(new Event("demandAggChanged", true));				
 			}
@@ -632,12 +630,45 @@
 	</utils:CTwoAxisChart>
 	<s:Button x="472" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="152" width="285" height="25" fontWeight="bold"/>
 	<s:Label text="Devices Aggeragtion Level" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="21" left="11" fontFamily="Arial"/>
+	<s:BorderContainer backgroundAlpha="0.0" borderVisible="false" 
+					   top="34"  height="20" left="20" width="419">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+	
+		<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices" 
+					   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevAll"/>
+		<s:RadioButton x="201" y="118" value="2" label="Device category" groupName="splitByDevices" 
+					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat"/>
+		<s:RadioButton value="1" label="Single device" groupName="splitByDevices" 
+					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle"/>
+	</s:BorderContainer>
+
+	
+	
 	<s:Label text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="149"/>
 	<s:Label text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="197" fontFamily="Arial" top="149"/>
 	<s:Label text="Battery Types" id="selDeviceLabel3" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="57"/>
+	<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" left="20">
+		<s:layout>
+			<s:VerticalLayout gap="1"/>
+		</s:layout>
+		<s:RadioButton x="44" y="50" label="All battery types" value="0" groupName="pwrTypes" selected="true"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" enabled="true"/>	
+		<s:RadioButton x="44" y="75" label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="false"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" enabled="true"/>
+		<s:RadioButton x="44" y="93" label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="true"/>
+		
+		<s:RadioButton x="44" y="105" label="Built-in Rechargeable" value="3" groupName="pwrTypes"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
+	</s:BorderContainer>
+
+	
+	
 	<s:DropDownList width="289" id="deviceListDrop"
 					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="29" left="472" enabled="false" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
-	<s:BorderContainer x="253" height="70" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210">
+<!--	<s:BorderContainer x="253" height="70" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210">
 		<s:layout>
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
 		</s:layout>
@@ -652,7 +683,8 @@
 		<s:RadioButton x="440" y="75" label="Coin And Button"  value="6" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>		
 		
 	</s:BorderContainer>
-	<s:BorderContainer width="192" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height="67">
+	!-->
+<!--	<s:BorderContainer width="192" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height="67">
 		<s:layout>
 			<s:VerticalLayout gap="1"/>
 		</s:layout>
@@ -666,6 +698,7 @@
 		<s:RadioButton x="44" y="105" label="Built-in Rechargeable" value="3" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
 	</s:BorderContainer>
+	!-->
 	<s:Label x="10" text="some exogenous var" fontStyle="italic" fontSize="11" top="439" fontFamily="Arial"/>
 	
 	<s:DropDownList x="39" width="226" id="exoListDrop" labelField="namen" 
@@ -697,22 +730,31 @@
 
 	<s:Label text="Step 6: Select battery parameters." verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
 	
-	<s:BorderContainer x="33" width="400" backgroundAlpha="0.0" borderVisible="false" height="25" top="34">
-		<s:layout>
-			<s:HorizontalLayout gap="30"/>
-		</s:layout>
-		<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices" 
-					   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevAll"/>
-		<s:RadioButton x="201" y="118" value="2" label="Device category" groupName="splitByDevices" 
-					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat"/>
-		<s:RadioButton value="1" label="Single device" groupName="splitByDevices" 
-					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle"/>
-	</s:BorderContainer>
 	<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11" 
 			 verticalAlign="middle" fontFamily="Arial" x="220" top="57"/>
+	
+	<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210" height="80" left="230">
+		<s:layout>
+			<s:TileLayout horizontalGap="5" verticalGap="1"/>
+		</s:layout>
+		
+		<s:RadioButton x="269" y="75" label="All battery sizes"  value="0" groupName="batTypes" click="batTypes_clickHandler(event)" selected="true" fontFamily="Arial" fontSize="11" enabled="true"/>
+		<s:RadioButton x="269" y="75" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" selected="false" fontFamily="Arial" fontSize="11" enabled="true"/>
+		<s:RadioButton x="318" y="75" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
+		<s:RadioButton x="359" y="75" label="C"  value="1" groupName="batTypes" selected="false" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true"/>
+		<s:RadioButton x="391" y="75" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
+		<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
+		<s:RadioButton x="430" y="75" label="Hearing Aid"  value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>
+		<s:RadioButton x="440" y="75" label="Coin And Button"  value="6" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="false" selected="false"/>	
+		
+	</s:BorderContainer>
+
+	
+	
 	<s:RadioButton x="470" value="0" label="All chemistry" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" selected="true" top="70"/>
 	<s:RadioButton x="575" value="1" label="Use split by:" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" top="70"/>
 	<s:Label text="Chemistry" id="selDeviceLabel0" fontStyle="italic" fontSize="11" fontFamily="Arial" x="452" top="57"/>
+	
 	<utils:CTwoAxisChart id="exoChart" top="473" left="10" width="747" height="250">
 	</utils:CTwoAxisChart>
 	<s:RadioButton x="224" label="Devices in Total" groupName="granGroup" value="0" top="160" 

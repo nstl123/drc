@@ -624,12 +624,14 @@
 						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);						
 						if (this.tabaiCreationComplete) { 
 							this.tabai.selectedIndex = 4;							
-						};						
+						};	
+						this.cntryTree.currentState = "slicing";
 						break;					
 					case "scenarioState" :
 						this.navigatorBox2.setButtonColors(null, 5);
 						this.tabai.selectedIndex = 4;
-						this.btnNext.enabled = false;						
+						this.btnNext.enabled = false;			
+						this.cntryTree.currentState = "slicing";
 						break;					
 				}				
 				//this.currentStateLabel.text = "Current State: " + this.currentState;
@@ -661,6 +663,7 @@
 					case "viewingState" :
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = this.selActiveTab;
+							this.cntryTree.currentState = "default";
 						} else {
 							this.currentState = "geoList";
 							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false); // data inputs disabled
@@ -675,6 +678,7 @@
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = this.selActiveTab;
 							this.navigatorBox2.setButtonColors(null, 4);
+							this.cntryTree.currentState = "default";
 						} else {
 							currentState = "geoList";
 							this.navigatorBox2.setButtonColors(null, 2);			
@@ -719,23 +723,28 @@
 					case 0:
 						//tab A - macro
 						this.panelTabA2.refreshData(null);
+						this.cntryTree.currentState = "default";
 						break;
 					case 1:
 						//tab B - HHs
 						this.panelTabB3.refreshData(null);
+						this.cntryTree.currentState = "default";
 						break;
 					case 2:
 						//tab D - Market Size
 						this.panelTabD5.refreshData(null);
+						this.cntryTree.currentState = "default";
 						break;
 					case 3:
 						//tab F - Other, Power Shares
 						this.panelTabF51.refreshData(null);
+						this.cntryTree.currentState = "default";
 						break;
 					case 4:
 						//tab E - Demand
 						this.panelTabE61.refreshData(null);
 						this.panelTabE61.exoIndi_clickHandler(null);
+						this.cntryTree.currentState = "slicing";
 						break;		
 				};				
 				//Alert.show("Selected Tab:" + f,"info"); 
@@ -784,7 +793,7 @@
 				 fontFamily="Verdana"  fontSize="12"/> !-->
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
-				fontSize="13" text="Battery Demand Analysis Tool v.1.02"/> 
+				fontSize="13" text="Battery Demand Analysis Tool v.1.03"/> 
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 

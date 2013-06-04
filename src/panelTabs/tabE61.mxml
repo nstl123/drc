@@ -148,27 +148,24 @@
 					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
 					
 					var regionIDs:Array = this.dataListReg.source;
-					var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);			
+					var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);					
 					
-					this.devicesActiveFlag ? this.tmpDevices = this.selDevice : this.tmpDevices = -1; 
-					this.pwrTypesActiveFlag ? this.tmpPwrTypes = this.selPwrType : this.tmpPwrTypes = -1; 
-					this.batTypesActiveFlag ? this.tmpBatTypes = this.selBatType : this.tmpBatTypes = -1;				
-					
-					ccii = ccii + 1;
-					trace("calling demand token" + ccii);				
-					
+					this.flowManager.devicesActiveFlag  ? this.tmpDevices  = this.flowManager.selDevice  : this.tmpDevices = -1;
+					this.flowManager.pwrTypesActiveFlag ? this.tmpPwrTypes = this.flowManager.selPwrType : this.tmpPwrTypes = -1;					
+					this.flowManager.batTypesActiveFlag ? this.tmpBatTypes = this.flowManager.selBatType : this.tmpBatTypes = -1;				
+										
 					this.cursorManager.setBusyCursor();
 					
-					if ((this.chemTypesActiveFlag)&&(tmp2.length > 0)) {
+					if ((this.flowManager.chemTypesActiveFlag)&&(tmp2.length > 0)) {
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster), showPerHHFlag);
-					} else if ((this.chemTypesActiveFlag)&&(tmp.length > 0)) {
+					} else if ((this.flowManager.chemTypesActiveFlag)&&(tmp.length > 0)) {
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0, showPerHHFlag);					
 					} else if (tmp2.length > 0) {
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-							this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), this.selDeviceAggLevel, showPerHHFlag);					
+							this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), this.flowManager.selDeviceAggLevel, showPerHHFlag);					
 					} else if (tmp.length > 0) {				
 						this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-							this.tmpBatTypes, this.tmpPwrTypes, 0,  this.selDeviceAggLevel, showPerHHFlag);					
+							this.tmpBatTypes, this.tmpPwrTypes, 0,  this.flowManager.selDeviceAggLevel, showPerHHFlag);					
 					} else {
 						this.cursorManager.removeBusyCursor();						
 					};
@@ -240,10 +237,10 @@
 			private var showAtDeviceLevel:int = 0;
 			private function filterDeviceList(item:Object):Boolean {
 				var f:Boolean = false;
-				if  ( (selDeviceAggLevel == 1)&&(item.categoryID > 0) )
+				if  ( (flowManager.selDeviceAggLevel == 1)&&(item.categoryID > 0) )
 					f = true;
 				else 
-				if  ( (selDeviceAggLevel == 2)&&(!item.categoryID)  )
+				if  ( (flowManager.selDeviceAggLevel == 2)&&(!item.categoryID)  )
 					f = true;
 				return f;
 			}		
@@ -251,14 +248,14 @@
 			protected function filterChart(item:Object):Boolean {				
 				var f:Boolean = false;
 				var z:int;
-				if (!this.chemTypesActiveFlag) {				
-					z = ( (selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );
+				if (!this.flowManager.chemTypesActiveFlag) {					
+					z = ( (this.flowManager.selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );
 				};
 				
-				if (chemTypesActiveFlag) {
+				if (this.flowManager.chemTypesActiveFlag) {
 					f = (item.chemistryID == this.selChemType);					
 				} else 
-				if (this.selDeviceAggLevel > 0) {					
+				if (this.flowManager.selDeviceAggLevel > 0) {					
 					f = (z == this.selDevice);   															
 				} else {
 					f = (z == 0); 
@@ -303,7 +300,6 @@
 				this.cursorManager.removeBusyCursor();
 				Alert.show("could not get Demand data for regions", "Error E62");
 			}
-
 
 			protected function getDeviceBase_resultHandler(event:ResultEvent):void
 			{
@@ -393,27 +389,20 @@
 				this.devicesActive.enabled = on;*/
 			}
 			
-			protected function dropdownlist1_changeHandler(event:IndexChangeEvent):void
+			public function dropdownlist1_changeHandler(event:IndexChangeEvent):void
 			{
-				this.selDevice = deviceListDrop.selectedItem.id; 
-									
-				//this.selDevice = this.deviceListDrop.selectedItem.id;				
-								
-				this.currentDataChart.filterFunction = this.filterChart;
-				//this.currentDataGrid.filterFunction  = this.filterGrid;				
-				this.currentDataChart.refresh();
-				//this.currentDataGrid.refresh();				
-				this.demandChart.setData(currentDataChart, isLevel);
-				//this.testGrid.setData(currentDataGrid, isLevel);
+				//this.selDevice = deviceListDrop.selectedItem.id;
+				this.selDevice = this.flowManager.selDevice;
 				
+				this.currentDataChart.filterFunction = this.filterChart;							
+				this.currentDataChart.refresh();								
+				this.demandChart.setData(currentDataChart, isLevel);						
 				this.currentDataExoChart.filterFunction = this.filterChartExo;
-				this.currentDataExoChart.refresh();	
+				this.currentDataExoChart.refresh();					
+				this.exoChart.setData(this.currentDataExoChart, isLevel);			
 				
-				this.exoChart.setData(this.currentDataExoChart, isLevel);
-				
-				//updateChartTitle();
-				this.demandChart.updateChartTitle("Demand", 
-					deviceListDrop.selectedIndex, devicesActiveFlag, 
+				/*this.demandChart.updateChartTitle("Demand", 
+					deviceListDrop.selectedIndex, this.flowManager.devicesActiveFlag, 
 					isLevel, deviceListDrop.selectedItem.namen, 
 					(this.showPerHHFlag == 1));
 				
@@ -422,7 +411,7 @@
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), isLevel, 
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
-					(this.showPerHHFlag == 0));	
+					(this.showPerHHFlag == 0));*/	
 			}
 			
 			private var deviceNamesFullList:ArrayCollection;
@@ -581,7 +570,7 @@
 			}
 			
 			// this is used for drawing update only
-			protected function updateCharts(evt:Event):void {			
+			public function updateCharts(evt:Event):void {			
 				this.currentDataChart.filterFunction = this.filterChart;				
 				this.currentDataChart.refresh();
 				this.demandChart.setData(currentDataChart, isLevel); 
@@ -592,13 +581,13 @@
 				this.exoChart.setData(currentDataExoChart, isLevel);				
 				
 				//updateChartTitle()
-				this.demandChart.updateChartTitle("Demand", 
+				/*this.demandChart.updateChartTitle("Demand", 
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
-					this.devicesActiveFlag,	
+					this.flowManager.devicesActiveFlag,	
 					this.isLevel, 
 					(deviceListDrop.selectedItem  ? deviceListDrop.selectedItem.namen : ""),
 					(this.showPerHHFlag == 1)
-				);
+				);*/
 			}
 			
 			protected function updateChemistrySplit(evt:Event):void {
@@ -622,6 +611,10 @@
 				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id);*/
 			}		
 			
+			[bindable] private var flowManager:FlowManager;
+			public function setMasterTab(flowMngr:FlowManager):void {
+				this.flowManager = flowMngr;
+			}			
 			
 		]]>
 	</fx:Script>
@@ -667,7 +660,10 @@
 	
 	
 	<s:DropDownList width="289" id="deviceListDrop"
-					change="dropdownlist1_changeHandler(event)" labelField="namen" selectedIndex="1" height="20" top="29" left="472" enabled="false" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" borderVisible="false"/>
+					change="dropdownlist1_changeHandler(event)"
+					labelField="namen" selectedIndex="1" height="20" top="29" left="472" 
+					enabled="false" fontFamily="Arial" fontSize="12" 
+					contentBackgroundAlpha="0.9" borderVisible="false"/>
 <!--	<s:BorderContainer x="253" height="70" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210">
 		<s:layout>
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
@@ -738,7 +734,8 @@
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
 		</s:layout>
 		
-		<s:RadioButton x="269" y="75" label="All battery sizes"  value="0" groupName="batTypes" click="batTypes_clickHandler(event)" selected="true" fontFamily="Arial" fontSize="11" enabled="true"/>
+		<s:RadioButton x="269" y="75" label="All battery sizes"  value="0" groupName="batTypes" 
+					   click="batTypes_clickHandler(event)" selected="true" fontFamily="Arial" fontSize="11" enabled="true"/>
 		<s:RadioButton x="269" y="75" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" selected="false" fontFamily="Arial" fontSize="11" enabled="true"/>
 		<s:RadioButton x="318" y="75" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true" selected="false"/>
 		<s:RadioButton x="359" y="75" label="C"  value="1" groupName="batTypes" selected="false" click="batTypes_clickHandler(event)" fontFamily="Arial" fontSize="11" enabled="true"/>

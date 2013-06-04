@@ -116,13 +116,31 @@
 						
 					this.addEventListener("stateChanged", changeState); // further get state from navControl					
 					this.addEventListener("viewingModeChanged", manageViewModeChanged);					
+					//events form countryTree
+					this.addEventListener("refreshData_C",  refreshData_C);					
+					this.addEventListener("updateCharts_C", updateCharts_C);
+					this.addEventListener("refreshDeviceID_C", refreshDeviceID_C);					
+					// -- end --
 					masterTab = new FlowManager();					
 					this.masterTab.setStateSpacePos(1);
 					//updateStateSpaceLabel();				
 				} else if (flagApplicationStarted == 2)	{				
 					this.dispatchEvent(new Event("init", true))
 				};
-			}
+			}			
+			
+			public function refreshDeviceID_C(evt:Event):void {
+				this.panelTabE61.dropdownlist1_changeHandler(null);
+			};
+			
+			
+			public function refreshData_C(evt:Event):void {
+				this.panelTabE61.refreshData(evt);
+			};
+			
+			public function updateCharts_C(evt:Event):void {
+				this.panelTabE61.updateCharts(evt);
+			};
 			
 			public function finalTouches(evt:Event):void {
 				this.masterTab.notifyAll();
@@ -467,6 +485,8 @@
 				this.panelTabE61.initNames();								
 				this.masterTab.addTab(this.panelTabE61, 5);			
 				
+				this.panelTabE61.setMasterTab(this.masterTab);
+				
 				this.dispatchEvent(new Event("tabE", true));
 				trace("creation complete of tab E61");				
 			}			
@@ -625,13 +645,13 @@
 						if (this.tabaiCreationComplete) { 
 							this.tabai.selectedIndex = 4;							
 						};	
-						this.cntryTree.currentState = "slicing";
+						//this.cntryTree.currentState = "slicing";
 						break;					
 					case "scenarioState" :
 						this.navigatorBox2.setButtonColors(null, 5);
 						this.tabai.selectedIndex = 4;
 						this.btnNext.enabled = false;			
-						this.cntryTree.currentState = "slicing";
+						//this.cntryTree.currentState = "slicing";
 						break;					
 				}				
 				//this.currentStateLabel.text = "Current State: " + this.currentState;
@@ -663,7 +683,7 @@
 					case "viewingState" :
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = this.selActiveTab;
-							this.cntryTree.currentState = "default";
+							//this.cntryTree.currentState = "default";
 						} else {
 							this.currentState = "geoList";
 							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false); // data inputs disabled
@@ -678,7 +698,7 @@
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = this.selActiveTab;
 							this.navigatorBox2.setButtonColors(null, 4);
-							this.cntryTree.currentState = "default";
+							//this.cntryTree.currentState = "default";
 						} else {
 							currentState = "geoList";
 							this.navigatorBox2.setButtonColors(null, 2);			
@@ -748,6 +768,12 @@
 						break;		
 				};				
 				//Alert.show("Selected Tab:" + f,"info"); 
+			}
+
+
+			protected function cntryTree_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.cntryTree.setMasterTab(masterTab);
 			}
 
 		]]>
@@ -847,7 +873,7 @@
 				<s:HorizontalLayout/>
 			</s:layout.geoList>
 			<utils:CTree id="cntryTree" width="100%" height="100%" horizontalCenter="0" 
-						 verticalCenter="0" >
+						 verticalCenter="0" creationComplete="cntryTree_creationCompleteHandler(event)" >
 			</utils:CTree>		
 			
 		</s:BorderContainer>

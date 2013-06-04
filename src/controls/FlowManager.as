@@ -24,14 +24,62 @@ package controls
 			return baselineScenarioID;				
 		}
 		
-		private var currentStateSpace:int = 0;
-		
-		private var useCluster:Boolean = false;		
-		
-		private var tabList:ArrayCollection = new ArrayCollection();
-		
+		private var currentStateSpace:int = 0;		
+		private var useCluster:Boolean = false;			
+		private var tabList:ArrayCollection = new ArrayCollection();		
 		private var countSelf:int = 0; 
 			
+		//this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);			
+		//this.devicesActiveFlag = (this.selDeviceAggLevel > 0);
+		
+		[bindable] public var selDeviceAggLevel:int;
+		
+		[bindable] public var devicesActiveFlag:Boolean = false;
+		[bindable] public var chemTypesActiveFlag:Boolean = false;		
+		[bindable] public var pwrTypesActiveFlag:Boolean = false;
+		[bindable] public var batTypesActiveFlag:Boolean = false;		
+		
+		[bindable] public var selBatType:int = 0;
+		[bindable] public var selPwrType:int = 0;
+		[bindable] public var selChemType:int = 1;
+		[bindable] public var selDevice:int = 1;
+				
+		public function setPwrTypesActiveFlag (k:Boolean):void {
+			this.pwrTypesActiveFlag = k;
+		}		
+
+		public function setBatTypesActiveFlag (k:Boolean):void {
+			this.batTypesActiveFlag = k;
+		}
+		
+		public function setChemTypesActiveFlag (k:Boolean):void {
+			this.chemTypesActiveFlag = k;
+		}
+		
+		public function setSelDevice (k:int):void {
+			this.selDevice = k;
+		}		
+				
+		public function setSelDeviceAggLevel (k:int):void {
+			this.selDeviceAggLevel = k;
+		}		
+		
+		public function setDevicesActiveFlag (k:Boolean):void {
+			this.devicesActiveFlag = k;
+		}	
+				
+		public function setSelBatType(k:int):void {
+			this.selBatType = k;
+		}
+		
+		public function setSelPwrType(k:int):void {
+			this.selPwrType = k;
+		}
+		
+		public function setSelChemType(k:int):void {
+			this.selChemType = k;
+		}
+	
 		public function FlowManager()
 		{			
 			if (this.countSelf < 1) this.countSelf++

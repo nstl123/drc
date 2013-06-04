@@ -152,8 +152,37 @@
 				this.cursorManager.removeBusyCursor();
 				this.panelTabA2.refreshData(null);
 				
+				this.updateLabelState();				
 				Alert.show("Module preparation is done", "Info");
 			}
+			
+			public function updateLabelState ():void {			
+				var tmp:String = "viewingOnly";							
+				 
+				this.panelTabA2.currentState = tmp;				
+				this.panelTabB3.currentState = tmp;				
+				this.panelTabD5.currentState = tmp;				
+				this.panelTabF51.currentState = tmp;				
+				
+				var z:Array = this.masterTab.getPathFlags();
+				tmp = ((this.viewMode == "viewDataOnly") ? "viewingOnly" : "default");
+				for (var i:int = 0; i < z.length; i++) { if (z[i] == 1) break; };
+				
+				switch (i) {
+					case 0:
+						this.panelTabA2.currentState = tmp;
+						break;
+					case 1:
+						this.panelTabB3.currentState = tmp;
+						break;
+					case 3:
+						this.panelTabD5.currentState = tmp;
+						break;
+					case 5:
+						this.panelTabF51.currentState = tmp;
+						break;					
+				};							
+			}			
 			
 			public function fillIndicatorNames(evt:Event):void {				
 				this.masterTab.recordIndicatorNames(this.panelTabA2.getFullIndiList());
@@ -604,25 +633,23 @@
 								this.navigatorBox2.setButtonColors(null,      5, false);
 								
 								if (!tabaiCreationComplete) this.tabai.createDeferredContent();						
-								if (tabaiCreationComplete) this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);					
-													
-								this.masterTab.notifyAll();							
-								this.cntryTree.setRegionsGridEnabled(true);				
-								
-								if (tabaiCreationComplete) tabai_changeHandler(null);
+								if (tabaiCreationComplete) this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);														
 							} else {														
 								this.digestUpdate(null);
 								currentState = "scenarioState";
 								this.navigatorBox2.setButtonColors(null, 4);					
 								
 								if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
-								if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;
-								this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus
-								this.cntryTree.setRegionsGridEnabled(true);
-								if (tabaiCreationComplete) tabai_changeHandler(null);
+								if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;											
 								//this.navigatorBox2.setButtonColors(null, 3);	
 								//this.originalBQLabel.text = this.selPathObjLabel;
-							};									
+							};	
+							this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus
+							this.cntryTree.setRegionsGridEnabled(true);				
+							if (tabaiCreationComplete) {									
+								tabai_changeHandler(null);
+								this.updateLabelState();
+							};
 						};
 						break;
 					/*case "indicatorsList":

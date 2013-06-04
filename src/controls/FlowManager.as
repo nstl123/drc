@@ -227,7 +227,7 @@ package controls
 		[bindable] private var pathFlags:Array = new Array(); 
 		[bindable] private var activeIndi:int;
 		
-		public function getPathFlags():Array {dataList
+		public function getPathFlags():Array {
 			return this.pathFlags;
 		}
 		

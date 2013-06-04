@@ -14,7 +14,12 @@
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
-
+	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="viewingOnly" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			protected function writeViewToTableResult_faultHandler(event:FaultEvent):void
@@ -362,16 +367,16 @@
 	
 	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="93" left="10">
 	</utils:CTwoAxisChart>
-	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="465" left="10">
+	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="465" left="10" top.viewingOnly="420" left.viewingOnly="10">
 	</utils:CInteractiveGrid>
 	
 	<s:DropDownList width="243" id="indicatorsBox"  labelField="namen" top="32" left="49" 
 					change="indicatorsBox_changeHandler(event)"/>
 	
-	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" top="427" height="23" left="535"/>
-	<s:Button label="Update Chart" click="digestChanges(event)" width="222" id="saveBtn" left="535" top="394" height="27" fontWeight="bold"/>
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="439" height="20"/>
-	<s:BorderContainer width="517" height="59" left="10" top="389" borderVisible="false">
+	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" top="427" height="23" left="535" top.viewingOnly="384" left.viewingOnly="535"/>
+	<s:Button label="Update Chart" click="digestChanges(event)" width="222" id="saveBtn" left="535" top="394" height="27" fontWeight="bold" top.viewingOnly="350" left.viewingOnly="535"/>
+	<s:Label text="Table activiy state" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="439" top.viewingOnly="406" left.viewingOnly="10" top.default="451" left.default="10"/>
+	<s:BorderContainer width="517" height="59" left="10" top="389" borderVisible="false" top.viewingOnly="350" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0">
 		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
 		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls"
 						   enabled="false" borderVisible="false">
@@ -397,6 +402,6 @@
 	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
 					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="32" height="20" left="370"></s:DropDownList>
 	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="341" fontFamily="Arial"/>
-	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="347" left="10" fontFamily="Arial" color="#50B848" width="747"/>
+	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848" includeIn="default"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="347" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
 </s:Group>

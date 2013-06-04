@@ -819,7 +819,7 @@
 				 fontFamily="Verdana"  fontSize="12"/> !-->
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
-				fontSize="13" text="Battery Demand Analysis Tool v.1.03"/> 
+				fontSize="13" text="Battery Demand Analysis Tool v.1.04"/> 
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 

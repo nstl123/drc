@@ -427,6 +427,7 @@
 				this.dispatchEvent(new Event("updateCharts_C", true));				
 				//need to get data for chemistry?				
 				this.chemTypesActiveFlag = (this.selChemType > 0);
+				this.flowManager.setChemTypesActiveFlag(this.chemTypesActiveFlag);
 				//need to disable pwrSplit and sizeSplit accordingly
 				//this.chemTypes.enabled = this.chemTypesActiveFlag;
 			}			

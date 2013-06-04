@@ -213,11 +213,11 @@
 					this.batTypes.enabled = !this.chemTypesActiveFlag;
 										
 					this.devicesActiveFlag = (!this.chemTypesActiveFlag) && (this.selDeviceAggLevel > 0);
-					this.deviceListDrop.enabled = !this.chemTypesActiveFlag;					
+					//this.deviceListDrop.enabled = !this.chemTypesActiveFlag;					
 					
-					this.radioDevCat.enabled = !this.chemTypesActiveFlag;
-					this.radioDevSingle.enabled = !this.chemTypesActiveFlag;
-					this.radioDevAll.enabled = !this.chemTypesActiveFlag;
+					//this.radioDevCat.enabled = !this.chemTypesActiveFlag;
+					//this.radioDevSingle.enabled = !this.chemTypesActiveFlag;
+					//this.radioDevAll.enabled = !this.chemTypesActiveFlag;
 				//};
 				
 				this.dispatchEvent(new Event("refreshData", false));
@@ -228,7 +228,7 @@
 			{				
 				this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);			
 				this.devicesActiveFlag = (this.selDeviceAggLevel > 0);				
-				this.deviceListDrop.enabled = this.devicesActiveFlag;				
+				//this.deviceListDrop.enabled = this.devicesActiveFlag;				
 				this.deviceNamesFullList.refresh();				
 				exoIndi_clickHandler(null); // refresh data for exogenous chart
 				this.dispatchEvent(new Event("demandAggChanged", true));				
@@ -253,10 +253,10 @@
 				};
 				
 				if (this.flowManager.chemTypesActiveFlag) {
-					f = (item.chemistryID == this.selChemType);					
+					f = (item.chemistryID == this.flowManager.selChemType);					
 				} else 
 				if (this.flowManager.selDeviceAggLevel > 0) {					
-					f = (z == this.selDevice);   															
+					f = (z == this.flowManager.selDevice);   															
 				} else {
 					f = (z == 0); 
 				};			
@@ -382,7 +382,7 @@
 			private function activateSplits(on:Boolean):void {
 				this.batTypes.enabled = on && this.batTypesActiveFlag;
 				this.pwrTypes.enabled = on && this.pwrTypesActiveFlag;
-				this.deviceListDrop.enabled = on && this.devicesActiveFlag;
+				//this.deviceListDrop.enabled = on && this.devicesActiveFlag;
 				
 				/*this.batTypesActive.enabled = on;
 				this.pwrTypesActive.enabled = on;
@@ -420,7 +420,7 @@
 				deviceNamesFullList = this.deviceNamesList.lastResult as ArrayCollection;
 				this.deviceNamesFullList.filterFunction = this.filterDeviceList;
 				this.deviceNamesFullList.refresh();
-				this.deviceListDrop.dataProvider = this.deviceNamesFullList;
+				//this.deviceListDrop.dataProvider = this.deviceNamesFullList;
 			}
 			
 			[bindable] private var selBatType:int = 0;
@@ -474,13 +474,13 @@
 				this.selExoIndi = this.exoListDrop.selectedItem.id;
 				exoIndi_clickHandler(null);
 				
-				this.exoChart.updateChartTitle(
+				/*this.exoChart.updateChartTitle(
 					(this.exoListDrop.selectedItem ? this.exoListDrop.selectedItem.namen : "-"),
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
-					false);		
+					false);*/		
 			}
 			
 			public function exoIndi_clickHandler(event:MouseEvent):void
@@ -495,22 +495,23 @@
 					var tmpSplit:int = 0;				
 				
 					if ( (this.selExoIndi == 204)||(this.selExoIndi == 206) ) 
-						typeID = this.selBatType;
+						typeID = this.flowManager.selBatType;
 					else 
 					if ( (this.selExoIndi == 205)||(this.selExoIndi == 207) ) 
-						typeID = this.selPwrType;				
+						typeID = this.flowManager.selPwrType;				
 					if ( (this.selExoIndi >= 204) && (this.selExoIndi <= 206) ) 
 							tmpSplit = 1; 
-					else tmpSplit = aggType;
+					else tmpSplit = aggType; //this.flowManager.selDeviceAggLevel;// aggType;
 					
 					if ( this.selExoIndi == 101 ) { 
 						tmpDev = 0; 
 						tmpSplit = 0; 
 					} else 
-						tmpDev = this.selDevice;				
+						tmpDev = this.flowManager.selDevice;				
 					
 					if (this.selExoIndi == 401) {				
-						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, selPwrType, this.selDeviceAggLevel, showPerHHFlag);
+						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID,
+							flowManager.selPwrType, flowManager.selDeviceAggLevel, showPerHHFlag);
 					} else {				
 						getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
 							tmpSplit, typeID, 1);
@@ -541,10 +542,10 @@
 			
 			private function filterChartExo(item:Object):Boolean {				
 				var f:Boolean = false;								
-				if (this.selDeviceAggLevel == 0) {									
+				if (this.flowManager.selDeviceAggLevel == 0) {									
 					f = ( (item.categoryID == 0) && ((selExoIndi == 101)||(selExoIndi == 401)) );
 				} else 
-				if (this.selDeviceAggLevel == 1) {									
+				if (this.flowManager.selDeviceAggLevel == 1) {									
 					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi == 101) );
 				} else {					
 					f = ( (item.categoryID == this.selDevice)|| (this.selExoIndi == 101) );
@@ -619,9 +620,14 @@
 		]]>
 	</fx:Script>
 	
-	<utils:CTwoAxisChart width="747" height="250" id="demandChart" left="10" top="182">
+	<utils:CTwoAxisChart width="747" height="250" id="demandChart" left="10" top="64">
 	</utils:CTwoAxisChart>
-	<s:Button x="472" label="refresh data" id="getSomeData" click="getSomeData_clickHandler(event)" y="152" width="285" height="25" fontWeight="bold"/>
+
+	<s:Button x="402" label="Update Chart" id="getSomeData" click="getSomeData_clickHandler(event)" y="31" width="198" height="25" fontWeight="bold" enabled="true"/>
+
+<s:BorderContainer id="pagrindinis" width="100%" left="0" top="0" borderVisible="false" height="10">	
+
+	<!--
 	<s:Label text="Devices Aggeragtion Level" id="selDeviceLabel" fontSize="11" fontStyle="italic" top="21" left="11" fontFamily="Arial"/>
 	<s:BorderContainer backgroundAlpha="0.0" borderVisible="false" 
 					   top="34"  height="20" left="20" width="419">
@@ -637,12 +643,15 @@
 					   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle"/>
 	</s:BorderContainer>
 
+	!-->
 	
+</s:BorderContainer>	
 	
-	<s:Label text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="149"/>
-	<s:Label text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="197" fontFamily="Arial" top="149"/>
-	<s:Label text="Battery Types" id="selDeviceLabel3" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="57"/>
-	<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" left="20">
+	<s:Label text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="15" fontFamily="Arial" top="24"/>
+	<s:Label text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="167" fontFamily="Arial" top="24"/>
+<!--	<s:Label text="Battery Types" id="selDeviceLabel3" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="57"/>
+!-->
+	<!--	<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" left="20">
 		<s:layout>
 			<s:VerticalLayout gap="1"/>
 		</s:layout>
@@ -655,15 +664,16 @@
 		
 		<s:RadioButton x="44" y="105" label="Built-in Rechargeable" value="3" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
-	</s:BorderContainer>
+	</s:BorderContainer> !-->
 
 	
 	
-	<s:DropDownList width="289" id="deviceListDrop"
+	<!-- <s:DropDownList width="289" id="deviceListDrop"
 					change="dropdownlist1_changeHandler(event)"
 					labelField="namen" selectedIndex="1" height="20" top="29" left="472" 
 					enabled="false" fontFamily="Arial" fontSize="12" 
 					contentBackgroundAlpha="0.9" borderVisible="false"/>
+	!-->
 <!--	<s:BorderContainer x="253" height="70" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210">
 		<s:layout>
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
@@ -695,11 +705,11 @@
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
 	</s:BorderContainer>
 	!-->
-	<s:Label x="10" text="some exogenous var" fontStyle="italic" fontSize="11" top="439" fontFamily="Arial"/>
+	<s:Label x="10" text="model inputs variable" fontStyle="italic" fontSize="11" top="321" fontFamily="Arial"/>
 	
 	<s:DropDownList x="39" width="226" id="exoListDrop" labelField="namen" 
 					change="exoListDrop_changeHandler(event)" 
-					selectedIndex="0" height="20" top="450" enabled="true" 
+					selectedIndex="0" height="20" top="332" enabled="true" 
 					fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9"
 					borderVisible="false"/>
 	
@@ -707,10 +717,12 @@
 			  click="exoIndi_clickHandler(event)" id="button" enabled="true" visible="false"/>
 	
 
-	<s:RadioButton x="31" label="Levels" groupName="growthType" enabled="true" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="160"/>
-	<s:RadioButton x="89" label="Growths" groupName="growthType" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="160"/>
+	<s:RadioButton x="33" label="Levels" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="35"/>
+	<s:RadioButton x="91" label="Growths" groupName="growthType" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="35"/>
+
+	<!--
 	<s:BorderContainer width="236" x="603" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height="69">
 		<s:layout>
 			<s:TileLayout horizontalGap="0" verticalGap="4"/>
@@ -724,11 +736,16 @@
 		
 	</s:BorderContainer>
 
+	!-->
+	
+	<!--
 	<s:Label text="Step 6: Select battery parameters." verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848"/>
+	
 	
 	<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11" 
 			 verticalAlign="middle" fontFamily="Arial" x="220" top="57"/>
-	
+	!-->
+ <!--
 	<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210" height="80" left="230">
 		<s:layout>
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
@@ -746,18 +763,19 @@
 		
 	</s:BorderContainer>
 
+	!-->
 	
-	
-	<s:RadioButton x="470" value="0" label="All chemistry" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" selected="true" top="70"/>
+<!--	<s:RadioButton x="470" value="0" label="All chemistry" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" selected="true" top="70"/>
 	<s:RadioButton x="575" value="1" label="Use split by:" groupName="splitByChemistry" click="chemTypesActive_clickHandler(event)" enabled="true" top="70"/>
 	<s:Label text="Chemistry" id="selDeviceLabel0" fontStyle="italic" fontSize="11" fontFamily="Arial" x="452" top="57"/>
-	
-	<utils:CTwoAxisChart id="exoChart" top="473" left="10" width="747" height="250">
+	!-->
+	<utils:CTwoAxisChart id="exoChart" top="359" left="10" width="747" height="250">
 	</utils:CTwoAxisChart>
-	<s:RadioButton x="224" label="Devices in Total" groupName="granGroup" value="0" top="160" 
+	<s:RadioButton x="194" label="Devices in Total" groupName="granGroup" value="0" top="35" 
 				   selected="true" click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
-	<s:RadioButton x="326" label="Devices per HH" groupName="granGroup" value="1" top="160" 
+	<s:RadioButton x="296" label="Devices per HH" groupName="granGroup" value="1" top="35" 
 				   click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
+	<s:Button x="612" y="32" label="Export Scenario to Excel" width="144" height="23" enabled="true" fontWeight="normal" fontSize="10"/>
 
 
 </s:Group>

@@ -313,20 +313,18 @@
 			
 			public function setRegionsGridEnabled(flag:Boolean):void {
 				this.regionsListGrid.enabled = flag;
-			}
+	}
 			
 			
 			protected function devicesActive_clickHandler(event:MouseEvent):void
 			{				
 				selDeviceAggLevel = int(this.splitByDevices_C.selectedValue);
 				this.flowManager.setSelDeviceAggLevel(selDeviceAggLevel);
-				//this.selDeviceAggLevel = int(this.splitByDevices_C.selectedValue);
 				devicesActiveFlag = (this.selDeviceAggLevel > 0);
 				this.flowManager.setDevicesActiveFlag(this.devicesActiveFlag);					
-				//this.devicesActiveFlag = (this.selDeviceAggLevel > 0);				
+						
 				this.deviceListDrop_C.enabled = this.devicesActiveFlag;					
-				this.deviceNamesFullList.refresh();				
-				
+				this.deviceNamesFullList.refresh();						
 				this.dispatchEvent(new Event("demandAggChanged", false));				
 			}
 			
@@ -346,10 +344,10 @@
 			private var showAtDeviceLevel:int = 0;
 			private function filterDeviceList(item:Object):Boolean {
 				var f:Boolean = false;
-				if  ( (selDeviceAggLevel == 1)&&(item.categoryID > 0) )
+				if  ( (selDeviceAggLevel == 1) ) // &&(item.id < 100 ) )
 					f = true;
 				else 
-					if  ( (selDeviceAggLevel == 2)&&(!item.categoryID)  )
+				if  ( (selDeviceAggLevel == 2)&&(item.id > 100)  )
 						f = true;
 				return f;
 			}	
@@ -507,7 +505,7 @@
 			
 			<s:DropDownList width="100%" id="deviceListDrop_C"	 creationComplete="deviceListDrop_C_creationCompleteHandler(event)"						
 							labelField="namen" selectedIndex="1" height="20" top="29" left="472" 
-							enabled="false" fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9" 
+							enabled="false" fontFamily="Arial" fontSize="11" contentBackgroundAlpha="0.9" 
 							borderVisible="false" change="deviceListDrop_C_changeHandler(event)"/>
 		
 		</s:BorderContainer>

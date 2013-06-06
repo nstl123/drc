@@ -266,7 +266,7 @@ package controls
 		
 		public function enableGrids(arr:Array):void {			
 			if (this.tabList.length > 0) {
-				for (var i:int = 0; i < arr.length; i++) {	
+				for (var i:int = 0; i < tabList.length; i++) {	
 					if (arr[i] == 1) {
 						this.tabList[i].enableGrid(true, false);					
 						//this.tabList[i].setActiveIndis(this.activeIndi);
@@ -275,6 +275,16 @@ package controls
 					};
 				};
 			};		
+		}	
+		
+		public function filterDeviceList(item:Object):Boolean {
+			var f:Boolean = false;
+			if  ( (selDeviceAggLevel < 2) ) // &&(item.id < 100 ) )
+				f = true;
+			else 
+				if  ( (selDeviceAggLevel == 2)&&(item.id > 100)  )
+					f = true;
+			return f;
 		}	
 		
 	}

@@ -51,16 +51,16 @@
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="10" paddingRight="10"/>
 		</s:layout>
-		<s:Label text="BQs" width="17%" height="30" verticalAlign="middle" textAlign="center" 
+		<s:Label text="Business Questions" width="21%" height="30" verticalAlign="middle" textAlign="center" 
 				 id="lab1" color="#000000" fontWeight="bold"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
-		<s:Label text="Geography List" width="17%" height="30" verticalAlign="middle" textAlign="center"
+		<s:Label text="Geography List" width="21%" height="30" verticalAlign="middle" textAlign="center"
 				 id="lab2" fontWeight="bold"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
-		<s:Label text="Data Inputs" width="17%" height="30" verticalAlign="middle" textAlign="center" 
+		<s:Label text="Data Inputs" width="21%" height="30" verticalAlign="middle" textAlign="center" 
 				 id="lab4" fontWeight="bold"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
-		<s:Label text="View Output" width="17%" height="30" verticalAlign="middle" textAlign="center"
+		<s:Label text="View Output" width="21%" height="30" verticalAlign="middle" textAlign="center"
 				 id="lab5" fontWeight="bold"/>
 		
 	</s:BorderContainer>

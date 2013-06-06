@@ -57,7 +57,8 @@
 				this.addEventListener("updateCharts", updateCharts);
 				this.addEventListener("refreshData", refreshData);
 				
-				initShockControls();		
+				initShockControls();	
+				this.currentState = "viewingOnly";
 			}
 			
 			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
@@ -233,6 +234,7 @@
 				this.shockBtn1.enabled = (flag && isLevel); 
 				this.shockBtn2.enabled = (flag && isLevel);
 				this.shockControls.enabled = (flag && isLevel && !isSingleGeo);
+				this.shLbl.enabled = (flag && isLevel && !isSingleGeo);
 			}		
 			
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
@@ -319,32 +321,32 @@
 	
 	<utils:CInteractiveGrid width="747" height="189" id="grid"
 						   left="10" top="458" 
-						  top.viewingOnly="420" left.viewingOnly="10">
+						  top.viewingOnly="405" left.viewingOnly="10">
 	</utils:CInteractiveGrid>
 	<utils:CTwoAxisChart width="747" height="250" id="chart" top="90"
-						  isLineSeries="true" left="10">
+						  isLineSeries="true" left="10" top.viewingOnly="75" left.viewingOnly="10">
 	</utils:CTwoAxisChart>
 	
 	<s:DropDownList width="243" id="indicatorsBox" labelField="namen"
 					 change="indicatorsBox_changeHandler(event)" top="32" 
-					 selectedIndex="1" height="20" left="43"></s:DropDownList>
+					 selectedIndex="1" height="20" left="43" top.viewingOnly="17" left.viewingOnly="43"></s:DropDownList>
 	<s:Button label="Refresh View" click="button3_clickHandler(event)" top="60" 
 			  width="218" height="25" fontWeight="bold" fontSize="13" left="213"
-			  visible="false"/>
+			  visible="false" top.viewingOnly="45" left.viewingOnly="213"/>
 	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle"
 			 fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" 
 			 color="#50B848" includeIn="default"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
 	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="347" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
-				   selected="true" height="19" change="radiobutton2_clickHandler(event)" top="62" left="77" fontSize="11" fontFamily="Arial"/>
+				   selected="true" height="19" change="radiobutton2_clickHandler(event)" top="62" left="77" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="77"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_clickHandler(event)" top="62" left="140" fontSize="11" fontFamily="Arial"/>
-	<s:Button label="reset scenario" width="222" id="button" click="button_clickHandler(event)" height="23" top="425" left="535" top.viewingOnly="384" left.viewingOnly="535"/>
-	<s:Label text="Table activiy state" width="152" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="446" top.viewingOnly="406" left.viewingOnly="10"/>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" top="57" height="10" left="12" fontFamily="Arial"/>
-	<s:BorderContainer width="517" height="59" left="10" top="389" borderVisible="false" backgroundAlpha="0.0" top.viewingOnly="350" left.viewingOnly="10">
-		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
+				   enabled="true" height="19" change="radiobutton2_clickHandler(event)" top="62" left="140" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="140"/>
+	<s:Button label="reset scenario" width="222" id="button" click="button_clickHandler(event)" height="23" top="425" left="535" top.viewingOnly="369" left.viewingOnly="535"/>
+	<s:Label text="Table activiy state" width="152" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="446" top.viewingOnly="391" left.viewingOnly="10"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" top="57" height="10" left="12" fontFamily="Arial" top.viewingOnly="42" left.viewingOnly="12"/>
+	<s:BorderContainer width="517" height="59" left="10" top="389" borderVisible="false" backgroundAlpha="0.0" top.viewingOnly="335" left.viewingOnly="10">
+		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial" id="shLbl"/>
 		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
 					   selected="true" click="changeShockType_handler(event)" top="19" fontSize="11" id="shockBtn1"/>
 		<s:RadioButton x="66" label="All countries  (right)" groupName="shockType" enabled="true" value="0"
@@ -359,7 +361,7 @@
 		</s:BorderContainer>
 	</s:BorderContainer>
 	<s:Button label="Update Chart" width="222" click="digestChanges(event)" 
-			  id="saveBtn" height="27" fontWeight="bold" left="535" top="392" top.viewingOnly="350" left.viewingOnly="535"/>
+			  id="saveBtn" height="27" fontWeight="bold" left="535" top="392" top.viewingOnly="335" left.viewingOnly="535"/>
 	
 
 </s:Group>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" height="800" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="900" 
 		 xmlns:utils="utils.*"
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*"
 		 creationComplete="startApp(event)"
-		 >
+		  height="100%">
 
 	
 	<fx:Declarations>
@@ -21,10 +21,11 @@
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
 		
-		<s:RadioButtonGroup id="batTypes"/>		
-		<s:RadioButtonGroup id="pwrTypes"/>
+		<s:RadioButtonGroup id="batTypes" />		
+		<s:RadioButtonGroup id="pwrTypes" />
 		<s:RadioButtonGroup id="growthType" />
-		<s:RadioButtonGroup id="shockType"/>
+		<s:RadioButtonGroup id="shockType" />
+		<s:RadioButtonGroup id="splitByDevices_C" />
 		
 	</fx:Declarations>
 	
@@ -104,8 +105,12 @@
 			}
 			
 			protected function getDeviceList_resultHandler(event:ResultEvent):void
-			{
-				this.deviceListDrop.dataProvider = this.getDeviceList.lastResult as ArrayCollection;
+			{			
+				deviceNamesFullList = this.getDeviceList.lastResult as ArrayCollection;			
+				this.deviceNamesFullList.filterFunction = this.flMngr.filterDeviceList;
+				//this.filterDeviceList;
+				this.deviceNamesFullList.refresh();
+				this.deviceListDrop.dataProvider = this.deviceNamesFullList;		
 			}
 			
 			// ----- COMMUNICATION PART ---------------/////
@@ -307,12 +312,12 @@
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
 				if (!isLocal) this.tabEditable = flag; 
 				this.testGrid.isEditable = flag && isLevel;
-				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
-				this.saveBtn.enabled = (flag && isLevel);
+				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";				
 				
 				this.shockBtn1.enabled = (flag && isLevel); 
 				this.shockBtn2.enabled = (flag && isLevel);
 				this.shockControls.enabled = (flag && isLevel && !isSingleGeo);
+				this.shLbl.enabled = (flag && isLevel && !isSingleGeo);
 			}
 			
 			[bindable] private var isLevel:Boolean = true;
@@ -366,38 +371,53 @@
 				};				
 			}			
 			
+			
+			[bindable] private var selDeviceAggLevel:int = 0;
+			[bindable] private var devicesActiveFlag:Boolean;
+			private var deviceNamesFullList:ArrayCollection;
+			protected function devicesActive_clickHandler(event:MouseEvent):void
+			{				
+				selDeviceAggLevel = int(this.splitByDevices_C.selectedValue);
+				this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
+				devicesActiveFlag = (this.selDeviceAggLevel > 0);				
+				this.flMngr.setDevicesActiveFlag(this.devicesActiveFlag);									
+				this.deviceNamesFullList.refresh();			
+				this.dispatchEvent(new Event("refreshData", false));				
+			}
+			
+			
 		]]>
 	</fx:Script>
 
-	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="107" left="10">
+	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="107" left="10" top.viewingOnly="114" left.viewingOnly="10" top.default="125" left.default="10">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="492" left="10" top.viewingOnly="430" left.viewingOnly="10">
+	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="492" left="10" top.viewingOnly="437" left.viewingOnly="10" top.default="503" left.default="10">
 	</utils:CInteractiveGrid>
 	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848" includeIn="default"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="363" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="381" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
 	
 	<s:DropDownList width="242" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" left="50"/>
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" left="50" top.viewingOnly="17" left.viewingOnly="50"/>
 	
-	<s:CheckBox x="300" y="34" label="hasSplit" enabled="false" id="hasSplitFlag" visible="false"/>
-	<s:Button label="Update Chart" width="222" click="digestChanges(event)" id="saveBtn" left="535" top="412" fontWeight="bold" height="27" top.viewingOnly="360" left.viewingOnly="535"/>
-	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" left="535" top="445" height="23" top.viewingOnly="392" left.viewingOnly="535"/>
+	<s:CheckBox x="300" y="34" label="hasSplit" enabled="false" id="hasSplitFlag" visible="false" x.viewingOnly="300" y.viewingOnly="19"/>
+	<s:Button label="Update Chart" width="222" click="digestChanges(event)" id="saveBtn" left="535" top="412" fontWeight="bold" height="27" top.viewingOnly="367" left.viewingOnly="535" top.default="430" left.default="535"/>
+	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" left="535" top="445" height="23" top.viewingOnly="399" left.viewingOnly="535" top.default="463" left.default="535"/>
 	<s:DropDownList width="272" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371"></s:DropDownList>
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="482" top.default="32" left.default="501"></s:DropDownList>
 	
 	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" width="122" height="25" 
-			  fontWeight="bold" left="607" top="0" visible="false"/>
+			  fontWeight="bold" left="607" top="0" visible="false" top.viewingOnly="-15" left.viewingOnly="607"/>
 	
-	<s:Label x="542" text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial"/>
-	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial"/>
+	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" x.default="542" top.default="64" left.viewingOnly="542"/>
+	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="167" top.viewingOnly="46" x.default="150" top.default="64"/>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="59" left.viewingOnly="77" top.default="74" left.default="58"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial"/>
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" y.default="479" top.viewingOnly="418"/>
-	<s:BorderContainer width="517" left="10" top="410" borderVisible="false" top.viewingOnly="360" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" height.default="59" height.viewingOnly="55">
-		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial"/>
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="77" left.viewingOnly="77" top.default="96" left.default="58"/>
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" y.default="490" top.viewingOnly="425" left.default="10"/>
+	<s:BorderContainer width="517" left="10" top="410" borderVisible="false" top.viewingOnly="367" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" height.default="59" height.viewingOnly="55" top.default="428" left.default="10">
+		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial" id="shLbl"/>
 		<s:BorderContainer width="244" height="48" id="shockControls" enabled="false" borderVisible="false" y.default="5" x.default="265" x.viewingOnly="265" y.viewingOnly="5">
 			<s:Label x="3" y="1" text="Year" width="106" height="20" verticalAlign="middle" fontSize="10"/>
 			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>
@@ -410,21 +430,29 @@
 		<s:RadioButton x="66" label="All countries  (right)" groupName="shockType" enabled="true" value="0"
 					   top="35" fontSize="11" click="changeShockType_handler(event)" id="shockBtn2"/>
 	</s:BorderContainer>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial"/>
-	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="46" left.viewingOnly="10" top.default="64" left.default="10"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="469" top.default="21" left.default="472"/>
 	<s:RadioButton label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="true"
-				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" left="245"/>
+				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" left="245" top.viewingOnly="59" left.viewingOnly="197" top.default="74" left.default="180"/>
 	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245"/>	
-	<s:RadioButton y="69" label="Built-in Rechargeable" value="3" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false" left="380"/>
+				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245" top.viewingOnly="77" left.viewingOnly="197" top.default="96" left.default="306"/>	
+	<s:RadioButton label="Built-in Rechargeable" value="3" groupName="pwrTypes"
+				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false" left="380" left.viewingOnly="398" left.default="180" top.default="96" top.viewingOnly="77"/>
 
-	<s:RadioButton x="564" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" selected="true" fontSize="11" fontFamily="Arial"/>
-	<s:RadioButton x="612" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial"/>	
-	<s:RadioButton x="653" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial"/>
-	<s:RadioButton x="688" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial"/>	
-	<s:RadioButton x="724" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial"/>
+	<s:RadioButton x="564" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" top.default="74"/>
+	<s:RadioButton x="612" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="612" top.viewingOnly="59" x.default="612" top.default="74"/>	
+	<s:RadioButton x="653" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="653" top.viewingOnly="59" x.default="653" top.default="74"/>
+	<s:RadioButton x="688" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="688" top.viewingOnly="59" x.default="688" top.default="74"/>	
+	<s:RadioButton x="724" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" top.default="74"/>
+	<s:RadioButton value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
+				   left="340" top="56" top.viewingOnly="41" left.viewingOnly="340"
+				   groupName="splitByDevices_C" click="devicesActive_clickHandler(event)"/>
+	<s:RadioButton value="1" label="Single device" selected="true" fontFamily="Arial" fontSize="11" 
+				   left="340" top="35" top.viewingOnly="20" left.viewingOnly="340"
+				   groupName="splitByDevices_C"  click="devicesActive_clickHandler(event)"/>
+	<s:Label text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
+			 backgroundAlpha="1.0" chromeColor="#FFFFFF" top.viewingOnly="6" left.viewingOnly="313"/>
 
 
 </s:Group>

@@ -61,10 +61,11 @@ class Depot1 {
 // locally it will be filtered out upon selection
 	public function getDeviceNames() {
 		$a = array('a'=>"");
-		$stmnt = "
-			SELECT id, namen, categoryID FROM `Consulting`.`DC_namesDevices`
-			UNION
-			SELECT id, namen, NULL as categoryID FROM `Consulting`.`DC_namesDeviceCategories`;";
+		/*$stmnt = "SELECT id, namen, categoryID FROM `Consulting`.`DC_namesDevices`
+					UNION
+				  SELECT id, namen, NULL as categoryID FROM `Consulting`.`DC_namesDeviceCategories`;";*/
+		$stmnt = "SELECT id, namen, categoryID FROM `Consulting`.`DC_namesDevicesVisual`
+				  ORDER BY orderID;";
 		$result = $this->connection->fetchAll($stmnt);		
 		array_push($a, $result);		
 		return $result;

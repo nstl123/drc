@@ -33,6 +33,7 @@ package controls
 		//this.devicesActiveFlag = (this.selDeviceAggLevel > 0);
 		
 		[bindable] public var selDeviceAggLevel:int;
+		[bindable] public var selDeviceNamen:String;
 		
 		[bindable] public var devicesActiveFlag:Boolean = false;
 		[bindable] public var chemTypesActiveFlag:Boolean = false;		
@@ -62,7 +63,11 @@ package controls
 				
 		public function setSelDeviceAggLevel (k:int):void {
 			this.selDeviceAggLevel = k;
-		}		
+		}
+		
+		public function setSelDeviceNamen (k:String):void {
+			this.selDeviceNamen = k;			
+		}
 		
 		public function setDevicesActiveFlag (k:Boolean):void {
 			this.devicesActiveFlag = k;

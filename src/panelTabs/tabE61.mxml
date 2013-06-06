@@ -249,7 +249,7 @@
 				var f:Boolean = false;
 				var z:int;
 				if (!this.flowManager.chemTypesActiveFlag) {					
-					z = ( (this.flowManager.selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );
+					z = ( (this.flowManager.selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );					
 				};
 				
 				if (this.flowManager.chemTypesActiveFlag) {
@@ -401,17 +401,7 @@
 				this.currentDataExoChart.refresh();					
 				this.exoChart.setData(this.currentDataExoChart, isLevel);			
 				
-				/*this.demandChart.updateChartTitle("Demand", 
-					deviceListDrop.selectedIndex, this.flowManager.devicesActiveFlag, 
-					isLevel, deviceListDrop.selectedItem.namen, 
-					(this.showPerHHFlag == 1));
-				
-				this.exoChart.updateChartTitle(
-					(exoListDrop.selectedItem ? exoListDrop.selectedItem.namen : "-"),
-					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
-					(deviceListDrop.selectedIndex >= 0), isLevel, 
-					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
-					(this.showPerHHFlag == 0));*/	
+				updateChartTitles();			
 			}
 			
 			private var deviceNamesFullList:ArrayCollection;
@@ -581,14 +571,34 @@
 				this.currentDataExoChart.refresh();				
 				this.exoChart.setData(currentDataExoChart, isLevel);				
 				
-				//updateChartTitle()
-				/*this.demandChart.updateChartTitle("Demand", 
-					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
+				updateChartTitles();			
+			}
+			
+			public function updateChartTitles():void {
+				this.demandChart.updateChartTitle("Demand", 
+					this.flowManager.selDeviceAggLevel, 
 					this.flowManager.devicesActiveFlag,	
 					this.isLevel, 
-					(deviceListDrop.selectedItem  ? deviceListDrop.selectedItem.namen : ""),
+					this.flowManager.selDeviceNamen,
 					(this.showPerHHFlag == 1)
-				);*/
+				);		
+				
+				var fl:Boolean = false;
+				if (this.exoListDrop.selectedItem) {
+					if (this.exoListDrop.selectedItem.id != 401) 
+						fl = false;
+					else 
+						fl = (this.showPerHHFlag == 1); 
+				};
+				
+				this.exoChart.updateChartTitle(
+					(exoListDrop.selectedItem ? exoListDrop.selectedItem.namen :
+						exoListDrop.dataProvider.getItemAt(0).namen),
+					this.flowManager.selDeviceAggLevel, 
+					this.flowManager.devicesActiveFlag,
+					isLevel, 
+					this.flowManager.selDeviceNamen,
+					fl);
 			}
 			
 			protected function updateChemistrySplit(evt:Event):void {

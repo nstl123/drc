@@ -137,6 +137,7 @@
 			
 			public function refreshData_C(evt:Event):void {
 				this.panelTabE61.refreshData(evt);
+				this.panelTabE61.exoIndi_clickHandler(null);				
 			};
 			
 			public function updateCharts_C(evt:Event):void {

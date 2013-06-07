@@ -343,6 +343,17 @@
 				// for exo chart part
 			}
 
+			public var address:String = "192.168.44.200";
+			protected function exportToExcel(event:MouseEvent):void
+			{
+				var request:URLRequest = new URLRequest();
+				request.url = "http://" 
+					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcel_DC.php?"					 
+					+ "scenarioID=" + this.workingScenarioID
+					+ "&tmp="       + String(Math.round(Math.random()*1000));
+				navigateToURL(request, "_blank");
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -785,7 +796,9 @@
 				   selected="true" click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
 	<s:RadioButton x="296" label="Devices per HH" groupName="granGroup" value="1" top="17" 
 				   click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
-	<s:Button x="612" y="14" label="Export Scenario to Excel" width="144" height="23" enabled="true" fontWeight="normal" fontSize="10"/>
+	<s:Button x="612" y="14" label="Export Scenario to Excel" 
+			  width="144" height="23" enabled="true" fontWeight="normal" fontSize="10"
+			  click="exportToExcel(event)" />
 
 
 </s:Group>

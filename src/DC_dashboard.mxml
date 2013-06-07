@@ -11,7 +11,7 @@
 			   xmlns:panelTabs="panelTabs.*" 
 			   width="100%"  xmlns:utils="utils.*"
 			   pageTitle="Battery Demand Tool" 
-			   minHeight="800" height="800">
+			   minHeight="800" height="800" xmlns:wrapperis="services.wrapperis.*" xmlns:depot4="services.depot4.*">
 	
 	<!-- creationComplete="initAll(event)" !-->
 	
@@ -32,6 +32,10 @@
 		<s:CallResponder id="indicatorsNamesList" result="indicatorsNamesList_resultHandler(event)" /> 
 		
 		<s:RadioButtonGroup id="viewingModeGroup"/>
+
+		<s:CallResponder id="insertExportIdsResult" result="insertExportIdsResult_resultHandler(event)"
+						  fault="insertExportIdsResult_faultHandler(event)"/>
+		<depot4:Depot4 id="depot4" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
 		
 	</fx:Declarations>
 	
@@ -50,7 +54,8 @@
 			import services.depot1.*;
 			import services.depot21.Depot21;
 			
-			import utils.IDgenerator;			
+			import utils.IDgenerator;
+			import utils.helper;			
 			private var dataServiceNames:Depot1;
 			private var dataServiceData:Depot21;
 			private var dataServiceUpdate:Depot3;
@@ -71,6 +76,7 @@
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.currentState = "landingState";
+				hlp = new helper();			
 				//this.currentStateLabel.text = "Current State: " + this.currentState;				
 			}
 			
@@ -798,10 +804,41 @@
 				//Alert.show("Selected Tab:" + f,"info"); 
 			}
 
-
 			protected function cntryTree_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.cntryTree.setMasterTab(masterTab);
+			}
+
+			private var hlp:helper;
+			protected function button_clickHandler(event:MouseEvent):void
+			{				
+				var countryIDs:Array = this.masterTab.getDataList().source;				
+				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+				var z:ArrayCollection = new ArrayCollection(tmp);
+				// should delete old scenarios first?
+				// data on unused scenarioIDs can be taken form DC_scenarioNames
+				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, z);
+			}			
+
+			protected function insertExportIdsResult_resultHandler(event:ResultEvent):void
+			{
+				this.exportToExcel();				
+			}
+
+			protected function insertExportIdsResult_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
+			}
+			
+			//public var address:String = "192.168.44.200";
+			public var address:String = "213.197.173.50";
+			protected function exportToExcel():void 	{
+				var request:URLRequest = new URLRequest();
+				request.url = "http://" 
+					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcel_DC.php?"					 
+					+ "scenarioID=" + this.workingScenarioID
+					+ "&tmp="       + String(Math.round(Math.random()*1000));
+				navigateToURL(request, "_blank");
 			}
 
 		]]>
@@ -847,7 +884,11 @@
 				 fontFamily="Verdana"  fontSize="12"/> !-->
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
-				fontSize="13" text="Battery Demand Analysis Tool v.1.05"/> 
+				fontSize="13" text="Battery Demand Analysis Tool v.1.07"/> 
+		<s:Button id="button" click="button_clickHandler(event)"				   
+				  label ="export scenario data" fontSize="11" 
+				  x="446" y="10" includeIn="scenarioState,viewingState"
+				  />
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 

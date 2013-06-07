@@ -157,7 +157,7 @@ class Depot3 {
 		$result = $this->connection->prepare($stmntScen);
 		$result->execute();	*/
 	}	
-	
+		
 	public function insertWorkingScenario($scenarioID) {
 
 		$stmntMacro = "
@@ -201,7 +201,6 @@ class Depot3 {
 		return $result;
 	} 
 	
-	
 	public function writeViewToTable($scenarioID, $isMarket) {	
 		$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
 		$result = $this->connection->prepare($delStmnt);		
@@ -225,5 +224,31 @@ class Depot3 {
 		
 		return "ok"; // some error handling would be nice
 	}
+
+	public function testFile($a) {
+		return $a;
+	}
+
+	/*public function insertExportIds($scenarioID, $countryIDs) {	
+		$b = (array)$countryIDs;
+		$st = "";
+		for ($j = 0; $j < count($b); $j++) {				
+			$stmnt  = "
+				INSERT INTO Consulting.DC_exportIDTable
+					(scenarioID, countryID, indicatorID)
+				VALUES 
+				    (".$scenarioID.",".$b[$j].", NULL);";		
+			$result = $this->connection->prepare($stmnt);
+			$result->execute();					
+			$st = $st.$stmnt;
+		};		
+		return $st;
+	}*/
+
+	/*
+	public function deleteExportIds($scenarioID) {
+		return true;
+	}*/
+
 }		
 ?>

@@ -265,7 +265,8 @@
 						<s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
 					</mx:axisStroke>
 				</mx:AxisRenderer>
-			</mx:horizontalAxisRenderers> !--> 
+			</mx:horizontalAxisRenderers>
+				!-->
 				
 			</mx:LineChart>
 		</s:BorderContainer>

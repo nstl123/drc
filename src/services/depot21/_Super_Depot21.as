@@ -16,6 +16,7 @@ import valueObjects.CustomDatatype16;
 import valueObjects.CustomDatatype17;
 import valueObjects.CustomDatatype18;
 import valueObjects.CustomDatatype19;
+import valueObjects.CustomDatatype23;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -36,6 +37,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         valueObjects.CustomDatatype16._initRemoteClassAlias();
         valueObjects.CustomDatatype17._initRemoteClassAlias();
         valueObjects.CustomDatatype19._initRemoteClassAlias();
+        valueObjects.CustomDatatype23._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -55,6 +57,9 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         operation = new mx.rpc.remoting.Operation(null, "getDemandByChemistry");
          operation.resultElementType = valueObjects.CustomDatatype19;
         operations["getDemandByChemistry"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "getMacroDataCategory");
+         operation.resultElementType = valueObjects.CustomDatatype23;
+        operations["getMacroDataCategory"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -158,6 +163,25 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDemandByChemistry");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,isRegion,perHH) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'getMacroDataCategory' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function getMacroDataCategory(countryIDs:Object, indicatorID:Object, scenarioID:Object, hasSplit:Object, typeID:Object, wNames:Object) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getMacroDataCategory");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,indicatorID,scenarioID,hasSplit,typeID,wNames) ;
 
         return _internal_token;
     }

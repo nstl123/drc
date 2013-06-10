@@ -19,6 +19,8 @@
 <!--		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/> !-->		
 		
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
+		<s:CallResponder id="getMacroDataCategory" result="getMacroDataCategory_resultHandler(event)" fault="getMacroDataCategory_faultHandler(event)" />
+		
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
 		
 		<s:RadioButtonGroup id="batTypes" />		
@@ -177,8 +179,13 @@
 				
 					if (tmp.length > 0) {
 						this.cursorManager.setBusyCursor();
-						getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
-							fl, tmpType, 1);
+						if (selDeviceAggLevel > 1 ) { // category level
+							getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
+								workingScenarioID, fl, tmpType, 1);
+						} else {						
+							getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
+								fl, tmpType, 1);
+						};
 					} else {					
 						Alert.show("select at least one country", "Error F51");					
 					};
@@ -385,7 +392,22 @@
 				this.dispatchEvent(new Event("refreshData", false));				
 			}
 			
+			protected function getMacroDataCategory_resultHandler(event:ResultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+				currentData = this.getMacroDataCategory.lastResult as ArrayCollection;			
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source  = this.currentData.source;
+				
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
 			
+			protected function getMacroDataCategory_faultHandler(event:FaultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+				Alert.show("could not read data", "error B3");
+			}
+
 		]]>
 	</fx:Script>
 

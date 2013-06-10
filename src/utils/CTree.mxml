@@ -150,9 +150,11 @@
 				addEventListener(CCheckBoxRendererADG.DECR_COUNT, onDecrValue);
 				
 				this.addEventListener(CCheckBoxGrid.CHECKED, onIncrValue);
-				this.addEventListener(CCheckBoxGrid.UNCHECKED, onDecrValue);		
+				this.addEventListener(CCheckBoxGrid.UNCHECKED, onDecrValue);			
 				
-				this.addEventListener("demandAggChanged", updateChemistrySplit);			
+				this.addEventListener("demandAggChanged", updateChemistrySplit);
+				
+				this.addEventListener("overSelection", cutOverSelections);
 			}
 			
 			public var dataServiceNames:Depot1;
@@ -188,6 +190,9 @@
 				};
 				//if (checkedCount == 1)
 				dispatchEvent(new Event(CTree.CHECKED, true));
+				/*if (this.checkedCount >= 10) {
+					this.dispatchEvent(new Event("overSelection", false));
+				}*/
 			}
 			
 			//decrement number of checked elements
@@ -220,13 +225,23 @@
 				};					
 			}		
 			
+			protected function cutOverSelections(event:Event):void {
+				for (var s:int = this.selectionList.length - 1; s > 0; s--) {
+					if (this.selectionList[s].active) {						
+						selectionList[s].active = false;
+						checkedCount--;
+					};
+					if (this.checkedCount <= 10) break;
+				};						
+				this.preserveRefresh();
+				dispatchEvent(new Event(CTree.UNCHECKED, true));
+			}
+			
 			//when the link button is clicked, select all checkboxes
-			protected function lnkAll_clickHandler(event:MouseEvent):void
-			{
+			protected function lnkAll_clickHandler(event:MouseEvent):void  {
 				var i:uint;
 				if (this.selectionList != null) {
-					for (i = 0; i < selectionList.length; i++)
-						selectionList[i].active = true;
+					for (i = 0; i < selectionList.length; i++) selectionList[i].active = true;
 					checkedCount = selectionList.length;				
 					
 					this.preserveRefresh();	
@@ -236,12 +251,10 @@
 			}		
 			
 			//when the link button is clicked, de-select all checkboxes
-			protected function delnkAll_clickHandler(event:MouseEvent):void
-			{
+			protected function delnkAll_clickHandler(event:MouseEvent):void {
 				var i:uint;
 				if (this.selectionList != null) {
-					for (i = 0; i < selectionList.length; i++)
-						selectionList[i].active = false;
+					for (i = 0; i < selectionList.length; i++) selectionList[i].active = false;
 					checkedCount = 0;
 					
 					this.preserveRefresh();									

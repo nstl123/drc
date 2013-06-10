@@ -136,7 +136,10 @@
 			public function refreshData(evt:Event):void {
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					Alert.show("Please select at least one country", "Selection error");
-				} else {
+				} else if (this.dataList.length >= 10 ) {
+					Alert.show("Maximum number of selected counties should less of equal to 10", "Info");
+					this.dataList.source.splice(10, this.dataList.source.length - 10);
+				} else {	
 					var countryIDs:Array = this.dataList.source;				
 					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
 					this.cursorManager.setBusyCursor();

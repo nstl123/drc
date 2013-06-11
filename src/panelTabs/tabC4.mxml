@@ -17,7 +17,7 @@
 			import mx.charts.AreaChart;
 			protected function getDeviceBase_faultHandler(event:FaultEvent):void
 			{
-				this.cursorManager.removeBusyCursor();
+				//this.cursorManager.removeBusyCursor();
 				Alert.show("could not read DeviceBase Table in DB", "Error C4");
 			}
 
@@ -128,9 +128,9 @@
 			
 			protected function startApp(event:FlexEvent):void {
 				trace("app start panelTab C");			
-				hlp = new helper();			
-				this.addEventListener("updateCharts", updateCharts);
-				this.addEventListener("deviceBaseWritten", refreshData);
+				//hlp = new helper();			
+				//this.addEventListener("updateCharts", updateCharts);
+				//this.addEventListener("deviceBaseWritten", refreshData);
 				this.rewriteDeviceBase();
 			}
 			
@@ -201,8 +201,8 @@
 				if (this.dataList) {
 					var countryIDs:Array = this.dataList.source;
 					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
-					this.cursorManager.setBusyCursor();
-					getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, 1, 1, 0);
+					//this.cursorManager.setBusyCursor();
+					//getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, 1, 0, 1, 0);
 				} else if (this.startInd > 1) {
 					//Alert.show("Select at least one country", "ErrorC4");
 				};					
@@ -219,22 +219,22 @@
 			
 			protected function getDeviceBase_resultHandler(event:ResultEvent):void
 			{
-				this.cursorManager.removeBusyCursor();
-				currentData = this.getDeviceBase.lastResult as ArrayCollection;
+				//this.cursorManager.removeBusyCursor();
+				/*currentData = this.getDeviceBase.lastResult as ArrayCollection;
 				
 				this.currentDataChart.source = this.currentData.source;
-				this.currentDataGrid.source = this.currentData.source;
+				this.currentDataGrid.source = this.currentData.source;*/
 				this.dispatchEvent(new Event("updateCharts", false));				
 			}
 			
 			protected function updateCharts(evt:Event):void {
-				this.currentDataGrid.filterFunction = this.filterGrid;
+				/*this.currentDataGrid.filterFunction = this.filterGrid;
 				this.currentDataGrid.refresh();
 				this.currentDataChart.filterFunction = this.filterChart;
 				this.currentDataChart.refresh();				
 				
 				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid, isLevel);
+				this.testGrid.setData(currentDataGrid, isLevel);*/
 
 				/*this.testChart.updateChartTitle(
 					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "Device Base"),

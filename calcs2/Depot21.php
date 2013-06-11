@@ -161,9 +161,8 @@ class Depot21 {
 		$getWorldData = "";
 		$hasOtherCountries = 0;
 		
-		$countryArray = (array)($countryIDs);	
-		//$countryArray = explode(",",$countryIDs);
-		$useCluster = 0;
+		$countryArray = (array)($countryIDs);			
+		$useCluster = 0; // isRegion could be: 0 - countries, 1 - regions, 2 - clusters;
 		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
 	// aggType = 0 for device level, 1 - for country level
 		$a = array('a'=>"");							
@@ -259,64 +258,69 @@ class Depot21 {
 		//return  $stmnt;		
 	}
 	
-	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $showAtDeviceLevel, $perHH) {
+	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH) {
 		$a = array('a'=>"");		
-		$countryArray = (array)($countryIDs);		
+		$countryArray = (array)($countryIDs);	
+		$useCluster = 0; // isRegion could be: 0 - countries, 1 - regions, 2 - clusters;
+		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
+	
 		$countryList = " (";
 		for ($i = 0; $i < count($countryArray); $i++) {
 			if ($i > 0) { $countryList = $countryList.", ".$countryArray[$i]; }			
 			else $countryList = $countryList.$countryArray[$i];
 		}
 		$countryList = $countryList." )";
-		
-		if ($perHH > 0) {
-			$sumStmnt = "
-				   ,sum(dbt.Y2004*sdp.Y2004/sdt.Y2004) as Y2004, sum(dbt.Y2005*sdp.Y2005/sdt.Y2005) as Y2005, sum(dbt.Y2006*sdp.Y2006/sdt.Y2006) as Y2006,
-					sum(dbt.Y2007*sdp.Y2007/sdt.Y2007) as Y2007, sum(dbt.Y2008*sdp.Y2008/sdt.Y2008) as Y2008, sum(dbt.Y2009*sdp.Y2009/sdt.Y2009) as Y2009,
-					sum(dbt.Y2010*sdp.Y2010/sdt.Y2010) as Y2010, sum(dbt.Y2011*sdp.Y2011/sdt.Y2011) as Y2011, sum(dbt.Y2012*sdp.Y2012/sdt.Y2012) as Y2012,
-					sum(dbt.Y2013*sdp.Y2013/sdt.Y2013) as Y2013, sum(dbt.Y2014*sdp.Y2014/sdt.Y2014) as Y2014, sum(dbt.Y2015*sdp.Y2015/sdt.Y2015) as Y2015,    
-					sum(dbt.Y2016*sdp.Y2016/sdt.Y2016) as Y2016, sum(dbt.Y2017*sdp.Y2017/sdt.Y2017) as Y2017, sum(dbt.Y2018*sdp.Y2018/sdt.Y2018) as Y2018,    
-					sum(dbt.Y2019*sdp.Y2019/sdt.Y2019) as Y2019, sum(dbt.Y2020*sdp.Y2020/sdt.Y2020) as Y2020, sum(dbt.Y2021*sdp.Y2021/sdt.Y2021) as Y2021
-					";		
-		} else {
-			$sumStmnt = "
-				   ,sum(dbt.Y2004*sdp.Y2004) as Y2004, sum(dbt.Y2005*sdp.Y2005) as Y2005, sum(dbt.Y2006*sdp.Y2006) as Y2006,
-					sum(dbt.Y2007*sdp.Y2007) as Y2007, sum(dbt.Y2008*sdp.Y2008) as Y2008, sum(dbt.Y2009*sdp.Y2009) as Y2009,
-					sum(dbt.Y2010*sdp.Y2010) as Y2010, sum(dbt.Y2011*sdp.Y2011) as Y2011, sum(dbt.Y2012*sdp.Y2012) as Y2012,
-					sum(dbt.Y2013*sdp.Y2013) as Y2013, sum(dbt.Y2014*sdp.Y2014) as Y2014, sum(dbt.Y2015*sdp.Y2015) as Y2015,    
-					sum(dbt.Y2016*sdp.Y2016) as Y2016, sum(dbt.Y2017*sdp.Y2017) as Y2017, sum(dbt.Y2018*sdp.Y2018) as Y2018,    
-					sum(dbt.Y2019*sdp.Y2019) as Y2019, sum(dbt.Y2020*sdp.Y2020) as Y2020, sum(dbt.Y2021*sdp.Y2021) as Y2021
-					";
+// --- summing statement formation BEGIN ---		
+		$sumStmnt = "";
+		for ($u = 2004; $u < 2022; $u++) {
+			if ((($u - 2004) % 3) == 0) {	$sumStmnt = $sumStmnt."
+					";	};
+			if (($perHH > 0) && ($pwrType > 0)) {
+				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." * sdp.Y".$u." / sdt.Y".$u." )/100 AS Y".$u;
+			} else if ($pwrType > 0) {
+				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." * sdp.Y".$u." )/100 AS Y".$u;
+			} else {
+				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." ) AS Y".$u;
+			};			
+		};		
+// --- summing statement formation END ---		
+		$joinOn = "";
+		switch($pwrType) {			
+			case '1': 
+				$joinOn = 'pwr_DPP'; break;
+			case '2': 
+				$joinOn = 'pwr_RCR'; break;
+			default :
+				$joinOn = "id"; 	 break;
 		};
-		
+
 		$stmnt = "
-			SELECT dbt.scenarioID, dbt.countryID, dbt.indicatorID, sdp.indicatorID, 
-				   nc.namen, sdp.typeID, ";
+			SELECT dbt.scenarioID, dbt.indicatorID".
+				($pwrType  > 0 ? ", sdp.indicatorID, sdp.typeID " : ", 0 as indicatorID, 0 as typeID").
+				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID, " : ", nc.namen AS namen, dbt.countryID, ");	
 				if ($showAtDeviceLevel == 0) $stmnt = $stmnt."0 as deviceID";
-				if ($showAtDeviceLevel == 1) $stmnt = $stmnt."sdp.deviceID as deviceID";
+				if ($showAtDeviceLevel == 1) $stmnt = $stmnt."dbt.deviceID as deviceID";
 				if ($showAtDeviceLevel == 2) $stmnt = $stmnt."devNam.categoryID AS deviceID";
 		$stmnt= $stmnt.$sumStmnt."		
 			FROM Consulting.DC_deviceBaseTable dbt
-			JOIN Consulting.DC_namesCountries nc ON dbt.countryID = nc.id    
-			
+			JOIN Consulting.DC_namesCountries nc ON dbt.countryID = nc.id".    
+			  ($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."				
 			JOIN Consulting.DC_namesDevices devNam ON devNam.id = dbt.deviceID
 			JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID	
-			".($perHH > 0 ? "
+			".($perHH   > 0 ? "
 				JOIN Consulting.DC_scenarioData sdt 
-				ON ((sdt.countryID = dbt.countryID) AND (sdt.scenarioID = dbt.scenarioID))" : "")."
-			JOIN Consulting.DC_scenarioDataProxy sdp	
-				ON  (sdp.countryID = nc.pwr_DPP) 
-				AND (sdp.deviceID  = dbt.deviceID)
-				AND (sdp.scenarioID = dbt.scenarioID)    
-
-			WHERE dbt.scenarioID IN (".$scenarioID.", 10001) 				
-				AND nc.id IN ".$countryList."
-				AND sdp.indicatorID = 205".
-				($pwrType > 0 ? " AND sdp.typeID = ".$pwrType : "").
-				($perHH   > 0 ? " AND sdt.indicatorID = 101" : "")."		
+				ON ((sdt.countryID = dbt.countryID) AND (sdt.scenarioID = dbt.scenarioID))" : "").
+			  ($pwrType > 0 ? " 
+				JOIN Consulting.DC_scenarioDataProxy sdp
+				ON  (sdp.countryID = nc.".$joinOn.") AND (sdp.deviceID  = dbt.deviceID)	AND (sdp.scenarioID = dbt.scenarioID)" : "")."			
+			WHERE dbt.scenarioID IN (".$scenarioID.", 10001)".
+				($pwrType  > 0 ? " AND sdp.indicatorID = 205 AND sdp.typeID = ".$pwrType : "").
+				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "").
+				($isRegion > 0 ? " AND nc.".$useCluster : " AND nc.id")." IN ".$countryList."		
 			GROUP BY 
-				dbt.scenarioID, dbt.countryID".
-				($pwrType > 0 ? ", typeID" : "");
+				dbt.scenarioID".
+				($isRegion > 0 ? ", nc.".$useCluster : ", dbt.countryID").	
+				($pwrType  > 0 ? ", typeID" : "");
 				if ($showAtDeviceLevel == 1)  $stmnt = $stmnt.", dbt.deviceID;";
 				if ($showAtDeviceLevel == 2)  $stmnt = $stmnt.", categoryID;";		
 			

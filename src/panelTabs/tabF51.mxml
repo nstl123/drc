@@ -181,8 +181,8 @@
 							break;
 					};				
 				
-					if (tmp.length > 0) {
-						this.cursorManager.setBusyCursor();
+					this.cursorManager.setBusyCursor();
+					if (tmp.length > 0) {						
 						if (selDeviceAggLevel > 1 ) { // category level
 							getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
 								workingScenarioID, fl, tmpType, 1);
@@ -191,6 +191,7 @@
 								fl, tmpType, 1);
 						};
 					} else {					
+						this.cursorManager.removeBusyCursor();
 						Alert.show("select at least one country", "Error F51");					
 					};
 				

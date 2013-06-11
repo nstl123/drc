@@ -296,6 +296,7 @@
 					};				
 					var countryIDs:Array = this.dataList.source;
 					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+					
 					this.cursorManager.setBusyCursor();
 					if (selDeviceAggLevel > 1 ) { // category level
 						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,

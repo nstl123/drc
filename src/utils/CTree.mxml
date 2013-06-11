@@ -389,11 +389,11 @@
 				
 				this.pwrTypesActiveFlag = (this.selPwrType > 0);	
 				this.flowManager.setPwrTypesActiveFlag(this.pwrTypesActiveFlag);
-				if (this.selPwrType == 0) { 
+				/*if (this.selPwrType == 0) { */ 
 					this.dispatchEvent(new Event("demandAggChanged", false)); 
-				} else {				
+				// } else {				
 					this.dispatchEvent(new Event("refreshData_C", true));
-				};
+				//};
 				//exoIndi_clickHandler(null);
 			}		
 			
@@ -405,12 +405,11 @@
 				this.batTypesActiveFlag = (this.selBatType > 0);	
 				this.flowManager.setBatTypesActiveFlag(this.batTypesActiveFlag);
 				
-				if (this.selBatType == 0) {	
+				/*if (this.selBatType == 0) {	
 					this.dispatchEvent(new Event("demandAggChanged", false)); 
-				} else {				
+				} else {*/				
 					this.dispatchEvent(new Event("refreshData_C", true));
-				}
-				//exoIndi_clickHandler(null);
+				//};				
 			}
 			
 			protected function chemTypesActive_clickHandler(event:MouseEvent):void

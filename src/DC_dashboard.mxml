@@ -157,9 +157,10 @@
 				this.tabai.selectedIndex = this.selActiveTab;
 				
 				this.tabai.enabled = true;
-				this.cursorManager.removeBusyCursor();
-				this.panelTabA2.refreshData(null);
 				
+				this.cursorManager.removeBusyCursor();
+				
+				this.panelTabA2.refreshData(null);				
 				this.updateLabelState();				
 				Alert.show("Module preparation is done", "Info");
 			}
@@ -248,7 +249,7 @@
 				this.panelTabB3.refreshData(null);		
 				if (this.panelTabC4.getWorkingScenario() == 0) 
 					this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);
-				this.panelTabC4.rewriteDeviceBase();				
+				//this.panelTabC4.rewriteDeviceBase();				
 				this.panelTabD5.refreshData(null);				
 				this.panelTabF51.refreshData(null);
 				this.panelTabE61.refreshData(null);
@@ -382,7 +383,7 @@
 					this.labEt.visible = true; // = (arr[4] == 1)
 					this.labFt.visible = (arr[5] == 1);			
 				};
-				this.invalidateDisplayList();
+				//this.invalidateDisplayList();
 			}
 			
 			public function cleanOldScenarios():void {
@@ -689,7 +690,7 @@
 						break;					
 				}				
 				//this.currentStateLabel.text = "Current State: " + this.currentState;
-				this.invalidateDisplayList();			
+				//this.invalidateDisplayList();			
 			}
 
 			protected function btnBack_clickHandler(event:MouseEvent):void
@@ -742,7 +743,7 @@
 						break;					
 				}				
 				//this.currentStateLabel.text = "Current State: " + this.currentState;
-				this.invalidateDisplayList();
+				//this.invalidateDisplayList();
 			}			
 			
 			public function getTheData(evt:Event):void {

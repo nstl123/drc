@@ -34,7 +34,7 @@
 
 		<s:CallResponder id="getMacroDataCategory" result="getMacroDataCategory_resultHandler(event)" fault="getMacroDataCategory_faultHandler(event)" />
 		
-		<s:CallResponder id="getDemandByChemistry" result="getDemandByChemistryResult_resultHandler(event)"/>
+		<s:CallResponder id="getDemandByChemistry" result="getDemandByChemistryResult_resultHandler(event)" fault="getDemandByChemistry_faultHandler(event)"/>
 		<s:CallResponder id="getDeviceBase" result="getDeviceBase_resultHandler(event)" 
 						 fault="getDeviceBase_faultHandler(event)"/> 
 		
@@ -183,12 +183,11 @@
 			
 			protected function getDemandRegions_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentData = this.getDemandRegions.lastResult as ArrayCollection;				
 				this.currentDataChart.source = this.currentData.source;
 				//this.currentDataGrid.source = this.currentData.source;				
 				this.dispatchEvent(new Event("updateCharts", false));
-				
-				this.cursorManager.removeBusyCursor();
 			}
 
 			protected function pwrTypesActive_clickHandler(event:MouseEvent):void
@@ -273,12 +272,11 @@
 
 			protected function getDemandByChemistryResult_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentData = this.getDemandByChemistry.lastResult as ArrayCollection;				
 				this.currentDataChart.source = this.currentData.source;
 				//this.currentDataGrid.source = this.currentData.source;				
-				this.dispatchEvent(new Event("updateCharts", false));
-				
-				this.cursorManager.removeBusyCursor();
+				this.dispatchEvent(new Event("updateCharts", false));		
 			}
 
 			protected function chemTypes_clickHandler(event:MouseEvent):void
@@ -296,8 +294,8 @@
 
 			protected function getDemandData_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not get Demand data for cntry level", "Error E61");
 				this.cursorManager.removeBusyCursor();
+				Alert.show("could not get Demand data for cntry level", "Error E61");				
 			}
 			
 			
@@ -310,11 +308,11 @@
 
 			protected function getDeviceBase_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentDataExo = this.getDeviceBase.lastResult as ArrayCollection;				
 				this.currentDataExoChart.source = this.currentDataExo.source;								
 				
-				this.dispatchEvent(new Event("updateCharts", false));		
-				this.cursorManager.removeBusyCursor();
+				this.dispatchEvent(new Event("updateCharts", false));				
 			}
 
 			protected function getDeviceBase_faultHandler(event:FaultEvent):void
@@ -361,6 +359,13 @@
 				navigateToURL(request, "_blank");
 			}
 
+
+			protected function getDemandByChemistry_faultHandler(event:FaultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+				Alert.show("Could not read data by Chemistry Split", "Error");
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -379,10 +384,10 @@
 			
 			protected function getDemandData_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentData = this.getDemandData.lastResult as ArrayCollection;				
 				this.currentDataChart.source = this.currentData.source;								
-				this.dispatchEvent(new Event("updateCharts", false)); 							
-				this.cursorManager.removeBusyCursor();
+				this.dispatchEvent(new Event("updateCharts", false));			
 				//Alert.show("got demand data", "info" );
 			}
 			
@@ -521,8 +526,8 @@
 						tmpDev = this.flowManager.selDevice;				
 					
 					if (this.selExoIndi == 401) {				
-						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID,
-							flowManager.selPwrType, flowManager.selDeviceAggLevel, showPerHHFlag);
+							getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID,
+								flowManager.selPwrType, 0, flowManager.selDeviceAggLevel, showPerHHFlag);
 					} else if (this.flowManager.selDeviceAggLevel > 1 ) { // category level
 							getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selExoIndi,
 								workingScenarioID, tmpSplit, typeID, 1);
@@ -535,14 +540,14 @@
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				currentDataExo = this.getMacroData.lastResult as ArrayCollection;				
 				this.currentDataExoChart.source = this.currentDataExo.source;								
 				/*this.currentDataExoChart.filterFunction = this.filterGridExo;
 				this.currentDataExoChart.refresh();*/
 				
 				this.dispatchEvent(new Event("updateCharts", false));	
-				//Alert.show("got exo macro data", "info");
-				this.cursorManager.removeBusyCursor();
+				//Alert.show("got exo macro data", "info");			
 			}			
 			
 			/*private function filterGridExo(item:Object):Boolean {				
@@ -568,9 +573,9 @@
 			}
 			
 			protected function getMacroData_faultHandler(event:FaultEvent):void
-			{				
-				Alert.show("error in macroData SQL query", "Error E61");
+			{	
 				this.cursorManager.removeBusyCursor();
+				Alert.show("error in macroData SQL query", "Error E61");			
 			}	
 			
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {

@@ -13,7 +13,6 @@ import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
 import valueObjects.CustomDatatype16;
-import valueObjects.CustomDatatype17;
 import valueObjects.CustomDatatype18;
 import valueObjects.CustomDatatype19;
 import valueObjects.CustomDatatype23;
@@ -35,9 +34,8 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         valueObjects.CustomDatatype18._initRemoteClassAlias();
         valueObjects.CountryName._initRemoteClassAlias();
         valueObjects.CustomDatatype16._initRemoteClassAlias();
-        valueObjects.CustomDatatype17._initRemoteClassAlias();
-        valueObjects.CustomDatatype19._initRemoteClassAlias();
         valueObjects.CustomDatatype23._initRemoteClassAlias();
+        valueObjects.CustomDatatype19._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -52,7 +50,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CustomDatatype16;
         operations["getDemandData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDeviceBase");
-         operation.resultElementType = valueObjects.CustomDatatype17;
+         operation.resultElementType = valueObjects.CustomDatatype23;
         operations["getDeviceBase"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandByChemistry");
          operation.resultElementType = valueObjects.CustomDatatype19;
@@ -140,10 +138,10 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function getDeviceBase(countryIDs:Object, scenarioID:Object, pwrType:Object, showAtDeviceLevel:Object, perHH:Object) : mx.rpc.AsyncToken
+    public function getDeviceBase(countryIDs:Object, scenarioID:Object, pwrType:Object, isRegion:Object, showAtDeviceLevel:Object, perHH:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getDeviceBase");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,pwrType,showAtDeviceLevel,perHH) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID,pwrType,isRegion,showAtDeviceLevel,perHH) ;
 
         return _internal_token;
     }

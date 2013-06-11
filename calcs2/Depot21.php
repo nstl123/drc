@@ -279,6 +279,8 @@ class Depot21 {
 				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." * sdp.Y".$u." / sdt.Y".$u." )/100 AS Y".$u;
 			} else if ($pwrType > 0) {
 				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." * sdp.Y".$u." )/100 AS Y".$u;
+			} else if ($perHH > 0) {
+				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u."/ sdt.Y".$u." ) AS Y".$u;
 			} else {
 				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." ) AS Y".$u;
 			};			

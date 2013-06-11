@@ -326,7 +326,7 @@
 			
 			public function setRegionsGridEnabled(flag:Boolean):void {
 				this.regionsListGrid.enabled = flag;
-	}
+			}
 			
 			
 			protected function devicesActive_clickHandler(event:MouseEvent):void

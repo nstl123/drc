@@ -510,6 +510,9 @@
 					var tmpDev:int = 0;
 					var tmpSplit:int = 0;				
 				
+					var regionIDs:Array = this.dataListReg.source;
+					var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);					
+					
 					if ( (this.selExoIndi == 204)||(this.selExoIndi == 206) ) 
 						typeID = this.flowManager.selBatType;
 					else 
@@ -525,9 +528,12 @@
 					} else 
 						tmpDev = this.flowManager.selDevice;				
 					
-					if (this.selExoIndi == 401) {				
-							getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID,
-								flowManager.selPwrType, 0, flowManager.selDeviceAggLevel, showPerHHFlag);
+					if ((this.selExoIndi == 401)&&(tmp2.length > 0)) {				
+							getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp2, workingScenarioID,
+								flowManager.selPwrType,  1 + int(useCluster), flowManager.selDeviceAggLevel, showPerHHFlag);							
+					} else if (this.selExoIndi == 401) {
+						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID,
+							flowManager.selPwrType,  0, flowManager.selDeviceAggLevel, showPerHHFlag);					
 					} else if (this.flowManager.selDeviceAggLevel > 1 ) { // category level
 							getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selExoIndi,
 								workingScenarioID, tmpSplit, typeID, 1);

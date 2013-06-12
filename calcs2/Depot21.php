@@ -4,6 +4,8 @@ require_once 'Zend/Db/Adapter/Mysqli.php';
 
 class Depot21 {
 
+	//public var $perHHmultiplier;
+	
 	public function __construct() {
 		$this->connection = new Zend_Db_Adapter_Mysqli(array(
 			'host'     => '192.168.44.200',
@@ -11,6 +13,7 @@ class Depot21 {
 			'password' => 'c5ul1Use1QP',
 			'dbname'   => 'Consulting'
 		));
+		$this->perHHmultiplier = 1000;		
 	}	
 	
 	public function getMacroDataFormat($n) {
@@ -19,7 +22,7 @@ class Depot21 {
 			$z = array('id'=>$i, 'namen'=>'na');
 			array_push($a, $z);
 		};
-		return $a;
+		return $a; //$this->perHHmultiplier;
 	}
 	
 	// scenarioProxy data is distinct in that it uses proxy countries
@@ -180,35 +183,26 @@ class Depot21 {
 		
 		$countryList = $countryList." )";		
 		$stmnt = "";
-			
-		if ($perHH > 0) {
-			$sumStmnt = "
-				    sum(dm.Y2004)/sum(sdt.Y2004) AS Y2004, sum(dm.Y2005)/sum(sdt.Y2005) AS Y2005, sum(dm.Y2006)/sum(sdt.Y2006) AS Y2006, 
-					sum(dm.Y2007)/sum(sdt.Y2007) AS Y2007, sum(dm.Y2008)/sum(sdt.Y2008) AS Y2008, sum(dm.Y2009)/sum(sdt.Y2009) AS Y2009, 
-					sum(dm.Y2010)/sum(sdt.Y2010) AS Y2010, sum(dm.Y2011)/sum(sdt.Y2011) AS Y2011, sum(dm.Y2012)/sum(sdt.Y2012) AS Y2012, 
-					sum(dm.Y2013)/sum(sdt.Y2013) AS Y2013, sum(dm.Y2014)/sum(sdt.Y2014) AS Y2014, sum(dm.Y2015)/sum(sdt.Y2015) AS Y2015,
-					sum(dm.Y2016)/sum(sdt.Y2016) AS Y2016, sum(dm.Y2017)/sum(sdt.Y2017) AS Y2017, sum(dm.Y2018)/sum(sdt.Y2018) AS Y2018,
-					sum(dm.Y2019)/sum(sdt.Y2019) AS Y2019, sum(dm.Y2020)/sum(sdt.Y2020) AS Y2020, sum(dm.Y2021)/sum(sdt.Y2021) AS Y2021
-					";		
-		} else {
-			$sumStmnt = "
-				    sum(dm.Y2004) AS Y2004, sum(dm.Y2005) AS Y2005, sum(dm.Y2006) AS Y2006, sum(dm.Y2007) AS Y2007, 
-					sum(dm.Y2008) AS Y2008, sum(dm.Y2009) AS Y2009, sum(dm.Y2010) AS Y2010, sum(dm.Y2011) AS Y2011, 
-					sum(dm.Y2012) AS Y2012, sum(dm.Y2013) AS Y2013, sum(dm.Y2014) AS Y2014, sum(dm.Y2015) AS Y2015,
-					sum(dm.Y2016) AS Y2016, sum(dm.Y2017) AS Y2017, sum(dm.Y2018) AS Y2018, sum(dm.Y2019) AS Y2019,
-					sum(dm.Y2020) AS Y2020, sum(dm.Y2021) AS Y2021
-					";
-		};
-
+		
+		$sumStmnt = "";
+		for ($u = 2004; $u < 2022; $u++) {
+			if ((($u - 2004) % 3) == 0) $sumStmnt = $sumStmnt."
+				";
+			if ($perHH > 0) {
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum( dm.Y".$u." / sdt.Y".$u." ) AS Y".$u;
+			} else {
+				$sumStmnt = $sumStmnt.", sum(dm.Y".$u.") AS Y".$u;
+			};			
+		};			
 		
 		if ($hasOtherCountries > 0 ) {	// flag showing there are countries besides World aggregate			
 			$stmnt = $stmnt."
 				SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID 				
 				".($showAtDeviceLevel == 0 ? ", 0 as categoryID" : ", devNam.categoryID AS categoryID").
 				", batTypeID, pwrTypeID".				
-				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID, " : ", nc.namen AS namen, dm.countryID, ").	
-					$sumStmnt.
-				"FROM Consulting.DC_demand AS dm
+				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID" : ", nc.namen AS namen, dm.countryID").	
+					$sumStmnt."
+				FROM Consulting.DC_demand AS dm
 				JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) ".                    
 					($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."				
 				JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
@@ -232,7 +226,7 @@ class Depot21 {
 				$stmnt = $stmnt.($hasOtherCountries > 0 ? " UNION " : " ")."				
 					SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID 
 					".($showAtDeviceLevel == 0 ? ", 0 as categoryID" : ", devNam.categoryID AS categoryID").
-					", batTypeID, pwrTypeID, 'World' as namen, 1111 AS countryID, 
+					", batTypeID, pwrTypeID, 'World' as namen, 1111 AS countryID 
 					".$sumStmnt."
 					FROM Consulting.DC_demand AS dm
 					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) 
@@ -254,7 +248,7 @@ class Depot21 {
 		
 		$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		
-		return $result;		
+		return $result;	
 		//return  $stmnt;		
 	}
 	
@@ -276,11 +270,11 @@ class Depot21 {
 			if ((($u - 2004) % 3) == 0) {	$sumStmnt = $sumStmnt."
 					";	};
 			if (($perHH > 0) && ($pwrType > 0)) {
-				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." * sdp.Y".$u." / sdt.Y".$u." )/100 AS Y".$u;
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum( dbt.Y".$u." * sdp.Y".$u." ) / ( sdt.Y".$u." )/100 AS Y".$u;
 			} else if ($pwrType > 0) {
 				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." * sdp.Y".$u." )/100 AS Y".$u;
 			} else if ($perHH > 0) {
-				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u."/ sdt.Y".$u." ) AS Y".$u;
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum( dbt.Y".$u.") / ( sdt.Y".$u." ) AS Y".$u;
 			} else {
 				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." ) AS Y".$u;
 			};			
@@ -299,10 +293,10 @@ class Depot21 {
 		$stmnt = "
 			SELECT dbt.scenarioID, dbt.indicatorID".
 				($pwrType  > 0 ? ", sdp.indicatorID, sdp.typeID " : ", 0 as indicatorID, 0 as typeID").
-				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID, " : ", nc.namen AS namen, dbt.countryID, ");	
-				if ($showAtDeviceLevel == 0) $stmnt = $stmnt."0 as deviceID";
-				if ($showAtDeviceLevel == 1) $stmnt = $stmnt."dbt.deviceID as deviceID";
-				if ($showAtDeviceLevel == 2) $stmnt = $stmnt."devNam.categoryID AS deviceID";
+				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID, " : ", nc.namen AS namen, dbt.countryID");	
+				if ($showAtDeviceLevel == 0) $stmnt = $stmnt.", 0 as deviceID";
+				if ($showAtDeviceLevel == 1) $stmnt = $stmnt.", dbt.deviceID as deviceID";
+				if ($showAtDeviceLevel == 2) $stmnt = $stmnt.", devNam.categoryID AS deviceID";
 		$stmnt= $stmnt.$sumStmnt."		
 			FROM Consulting.DC_deviceBaseTable dbt
 			JOIN Consulting.DC_namesCountries nc ON dbt.countryID = nc.id".    
@@ -347,37 +341,22 @@ class Depot21 {
 		$countryList = $countryList." )";	
 		
 		$sumStmnt = "";
-		if ($perHH > 0) {
-			$sumStmnt = "
-				sum(dma.Y2004 * chm.shr)/sum(sdt.Y2004) as Y2004, sum(dma.Y2005 * chm.shr)/sum(sdt.Y2005) as Y2005, 
-				sum(dma.Y2006 * chm.shr)/sum(sdt.Y2006) as Y2006, sum(dma.Y2007 * chm.shr)/sum(sdt.Y2007) as Y2007,  
-				sum(dma.Y2008 * chm.shr)/sum(sdt.Y2008) as Y2008, sum(dma.Y2009 * chm.shr)/sum(sdt.Y2009) as Y2009, 
-				sum(dma.Y2010 * chm.shr)/sum(sdt.Y2010) as Y2010, sum(dma.Y2011 * chm.shr)/sum(sdt.Y2011) as Y2011,  
-				sum(dma.Y2012 * chm.shr)/sum(sdt.Y2012) as Y2012, sum(dma.Y2013 * chm.shr)/sum(sdt.Y2013) as Y2013, 
-				sum(dma.Y2014 * chm.shr)/sum(sdt.Y2014) as Y2014, sum(dma.Y2015 * chm.shr)/sum(sdt.Y2015) as Y2015,  
-				sum(dma.Y2016 * chm.shr)/sum(sdt.Y2016) as Y2016, sum(dma.Y2017 * chm.shr)/sum(sdt.Y2017) as Y2017, 
-				sum(dma.Y2018 * chm.shr)/sum(sdt.Y2018) as Y2018, sum(dma.Y2019 * chm.shr)/sum(sdt.Y2019) as Y2019,  
-				sum(dma.Y2020 * chm.shr)/sum(sdt.Y2020) as Y2020, sum(dma.Y2021 * chm.shr)/sum(sdt.Y2021) as Y2021
+		
+		for ($u = 2004; $u < 2022; $u++) {
+			if ((($u - 2004) % 3) == 0) $sumStmnt = $sumStmnt."
 				";
-		} else {
-			$sumStmnt = "
-				sum(dma.Y2004 * chm.shr) as Y2004, sum(dma.Y2005 * chm.shr) as Y2005, 
-				sum(dma.Y2006 * chm.shr) as Y2006, sum(dma.Y2007 * chm.shr) as Y2007,  
-				sum(dma.Y2008 * chm.shr) as Y2008, sum(dma.Y2009 * chm.shr) as Y2009, 
-				sum(dma.Y2010 * chm.shr) as Y2010, sum(dma.Y2011 * chm.shr) as Y2011,  
-				sum(dma.Y2012 * chm.shr) as Y2012, sum(dma.Y2013 * chm.shr) as Y2013, 
-				sum(dma.Y2014 * chm.shr) as Y2014, sum(dma.Y2015 * chm.shr) as Y2015,  
-				sum(dma.Y2016 * chm.shr) as Y2016, sum(dma.Y2017 * chm.shr) as Y2017, 
-				sum(dma.Y2018 * chm.shr) as Y2018, sum(dma.Y2019 * chm.shr) as Y2019,  
-				sum(dma.Y2020 * chm.shr) as Y2020, sum(dma.Y2021 * chm.shr) as Y2021
-				";	
+			if ($perHH > 0) {
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.shr)/sum(sdt.Y".$u.") as Y".$u;
+			} else {
+				$sumStmnt = $sumStmnt.", sum(dma.Y".$u." * chm.shr) as Y".$u;
+			};			
 		};		
 		
 		$stmnt = "
-			SELECT dma.scenarioID, 301 AS indicatorID, chm.id as chemistryID, 0 AS deviceID, 0 as categoryID, ". 
-				($isRegion > 0 ? " rg.namen as namen, rg.id AS countryID, " : "nc.namen AS namen, dma.countryID, ").
+			SELECT dma.scenarioID, 301 AS indicatorID, chm.id as chemistryID, 0 AS deviceID, 0 as categoryID". 
+				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID, " : ", nc.namen AS namen, dma.countryID").
 				 $sumStmnt."
-			FROM `Consulting`.`DC_demandAggregated` dma
+			FROM Consulting.DC_demandAggregated dma
 				JOIN Consulting.DC_chemistry chm ON  chm.countryID = dma.countryID
 			JOIN Consulting.DC_namesCountries AS nc ON (dma.countryID = nc.id) ".                    
 				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "").
@@ -394,8 +373,6 @@ class Depot21 {
 		array_push($a, $result);		
 		return $result;
 		//return $stmnt;
-	}
-	
-	
+	}		
 }		
 ?>

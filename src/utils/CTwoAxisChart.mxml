@@ -266,7 +266,7 @@
 					</mx:axisStroke>
 				</mx:AxisRenderer>
 			</mx:horizontalAxisRenderers>
-				!-->
+		!-->	
 				
 			</mx:LineChart>
 		</s:BorderContainer>

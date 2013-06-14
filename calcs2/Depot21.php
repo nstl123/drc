@@ -172,7 +172,7 @@ class Depot21 {
 		$countryList = " (";				
 		
 		for ($i = 0; $i < count($countryArray); $i++) {		
-			if ($countryArray[$i] < 3000) {
+			if ($countryArray[$i] < 10000) {
 				$hasOtherCountries = 1;
 				if ($i > 0)  $countryList = $countryList.", ".$countryArray[$i]; 
 				else 		 $countryList = $countryList.$countryArray[$i]; 
@@ -293,7 +293,7 @@ class Depot21 {
 		$stmnt = "
 			SELECT dbt.scenarioID, dbt.indicatorID".
 				($pwrType  > 0 ? ", sdp.indicatorID, sdp.typeID " : ", 0 as indicatorID, 0 as typeID").
-				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID, " : ", nc.namen AS namen, dbt.countryID");	
+				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID" : ", nc.namen AS namen, dbt.countryID");	
 				if ($showAtDeviceLevel == 0) $stmnt = $stmnt.", 0 as deviceID";
 				if ($showAtDeviceLevel == 1) $stmnt = $stmnt.", dbt.deviceID as deviceID";
 				if ($showAtDeviceLevel == 2) $stmnt = $stmnt.", devNam.categoryID AS deviceID";

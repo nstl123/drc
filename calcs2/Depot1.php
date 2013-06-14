@@ -16,7 +16,7 @@ class Depot1 {
 	public function getCountryList($isRegion) {	
 		$a = array('a'=>"");
 		$sqlSr = "SELECT *, false as active FROM `Consulting`.`DC_namesCountries` cntr WHERE cntr.isRegion = ".$isRegion."
-					ORDER BY namen ASC";
+					ORDER BY region, namen ASC";
 		$result = $this->connection->fetchAll($sqlSr);
 		array_push($a, $result);		
 	    return $result;
@@ -36,10 +36,9 @@ class Depot1 {
 	public function getCountryListADG() {	
 		$a = array('a'=>"");
 		$sqlSr = "SELECT nc1.id, nc1.isRegion, nc1.namen as namen, nc1.region, nc2.namen as region
-					FROM `Consulting`.`DC_namesCountries` nc1
-				 JOIN `Consulting`.`DC_namesCountries` nc2
-				 ON (nc1.region = nc2.id)
-				 WHERE nc1.isRegion = 0;";
+					FROM Consulting.DC_namesCountries nc1
+				 JOIN Consulting.DC_namesCountries nc2 ON (nc1.region = nc2.id)
+				 WHERE nc1.isRegion = 0 ORDER BY nc1.region, id;";
 		$result = $this->connection->fetchAll($sqlSr);
 		array_push($a, $result);		
 	    return $result;

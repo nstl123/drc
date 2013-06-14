@@ -18,6 +18,8 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.IHierarchicalCollectionView;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
 			import mx.rpc.events.FaultEvent;
@@ -57,6 +59,7 @@
 				var someCntries:ArrayCollection = this.cntryNames.lastResult as ArrayCollection;
 				this.setDataList(someCntries);				
 				
+				sortData();
 				//this.cntryListLoaded = true;
 				//this.dispatchEvent(new Event("countryListLoaded", true));	
 			}
@@ -152,8 +155,7 @@
 				this.addEventListener(CCheckBoxGrid.CHECKED, onIncrValue);
 				this.addEventListener(CCheckBoxGrid.UNCHECKED, onDecrValue);			
 				
-				this.addEventListener("demandAggChanged", updateChemistrySplit);
-				
+				this.addEventListener("demandAggChanged", updateChemistrySplit);				
 				this.addEventListener("overSelection", cutOverSelections);
 			}
 			
@@ -278,15 +280,7 @@
 			public function formDataList_adg(data:Array):void {
 				this.selectionList = new ArrayCollection(data);
 				//this.preserveRefresh();	
-			}			
-			
-			// counter to maintain the uid
-			private var iCount:int = 0;
-			private function grpObjFunc(value:String):Object {
-				// we need to assign the same uid for same grouped Objects
-				// use count or value + count
-				return {uid: value + iCount++};
-			}
+			}		
 			
 
 			protected function regionListNames_faultHandler(event:FaultEvent):void
@@ -461,6 +455,35 @@
 				// dispatch refresh on tabE
 			}
 
+			// counter to maintain the uid
+			private var iCount:int = 0;
+			private function grpObjFunc(value:String):Object {
+				// we need to assign the same uid for same grouped Objects
+				// use count or value + count
+				return {uid: value + iCount++};
+			}			
+			
+			/*private function positionCompareFunction(a:Object, b:Object, z:Object):int
+			{
+				return  int((a.region + "_" +  a.id) == (b.region + "_" + b.id));
+			}*/
+			
+
+			/*protected function cntryListGridADG_creationCompleteHandler(event:FlexEvent):void
+			{
+				sortData();
+			}*/
+
+			private function sortData():void {
+				var sort:Sort = new Sort();
+				var sortField1:SortField = new SortField("region");
+				var sortField2:SortField = new SortField("id");
+				
+				sort.fields = [sortField1, sortField2];        // Set 'Product' as the field to be sorted on
+				cntryListGridADG.dataProvider.sort = sort;   // Add the sort to the dataProvider of the dataGrid
+				gc.source.refresh();              // Refresh the GroupCollection
+			}
+			
 		]]>
 	</fx:Script>
 
@@ -612,17 +635,18 @@
 						 showHeaders="false" 
 						 top="20" fontFamily="Arial" fontSize="12" 
 						 borderVisible="true" dropShadowVisible="false" 
-						 verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" verticalGridLineColor="#C8C8C8" verticalGridLines="false" includeIn="default">
+						 verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" 
+						 verticalGridLineColor="#C8C8C8" verticalGridLines="false" includeIn="default"	>
 		<mx:dataProvider>
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
-				<mx:Grouping groupingObjectFunction="grpObjFunc">
+				<mx:Grouping groupingObjectFunction="grpObjFunc" >
 					<mx:GroupingField name="region"/>									
 				</mx:Grouping>				
 			</mx:GroupingCollection2>
 		</mx:dataProvider>  
 		<mx:columns>			
 			<mx:AdvancedDataGridColumn headerText="" dataField="namen" sortable="false"
-									    width="150"/>			
+									    width="150" sortDescending="false"/>			
 			<mx:AdvancedDataGridColumn headerText="Use?" dataField="active" width="40" 
 									   id="inputas" sortable="false" textAlign="center"/>
 			<mx:AdvancedDataGridColumn headerText="Is changed" dataField="modified" width="40"

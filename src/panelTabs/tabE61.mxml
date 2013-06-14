@@ -348,15 +348,15 @@
 				// for exo chart part
 			}
 
-			public var address:String = "192.168.44.200";
+			//public var address:String = "192.168.44.200";
 			protected function exportToExcel(event:MouseEvent):void
 			{
-				var request:URLRequest = new URLRequest();
+				/*var request:URLRequest = new URLRequest();
 				request.url = "http://" 
 					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcel_DC.php?"					 
 					+ "scenarioID=" + this.workingScenarioID
 					+ "&tmp="       + String(Math.round(Math.random()*1000));
-				navigateToURL(request, "_blank");
+				navigateToURL(request, "_blank");*/
 			}
 
 
@@ -837,7 +837,7 @@
 				   click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
 	<s:Button x="612" y="14" label="Export Scenario to Excel" 
 			  width="144" height="23" enabled="true" fontWeight="normal" fontSize="10"
-			  click="exportToExcel(event)" />
+			  click="exportToExcel(event)" visible="false" />
 
 
 </s:Group>

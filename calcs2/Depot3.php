@@ -202,6 +202,10 @@ class Depot3 {
 	} 
 	
 	public function writeViewToTable($scenarioID, $isMarket) {	
+		
+		$isMarket = 0;
+		// fopr now lets override Market method
+		
 		$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
 		$result = $this->connection->prepare($delStmnt);		
 		$result->execute();	

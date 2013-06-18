@@ -105,10 +105,10 @@
 				this.indicatorsList.filterFunction = filterB;
 				this.indicatorsList.refresh();
 				
-				var z:Object = {id : 101, namen : 'macroIndicator#1'};
+				/*var z:Object = {id : 101, namen : 'macroIndicator#1'};
 				var arrCol:ArrayCollection = new ArrayCollection();
-				arrCol.addItem(z);
-				this.indicatorsBox.dataProvider = arrCol;//this.indicatorsList;		
+				arrCol.addItem(z);*/
+				this.indicatorsBox.dataProvider = this.indicatorsList; //arrCol;//this.indicatorsList;		
 				
 				this.setSelectedIndicators();
 			}
@@ -121,8 +121,9 @@
 				
 			
 			private function filterB(item:Object):Boolean {			
-				var fl:Boolean = true;				
-				(item.id == 101) ? fl = true : fl = false;				
+				var fl:Boolean = true;	
+				fl = ((item.hasSplitByDevices == 0) && (item.isOutputIndicator == 0));
+				//(item.id == 101) ? fl = true : fl = false;				
 				return fl;
 			}					
 			
@@ -155,6 +156,7 @@
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;		
 				//this.dispatchEvent(new Event("refreshData", false));
+				this.refreshData(null);
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
@@ -330,9 +332,10 @@
 						  isLineSeries="true" left="10" top.viewingOnly="75" left.viewingOnly="10">
 	</utils:CTwoAxisChart>
 	
-	<s:DropDownList width="243" id="indicatorsBox" labelField="namen"
+	<s:DropDownList  id="indicatorsBox" labelField="namen"
 					 change="indicatorsBox_changeHandler(event)" top="32" 
-					 selectedIndex="1" height="20" left="43" top.viewingOnly="17" left.viewingOnly="43"></s:DropDownList>
+					 selectedIndex="1" height="20" left="43" top.viewingOnly="17" left.viewingOnly="43" 
+					 top.default="32" left.default="43" width="314"></s:DropDownList>
 	<s:Button label="Refresh View" click="button3_clickHandler(event)" top="60" 
 			  width="218" height="25" fontWeight="bold" fontSize="13" left="213"
 			  visible="false" top.viewingOnly="45" left.viewingOnly="213"/>

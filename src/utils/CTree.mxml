@@ -633,7 +633,7 @@
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
 						 defaultLeafIcon="{null}" 
 						 showHeaders="false" 
-						 top="20" fontFamily="Arial" fontSize="12" 
+						 top="20" fontFamily="Arial" fontSize="11" 
 						 borderVisible="true" dropShadowVisible="false" 
 						 verticalAlign="middle" textAlign="left" borderColor="#C8C8C8" 
 						 verticalGridLineColor="#C8C8C8" verticalGridLines="false" includeIn="default"	>
@@ -665,7 +665,7 @@
 			<s:HorizontalLayout/>
 		</s:layout>
 		<s:Label x="11" y="344" text="Grouping by" id="selDeviceLabel3"
-				 fontStyle="normal" fontSize="11" height="100%" width="30%"/>
+				 fontStyle="normal" fontSize="11" height="100%" width="30%" fontFamily.default="Arial"/>
 		<s:RadioButton x="64" y="342" label="Regions" groupName="regionType" selected="true" 
 					   enabled="true" value="0" click="radiobutton3_clickHandler(event)" height="100%" width="35%" fontFamily="Arial" fontSize="12"/>
 		<s:RadioButton x="136" y="342" label="Clusters" groupName="regionType" enabled="true"

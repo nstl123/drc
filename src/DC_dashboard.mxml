@@ -162,7 +162,7 @@
 				
 				this.panelTabA2.refreshData(null);				
 				this.updateLabelState();				
-				Alert.show("Module preparation is done", "Info");
+				Alert.show("Base data has been populated", "Info");
 			}
 			
 			public function updateLabelState ():void {			

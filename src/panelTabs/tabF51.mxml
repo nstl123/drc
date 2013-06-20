@@ -427,8 +427,8 @@
 	
 	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="492" left="10" top.viewingOnly="437" left.viewingOnly="10" top.default="503" left.default="10">
 	</utils:CInteractiveGrid>
-	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848" includeIn="default"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="381" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
+	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848" includeIn="default"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="381" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
 	
 	<s:DropDownList width="242" height="18" id="indicatorsBox" 
 					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" left="50" top.viewingOnly="17" left.viewingOnly="50"/>
@@ -450,7 +450,7 @@
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="77" left.viewingOnly="77" top.default="96" left.default="58"/>
 	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" y.default="490" top.viewingOnly="425" left.default="10"/>
 	<s:BorderContainer width="517" left="10" top="410" borderVisible="false" top.viewingOnly="367" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" height.default="59" height.viewingOnly="55" top.default="428" left.default="10">
-		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial" id="shLbl"/>
+		<s:Label text="Scenario Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial" id="shLbl"/>
 		<s:BorderContainer width="244" height="48" id="shockControls" enabled="false" borderVisible="false" y.default="5" x.default="265" x.viewingOnly="265" y.viewingOnly="5">
 			<s:Label x="3" y="1" text="Year" width="106" height="20" verticalAlign="middle" fontSize="10"/>
 			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>

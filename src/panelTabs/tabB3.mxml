@@ -442,8 +442,8 @@
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="9"/>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="42" left.viewingOnly="9"/>
 	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" fontFamily="Arial" top.viewingOnly="6" top.default="21" left.default="469" left.viewingOnly="469"/>
-	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="italic" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848" includeIn="default"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="italic" fontSize="13" top="347" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
+	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848" includeIn="default"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="347" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
 	<s:RadioButton value="2" label="Device category" groupName="splitByDevices_C" 
 				   selected="false" fontFamily="Arial" fontSize="11" left="340" top="56" 
 				   top.viewingOnly="41" left.viewingOnly="340" click="devicesActive_clickHandler(event)"/>

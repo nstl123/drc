@@ -28,13 +28,10 @@ class Depot3 {
 			$stmnt = "
 				UPDATE ".$srcTable." 
 				SET						
-					Y2004 = ".$b['Y2004'].",
-					Y2005 = ".$b['Y2005'].", Y2006 = ".$b['Y2006'].", Y2007 = ".$b['Y2007'].",
-					Y2008 = ".$b['Y2008'].", Y2009 = ".$b['Y2009'].", Y2010 = ".$b['Y2010'].",
-					Y2011 = ".$b['Y2011'].", Y2012 = ".$b['Y2012'].", Y2013 = ".$b['Y2013'].", 
+					Y2012 = ".$b['Y2012'].", Y2013 = ".$b['Y2013'].", 
 					Y2014 = ".$b['Y2014'].", Y2015 = ".$b['Y2015'].", Y2016 = ".$b['Y2016'].", 
 					Y2017 = ".$b['Y2017'].", Y2018 = ".$b['Y2018'].", Y2019 = ".$b['Y2019'].", 
-					Y2020 = ".$b['Y2020']."
+					Y2020 = ".$b['Y2020'].", Y2021 = ".$b['Y2021']."
 				WHERE scenarioID = ".$b['scenarioID']."			
 					AND countryID = ".$b['countryID']."
 					AND indicatorID = ".$b['indicatorID'];
@@ -75,13 +72,10 @@ class Depot3 {
 				JOIN Consulting.DC_namesCountries nc
 				ON sdp.countryID = nc.".$col_namen." 
 				SET						
-					Y2004 = ".$b['Y2004'].",
-					Y2005 = ".$b['Y2005'].", Y2006 = ".$b['Y2006'].", Y2007 = ".$b['Y2007'].",
-					Y2008 = ".$b['Y2008'].", Y2009 = ".$b['Y2009'].", Y2010 = ".$b['Y2010'].",
-					Y2011 = ".$b['Y2011'].", Y2012 = ".$b['Y2012'].", Y2013 = ".$b['Y2013'].", 
+					Y2012 = ".$b['Y2012'].", Y2013 = ".$b['Y2013'].", 
 					Y2014 = ".$b['Y2014'].", Y2015 = ".$b['Y2015'].", Y2016 = ".$b['Y2016'].", 
 					Y2017 = ".$b['Y2017'].", Y2018 = ".$b['Y2018'].", Y2019 = ".$b['Y2019'].", 
-					Y2020 = ".$b['Y2020']."
+					Y2020 = ".$b['Y2020'].", Y2021 = ".$b['Y2021']."
 				WHERE scenarioID = ".$b['scenarioID']."								
 					AND indicatorID = ".$b['indicatorID']."			
 					AND deviceID = ".$deviceID."					
@@ -159,18 +153,16 @@ class Depot3 {
 	}	
 		
 	public function insertWorkingScenario($scenarioID) {
+		$yrsField = "`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
+					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";
 
 		$stmntMacro = "
 			INSERT INTO `Consulting`.`DC_scenarioData`
 				(`scenarioID`,`countryID`,`indicatorID`, `deviceID`, typeID, `unitID`,
-				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,
-				`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,
-				`Y2018`,`Y2019`,`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`)
+				".$yrsField.")
 			SELECT
 				".$scenarioID." as `scenarioID`,`countryID`,`indicatorID`, `deviceID`, `typeID`, `unitID`,
-				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,
-				`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,
-				`Y2018`,`Y2019`,`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`
+				".$yrsField."
 			FROM `Consulting`.`DC_scenarioData`
 				WHERE scenarioID = 10001;";
 		
@@ -180,14 +172,10 @@ class Depot3 {
 		$stmntProxy = "
 			INSERT INTO `Consulting`.`DC_scenarioDataProxy`
 				(`scenarioID`,`countryID`,`indicatorID`,`deviceID`,	`typeID`,`unitID`,
-				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,
-				`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,
-				`Y2018`,`Y2019`,`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`)
+				".$yrsField.")
 			SELECT
 				".$scenarioID." as `scenarioID`,`countryID`,`indicatorID`,`deviceID`, `typeID`, `unitID`,
-				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,
-				`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,
-				`Y2018`,`Y2019`,`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`
+				".$yrsField."
 			FROM `Consulting`.`DC_scenarioDataProxy`
 				WHERE scenarioID = 10001;"; // get the base scenario
 		
@@ -202,9 +190,11 @@ class Depot3 {
 	} 
 	
 	public function writeViewToTable($scenarioID, $isMarket) {	
-		
+		$yrsField = "`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
+					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";
+					 
 		$isMarket = 0;
-		// fopr now lets override Market method
+		// for now lets override Market method
 		
 		$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
 		$result = $this->connection->prepare($delStmnt);		
@@ -213,14 +203,10 @@ class Depot3 {
 		$insStmnt = "
 			INSERT INTO `Consulting`.`DC_deviceBaseTable`
 				(`scenarioID`,`countryID`,`deviceID`,`indicatorID`,
-				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,`Y2009`,
-				`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,
-				`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`)
+				".$yrsField.")
 			SELECT
 				`scenarioID`,`countryID`,`deviceID`,`indicatorID`,
-				`Y2000`,`Y2001`,`Y2002`,`Y2003`,`Y2004`,`Y2005`,`Y2006`,`Y2007`,`Y2008`,`Y2009`,
-				`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,`Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,
-				`Y2020`,`Y2021`,`Y2022`,`Y2023`,`Y2024`,`Y2025`
+				".$yrsField."
 			FROM `Consulting`.".(($isMarket == 0) ? 'DC_deviceBase' : 'DC_deviceBaseMarket')."
 				WHERE scenarioID = ".$scenarioID.";";
 		$result = $this->connection->prepare($insStmnt);		

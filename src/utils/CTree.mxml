@@ -119,19 +119,19 @@
 							"modified":(res[i].modified ? res[i].modified : false)
 						});
 					}	
-				}		
+				}						
 				this.preserveRefresh();
 			}			
 			
 			public function preserveRefresh():void {				
 				if (this.cntryListGridADG.dataProvider is IHierarchicalCollectionView) {
 					var openNodes:Object = IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes;
-					iCount = 0; // reset the counter
-					this.gc.refresh();
+					iCount = 0; // reset the counter					
+					this.gc.refresh();					
 					cntryListGridADG.dataProvider = gc;
 					cntryListGridADG.validateNow();
-					IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes = openNodes;		
-				};
+					IHierarchicalCollectionView(cntryListGridADG.dataProvider).openNodes = openNodes;				
+				};			
 			}			
 			
 			public function reset():void
@@ -139,7 +139,8 @@
 				var i:uint;
 				for (i=0; i<selectionList.length; i++)
 					selectionList[i].active = false;				
-				//this.preserveRefresh();				
+				//this.preserveRefresh();
+				//sortData();
 			}
 			
 			import mx.controls.Alert;
@@ -250,6 +251,8 @@
 					dispatchEvent(new Event(CTree.CHECKED, true));
 				};	
 				this.cntryListGridADG.expandAll();
+				
+				this.sortData();
 			}		
 			
 			//when the link button is clicked, de-select all checkboxes
@@ -257,11 +260,12 @@
 				var i:uint;
 				if (this.selectionList != null) {
 					for (i = 0; i < selectionList.length; i++) selectionList[i].active = false;
-					checkedCount = 0;
-					
-					this.preserveRefresh();									
+					checkedCount = 0;				
+														
 					dispatchEvent(new Event(CTree.UNCHECKED, true));
 				};
+				this.sortData();
+				this.preserveRefresh();			
 			}		
 			
 			//used to override active selections
@@ -554,27 +558,9 @@
 							borderVisible="false" change="deviceListDrop_C_changeHandler(event)"/>
 		
 		</s:BorderContainer>
-		
-		<s:Label text="Battery Types" id="selDeviceLabel0" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="104" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
-		<s:BorderContainer width="100%" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height.default="67" height="80">
-			<s:layout>
-				<s:VerticalLayout gap="1"/>
-			</s:layout>
-			<s:RadioButton x="44" y="50" label="All battery types" value="0" groupName="pwrTypes_C" selected="true"
-						  fontSize="11" fontFamily="Arial" enabled="true" click="pwrTypes_clickHandler(event)"/>	
-			<s:RadioButton x="44" y="75" label="Disposable (DPP)" value="1" groupName="pwrTypes_C" selected="false"
-						   fontSize="11" fontFamily="Arial" enabled="true" click="pwrTypes_clickHandler(event)"/>
-			<s:RadioButton x="44" y="93" label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes_C"
-						 fontSize="11" fontFamily="Arial" selected="false" enabled="true" click="pwrTypes_clickHandler(event)"/>			
-			<s:RadioButton x="44" y="105" label="Built-in Rechargeable" value="3" groupName="pwrTypes_C"
-						 fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
-		</s:BorderContainer>
-
-		
 		<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11"
-				 verticalAlign="middle" fontFamily="Arial" x="10" top="169" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
-		
-		<s:BorderContainer x="253" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210" height.default="70" height="80">
+				 verticalAlign="middle" fontFamily="Arial" top="169" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
+		<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210" height.default="70" height="80">
 			<s:layout>
 				<s:TileLayout horizontalGap="5" verticalGap="1"/>
 			</s:layout>
@@ -597,6 +583,21 @@
 			<s:RadioButton x="440" y="75" label="Coin And Button"  value="6" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="false" selected="false"
 						   click="batTypes_clickHandler(event)"/>	
 			
+		</s:BorderContainer>
+		
+		<s:Label text="Battery Types" id="selDeviceLabel0" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="104" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
+		<s:BorderContainer width="100%" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height.default="67" height="80">
+			<s:layout>
+				<s:VerticalLayout gap="1"/>
+			</s:layout>
+			<s:RadioButton x="44" y="50" label="All battery types" value="0" groupName="pwrTypes_C" selected="true"
+						  fontSize="11" fontFamily="Arial" enabled="true" click="pwrTypes_clickHandler(event)"/>	
+			<s:RadioButton x="44" y="75" label="  Disposable (DPP)" value="1" groupName="pwrTypes_C" selected="false"
+						   fontSize="11" fontFamily="Arial" enabled="true" click="pwrTypes_clickHandler(event)"/>
+			<s:RadioButton x="44" y="93" label="  Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes_C"
+						 fontSize="11" fontFamily="Arial" selected="false" enabled="true" click="pwrTypes_clickHandler(event)"/>			
+			<s:RadioButton x="44" y="105" label="  Built-in Rechargeable" value="3" groupName="pwrTypes_C"
+						 fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
 		</s:BorderContainer>
 
 		

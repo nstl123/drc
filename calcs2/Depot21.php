@@ -40,7 +40,7 @@ class Depot21 {
 		$selfields = "";		
 
 		$selFields = "SELECT sd.scenarioID, sd.indicatorID, sd.deviceID, sd.typeID, sd.unitID, 0 AS categoryID,
-						sd.Y2004, sd.Y2005, sd.Y2006, sd.Y2007, sd.Y2008, sd.Y2009, sd.Y2010, sd.Y2011, 
+						sd.Y2006, sd.Y2007, sd.Y2008, sd.Y2009, sd.Y2010, sd.Y2011, 
 						sd.Y2012, sd.Y2013, sd.Y2014, sd.Y2015, sd.Y2016, sd.Y2017, sd.Y2018, sd.Y2019, 
 						sd.Y2020, sd.Y2021";	
 		
@@ -101,7 +101,7 @@ class Depot21 {
 		
 		$selFields = "
 			SELECT sdt.scenarioID, sdt.countryID, sdt.indicatorID,  nmd.categoryID AS deviceID, sdt.typeID,
-				1000*sum(sdt.Y2004*wdb.Y2004) as Y2004, 1000*sum(sdt.Y2005*wdb.Y2005) as Y2005, 1000*sum(sdt.Y2006*wdb.Y2006) as Y2006,
+				1000*sum(sdt.Y2006*wdb.Y2006) as Y2006,
 				1000*sum(sdt.Y2007*wdb.Y2007) as Y2007, 1000*sum(sdt.Y2008*wdb.Y2008) as Y2008, 1000*sum(sdt.Y2009*wdb.Y2009) as Y2009,			
 				1000*sum(sdt.Y2010*wdb.Y2010) as Y2010, 1000*sum(sdt.Y2011*wdb.Y2011) as Y2011, 1000*sum(sdt.Y2012*wdb.Y2012) as Y2012,
 				1000*sum(sdt.Y2013*wdb.Y2013) as Y2013, 1000*sum(sdt.Y2014*wdb.Y2014) as Y2014, 1000*sum(sdt.Y2015*wdb.Y2015) as Y2015,
@@ -185,8 +185,8 @@ class Depot21 {
 		$stmnt = "";
 		
 		$sumStmnt = "";
-		for ($u = 2004; $u < 2022; $u++) {
-			if ((($u - 2004) % 3) == 0) $sumStmnt = $sumStmnt."
+		for ($u = 2006; $u < 2022; $u++) {
+			if ((($u - 2006) % 3) == 0) $sumStmnt = $sumStmnt."
 				";
 			if ($perHH > 0) {
 				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum( dm.Y".$u." / sdt.Y".$u." ) AS Y".$u;
@@ -266,8 +266,8 @@ class Depot21 {
 		$countryList = $countryList." )";
 // --- summing statement formation BEGIN ---		
 		$sumStmnt = "";
-		for ($u = 2004; $u < 2022; $u++) {
-			if ((($u - 2004) % 3) == 0) {	$sumStmnt = $sumStmnt."
+		for ($u = 2006; $u < 2022; $u++) {
+			if ((($u - 2006) % 3) == 0) {	$sumStmnt = $sumStmnt."
 					";	};
 			if (($perHH > 0) && ($pwrType > 0)) {
 				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum( dbt.Y".$u." * sdp.Y".$u." ) / ( sdt.Y".$u." )/100 AS Y".$u;
@@ -342,8 +342,8 @@ class Depot21 {
 		
 		$sumStmnt = "";
 		
-		for ($u = 2004; $u < 2022; $u++) {
-			if ((($u - 2004) % 3) == 0) $sumStmnt = $sumStmnt."
+		for ($u = 2006; $u < 2022; $u++) {
+			if ((($u - 2006) % 3) == 0) $sumStmnt = $sumStmnt."
 				";
 			if ($perHH > 0) {
 				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.shr)/sum(sdt.Y".$u.") as Y".$u;

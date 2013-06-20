@@ -19,10 +19,7 @@ package utils
 				var fin:Object = rawData.getItemAt(i);
 				rez.addItem({
 					"scenarioID" : workingScenarioID,
-					"countryID"  : fin.countryID, "indicatorID" : selectedIndi,
-					
-					"Y2004": (yrs <= 2004) ? (fin.Y2004 * mult) : fin.Y2004,										
-					"Y2005": (yrs <= 2005) ? (fin.Y2005 * mult) : fin.Y2005,
+					"countryID"  : fin.countryID, "indicatorID" : selectedIndi,					
 					"Y2006": (yrs <= 2006) ? (fin.Y2006 * mult) : fin.Y2006,
 					"Y2007": (yrs <= 2007) ? (fin.Y2007 * mult) : fin.Y2007,
 					"Y2008": (yrs <= 2008) ? (fin.Y2008 * mult) : fin.Y2008,
@@ -73,8 +70,6 @@ package utils
 				var indiName:String = obj.indicatorID;
 				var scenName:String = obj.scenarioID;
 				newObj = ([	  
-					{"yrs": 2004, "data" : obj.Y2004, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
-					{"yrs": 2005, "data" : obj.Y2005, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},			  		
 					{"yrs": 2006, "data" : obj.Y2006, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
 					{"yrs": 2007, "data" : obj.Y2007, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
 					{"yrs": 2008, "data" : obj.Y2008, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
@@ -89,7 +84,8 @@ package utils
 					{"yrs": 2017, "data" : obj.Y2017, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
 					{"yrs": 2018, "data" : obj.Y2018, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
 					{"yrs": 2019, "data" : obj.Y2019, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
-					{"yrs": 2020, "data" : obj.Y2020, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName}					
+					{"yrs": 2020, "data" : obj.Y2020, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
+					{"yrs": 2021, "data" : obj.Y2021, "countryCode":cntryCode, "countryID":cntryName, "indicatorID":indiName, "scenarioID":scenName},
 				]);
 				if (!isLevel) {
 					for (var jj:int = newObj.length - 1; jj > 0 ; jj--) {
@@ -131,8 +127,7 @@ package utils
 					"Y2008" : (data[i1].Y2007 != 0) ? ((data[i1].Y2008/data[i1].Y2007)-1)*100 : null,
 					"Y2007" : (data[i1].Y2006 != 0) ? ((data[i1].Y2007/data[i1].Y2006)-1)*100 : null,				
 					"Y2006" : (data[i1].Y2005 != 0) ? ((data[i1].Y2006/data[i1].Y2005)-1)*100 : null,
-					"Y2005" : (data[i1].Y2004 != 0) ? ((data[i1].Y2005/data[i1].Y2004)-1)*100 : null,
-					"Y2004" : null
+					"Y2005" : null
 					});
 					z.addItem(newObj);
 				};				
@@ -147,7 +142,7 @@ package utils
 						Y2015 : data[i1].Y2015, "Y2014" : data[i1].Y2014, "Y2013" : data[i1].Y2013,
 						Y2012 : data[i1].Y2012, "Y2011" : data[i1].Y2011, "Y2010" : data[i1].Y2010,
 						Y2009 : data[i1].Y2009, "Y2008" : data[i1].Y2008, "Y2007" : data[i1].Y2007,				
-						Y2006 : data[i1].Y2006, "Y2005" : data[i1].Y2005, "Y2004" : data[i1].Y2004
+						Y2006 : data[i1].Y2006
 					});
 					z.addItem(newObj);
 				};				

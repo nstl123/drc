@@ -308,7 +308,7 @@
 				
 				if (this.masterTab.getStateSpacePos() == 1) {					
 						this.masterTab.setStateSpacePos(2);
-						this.updateStateSpaceLabel();
+						//this.updateStateSpaceLabel();
 				};
 				
 			}		
@@ -886,7 +886,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text="Battery Demand Analysis Tool v.1.10"/> 
+				text="Battery Demand Analysis Tool v.1.11"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="export scenario data" fontSize="11" 
 				  x="446" y="10" includeIn="scenarioState,viewingState"

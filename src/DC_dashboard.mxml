@@ -284,13 +284,15 @@
 			public function resetScenario(evt:Event):void {
 				this.changeMadeInScenario = false;
 				this.masterTab.resetScenarioCountries(); // remove data from list	
-				this.cntryTree.resetScenarioCountries(); //update Tree for new data
+				//this.cntryTree.resetScenarioCountries(); //update Tree for new data
 				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(workingScenarioID);
 			}
 			
 			[bindable] private var atLeastOneCntrySelected:Boolean = false;
+			[bindable] private var cntryData:ArrayCollection;
+			
 			public function digestUpdate(event:Event):void {			
-				var cntryData:ArrayCollection = this.cntryTree.getDataList();				
+				cntryData = this.cntryTree.getDataList();				
 				var regData:ArrayCollection = this.cntryTree.getRegionsDataList();
 				var uCluster:Boolean = this.cntryTree.getUseCluster();			
 				
@@ -336,7 +338,8 @@
 						"Info", Alert.OK | Alert.CANCEL, this, alertListener, null, Alert.OK);
 				} else {					
 					//this.pathLabel.text = "Selected Path: " + this.selPathObj;				
-					pathFlags = this.masterTab.registerPath(this.selPathObj, isStart);					
+					pathFlags = this.masterTab.registerPath(this.selPathObj, isStart);
+					this.masterTab.registerViewingMode(this.viewMode);
 				};				
 			}
 
@@ -599,7 +602,8 @@
 			[bindable] private var viewMode:String = "viewDataOnly";
 			protected function modeSwitch_clickHandler(event:Event):void
 			{
-				this.viewMode = String(this.viewingModeGroup.selection.value);		
+				this.viewMode = String(this.viewingModeGroup.selection.value);
+				this.masterTab.registerViewingMode(this.viewMode);
 				this.dispatchEvent(new Event("pathChanged", true));
 			}			
 
@@ -617,13 +621,13 @@
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
 							this.startApp(null);
-							if (this.flagApplicationStarted < 2) this.dispatchEvent(new Event("init", true))	
+							if (this.flagApplicationStarted < 2) this.dispatchEvent(new Event("init", true));
 							this.btnNext.enabled = this.atLeastOneCntrySelected;
 						} else {
 							this.currentState =  "BQList"
 							this.navigatorBox2.setButtonColors(null, 1);
 							this.startApp(null);
-						};
+						};						
 						break;
 					case "BQList" :											
 						this.currentState = "geoList";
@@ -656,7 +660,7 @@
 								//this.originalBQLabel.text = this.selPathObjLabel;
 							};	
 							this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus
-							this.cntryTree.setRegionsGridEnabled(true);				
+							//this.cntryTree.setRegionsGridEnabled(true);				
 							if (tabaiCreationComplete) {									
 								tabai_changeHandler(null);
 								this.updateLabelState();
@@ -726,7 +730,7 @@
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false); // data inputs disabled
 							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);
 							this.navigatorBox2.setButtonColors("#000000", 5, false);
-							this.cntryTree.setRegionsGridEnabled(false);
+							//this.cntryTree.setRegionsGridEnabled(false);
 						};
 						break;					
 					case "scenarioState" :
@@ -737,7 +741,7 @@
 						} else {
 							currentState = "geoList";
 							this.navigatorBox2.setButtonColors(null, 2);			
-							this.cntryTree.setRegionsGridEnabled(false);
+							///this.cntryTree.setRegionsGridEnabled(false);
 						};
 						this.btnNext.enabled = true;					
 						break;					

@@ -39,6 +39,7 @@
 			public var dataServiceUpdate:Depot3;
 			
 			[bindable] private var workingScenarioID:int;
+			[bindable] private var baselineScenarioID:int = 10001;
 			private var hlp:helper;
 
 			[bindable] private var indicatorsList:ArrayCollection;
@@ -172,11 +173,23 @@
 			
 			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = true;				
-				if (item.scenarioID == this.workingScenarioID) {					
-					f = true
-				}  else f = false;				
+				if (this.currentState == "viewingOnly") {
+					f = (item.scenarioID == this.baselineScenarioID);
+				} else {				
+					f = (item.scenarioID == this.workingScenarioID);
+				};				
 				return f;
 			}		
+			
+			private function filterChart(item:Object):Boolean {				
+				var f:Boolean = false;	
+				if (this.flMngr.isViewingMode()) {
+					f = (item.scenarioID == baselineScenarioID);
+				} else {
+					f = true; 				
+				};				
+				return f;
+			}	
 			
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
@@ -260,7 +273,7 @@
 			}
 			
 			protected function updateCharts(evt:Event):void {				
-				this.currentDataChart.filterFunction =  null;
+				this.currentDataChart.filterFunction =  filterChart;
 				this.currentDataChart.refresh();
 				this.chart.setData(currentDataChart, isLevel);// transformation is performed inside chart component
 				

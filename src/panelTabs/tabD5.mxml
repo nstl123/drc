@@ -69,6 +69,7 @@
 			public var dataServiceUpdate:Depot3;
 			
 			[bindable] private var workingScenarioID:int;
+			[bindable] private var baselineScenarioID:int = 10001;
 			private var hlp:helper;
 			[bindable] private var indicatorsList:ArrayCollection;			
 			
@@ -263,18 +264,23 @@
 			
 			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = true;				
-				if ((item.scenarioID == this.workingScenarioID)
-					&& (item.deviceID == this.selDevice)) {					
-					f = true
-				}  else f = false;				
+				if (this.currentState == "viewingOnly") {
+					f = ((item.scenarioID == baselineScenarioID)&&(item.deviceID == selDevice));
+				} else {				
+					f = ((item.scenarioID == workingScenarioID) && (item.deviceID == selDevice));
+				};
+				
 				return f;
 			}	
 			
 			private function filterChart(item:Object):Boolean {				
-				var f:Boolean = true;				
-				if (item.deviceID == this.selDevice) {					
-					f = true
-				}  else f = false;				
+				var f:Boolean = true;
+				
+				if (this.flMngr.isViewingMode()) {
+					f = ((item.deviceID == this.selDevice) && (item.scenarioID == this.baselineScenarioID));
+				} else {
+					f = (item.deviceID == this.selDevice);
+				};
 				return f;
 			}	
 

@@ -95,7 +95,10 @@
 			}		
 			
 			public function getRegionsDataList():ArrayCollection {
-				return this.regionsListGrid.getActiveDataList();
+				if (this.regionsListGrid) {
+					return this.regionsListGrid.getActiveDataList();
+				} else 
+					return new ArrayCollection();
 			}
 			
 			//getActiveDataList
@@ -163,8 +166,11 @@
 			public var dataServiceNames:Depot1;
 			public function initNames():void {
 				trace("init names inside cTree");				
-				cntryNames.token = this.dataServiceNames.getCountryListADG();				
-				regionNames.token = this.dataServiceNames.getCountryList(1);			
+				cntryNames.token = this.dataServiceNames.getCountryListADG();		
+			}
+			
+			public function initRegionNames():void {
+				regionNames.token = this.dataServiceNames.getCountryList(1);
 			}
 			
 			public function getDeviceNames():void {
@@ -322,7 +328,7 @@
 				this.regionsListGrid.setDataList(regList);					
 			}	
 			
-			public function setRegionsGridEnabled(flag:Boolean):void {
+			public function setRegionsGridEnabled(flag:Boolean):void {				
 				this.regionsListGrid.enabled = flag;
 			}
 			
@@ -629,7 +635,7 @@
 		
 	</s:BorderContainer>
 	
-	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="80%" 
+	<mx:AdvancedDataGrid id="cntryListGridADG" designViewDataType="tree" height="100%" 
 						 horizontalCenter="0"  width="100%" 
 						 folderOpenIcon="{null}" folderClosedIcon="{null}"  
 						 defaultLeafIcon="{null}" 
@@ -661,7 +667,7 @@
 		</mx:rendererProviders>
 	</mx:AdvancedDataGrid>	
 		
-	<s:BorderContainer width="100%" height="30" borderVisible="false">
+	<s:BorderContainer width="100%" height="30" borderVisible="false" includeIn="slicing">
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
@@ -672,13 +678,13 @@
 		<s:RadioButton x="136" y="342" label="Clusters" groupName="regionType" enabled="true"
 					   value="1" click="radiobutton3_clickHandler(event)" height="100%" width="35%" fontFamily="Arial" fontSize="12"/>
 	</s:BorderContainer>
-	<s:BorderContainer x="21" y="563" width="100%" height="40%" borderVisible="false">				
+	<s:BorderContainer x="21" y="563" width="100%" height="40%" borderVisible="false" includeIn="slicing">				
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>		
-		<utils:CCheckBoxGrid id="regionsListGrid" enabled="false"
+		<utils:CCheckBoxGrid id="regionsListGrid" enabled="true"
 							 labelText="Regions"  top="373" left="10" width="100%" height="100%" 
-							 fontSize="11" fontFamily="Arial">
+							 fontSize="11" fontFamily="Arial" creationComplete="initRegionNames()">
 		</utils:CCheckBoxGrid>			
 	</s:BorderContainer>
 	

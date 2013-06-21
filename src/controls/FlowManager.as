@@ -269,6 +269,15 @@ package controls
 			return pathFlags;
 		}
 		
+		[bindable] private var viewingMode:String = "viewDataOnly"; // default
+		public function registerViewingMode(s:String):void {
+			this.viewingMode = s;
+		};
+		
+		public function isViewingMode():Boolean {
+			return (this.viewingMode == "viewDataOnly");
+		};
+		
 		public function enableGrids(arr:Array):void {			
 			if (this.tabList.length > 0) {
 				for (var i:int = 0; i < tabList.length; i++) {	

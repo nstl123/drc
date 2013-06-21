@@ -70,6 +70,7 @@
 			public var dataServiceData:Depot21;
 			
 			[bindable] private var workingScenarioID:int;
+			[bindable] private var baselineScenarioID:int = 10001;
 			
 			[bindable] private var indicatorsList:ArrayCollection;
 			[bindable] private var deviceList:ArrayCollection;
@@ -254,18 +255,26 @@
 			protected function filterChart(item:Object):Boolean {				
 				var f:Boolean = false;
 				var z:int;
+				var flagForView:Boolean;				
+				
+				if (this.flowManager.isViewingMode()) { // since we dont have states in here
+					flagForView = (item.scenarioID == this.baselineScenarioID);
+				} else {
+					flagForView = true;
+				};												
 				if (!this.flowManager.chemTypesActiveFlag) {					
 					z = ( (this.flowManager.selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );					
 				};
-				
+// ******				
 				if (this.flowManager.chemTypesActiveFlag) {
 					f = (item.chemistryID == this.flowManager.selChemType);					
 				} else 
 				if (this.flowManager.selDeviceAggLevel > 0) {					
 					f = (z == this.flowManager.selDevice);   															
 				} else {
-					f = (z == 0); 
+					f = (z == 0) ; 
 				};			
+				f = f && flagForView;
 				
 				return f;
 			}					
@@ -566,7 +575,14 @@
 			}	*/
 			
 			private function filterChartExo(item:Object):Boolean {				
-				var f:Boolean = false;								
+				var f:Boolean = false;		
+				var flagForView:Boolean;
+				if (this.flowManager.isViewingMode()) { // since we dont have states in here
+					flagForView = (item.scenarioID == this.baselineScenarioID);
+				} else {
+					flagForView = true;
+				};	
+				
 				if (this.flowManager.selDeviceAggLevel == 0) {									
 					f = ( (item.deviceID == 0) && ((selExoIndi == 101)||(selExoIndi == 401)) );
 				} else 
@@ -574,7 +590,9 @@
 					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi == 101) );
 				} else {					
 					f = ( (item.deviceID == this.selDevice)|| (this.selExoIndi == 101) );
-				};				
+				};	
+				f = f && flagForView;
+				
 				return f;
 			}
 			

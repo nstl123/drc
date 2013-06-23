@@ -218,16 +218,16 @@
 						this.dataList.source.splice(10, this.dataList.source.length - 10);
 					};				
 					var countryIDs:Array = this.dataList.source;			
-					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);			 			
+					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);			 			
 					
 					this.cursorManager.setBusyCursor()
-					if (selDeviceAggLevel > 1 ) { // category level
-						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
-							workingScenarioID, 0, 0, 1);
-					} else {
+					//if (selDeviceAggLevel > 1 ) { // category level
+					getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
+						workingScenarioID, 0, 0, 1);
+					/*} else {
 						getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
-							workingScenarioID, 0, 0, 1);
-					};					 
+							workingScenarioID, 0, 0, 1);*/
+					//};					 
 				};
 			}
 			

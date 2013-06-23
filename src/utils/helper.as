@@ -160,5 +160,18 @@ package utils
 			return list;	
 		}
 		
+		public function formStringFromIDs2(data:Array):String {
+			var list:String = "";
+			if (data.length > 0) {				
+				list = data[0]['id'];
+				for (var i:int = 1; i < data.length; i++) {
+					list = list + "," + data[i]['id'];
+				};		
+			};
+			return list;	
+		}
+
+		
+		
 	}
 }

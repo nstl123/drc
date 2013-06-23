@@ -818,11 +818,12 @@
 			protected function button_clickHandler(event:MouseEvent):void
 			{				
 				var countryIDs:Array = this.masterTab.getDataList().source;				
-				var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
-				var z:ArrayCollection = new ArrayCollection(tmp);
+				var tmp:String = this.hlp.formStringFromIDs2(countryIDs);
+				//var z:ArrayCollection = new ArrayCollection(tmp);
 				// should delete old scenarios first?
 				// data on unused scenarioIDs can be taken form DC_scenarioNames
-				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, z);
+				// aggLevel - 0 for none/all, 1 - device, 2 - for category
+				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp);
 			}			
 
 			protected function insertExportIdsResult_resultHandler(event:ResultEvent):void
@@ -890,7 +891,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text="Battery Demand Analysis Tool v.1.11"/> 
+				text="Battery Demand Analysis Tool v.1.12"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="export scenario data" fontSize="11" 
 				  x="446" y="10" includeIn="scenarioState,viewingState"

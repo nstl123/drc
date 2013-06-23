@@ -143,9 +143,9 @@
 					this.dataList.source.splice(10, this.dataList.source.length - 10);
 				} else {	
 					var countryIDs:Array = this.dataList.source;				
-					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);
+					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);
 					this.cursorManager.setBusyCursor();
-					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, false, 0, 1);
+					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 0, 0, 1);
 				};
 			}
 			

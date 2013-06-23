@@ -153,10 +153,10 @@
 						this.dataList.source.splice(10, this.dataList.source.length - 10);
 					};				
 					var countryIDs:Array = this.dataList.source;				
-					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);				
 					
 					var regionIDs:Array = this.dataListReg.source;
-					var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);					
+					var tmp2:String = this.hlp.formStringFromIDs2(regionIDs);					
 					
 					this.flowManager.devicesActiveFlag  ? this.tmpDevices  = this.flowManager.selDevice  : this.tmpDevices = -1;
 					this.flowManager.pwrTypesActiveFlag ? this.tmpPwrTypes = this.flowManager.selPwrType : this.tmpPwrTypes = -1;					
@@ -263,7 +263,8 @@
 					flagForView = true;
 				};												
 				if (!this.flowManager.chemTypesActiveFlag) {					
-					z = ( (this.flowManager.selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );					
+					//z = ( (this.flowManager.selDeviceAggLevel == 1) ? item.deviceID : item.categoryID );
+					z = item.deviceID;
 				};
 // ******				
 				if (this.flowManager.chemTypesActiveFlag) {
@@ -514,13 +515,13 @@
 						this.dataList.source.splice(10, this.dataList.source.length - 10);
 					};		
 					var countryIDs:Array = this.dataList.source;		
-					var tmp:Array = this.hlp.formStringFromIDs(countryIDs);				
+					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);				
 					var typeID:int = 0;
 					var tmpDev:int = 0;
 					var tmpSplit:int = 0;				
 				
 					var regionIDs:Array = this.dataListReg.source;
-					var tmp2:Array = this.hlp.formStringFromIDs(regionIDs);					
+					var tmp2:String = this.hlp.formStringFromIDs2(regionIDs);					
 					
 					if ( (this.selExoIndi == 204)||(this.selExoIndi == 206) ) 
 						typeID = this.flowManager.selBatType;
@@ -531,7 +532,7 @@
 							tmpSplit = 1; 
 					else tmpSplit = aggType; //this.flowManager.selDeviceAggLevel;// aggType;
 					
-					if ( this.selExoIndi == 101 ) { 
+					if (( this.selExoIndi > 100 ) && (this.selExoIndi < 200)) { 
 						tmpDev = 0; 
 						tmpSplit = 0; 
 					} else 
@@ -543,12 +544,12 @@
 					} else if (this.selExoIndi == 401) {
 						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID,
 							flowManager.selPwrType,  0, flowManager.selDeviceAggLevel, showPerHHFlag);					
-					} else if (this.flowManager.selDeviceAggLevel > 1 ) { // category level
+					} else { //if (this.flowManager.selDeviceAggLevel > 1 ) { // category level
 							getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selExoIndi,
 								workingScenarioID, tmpSplit, typeID, 1);
-						} else {						
+/*						} else {						
 							getMacroData.token = this.dataServiceData.getMacroData(tmp, selExoIndi, workingScenarioID, 
-								tmpSplit, typeID, 1);
+								tmpSplit, typeID, 1);*/
 						};					
 				};
 			}
@@ -584,12 +585,12 @@
 				};	
 				
 				if (this.flowManager.selDeviceAggLevel == 0) {									
-					f = ( (item.deviceID == 0) && ((selExoIndi == 101)||(selExoIndi == 401)) );
+					f = ( (item.deviceID == 0) && ((selExoIndi < 200)||(selExoIndi == 401)) );
 				} else 
 				if (this.flowManager.selDeviceAggLevel == 1) {									
-					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi == 101) );
+					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi < 200) );
 				} else {					
-					f = ( (item.deviceID == this.selDevice)|| (this.selExoIndi == 101) );
+					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi < 200) );
 				};	
 				f = f && flagForView;
 				

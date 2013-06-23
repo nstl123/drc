@@ -7,7 +7,6 @@ package services.depot4
 import com.adobe.fiber.core.model_internal;
 import com.adobe.fiber.services.wrapper.RemoteObjectServiceWrapper;
 import com.adobe.serializers.utility.TypeUtility;
-import mx.collections.ArrayCollection;
 import mx.rpc.AbstractOperation;
 import mx.rpc.AsyncToken;
 import mx.rpc.remoting.Operation;
@@ -63,7 +62,7 @@ internal class _Super_Depot4 extends com.adobe.fiber.services.wrapper.RemoteObje
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function insertExportIds(scenarioID:int, countryIDs:ArrayCollection) : mx.rpc.AsyncToken
+    public function insertExportIds(scenarioID:int, countryIDs:String) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("insertExportIds");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID,countryIDs) ;

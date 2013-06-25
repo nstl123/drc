@@ -823,7 +823,20 @@
 				// should delete old scenarios first?
 				// data on unused scenarioIDs can be taken form DC_scenarioNames
 				// aggLevel - 0 for none/all, 1 - device, 2 - for category
-				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp);
+				var indicatorID:int;
+				switch (this.masterTab.selDeviceAggLevel) {
+					case 0:
+						indicatorID = 300; // cntryLevel 
+						break;
+					case 1:
+						indicatorID = 301; // deviceLevel
+						break;
+					default:
+						indicatorID = 302; // categoryLevel
+						break;
+				};
+				
+				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp, indicatorID);
 			}			
 
 			protected function insertExportIdsResult_resultHandler(event:ResultEvent):void
@@ -836,13 +849,14 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			//public var address:String = "192.168.44.200";
-			public var address:String = "213.197.173.50";
+			public var address:String = "192.168.44.200";
+			//public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
 					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcel_DC.php?"					 
 					+ "scenarioID=" + this.workingScenarioID
+					+ "&tabID=" + 3 // 3 - for demand; 2 for deviceBase; 1 for exo vars;
 					+ "&tmp="       + String(Math.round(Math.random()*1000));
 				navigateToURL(request, "_blank");
 			}

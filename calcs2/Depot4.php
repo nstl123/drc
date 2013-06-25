@@ -20,24 +20,21 @@ class Depot4 {
 		return $emptyTable;
 	}
 
-	public function insertExportIds($scenarioID, $countryIDs) {	
+	public function insertExportIds($scenarioID, $countryIDs, $indicatorID) {	
 		// 1. test for this scenario count
 		$isZero = $this -> testScenario($scenarioID);
 		// delete if there are any
 		if (!$isZero) { $this -> deleteExportIds($scenarioID); };
 	
-		$b = (array)$countryIDs;		
+		$b = explode(",", $countryIDs);		
 		$stmnt  = "";
-		$st = "
-				INSERT INTO Consulting.DC_exportIDTable
-					(scenarioID, countryID, indicatorID)
-				VALUES 
-				";			
+		$st = " \r\n INSERT INTO Consulting.DC_exportIDTable
+						(scenarioID, countryID, indicatorID, aggLevel)
+					VALUES \r\n";			
 		$a = "";
 		for ($j = 0; $j < count($b); $j++) {							
 			if ($j > 0)  $a = ","; 
-			$stmnt  = $a."(".$scenarioID.",".$b[$j].", NULL)
-						";					
+			$stmnt  = $a."(".$scenarioID.", ".$b[$j].", ".$indicatorID.", 0) ";					
 			$st = $st.$stmnt;
 		};		
 		

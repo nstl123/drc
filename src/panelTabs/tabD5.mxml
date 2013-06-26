@@ -251,7 +251,8 @@
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
-					false);
+					false,
+					(indicatorsBox.selectedItem  ? indicatorsBox.selectedItem.unit : ""));
 
 			}
 			

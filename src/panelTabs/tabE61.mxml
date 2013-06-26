@@ -635,7 +635,8 @@
 					this.flowManager.devicesActiveFlag,	
 					this.isLevel, 
 					this.flowManager.selDeviceNamen,
-					(this.showPerHHFlag == 1)
+					(this.showPerHHFlag == 1),
+					"000's"
 				);		
 				
 				var fl:Boolean = false;
@@ -653,7 +654,8 @@
 					this.flowManager.devicesActiveFlag,
 					isLevel, 
 					this.flowManager.selDeviceNamen,
-					fl);
+					fl, 
+					(exoListDrop.selectedItem  ? exoListDrop.selectedItem.unit : ""));
 			}
 			
 			protected function updateChemistrySplit(evt:Event):void {

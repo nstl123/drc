@@ -361,7 +361,8 @@
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
 					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
-					false);
+					false, 
+					(indicatorsBox.selectedItem  ? indicatorsBox.selectedItem.unit : ""));
 			}
 		
 			public function setActiveIndis(k:int, idd:int = -1):void {

@@ -43,6 +43,11 @@
 				};
 			}
 				
+			[bindable] public var currentStateSelected:String = "";
+			public function stateSelected(evt:Event):void {				
+				this.currentStateSelected = evt.target.id;				
+				this.dispatchEvent(new Event("stateClicked", true));				
+			}
 			
 		]]>
 	</fx:Script>
@@ -52,16 +57,16 @@
 			<s:HorizontalLayout paddingLeft="10" paddingRight="10"/>
 		</s:layout>
 		<s:Label text="Business Questions" width="21%" height="30" verticalAlign="middle" textAlign="center" 
-				 id="lab1" color="#000000" fontWeight="bold"/>
-		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
+				 id="lab1" color="#000000" fontWeight="bold" click="stateSelected(event)"/>
+		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"				 />
 		<s:Label text="Geography List" width="21%" height="30" verticalAlign="middle" textAlign="center"
-				 id="lab2" fontWeight="bold"/>
+				 id="lab2" fontWeight="bold"  click="stateSelected(event)"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<s:Label text="Data Inputs" width="21%" height="30" verticalAlign="middle" textAlign="center" 
-				 id="lab4" fontWeight="bold"/>
+				 id="lab4" fontWeight="bold"  click="stateSelected(event)"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<s:Label text="View Output" width="21%" height="30" verticalAlign="middle" textAlign="center"
-				 id="lab5" fontWeight="bold"/>
+				 id="lab5" fontWeight="bold"  click="stateSelected(event)"/>
 		
 	</s:BorderContainer>
 </s:Group>

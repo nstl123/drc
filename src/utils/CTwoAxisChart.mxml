@@ -217,7 +217,7 @@
 				this.chartTitle.text = tx;
 			}*/
 			
-			public function updateChartTitle(baseName:String, selIndi:int, activityFlag:Boolean, isLv:Boolean, nm:String, perHH:Boolean):void {
+			public function updateChartTitle(baseName:String, selIndi:int, activityFlag:Boolean, isLv:Boolean, nm:String, perHH:Boolean, defaultUnit:String):void {
 				var tx1:String = baseName;
 				var tx2:String = "";
 				var addTx:String = ", All Devices";
@@ -225,9 +225,9 @@
 					tx1 = tx1 + ", "+ nm;
 				else 
 					tx1 = tx1 +  ( (baseName == "Demand") ? addTx : "" );			
-			
+				//tx1 = tx1 + defaultUnit;				
 				tx2 = tx2 + ( perHH ? ("per HH, ") : "");
-				tx2 = tx2 + ( isLv  ? ("units") : ("growth") );
+				tx2 = tx2 + ( isLv  ? defaultUnit : ("growth") );
 				
 				this.chartTitle.text = tx1;
 				this.chartSubtitle.text = tx2;
@@ -252,7 +252,7 @@
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
 				
-	<!--	<mx:verticalAxisRenderers>
+		<mx:verticalAxisRenderers>
 				<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 					 <mx:axisStroke>
 						 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
@@ -266,7 +266,7 @@
 					</mx:axisStroke>
 				</mx:AxisRenderer>
 			</mx:horizontalAxisRenderers>
-	!-->
+	
 				
 			</mx:LineChart>
 		</s:BorderContainer>

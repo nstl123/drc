@@ -128,6 +128,8 @@
 					this.addEventListener("updateCharts_C", updateCharts_C);
 					this.addEventListener("refreshDeviceID_C", refreshDeviceID_C);					
 					// -- end --
+					this.addEventListener("stateClicked", switchSate);
+					
 					masterTab = new FlowManager();					
 					this.masterTab.setStateSpacePos(1);
 					//updateStateSpaceLabel();				
@@ -140,6 +142,28 @@
 				this.panelTabE61.dropdownlist1_changeHandler(null);
 			};
 			
+			public function switchSate(evt:Event):void {
+				var t:String = this.navigatorBox2.currentStateSelected;
+				
+				switch (t) {
+					case "lab1":
+						this.currentState = "BQList";
+						break;
+					case "lab2":
+						this.currentState = "geoList";
+						break;
+					case "lab4":
+						this.currentState = "viewingState";
+						this.tabai.selectedIndex = 1;
+						break;
+					case "lab5":
+						this.currentState = "viewingState";
+						this.tabai.selectedIndex = 4;
+						break;
+					default:
+						break;				
+				}				
+			};
 			
 			public function refreshData_C(evt:Event):void {
 				this.panelTabE61.refreshData(evt);
@@ -684,6 +708,7 @@
 						if (this.tabaiCreationComplete) { 
 							this.tabai.selectedIndex = 4;							
 						};	
+						this.btnNext.enabled = false;
 						//this.cntryTree.currentState = "slicing";
 						break;					
 					case "scenarioState" :
@@ -732,6 +757,7 @@
 							this.navigatorBox2.setButtonColors("#000000", 5, false);
 							//this.cntryTree.setRegionsGridEnabled(false);
 						};
+						this.btnNext.enabled = true;
 						break;					
 					case "scenarioState" :
 						if (this.tabai.selectedIndex == 4) {
@@ -767,13 +793,7 @@
 				indiListBQ = this.indicatorsNamesList.lastResult as ArrayCollection
 				indiListBQ.filterFunction = filterByBQ;
 				indiListBQ.refresh();
-				//this.indicatorGrid.setDataList(indiListBQ);
 			}
-			
-			/*protected function getSelectedIndicators():ArrayCollection {
-				return this.indicatorGrid.getActiveDataList();
-			}*/		
-
 
 			protected function tabai_changeHandler(event:IndexChangedEvent):void
 			{
@@ -830,19 +850,19 @@
 						break;
 					case 1:// ownership
 						indicatorID = this.panelTabB3.selectedIndi;
-						exportTypeID = 0;
+						exportTypeID = 1;
 						break;
 					case 2: // market size
 						indicatorID = this.panelTabD5.selectedIndi;
-						exportTypeID = 0;
+						exportTypeID = 1;
 						break;
 					case 3: // dev. spec.
 						indicatorID = this.panelTabF51.selectedIndi;
-						exportTypeID = 0;
+						exportTypeID = 1;
 						break;
 					case 4: // demand
 						indicatorID = this.masterTab.selDemandIndi;
-						exportTypeID = 2;
+						exportTypeID = 3;
 						break;
 					default :						
 						break;				
@@ -861,14 +881,15 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			public var address:String = "192.168.44.200";
-			//public var address:String = "213.197.173.50";
+			//public var address:String = "192.168.44.200";
+			public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{			
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
 					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcel_DC.php?"					 
 					+ "scenarioID=" + this.workingScenarioID
-					+ "&typeID=" + this.exportTypeID // 2 - for demand; 1 for deviceBase; 0 for exo vars;
+					+ "&typeID="    + this.exportTypeID // 2 - for demand; 1 for deviceBase; 0 for exo vars;
+					+ "&aggLevel="  + this.masterTab.selDeviceAggLevel
 					+ "&tmp="       + String(Math.round(Math.random()*1000));
 				navigateToURL(request, "_blank");
 			}
@@ -917,11 +938,11 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text="Battery Demand Analysis Tool v.1.12"/> 
+				text = "Battery Demand Analysis Tool v.1.13"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="export scenario data" fontSize="11" 
-				  x="446" y="10" includeIn="scenarioState,viewingState"
-				  />
+				  includeIn="scenarioState,viewingState"
+				   height.viewingState="25" y.scenarioState="10" verticalCenter.viewingState="0" x.scenarioState="446" horizontalCenter.viewingState="0"/>
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 
@@ -1069,8 +1090,9 @@
 			</mx:TabNavigator>
 		</s:BorderContainer>
 		<s:BorderContainer height="100%" borderVisible="false">
-			<mx:Text text="Step 3: Please select your geographies of interest on the right and click “Next” to continue.&#13;You may also select regions or clusters (developed, developing, or emerging) by changing the grouping below." 
+			<mx:Text text="Step 3: Please select your geographies of interest on the right and click “Next” to continue." 
 					 includeIn="geoList"  color="#50B848" verticalCenter="-115" horizontalCenter="-10" height="120" fontSize="14"/>
+			<!-- &#13;You may also select regions or clusters (developed, developing, or emerging) by changing the grouping below. !-->
 		</s:BorderContainer>
 
 		<s:BorderContainer id="termpBrd" creationPolicy="none" borderVisible="false">

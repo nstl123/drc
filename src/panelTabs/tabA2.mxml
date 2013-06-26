@@ -292,7 +292,8 @@
 					false, 
 					this.isLevel, 
 					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : ""),
-					false
+					false,
+					(indicatorsBox.selectedItem  ? indicatorsBox.selectedItem.unit : "")					
 				);
 			}
 			

@@ -138,7 +138,7 @@
 							series2.verticalAxis = vaxis1
 					else series2.verticalAxis = vaxis2;*/
 					series2.verticalAxis = vaxis1;				
-					series2.displayName = tmp.countryID + ", " 
+					series2.displayName = tmp.countryName + ", " 
 						+ (tmp.scenarioID == 10001 ? "Baseline" : "Scenario");
 					
 /* 					var stroke : SolidColorStroke = new SolidColorStroke();
@@ -200,7 +200,7 @@
 			public function tooltips_formater(m:Object):String		{			
 				(m.item.scenarioID == "10001") ? chartDGToolTip = "Baseline" : chartDGToolTip = "Working Scenario";			
 								
-				chartDGToolTip = m.item['countryID'] + ", " + chartDGToolTip + "\n";
+				chartDGToolTip = m.item['countryName'] + ", " + chartDGToolTip + "\n";
 				chartDGToolTip = chartDGToolTip + m.item['yrs'] + ": ";
 				
 				if (Math.abs(m.item['data']) < 100) {

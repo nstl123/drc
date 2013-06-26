@@ -33,6 +33,7 @@ package controls
 		//this.devicesActiveFlag = (this.selDeviceAggLevel > 0);
 		
 		[bindable] public var selDeviceAggLevel:int;
+		[bindable] public var selDemandIndi:int;
 		[bindable] public var selDeviceNamen:String;
 		
 		[bindable] public var devicesActiveFlag:Boolean = false;
@@ -44,7 +45,11 @@ package controls
 		[bindable] public var selPwrType:int = 0;
 		[bindable] public var selChemType:int = 1;
 		[bindable] public var selDevice:int = 1;
-				
+
+		public function getSelectedDemandIndi():int {
+			return this.selDemandIndi;
+		}
+		
 		public function setPwrTypesActiveFlag (k:Boolean):void {
 			this.pwrTypesActiveFlag = k;
 		}		

@@ -156,7 +156,7 @@
 					workingScenarioID, 1, 0, 1);
 			}
 			
-			[bindable] private var selectedIndi:int = 210;
+			[bindable] public var selectedIndi:int = 210;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {

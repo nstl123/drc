@@ -25,7 +25,7 @@ class Depot21 {
 		return $a; //$this->perHHmultiplier;
 	}
 	
-	// scenarioProxy data is distinct in that it uses proxy countries
+	// this function below is obsolete.
 	public function getMacroData($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames) {
 		$a = array('a'=>"");		
 		$countryArray = explode(",", $countryIDs); //(array)($countryIDs);		
@@ -67,10 +67,10 @@ class Depot21 {
 						AND typeID = ".$typeID;					
 		};		
 		
-		$result = $this->connection->fetchAll($stmnt); 
+		/*$result = $this->connection->fetchAll($stmnt); 
 		array_push($a, $result);		
-		return $result;
-		//return ($stmnt);
+		return $result;*/
+		return ($stmnt);
 	}
 	
 	// scenarioProxy data is distinct that uses proxy countries
@@ -87,71 +87,63 @@ class Depot21 {
 		$stmnt = ""; $selfields = ""; $sumStmnt = "";
 		
 		for ($u = 2006;  $u < 2022; $u++) {			
-			$sumStmnt = $sumStmnt.$this->perHHmultiplier." * sum(sdt.Y".$u." * wdb.Y".$u.") AS Y".$u.",";			
+			if ($indicatorID > 200) {
+				$sumStmnt = $sumStmnt.$this->perHHmultiplier." * sum(sdt.Y".$u." * wdb.Y".$u.") AS Y".$u.",";			
+			} else {
+				$sumStmnt = $sumStmnt." sdt.Y".$u." AS Y".$u.",";			
+			};
 		};
 		
-		$selFields = "SELECT sdt.scenarioID, sdt.indicatorID,  nmd.categoryID AS deviceID, sdt.typeID, ";		
+		$selFields = "SELECT sdt.scenarioID, sdt.indicatorID,";
+		if ($indicatorID > 200) {
+			$selFields = $selFields." nmd.categoryID AS deviceID, ndc.namen AS deviceName, sdt.typeID, ";
+		} else {
+			$selFields = $selFields." 0 AS deviceID, Null AS deviceName, 0 AS typeID, ";
+		};		
 		
-		if ($hasSplit == 0) { // hasSplitByTypes		
-			$stmnt = $selFields.$sumStmnt. 
-				($wNames > 0 ? "nc.namen" : ", 'NA'")." AS namen, sdt.countryID
-				FROM Consulting.DC_scenarioData sdt
+		// category level first		
+		$stmnt = $selFields.$sumStmnt." nc.namen AS countryName, nc.id as countryID				
+			FROM `Consulting`.`DC_scenarioData` sdt				
+				JOIN `Consulting`.`DC_namesCountries` nc
+					ON sdt.countryID = nc.id".
+			 ($indicatorID > 200 ? "
 				JOIN Consulting.DC_weigthsFromDeviceBase wdb
-					ON (wdb.countryID = sdt.countryID AND wdb.deviceID = sdt.deviceID)".
-				($wNames > 0 ? " \r\n JOIN Consulting.DC_namesCountries nc 
-						ON sdt.countryID = nc.id " : "")."
-					JOIN Consulting.DC_namesDevices nmd
-						ON (nmd.id = sdt.deviceID)					   
-				   WHERE sdt.scenarioID IN (".$scenarioID.", 10001) 				
-						AND nc.id IN ".$countryList."
-						AND sdt.indicatorID = ".$indicatorID;				
-			if ($indicatorID == 207) {
-				$stmnt = $stmnt." AND sdt.typeID = ".$typeID;
-			};								
-		} else { 									
-			$stmnt = $selFields.$sumStmnt." nc.namen, nc.id as countryID				
-				FROM `Consulting`.`DC_scenarioDataProxy` sdt				
-					JOIN `Consulting`.`DC_namesCountries` nc
-						ON sdt.countryID = nc.id
-					JOIN Consulting.DC_weigthsFromDeviceBase wdb
-						ON (wdb.countryID = nc.id AND wdb.deviceID = sdt.deviceID)
-					JOIN Consulting.DC_namesDevices nmd
-						ON (nmd.id = sdt.deviceID)			
-				WHERE 
-					sdt.scenarioID IN (".$scenarioID.", 10001)
-					AND nc.id IN ".$countryList." 
-					AND sdt.indicatorID = ".$indicatorID."
-					AND sdt.typeID = ".$typeID;					
-		};
-		$stmnt = $stmnt."
-				GROUP BY sdt.scenarioID, sdt.countryID, sdt.indicatorID, nmd.categoryID, typeID";				
+					ON (wdb.countryID = nc.id AND wdb.deviceID = sdt.deviceID)
+				JOIN Consulting.DC_namesDevices nmd
+					ON (nmd.id = sdt.deviceID)	
+			    JOIN Consulting.DC_namesDeviceCategories ndc
+				    ON (ndc.id = nmd.categoryID)" : "")."
+			WHERE 
+				sdt.scenarioID IN (".$scenarioID.", 10001)
+				AND nc.id IN ".$countryList." 
+				AND sdt.indicatorID = ".$indicatorID."
+				AND sdt.typeID = ".$typeID;					
 		
+		$stmnt = $stmnt."\r\n GROUP BY sdt.scenarioID, sdt.countryID, sdt.indicatorID". 
+				($indicatorID > 200 ? ", nmd.categoryID, typeID" : "");				
+		
+		// device level next		
 		$sumStmnt2 = "";
 		for ($u = 2006;  $u < 2022; $u++) { $sumStmnt2 = $sumStmnt2."sd.Y".$u.","; };		
-		$selFields2 = "sd.scenarioID, sd.indicatorID, sd.deviceID, sd.typeID, ";					
-		if ($hasSplit == 0) {		
-			$stmnt2 = "SELECT ".$selFields2.$sumStmnt2.
-				($wNames > 0 ? " nc.namen" : ", 'NA'")." AS namen, countryID 				
-				FROM Consulting.DC_scenarioData sd ".
-				($wNames > 0 ? "\r\n JOIN Consulting.DC_namesCountries nc 
-						ON sd.countryID = nc.id " : "").
-				"WHERE scenarioID IN (".$scenarioID.", 10001) 				
-						AND nc.id IN ".$countryList."
-						AND indicatorID = ".$indicatorID;				
-				if ($indicatorID == 207) {
-					$stmnt2 = $stmnt2." AND typeID = ".$typeID;
-				};								
-		} else {
-			$stmnt2 = "SELECT ".$selFields2.$sumStmnt2." nc.namen, nc.id as countryID 
-				FROM `Consulting`.`DC_scenarioDataProxy` sd
-				JOIN `Consulting`.`DC_namesCountries` nc
-				ON sd.countryID = nc.id
+		$selFields2 = "sd.scenarioID, sd.indicatorID, ";					
+		
+		if ($indicatorID > 200) {
+			$selFields2 = $selFields2." sd.deviceID, nmd.namen AS deviceName, sd.typeID, ";		
+			$stmnt2 = "SELECT ".$selFields2.$sumStmnt2." nc.namen AS countryName, nc.id as countryID 
+				FROM `Consulting`.`DC_scenarioData` sd
+				JOIN `Consulting`.`DC_namesCountries` nc				
+					ON sd.countryID = nc.id
+				JOIN Consulting.DC_namesDevices nmd
+					ON (nmd.id = sd.deviceID)				
 				WHERE 	scenarioID IN (".$scenarioID.", 10001)
 						AND nc.id IN ".$countryList." 
 						AND sd.indicatorID = ".$indicatorID."
 						AND typeID = ".$typeID;					
-		};				
-		$mainStmnt = $stmnt."\r\n UNION \r\n".$stmnt2;		
+			$mainStmnt = $stmnt."\r\n UNION \r\n".$stmnt2;		
+		} else {
+			$mainStmnt = $stmnt;		
+		};		
+		
 		$result = $this->connection->fetchAll($mainStmnt); 
 		array_push($a, $result);		
 		return $result;
@@ -193,7 +185,7 @@ class Depot21 {
 		};			
 		
 		$samePart = ", dm.scenarioID, 301 AS indicatorID, batTypeID, pwrTypeID".				
-			($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID" : ", nc.namen AS namen, dm.countryID").	
+			($isRegion > 0 ? ", rg.namen as countryName, rg.id AS countryID" : ", nc.namen AS countryName, dm.countryID").	
 				$sumStmnt."
 			FROM Consulting.DC_demand AS dm
 			JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) ".                    
@@ -209,8 +201,9 @@ class Depot21 {
 				($isRegion > 0 ? ", nc.".$useCluster : ", countryID").($typeID   > 0 ? ", batTypeID": "").
 				($pwrID    > 0 ? ", pwrTypeID": "");
 		
-		$stmntDevices    = "dm.deviceID 	  AS deviceID"; $stmntCategories = "devNam.categoryID AS deviceID";	
-		$stmntNull       = "0 				  AS deviceID";	$mainStmnt = "";
+		$stmntDevices    = "dm.deviceID       AS deviceID, devNam.namen AS deviceName"; 
+		$stmntCategories = "devNam.categoryID AS deviceID, devCat.namen AS deviceName";	
+		$stmntNull       = "0 			      AS deviceID, null         AS deviceName";	$mainStmnt = "";
 		
 		if ($hasOtherCountries > 0) {	// flag showing there are countries besides World aggregate			
 			if ($showAtDeviceLevel == 0) $mainStmnt = "SELECT ".$stmntNull.$samePart;
@@ -222,7 +215,7 @@ class Depot21 {
 			};
 		};
 		
-		$sameWorldPart = ", dm.scenarioID, 301 AS indicatorID, batTypeID, pwrTypeID, 'World' as namen, 1111 AS countryID".
+		$sameWorldPart = ", dm.scenarioID, 301 AS indicatorID, batTypeID, pwrTypeID, 'World' as countryName, 1111 AS countryID".
 					$sumStmnt."\r\n".
 					"FROM Consulting.DC_demand AS dm
 					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) 
@@ -284,12 +277,13 @@ class Depot21 {
 		};		
 // --- summing statement formation END ---		
 		$joinOn = "id";
-		$stmntDevices    = "dbt.deviceID 	  AS deviceID"; $stmntCategories = "devNam.categoryID AS deviceID";	
+		$stmntDevices    = "dbt.deviceID 	  AS deviceID, devNam.namen as deviceName"; 
+		$stmntCategories = "devNam.categoryID AS deviceID, devCat.namen as deviceName";	
 		$stmntNull       = "0 				  AS deviceID";	$mainStmnt = "";
 			
 		$samePart= "\r\n , dbt.scenarioID, dbt.indicatorID".
 				($pwrType  > 0 ? ", sdp.indicatorID, sdp.typeID " : ", 0 as indicatorID, 0 as typeID").
-				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID" : ", nc.namen AS namen, dbt.countryID").
+				($isRegion > 0 ? ", rg.namen AS countryName, rg.id AS countryID" : ", nc.namen AS countryName, dbt.countryID").
 				$sumStmnt."\r\n	FROM Consulting.DC_deviceBaseTable dbt
 			JOIN Consulting.DC_namesCountries nc ON dbt.countryID = nc.id".    
 					($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."				

@@ -29,9 +29,9 @@
 		<s:RadioButtonGroup id="pwrTypes" enabled="true"/>
 		<s:RadioButtonGroup id="chemTypes" enabled="false"/>
 		
-		<s:CallResponder id="getMacroData" result="getMacroDataResult_resultHandler(event)" 
+	<!--	<s:CallResponder id="getMacroData" result="getMacroDataResult_resultHandler(event)" 
 						 fault="getMacroData_faultHandler(event)"/>		
-
+!-->
 		<s:CallResponder id="getMacroDataCategory" result="getMacroDataCategory_resultHandler(event)" fault="getMacroDataCategory_faultHandler(event)" />
 		
 		<s:CallResponder id="getDemandByChemistry" result="getDemandByChemistryResult_resultHandler(event)" fault="getDemandByChemistry_faultHandler(event)"/>
@@ -397,6 +397,7 @@
 				this.cursorManager.removeBusyCursor();
 				currentData = this.getDemandData.lastResult as ArrayCollection;				
 				this.currentDataChart.source = this.currentData.source;								
+				
 				this.dispatchEvent(new Event("updateCharts", false));			
 				//Alert.show("got demand data", "info" );
 			}
@@ -554,17 +555,17 @@
 				};
 			}
 			
-			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
+			/*protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{
-				this.cursorManager.removeBusyCursor();
+				/*this.cursorManager.removeBusyCursor();
 				currentDataExo = this.getMacroData.lastResult as ArrayCollection;				
 				this.currentDataExoChart.source = this.currentDataExo.source;								
 				/*this.currentDataExoChart.filterFunction = this.filterGridExo;
 				this.currentDataExoChart.refresh();*/
 				
-				this.dispatchEvent(new Event("updateCharts", false));	
+				//this.dispatchEvent(new Event("updateCharts", false));	
 				//Alert.show("got exo macro data", "info");			
-			}			
+			//}			
 			
 			/*private function filterGridExo(item:Object):Boolean {				
 				var f:Boolean = true;				

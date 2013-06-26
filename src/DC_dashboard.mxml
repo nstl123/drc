@@ -815,26 +815,38 @@
 			}
 
 			private var hlp:helper;
+			private var exportTypeID:int = 0; 
 			protected function button_clickHandler(event:MouseEvent):void
 			{				
 				var countryIDs:Array = this.masterTab.getDataList().source;				
-				var tmp:String = this.hlp.formStringFromIDs2(countryIDs);
-				//var z:ArrayCollection = new ArrayCollection(tmp);
-				// should delete old scenarios first?
-				// data on unused scenarioIDs can be taken form DC_scenarioNames
-				// aggLevel - 0 for none/all, 1 - device, 2 - for category
-				var indicatorID:int;
-				switch (this.masterTab.selDeviceAggLevel) {
-					case 0:
-						indicatorID = 300; // cntryLevel 
+				var tmp:String = this.hlp.formStringFromIDs2(countryIDs);	
+				var indicatorID:int;				
+				// 0 - for exoVars, 1 - fro deviceBAse, 2 - for demand;
+				
+				switch (this.tabai.selectedIndex) {
+					case 0: // HH
+						indicatorID = this.panelTabA2.selectedIndi;
+						exportTypeID = 0;
 						break;
-					case 1:
-						indicatorID = 301; // deviceLevel
+					case 1:// ownership
+						indicatorID = this.panelTabB3.selectedIndi;
+						exportTypeID = 0;
 						break;
-					default:
-						indicatorID = 302; // categoryLevel
+					case 2: // market size
+						indicatorID = this.panelTabD5.selectedIndi;
+						exportTypeID = 0;
 						break;
-				};
+					case 3: // dev. spec.
+						indicatorID = this.panelTabF51.selectedIndi;
+						exportTypeID = 0;
+						break;
+					case 4: // demand
+						indicatorID = this.masterTab.selDemandIndi;
+						exportTypeID = 2;
+						break;
+					default :						
+						break;				
+				};							
 				
 				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp, indicatorID);
 			}			
@@ -851,12 +863,12 @@
 			
 			public var address:String = "192.168.44.200";
 			//public var address:String = "213.197.173.50";
-			protected function exportToExcel():void 	{
+			protected function exportToExcel():void 	{			
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
 					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcel_DC.php?"					 
 					+ "scenarioID=" + this.workingScenarioID
-					+ "&tabID=" + 3 // 3 - for demand; 2 for deviceBase; 1 for exo vars;
+					+ "&typeID=" + this.exportTypeID // 2 - for demand; 1 for deviceBase; 0 for exo vars;
 					+ "&tmp="       + String(Math.round(Math.random()*1000));
 				navigateToURL(request, "_blank");
 			}

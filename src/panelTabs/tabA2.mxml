@@ -145,11 +145,11 @@
 					var countryIDs:Array = this.dataList.source;				
 					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);
 					this.cursorManager.setBusyCursor();
-					getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 0, 0, 1);
+					getMacroDataResult.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi, workingScenarioID, 0, 0, 1);
 				};
 			}
 			
-			[bindable] private var selectedIndi:int = 101;
+			[bindable] public var selectedIndi:int = 101;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
@@ -159,6 +159,10 @@
 				//this.dispatchEvent(new Event("refreshData", false));
 				this.refreshData(null);
 			}			
+			
+			public function getSelectedIndi():int {
+				return this.selectedIndi;
+			}
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{					

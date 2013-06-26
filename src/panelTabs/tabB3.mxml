@@ -231,7 +231,7 @@
 				};
 			}
 			
-			[bindable] private var selectedIndi:int = 201;
+			[bindable] public var selectedIndi:int = 201;
 			[bindable] private var currentData:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();

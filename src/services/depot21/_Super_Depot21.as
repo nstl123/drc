@@ -14,9 +14,9 @@ import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
 import valueObjects.CustomDatatype18;
 import valueObjects.CustomDatatype19;
-import valueObjects.CustomDatatype23;
-import valueObjects.CustomDatatype24;
-import valueObjects.CustomDatatype25;
+import valueObjects.CustomDatatype26;
+import valueObjects.CustomDatatype27;
+import valueObjects.CustomDatatype28;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -34,10 +34,10 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         // initialize RemoteClass alias for all entities returned by functions of this service
         valueObjects.CustomDatatype18._initRemoteClassAlias();
         valueObjects.CountryName._initRemoteClassAlias();
-        valueObjects.CustomDatatype24._initRemoteClassAlias();
-        valueObjects.CustomDatatype25._initRemoteClassAlias();
+        valueObjects.CustomDatatype27._initRemoteClassAlias();
+        valueObjects.CustomDatatype28._initRemoteClassAlias();
         valueObjects.CustomDatatype19._initRemoteClassAlias();
-        valueObjects.CustomDatatype23._initRemoteClassAlias();
+        valueObjects.CustomDatatype26._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -49,16 +49,16 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CountryName;
         operations["getMacroDataFormat"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandData");
-         operation.resultElementType = valueObjects.CustomDatatype24;
+         operation.resultElementType = valueObjects.CustomDatatype27;
         operations["getDemandData"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDeviceBase");
-         operation.resultElementType = valueObjects.CustomDatatype25;
+         operation.resultElementType = valueObjects.CustomDatatype28;
         operations["getDeviceBase"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandByChemistry");
          operation.resultElementType = valueObjects.CustomDatatype19;
         operations["getDemandByChemistry"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getMacroDataCategory");
-         operation.resultElementType = valueObjects.CustomDatatype23;
+         operation.resultElementType = valueObjects.CustomDatatype26;
         operations["getMacroDataCategory"] = operation;
 
         _serviceControl.operations = operations;

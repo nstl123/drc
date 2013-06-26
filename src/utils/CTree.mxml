@@ -332,11 +332,16 @@
 				this.regionsListGrid.enabled = flag;
 			}
 			
-			
+			[bindable] public var selectedIndi:int;		
 			protected function devicesActive_clickHandler(event:MouseEvent):void
 			{				
 				selDeviceAggLevel = int(this.splitByDevices_C.selectedValue);
 				this.flowManager.setSelDeviceAggLevel(selDeviceAggLevel);
+				
+				if (this.selDeviceAggLevel == 0) this.flowManager.selDemandIndi = 300; // cntryLevel 
+				if (this.selDeviceAggLevel == 1) this.flowManager.selDemandIndi = 301; // deviceLevel
+				if (this.selDeviceAggLevel == 2) this.flowManager.selDemandIndi = 302; // categoryLevel				
+				
 				devicesActiveFlag = (this.selDeviceAggLevel > 0);
 				this.flowManager.setDevicesActiveFlag(this.devicesActiveFlag);		
 				

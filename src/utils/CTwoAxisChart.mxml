@@ -29,6 +29,7 @@
 		
 	</fx:Declarations>
 	
+		
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.dataGridClasses.DataGridColumn;
@@ -163,14 +164,19 @@
 				this.lineChart.showDataTips = true;
 				this.lineChart.dataTipFunction = tooltips_formater;			
 				
-				this.lineChart.invalidateDisplayList();				
-				//this.redrawColors();
+				//this.lineChart.invalidateDisplayList();	
+				//----- redrawing colors here
+				this.redrawColors();
 			}
 			
 			public function redrawColors():void {
+				var u:int = 0;
 				for each (var series:LineSeries in this.lineChart.series) {
-					var series_stroke:SolidColorStroke = series.getStyle('lineStroke') as SolidColorStroke;
-					series_stroke.weight = 10;
+					u = u + 1;
+					var series_stroke:SolidColorStroke = new SolidColorStroke();
+					series_stroke.weight = 0.75 + u * 0.25 ;
+					series_stroke.alpha = 0.5;
+					//series_stroke.color = 125;
 					series.setStyle('lineStroke', series_stroke);
 				};				
 			}
@@ -251,7 +257,13 @@
 			<s:Label text="Label" width="100%" height="15" verticalAlign="middle" textAlign="center" fontSize="10" id="chartSubtitle"/>
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
-				
+				<mx:series>
+					<mx:LineSeries>
+						<mx:stroke>
+							<mx:SolidColorStroke color="0xFFFFFF" alpha="1" weight="1"/>
+						</mx:stroke>
+					</mx:LineSeries>
+				</mx:series>
 	<!--	<mx:verticalAxisRenderers>
 				<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 					 <mx:axisStroke>

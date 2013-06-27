@@ -59,7 +59,7 @@
 				this.addEventListener("refreshData", refreshData);
 				
 				initShockControls();	
-				this.currentState = "viewingOnly";
+				this.currentState = "viewingOnly";				
 			}
 			
 			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
@@ -154,7 +154,7 @@
 			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
 				
-			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
+			public function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;		
 				//this.dispatchEvent(new Event("refreshData", false));
 				this.refreshData(null);

@@ -12,6 +12,7 @@ import mx.rpc.AsyncToken;
 import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
+import valueObjects.CustomDatatype31;
 import valueObjects.DeviceNames;
 import valueObjects.IndicatorNameObject;
 
@@ -32,6 +33,7 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
         valueObjects.CountryName._initRemoteClassAlias();
         valueObjects.IndicatorNameObject._initRemoteClassAlias();
         valueObjects.DeviceNames._initRemoteClassAlias();
+        valueObjects.CustomDatatype31._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -49,7 +51,7 @@ internal class _Super_Depot1 extends com.adobe.fiber.services.wrapper.RemoteObje
          operation.resultType = Object;
         operations["getCountryListTree"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getCountryListADG");
-         operation.resultType = Object;
+         operation.resultElementType = valueObjects.CustomDatatype31;
         operations["getCountryListADG"] = operation;
 
         _serviceControl.operations = operations;

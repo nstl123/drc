@@ -321,8 +321,9 @@
 				Alert.show("could not read DB", "error D5");
 			}
 
-			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
+			public function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
+				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
 				this.selDevice = this.deviceListDrop.selectedItem.id;
 				this.dispatchEvent(new Event("updateCharts", false));
 			}			
@@ -393,6 +394,7 @@
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source  = this.currentData.source;
 				
+				deviceListDrop_changeHandler(null);				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			

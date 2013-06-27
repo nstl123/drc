@@ -801,7 +801,7 @@
 				switch (f) {
 					case 0:
 						//tab A - macro
-						this.panelTabA2.refreshData(null);
+						this.panelTabA2.refreshData(null);						
 						this.cntryTree.currentState = "default";
 						break;
 					case 1:
@@ -881,8 +881,8 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			//public var address:String = "192.168.44.200";
-			public var address:String = "213.197.173.50";
+			public var address:String = "192.168.44.200";
+			//public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{			
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
@@ -992,7 +992,7 @@
 		</s:layout>
 		
 		<s:BorderContainer width="225" height="100%" horizontalCenter="0" top="" borderVisible="false"
-						   creationPolicy="auto" >
+						   creationPolicy="auto"  width.scenarioState="250">
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>

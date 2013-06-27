@@ -114,12 +114,13 @@
 					var i:uint;						
 					for (i=0; i < res.length; i++) {							
 						selectionList.addItem({
-							"namen"   : res[i].namen, 
-							"id"      : res[i].id, 
-							"isRegion": res[i].isRegion, 
-							"active"  :(res[i].active ? res[i].active : false),
-							"region"  : res[i].region,
-							"modified":(res[i].modified ? res[i].modified : false)
+							"namen"     : res[i].namen, 
+							"id"        : res[i].id, 
+							"isRegion"  : res[i].isRegion, 
+							"active"    :(res[i].active ? res[i].active : false),
+							"region"    : res[i].region,
+							"subRegion" : res[i].subRegion,
+							"modified"  :(res[i].modified ? res[i].modified : false)
 						});
 					}	
 				}						
@@ -492,10 +493,13 @@
 			private function sortData():void {
 				var sort:Sort = new Sort();
 				var sortField1:SortField = new SortField("region");
-				var sortField2:SortField = new SortField("id");
+				var sortField2:SortField = new SortField("subRegion");
+				var sortField3:SortField = new SortField("id");
 				
-				sort.fields = [sortField1, sortField2];        // Set 'Product' as the field to be sorted on
-				cntryListGridADG.dataProvider.sort = sort;   // Add the sort to the dataProvider of the dataGrid
+				sort.fields = [sortField1, sortField2, sortField3];        
+				// Set 'Product' as the field to be sorted on
+				cntryListGridADG.dataProvider.sort = sort;   
+				// Add the sort to the dataProvider of the dataGrid
 				gc.source.refresh();              // Refresh the GroupCollection
 			}
 			
@@ -653,6 +657,7 @@
 			<mx:GroupingCollection2 id="gc" source="{this.selectionList}">				
 				<mx:Grouping groupingObjectFunction="grpObjFunc" >
 					<mx:GroupingField name="region"/>									
+					<mx:GroupingField name="subRegion"/>
 				</mx:Grouping>				
 			</mx:GroupingCollection2>
 		</mx:dataProvider>  
@@ -665,9 +670,9 @@
 									   id="modFlag" sortable="false" textAlign="center"	/> 
 		</mx:columns>
 		<mx:rendererProviders>
-			<mx:AdvancedDataGridRendererProvider column="{inputas}" columnSpan="1" depth="2"
+			<mx:AdvancedDataGridRendererProvider column="{inputas}" columnSpan="1" depth="3"
 												 renderer="utils.CCheckBoxRendererADG"/>
-			<mx:AdvancedDataGridRendererProvider column="{modFlag}" columnSpan="1" depth="2"
+			<mx:AdvancedDataGridRendererProvider column="{modFlag}" columnSpan="1" depth="3"
 												 renderer="utils.CCheckBoxRendererADG2"/>
 		</mx:rendererProviders>
 	</mx:AdvancedDataGrid>	

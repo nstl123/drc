@@ -84,6 +84,7 @@
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source  = this.currentData.source;
 				
+				deviceListDrop_changeHandler(null);
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 
@@ -320,18 +321,11 @@
 			}
 
 			[bindable] private var selDevice:int = 1;
-			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
-			{
-				if (event != null) {
-					this.selDevice = this.deviceListDrop.selectedItem.id; 
-				} else {
-					this.selDevice = this.deviceListDrop.selectedItem.id;
-					/*if (selDeviceAggLevel > 1) {
-						this.selDevice = 200;
-					} else {					
-						this.selDevice = 1;
-					};*/
-				};
+			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void {		
+				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0; 				
+				
+				this.selDevice = this.deviceListDrop.selectedItem.id;	
+				
 				this.flMngr.setSelDevice(this.selDevice);
 				this.dispatchEvent(new Event("updateCharts", false));
 			}

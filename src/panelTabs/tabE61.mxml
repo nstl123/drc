@@ -128,9 +128,9 @@
 			private var tmpBatTypes:int = 0;
 			
 			protected function getSomeData_clickHandler(event:MouseEvent):void
-			{								
-				this.dispatchEvent(new Event("refreshData", false));
+			{	
 				exoIndi_clickHandler(null);
+				this.dispatchEvent(new Event("refreshData", false));				
 			}		
 			
 			/*public function updateChartTitle():void {
@@ -495,6 +495,7 @@
 			[bindable] private var selExoIndi:int = 101;
 			protected function exoListDrop_changeHandler(event:IndexChangeEvent):void
 			{
+				if (this.exoListDrop.selectedIndex < 0) this.exoListDrop.selectedIndex = 0;
 				this.selExoIndi = this.exoListDrop.selectedItem.id;
 				exoIndi_clickHandler(null);
 				
@@ -523,6 +524,8 @@
 				
 					var regionIDs:Array = this.dataListReg.source;
 					var tmp2:String = this.hlp.formStringFromIDs2(regionIDs);					
+					
+					if (this.exoListDrop.selectedIndex < 0) this.exoListDrop.selectedIndex = 0;
 					
 					if ( (this.selExoIndi == 204)||(this.selExoIndi == 206) ) 
 						typeID = this.flowManager.selBatType;

@@ -619,7 +619,10 @@
 			}
 			
 			// this is used for drawing update only
-			public function updateCharts(evt:Event):void {			
+			public function updateCharts(evt:Event):void {	
+				this.demandChart.setVwmode(this.flowManager.isViewingMode());
+				this.exoChart.setVwmode(this.flowManager.isViewingMode());
+				
 				this.currentDataChart.filterFunction = this.filterChart;				
 				this.currentDataChart.refresh();
 				this.demandChart.setData(currentDataChart, isLevel); 
@@ -685,6 +688,8 @@
 			[bindable] private var flowManager:FlowManager;
 			public function setMasterTab(flowMngr:FlowManager):void {
 				this.flowManager = flowMngr;
+				this.demandChart.setVwmode(this.flowManager.isViewingMode());
+				this.exoChart.setVwmode(this.flowManager.isViewingMode());
 			}			
 			
 			protected function getMacroDataCategory_resultHandler(event:ResultEvent):void
@@ -708,7 +713,7 @@
 	<utils:CTwoAxisChart width="747" height="250" id="demandChart" left="10" top="46">
 	</utils:CTwoAxisChart>
 
-	<s:Button x="402" label="Update Chart" id="getSomeData" click="getSomeData_clickHandler(event)" y="13" width="198" height="25" fontWeight="bold" enabled="true"/>
+	<s:Button label="Update Chart" id="getSomeData" click="getSomeData_clickHandler(event)" width="316" height="25" fontWeight="bold" enabled="true" left="439" top="13"/>
 
 <s:BorderContainer id="pagrindinis" width="100%" left="0" top="0" borderVisible="false" height="10">	
 
@@ -732,7 +737,7 @@
 	
 </s:BorderContainer>	
 	
-	<s:Label text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="15" fontFamily="Arial" top="6"/>
+	<s:Label text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="10" fontFamily="Arial" top="6"/>
 	<s:Label text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="167" fontFamily="Arial" top="6"/>
 <!--	<s:Label text="Battery Types" id="selDeviceLabel3" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="57"/>
 !-->
@@ -790,20 +795,20 @@
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false"/>
 	</s:BorderContainer>
 	!-->
-	<s:Label x="10" text="model inputs variable" fontStyle="italic" fontSize="11" top="303" fontFamily="Arial"/>
+	<s:Label text="model inputs variable" fontStyle="italic" fontSize="11" top="303" fontFamily="Arial" left="10"/>
 	
-	<s:DropDownList x="39" width="336" id="exoListDrop" labelField="namen" 
+	<s:DropDownList width="336" id="exoListDrop" labelField="namen" 
 					change="exoListDrop_changeHandler(event)" 
 					selectedIndex="0" height="20" top="314" enabled="true" 
 					fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9"
-					borderVisible="false"/>
+					borderVisible="false" left="50"/>
 	
 	<s:Button x="472" y="432" label="Update Chart" width="285" 
 			  click="exoIndi_clickHandler(event)" id="button" enabled="true" visible="false"/>
 	
 
-	<s:RadioButton x="33" label="Levels" groupName="growthType" enabled="true" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="17"/>
+	<s:RadioButton label="Levels" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="17" left="33"/>
 	<s:RadioButton x="91" label="Growths" groupName="growthType" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="17"/>
 

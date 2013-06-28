@@ -136,6 +136,7 @@
 			[bindable] private var flMngr:FlowManager;
 			public function setFlowManagerRef(z:FlowManager):void {
 				flMngr = z;
+				this.testChart.setVwmode(this.flMngr.isViewingMode());
 			}
 				
 			protected function updateData_resultHandler(event:ResultEvent):void
@@ -342,6 +343,8 @@
 			}
 			
 			protected function updateCharts(evt:Event):void {
+				this.testChart.setVwmode(this.flMngr.isViewingMode());
+				
 				this.currentDataGrid.filterFunction = this.filterGrid;
 				this.currentDataGrid.refresh();
 				
@@ -403,26 +406,30 @@
 		<s:RadioButtonGroup id="splitByDevices_C" />
 	</fx:Declarations>
 	
-	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="93" left="10" top.viewingOnly="78" left.viewingOnly="9">
+	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="93" left="10" top.viewingOnly="78" left.viewingOnly="9" top.default="90" left.default="10">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="469" left="10" top.viewingOnly="405" left.viewingOnly="9">
+	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="469" left="10" top.viewingOnly="405" left.viewingOnly="10" top.default="470" left.default="10">
 	</utils:CInteractiveGrid>
 	
 	<s:DropDownList height="20" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" selectedIndex="0" width="243" x="50" x.viewingOnly="49" top.viewingOnly="17"/>
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" selectedIndex="0" width="243" top.viewingOnly="17" top.default="32" left.default="50" left.viewingOnly="50"/>
 	
 	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" top="61" 
 			  width="241" height="25" fontWeight="bold" left="222" visible="false" top.viewingOnly="46" left.viewingOnly="221"/>
 	
 	<s:CheckBox x="298" label="hasSplit" visible="false" enabled="false" id="hasSplitFlag" top="33" height="20" x.viewingOnly="297" top.viewingOnly="18"/>
-	<s:Button label="Update Chart" width="222" click="digestChanges(event)" id="saveBtn" fontWeight="bold" height="27" top="394" left="535" top.viewingOnly="335" left.viewingOnly="534"/>
-	<s:Button label="Reset" width="222" click="button4_clickHandler(event)" height="23" top="424" left="535" top.viewingOnly="369" left.viewingOnly="534"/>
+	<s:Button label="Update Chart" width="222" click="digestChanges(event)" id="saveBtn" fontWeight="bold" height="27" top="394" left="535" top.viewingOnly="335" left.viewingOnly="535" top.default="392" left.default="535"/>
+	<s:Button width="222" click="button4_clickHandler(event)" height="23" top="424" 
+			  left="535" top.viewingOnly="369" left.viewingOnly="535" top.default="425" 
+			  left.default="535" label="Reset Scenario" enabled.default="true" enabled.viewingOnly="false"/>
 	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
 					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="32" height="20" top.viewingOnly="17" top.default="32" left.default="482" left.viewingOnly="482"></s:DropDownList>	
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="456" top.viewingOnly="391" left.viewingOnly="9"/>
-	<s:BorderContainer width="517" height="59" left="10" top="389" borderVisible="false" top.viewingOnly="335" left.viewingOnly="9" backgroundAlpha.viewingOnly="0.0">
-		<s:Label text="Shock Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial" id="shLbl"/>
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="456" top.viewingOnly="391" left.viewingOnly="10" top.default="456" left.default="10"/>
+	<s:BorderContainer width="517" height="59" left="10" top="389" borderVisible="false" top.viewingOnly="335" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" top.default="389" left.default="10">
+		<s:Label fontStyle="italic" fontSize="11" y="8" fontFamily="Arial"
+				 id="shLbl" left.default="0" left.viewingOnly="0" 
+				 text="Scenario Mechanism"/>
 		<s:BorderContainer x="265" y="5" width="244" height="48" id="shockControls" 
 						   enabled="false" borderVisible="false">
 			<s:Label x="3" y="1" text="Year" width="106" height="20" verticalAlign="middle" fontSize="10"/>
@@ -437,14 +444,14 @@
 					   top="35" fontSize="11" click="changeShockType_handler(event)" id="shockBtn2"/>
 	</s:BorderContainer>
 	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="62" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="76"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="62" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="77"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="62" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="139"/>
-	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="9"/>
-	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="42" left.viewingOnly="9"/>
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="62" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="140"/>
+	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
+	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="42" left.viewingOnly="10"/>
 	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" fontFamily="Arial" top.viewingOnly="6" top.default="21" left.default="469" left.viewingOnly="469"/>
-	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848" includeIn="default"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="347" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
+	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#007E9D" includeIn="default"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="347" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default"/>
 	<s:RadioButton value="2" label="Device category" groupName="splitByDevices_C" 
 				   selected="false" fontFamily="Arial" fontSize="11" left="340" top="56" 
 				   top.viewingOnly="41" left.viewingOnly="340" click="devicesActive_clickHandler(event)"/>

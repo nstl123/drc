@@ -13,7 +13,7 @@
 		<![CDATA[
 			
 			public function setButtonColors(col:String, k:int, single:Boolean = true):void {
-				if (!col) col = "#1a69d5"; // melyna				
+				if (!col) col = "#0071bb"; // melyna				
 				var colBlack:String = "#000000"; // default juoda "#000000"				
 				
 				if (single) {

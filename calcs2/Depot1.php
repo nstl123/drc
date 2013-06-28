@@ -43,7 +43,7 @@ class Depot1 {
 						JOIN Consulting.DC_namesCountries nc3 ON (nc1.subRegion = nc3.id)
 					WHERE nc1.isRegion = 0 -- ORDER BY nc2.namen , nc3.namen, nc1.namen
 				  UNION
-					SELECT nc1.id, nc1.isRegion, nc1.namen as namen, nc1.region as regionID, 'others' as region,
+					SELECT nc1.id, nc1.isRegion, nc1.namen as namen, nc1.region as regionID, 'Others' as region,
 						nc2.namen as subRegion, false AS active, false AS modified
 					FROM Consulting.DC_namesCountries nc1
 						JOIN Consulting.DC_namesCountries nc2 ON (nc1.region    = nc2.id)    

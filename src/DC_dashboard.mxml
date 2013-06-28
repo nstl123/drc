@@ -130,7 +130,7 @@
 					// -- end --
 					this.addEventListener("stateClicked", switchSate);
 					
-					masterTab = new FlowManager();					
+					if (!this.masterTab) {	masterTab = new FlowManager(); };					
 					this.masterTab.setStateSpacePos(1);
 					//updateStateSpaceLabel();				
 				} else if (flagApplicationStarted == 2)	{				
@@ -386,29 +386,28 @@
 				
 				var col3:String = '0x3e9a3e'; 
 								
-				if (this.currentState == "scenarioState") {
-					//lab0.setStyle(prop, col2);
-					(arr[0] == 1) ? labA.setStyle(prop, col1) : labA.setStyle(prop, col2); 
+				if (this.currentState == "scenarioState") {					
+					/*(arr[0] == 1) ? labA.setStyle(prop, col1) : labA.setStyle(prop, col2); 
 					(arr[1] == 1) ? labB.setStyle(prop, col1) : labB.setStyle(prop, col2);
 					//(arr[2] == 1) ? labC.setStyle(prop, col1) : labC.setStyle(prop, col2);
 					(arr[3] == 1) ? labD.setStyle(prop, col1) : labD.setStyle(prop, col2);
 					(arr[4] == 1) ? labE.setStyle(prop, col3) : labE.setStyle(prop, col3);
-					(arr[5] == 1) ? labF.setStyle(prop, col1) : labF.setStyle(prop, col2);
+					(arr[5] == 1) ? labF.setStyle(prop, col1) : labF.setStyle(prop, col2);*/
 				} else {					
-					labA.setStyle(prop, col2); 
+					/*labA.setStyle(prop, col2); 
 					labB.setStyle(prop, col2);					
 					labD.setStyle(prop, col2);
 					labE.setStyle(prop, col2);
-					labF.setStyle(prop, col2);
+					labF.setStyle(prop, col2);*/
 				};
 				
 				if (this.currentState == "scenarioState") {				
-					this.labAt.visible = (arr[0] == 1); 
+				/*	this.labAt.visible = (arr[0] == 1); 
 					this.labBt.visible = (arr[1] == 1);
 	//				this.labCt.visible = (arr[2] == 1);
 					this.labDt.visible = (arr[3] == 1);
 					this.labEt.visible = true; // = (arr[4] == 1)
-					this.labFt.visible = (arr[5] == 1);			
+					this.labFt.visible = (arr[5] == 1);*/			
 				};
 				//this.invalidateDisplayList();
 			}
@@ -627,7 +626,8 @@
 			protected function modeSwitch_clickHandler(event:Event):void
 			{
 				this.viewMode = String(this.viewingModeGroup.selection.value);
-				this.masterTab.registerViewingMode(this.viewMode);
+				if (!this.masterTab) masterTab = new FlowManager();
+				this.masterTab.registerViewingMode(this.viewMode);				
 				this.dispatchEvent(new Event("pathChanged", true));
 			}			
 
@@ -881,8 +881,8 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			public var address:String = "192.168.44.200";
-			//public var address:String = "213.197.173.50";
+			//public var address:String = "192.168.44.200";
+			public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{			
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
@@ -926,19 +926,19 @@
 			<s:BasicLayout/>
 		</s:layout>
 		<s:Button label="Next &gt;&gt;" width="110" height="25" id="btnNext" 
-				  click="btnNext_clickHandler(event)" 
-				  verticalCenter="0" right="15"  
-				  fontWeight="bold" fontFamily="Arial" fontSize="12" />
+				  click="btnNext_clickHandler(event)"				   
+				  fontWeight="bold" fontFamily="Arial" fontSize="12"  right="5" 
+				  verticalCenter="0"/>
 		<s:Button label="&lt;&lt; Back" width="110" height="25" 
 				  verticalCenter="0" id="btnBack"  click="btnBack_clickHandler(event)"  
-				  right="140" fontWeight="bold" fontFamily="Arial" fontSize="12"
-				  enabled.landingState="false" />
+				  fontWeight="bold" fontFamily="Arial" fontSize="12"
+				  enabled.landingState="false"  right="130"/>
 		<!-- <s:Label  text="emptyLabel" id="currentStateLabel" verticalCenter="0" 
 				 fontFamily="Verdana"  fontSize="12"/> !-->
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Battery Demand Analysis Tool v.1.13"/> 
+				text = "Battery Demand Analysis Tool v.1.14"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="export scenario data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
@@ -959,22 +959,22 @@
 		<s:RadioButton y="182" value="viewDataOnly"
 					   groupName="viewingModeGroup" 
 					   selected="true" click="modeSwitch_clickHandler(event)" 
-					   fontFamily="Arial" fontSize="14" color="#525252" fontWeight="bold" label="View base case data" left="200"/>
+					   fontFamily="Arial" fontSize="14" color="#000000" fontWeight="bold" label="View base case data" left="200"/>
 		<s:RadioButton y="244" label="Run scenarios" value="runScenarios" 
 					   groupName="viewingModeGroup"
-					   click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#525252" fontWeight="bold" left="200"/>
+					   click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#000000" fontWeight="bold" left="200"/>
 		<s:Label y="18" text="Home" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-331"/>
 		
 		<mx:Text width="671" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery-powered device data across 53 markets globally.  In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios." 
 				 y="44" height="85" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 		<mx:Text width="671" text="Step 1: Indicate below how you intend to use the tool:" 
-				 y="141" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" color="#50B848"/>		
+				 y="141" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" color="#007E9D"/>		
 		<mx:Text width="500" text="Click this selection to simply jump to output options" y="204" height="35" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
 		<mx:Text width="500" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="268" height="108" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
-		<s:RadioButton includeIn="landingState" label="Final Data File (XLS)" y="402" left="246" enabled="false"/>
-		<s:RadioButton label="Executive Summary (PPT)" y="430" left="246" enabled="false"/>
-		<s:RadioButton label="Full Report (PPT)" y="456" left="246" enabled="false"/>
-		<s:Label text="Get final project files" fontWeight="bold" fontSize="14" left="200" top="371"/>
+		<s:RadioButton includeIn="landingState" label="Final Data File (XLS)" y="402" left="246" enabled="false" color="#656565"/>
+		<s:RadioButton label="Executive Summary (PPT)" y="430" left="246" enabled="false" color="#656565"/>
+		<s:RadioButton label="Full Report (PPT)" y="456" left="246" enabled="false" color="#656565"/>
+		<s:Label text="Get final project files" fontWeight="bold" fontSize="14" left="200" top="371" color="#000000"/>
 	</s:BorderContainer>
 
 <s:BorderContainer width="992" height="100%" borderVisible="false" 
@@ -1005,13 +1005,14 @@
 			
 		</s:BorderContainer>
 		
-		<s:BorderContainer width="770" height="100%" left="0" borderVisible="true" borderColor="#C8C8C8"
-						   includeIn="viewingState, scenarioState" >
+		<s:BorderContainer width="770" height="100%" left="0"
+						   includeIn="viewingState, scenarioState"						    
+						   borderColor="#8E8E8E" borderWeight="0" borderVisible="false" width.scenarioState="776">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
 
-			<s:BorderContainer width="100%" height="15" borderVisible="false">
+			<!-- <s:BorderContainer width="100%" height="15" borderVisible="false">
 				<s:layout>
 					<s:HorizontalLayout verticalAlign="contentJustify" gap="0"/>
 				</s:layout>
@@ -1021,37 +1022,43 @@
 						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
 				<s:Label id="labBt" visible.viewingState="false" visible="false"
 						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
-<!--			<s:Label id="labCt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/> !-->
+    			<s:Label id="labCt" visible="false" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE"/>
 				<s:Label id="labDt" visible.viewingState="false" visible="false"
 						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
 				<s:Label id="labFt" visible.viewingState="false" visible="false"
 						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="DATA INPUT HERE" includeIn="scenarioState"/>
 				<s:Label id="labEt" visible.viewingState="false" visible="false"
 						 verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="10" width="109" fontWeight="normal" text="RESULTS" includeIn="scenarioState"/>
-			</s:BorderContainer>
+			</s:BorderContainer> !-->
 			
-			<s:BorderContainer width="100%" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1" borderVisible="false" color.scenarioState="#000000" backgroundColor.scenarioState="#F7F7F7">
+<!--			<s:BorderContainer width="100%" height="10" id="someCols" backgroundColor="#D1D1D1" color="#D1D1D1" borderVisible="false" color.scenarioState="#000000" backgroundColor.scenarioState="#F7F7F7">
 				<s:layout>
 					<s:HorizontalLayout verticalAlign="contentJustify" gap="0"/>
 				</s:layout>
 				<s:Label id="lab0"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  width="109" fontFamily="Verdana" fontSize="11" paddingLeft="0" paddingTop="0"  fontWeight="normal" chromeColor="#D1D1D1" includeIn="scenarioState"/>
 				<s:Label id="labA" verticalCenter="0" height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal" chromeColor="#3E9A3E"/>
 				<s:Label id="labB"   verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
-				<!--<s:Label id="labC"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>!-->
+	
 				<s:Label id="labD" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
 				<s:Label id="labF"  verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
 				<s:Label id="labE" verticalCenter="0"  height="100%" verticalAlign="middle" textAlign="center"  fontFamily="Verdana" fontSize="11" width="109" fontWeight="normal"/>
-			</s:BorderContainer>
+			</s:BorderContainer> !-->
 			
 			<mx:TabNavigator id="tabai" height="100%" fontFamily="Arial"						
-							 creationPolicy="none" creationComplete="tabai_creationCompleteHandler(event)"  fontSize="11" dropShadowVisible="false" borderVisible="false" verticalCenter="0" horizontalCenter="0" 
+							 creationPolicy="none" creationComplete="tabai_creationCompleteHandler(event)" 
+							 fontSize="11" dropShadowVisible="false"
+							 verticalCenter="0" horizontalCenter="0" 
 							 textAlign="left" chromeColor="#F8F8F8"
 							 backgroundAlpha="1.0" contentBackgroundAlpha="0.95" tabWidth="140"
-							 change="tabai_changeHandler(event)" >	
+							 change="tabai_changeHandler(event)" 
+							 borderVisible="false" borderColor="#8E8E8E">	
 				
 				<s:NavigatorContent id="nc_A2" label="Macro Environment"
 									width="100%" height="100%" 
 									creationPolicy="none">
+					<s:layout.viewingState>
+						<s:VerticalLayout/>
+					</s:layout.viewingState>
 					<panelTabs:tabA2 id="panelTabA2" width="100%" height="100%"  enabled="true"
 									 creationComplete="taba11_creationCompleteHandler(event)"  top="0" left="0"
 									  >
@@ -1091,7 +1098,7 @@
 		</s:BorderContainer>
 		<s:BorderContainer height="100%" borderVisible="false">
 			<mx:Text text="Step 3: Please select your geographies of interest on the right and click “Next” to continue." 
-					 includeIn="geoList"  color="#50B848" verticalCenter="-115" horizontalCenter="-10" height="120" fontSize="14"/>
+					 includeIn="geoList"  color="#007E9D" verticalCenter="-115" horizontalCenter="-10" height="120" fontSize="14"/>
 			<!-- &#13;You may also select regions or clusters (developed, developing, or emerging) by changing the grouping below. !-->
 		</s:BorderContainer>
 

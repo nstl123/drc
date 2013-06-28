@@ -31,7 +31,7 @@
 	
 		
 	<fx:Script>
-		<![CDATA[
+		<![CDATA[			
 			import mx.controls.dataGridClasses.DataGridColumn;
 			import mx.events.FlexEvent;		
 			
@@ -62,17 +62,24 @@
 			[bindable] public var selectedBatType:int = 1;
 			[bindable] public var selectedPwrType:int = 1;
 			[bindable] public var isLevel:Boolean = false;
-			
+			[bindable] public var vwMode:Boolean = true; // is mode viewOnly?			
 			
 			[bindable] private var dataSet:ArrayCollection = new ArrayCollection();		
+			
 			private var hlp:helper;
+			
 			
 			import mx.collections.ArrayCollection;			
 			import utils.helper;			
 			
+			
 			protected function startApp(event:FlexEvent):void
 			{
-				hlp = new helper();			
+				hlp = new helper();						
+			}		
+
+			public function setVwmode(z:Boolean):void {
+				this.vwMode = z;
 			}
 			
 			public function setData(data:ArrayCollection, isLevel:Boolean):void {
@@ -138,7 +145,7 @@
 					/*if (tmp.indicatorID == someData.getItemAt(0)[0].indicatorID)
 							series2.verticalAxis = vaxis1
 					else series2.verticalAxis = vaxis2;*/
-					series2.verticalAxis = vaxis1;				
+					series2.verticalAxis = vaxis1;					
 					series2.displayName = tmp.countryName + ", " 
 						+ (tmp.scenarioID == 10001 ? "Baseline" : "Scenario");
 					
@@ -169,22 +176,33 @@
 				this.redrawColors();
 			}
 			
+			private var pssprtQualitativeMapColours:Array = [0x00AED9,0xF7941E,0xAB6DAD, 0xFFCB05, 0x50B848, 0xDA2128, 0x91632E, 0x0072BC];			
+			private static var baselineScenarioID:int = 10001;
+			
 			public function redrawColors():void {
 				var u:int = 0;
-				for each (var series:LineSeries in this.lineChart.series) {
-					u = u + 1;
-					var series_stroke:SolidColorStroke = new SolidColorStroke();
-					series_stroke.weight = 0.75 + u * 0.25 ;
-					series_stroke.alpha = 0.5;
-					//series_stroke.color = 125;
-					series.setStyle('lineStroke', series_stroke);
+				var transp:Number = 1;  // tranparency 
+				var wght:Number   = 1;  // weight					
+				for (var k:int = 0; k < this.lineChart.series.length; k++) {
+					var series:LineSeries = this.lineChart.series[k];
+					var ui:int = k % this.pssprtQualitativeMapColours.length						
+					if ( (int(series.dataProvider[0].scenarioID) == baselineScenarioID) && !vwMode ) {
+						transp = 0.75;  wght = 1;						
+						series.setStyle('lineStroke', new SolidColorStroke(this.pssprtQualitativeMapColours[ui - u], wght, transp));						
+					} else {
+						transp = 1;    wght = 2;
+						series.setStyle('lineStroke', new SolidColorStroke(this.pssprtQualitativeMapColours[ui], wght, transp));
+						u++;
+					};				
+					
+					
 				};				
-			}
+			}			
 			
-			public function changeStyle(s1:SolidColorStroke):void {
-				for (var k:int = 0; k < mySeries.length; k++) {
-					this.mySeries[k].setStyle("lineStroke", s1);
-				}
+			private function toHexValue(r:int, g:int, b:int):uint
+			{
+				var hex:uint = r << 16 ^ g << 8 ^ b;
+				return hex;
 			}
 			
 			private function intToHex(color:uint = 0):String {
@@ -263,9 +281,10 @@
 							<mx:SolidColorStroke color="0xFFFFFF" alpha="1" weight="1"/>
 						</mx:stroke>
 					</mx:LineSeries>
-				</mx:series>
-	<!--	<mx:verticalAxisRenderers>
-				<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
+				</mx:series>	
+	<!--				
+			<mx:verticalAxisRenderers>
+		 		<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 					 <mx:axisStroke>
 						 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
 					 </mx:axisStroke>
@@ -278,8 +297,7 @@
 					</mx:axisStroke>
 				</mx:AxisRenderer>
 			</mx:horizontalAxisRenderers>
-	!-->
-				
+	!-->				
 			</mx:LineChart>
 		</s:BorderContainer>
 	

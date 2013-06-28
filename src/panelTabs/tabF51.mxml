@@ -105,6 +105,7 @@
 			[bindable] private var flMngr:FlowManager;
 			public function setFlowManagerRef(z:FlowManager):void {
 				flMngr = z;
+				this.testChart.setVwmode(this.flMngr.isViewingMode());
 			}
 			
 			protected function getDeviceList_resultHandler(event:ResultEvent):void
@@ -348,6 +349,8 @@
 			}
 			
 			protected function updateCharts(evt:Event):void {
+				this.testChart.setVwmode(this.flMngr.isViewingMode());
+				
 				this.currentDataGrid.filterFunction = this.filterGrid;
 				this.currentDataGrid.refresh();
 				this.currentDataChart.filterFunction = this.filterChart;
@@ -431,19 +434,21 @@
 	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="107" left="10" top.viewingOnly="114" left.viewingOnly="10" top.default="125" left.default="10">
 	</utils:CTwoAxisChart>
 	
-	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="492" left="10" top.viewingOnly="437" left.viewingOnly="10" top.default="503" left.default="10">
+	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="492" left="10" top.viewingOnly="437" left.viewingOnly="10" top.default="504" left.default="10">
 	</utils:CInteractiveGrid>
-	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#50B848" includeIn="default"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="381" left="10" fontFamily="Arial" color="#50B848" width="747" includeIn="default"/>
+	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#007E9D" includeIn="default"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="381" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default"/>
 	
 	<s:DropDownList width="242" height="18" id="indicatorsBox" 
 					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" left="50" top.viewingOnly="17" left.viewingOnly="50"/>
 	
 	<s:CheckBox x="300" y="34" label="hasSplit" enabled="false" id="hasSplitFlag" visible="false" x.viewingOnly="300" y.viewingOnly="19"/>
 	<s:Button label="Update Chart" width="222" click="digestChanges(event)" id="saveBtn" left="535" top="412" fontWeight="bold" height="27" top.viewingOnly="367" left.viewingOnly="535" top.default="430" left.default="535"/>
-	<s:Button label="Reset" click="button4_clickHandler(event)" width="222" left="535" top="445" height="23" top.viewingOnly="399" left.viewingOnly="535" top.default="463" left.default="535"/>
+	<s:Button click="button4_clickHandler(event)" width="222" left="535" top="445" 
+			  height="23" top.viewingOnly="399" left.viewingOnly="535" top.default="463" 
+			  left.default="535" label="Reset Scenario" enabled.viewingOnly="false" enabled.default="true"/>
 	<s:DropDownList width="272" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="482" top.default="32" left.default="501"></s:DropDownList>
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="482" top.default="32" left.default="482"></s:DropDownList>
 	
 	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" width="122" height="25" 
 			  fontWeight="bold" left="607" top="0" visible="false" top.viewingOnly="-15" left.viewingOnly="607"/>
@@ -454,9 +459,10 @@
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="59" left.viewingOnly="77" top.default="74" left.default="58"/>
 	<s:RadioButton label="Growths" groupName="growthType" value="1" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="77" left.viewingOnly="77" top.default="96" left.default="58"/>
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" y.default="490" top.viewingOnly="425" left.default="10"/>
+	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" top.viewingOnly="425" left.default="10" top.default="490"/>
 	<s:BorderContainer width="517" left="10" top="410" borderVisible="false" top.viewingOnly="367" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" height.default="59" height.viewingOnly="55" top.default="428" left.default="10">
-		<s:Label text="Scenario Mechanism" fontStyle="italic" fontSize="11" x="7" y="8" fontFamily="Arial" id="shLbl"/>
+		<s:Label text="Scenario Mechanism" fontStyle="italic" fontSize="11" y="8" 
+				 fontFamily="Arial" id="shLbl" left.default="0" left.viewingOnly="0"/>
 		<s:BorderContainer width="244" height="48" id="shockControls" enabled="false" borderVisible="false" y.default="5" x.default="265" x.viewingOnly="265" y.viewingOnly="5">
 			<s:Label x="3" y="1" text="Year" width="106" height="20" verticalAlign="middle" fontSize="10"/>
 			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>
@@ -471,7 +477,7 @@
 	</s:BorderContainer>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="46" left.viewingOnly="10" top.default="64" left.default="10"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
-	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="469" top.default="21" left.default="472"/>
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="469" top.default="21" left.default="469"/>
 	<s:RadioButton label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="true"
 				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" left="245" top.viewingOnly="59" left.viewingOnly="197" top.default="74" left.default="180"/>
 	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"

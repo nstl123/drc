@@ -32,6 +32,7 @@
 		
 	<fx:Script>
 		<![CDATA[			
+			import mx.charts.LegendItem;
 			import mx.controls.dataGridClasses.DataGridColumn;
 			import mx.events.FlexEvent;		
 			
@@ -142,18 +143,9 @@
 					
 					var tmp:Object = someData.getItemAt(i)[0]; 
 					
-					/*if (tmp.indicatorID == someData.getItemAt(0)[0].indicatorID)
-							series2.verticalAxis = vaxis1
-					else series2.verticalAxis = vaxis2;*/
 					series2.verticalAxis = vaxis1;					
 					series2.displayName = tmp.countryName + ", " 
-						+ (tmp.scenarioID == 10001 ? "Baseline" : "Scenario");
-					
-/* 					var stroke : SolidColorStroke = new SolidColorStroke();
-						stroke.color    = 0xFF0000 + 10 * i;
-						stroke.weight   = 1;
-					series2.setStyle( "lineStroke", stroke );
- */					//series2.setStyle("lineStroke", s1);				
+						+ (tmp.scenarioID == 10001 ? "Baseline" : "Scenario");	
 					
 					hAxis.dataProvider = someData.getItemAt(i);
 					vaxis1.baseAtZero = false;
@@ -172,31 +164,53 @@
 				this.lineChart.dataTipFunction = tooltips_formater;			
 				
 				//this.lineChart.invalidateDisplayList();	
-				//----- redrawing colors here
-				this.redrawColors();
+				//----- redrawing colors here				
+				this.redrawColors();							
 			}
 			
 			private var pssprtQualitativeMapColours:Array = [0x00AED9,0xF7941E,0xAB6DAD, 0xFFCB05, 0x50B848, 0xDA2128, 0x91632E, 0x0072BC];			
 			private static var baselineScenarioID:int = 10001;
 			
+			public function redrawLegend():void {
+				
+				for (var k:int = 0; k < this.lineChart.series.length; k++) {
+					var series:LineSeries = this.lineChart.series[k];
+					var newItem:LegendItem = new LegendItem();
+					newItem.name = series.displayName;					
+				};			
+			}
+			
 			public function redrawColors():void {
 				var u:int = 0;
 				var transp:Number = 1;  // tranparency 
-				var wght:Number   = 1;  // weight					
+				var wght:Number   = 1;  // weight				
+				
+				this.legendChart.removeAllElements();			
+				
 				for (var k:int = 0; k < this.lineChart.series.length; k++) {
 					var series:LineSeries = this.lineChart.series[k];
+					
+					var legItem:LegendItem = new LegendItem();
+					//var legItem:LegendItem = this.legendChart.getElementAt(0) as LegendItem;
+					legItem.label = series.displayName.split(",")[0];
+					
 					var ui:int = k % this.pssprtQualitativeMapColours.length						
 					if ( (int(series.dataProvider[0].scenarioID) == baselineScenarioID) && !vwMode ) {
 						transp = 0.75;  wght = 1;						
 						series.setStyle('lineStroke', new SolidColorStroke(this.pssprtQualitativeMapColours[ui - u], wght, transp));						
+						//legItem.setStyle('stroke',    new SolidColorStroke(this.pssprtQualitativeMapColours[ui - u], wght, transp));
+						//legItem.setStyle('fill', this.pssprtQualitativeMapColours[ui - u]);						
 					} else {
 						transp = 1;    wght = 2;
 						series.setStyle('lineStroke', new SolidColorStroke(this.pssprtQualitativeMapColours[ui], wght, transp));
+						legItem.setStyle('stroke',    new SolidColorStroke(this.pssprtQualitativeMapColours[ui], wght, transp));
+						legItem.setStyle('fill', this.pssprtQualitativeMapColours[ui]);
+						this.legendChart.addElement(legItem);
 						u++;
-					};				
-					
-					
-				};				
+					};					
+					//var z:Object = this.legendChart.getElementAt(k);					
+				};
+				this.legendChart.invalidateDisplayList();
 			}			
 			
 			private function toHexValue(r:int, g:int, b:int):uint
@@ -209,6 +223,12 @@
 				var mask:String = "00000F";
 				var str:String = mask + color.toString(16).toUpperCase();
 				return "0x" + str.substr(str.length - 6);
+			}
+			
+			private function createLegend():void {
+				var myLegend:Legend = new Legend();
+				myLegend.dataProvider = this.lineChart;
+				panel1.addChild(myLegend);
 			}
 			
 			public function defineLabel(cat:Object, pcat:Object, ax:LinearAxis):String 
@@ -265,7 +285,7 @@
 		<s:layout>
 			<s:HorizontalLayout/>
 		</s:layout>
-		<s:BorderContainer width="70%" height="100%" borderVisible="false">
+		<s:BorderContainer width="70%" height="100%" borderVisible="false" id="panel1">
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
 			</s:layout>
@@ -275,14 +295,7 @@
 			<s:Label text="Label" width="100%" height="15" verticalAlign="middle" textAlign="center" fontSize="10" id="chartSubtitle"/>
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
-				<mx:series>
-					<mx:LineSeries>
-						<mx:stroke>
-							<mx:SolidColorStroke color="0xFFFFFF" alpha="1" weight="1"/>
-						</mx:stroke>
-					</mx:LineSeries>
-				</mx:series>	
-	<!--				
+					
 			<mx:verticalAxisRenderers>
 		 		<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 					 <mx:axisStroke>
@@ -297,11 +310,13 @@
 					</mx:axisStroke>
 				</mx:AxisRenderer>
 			</mx:horizontalAxisRenderers>
-	!-->				
+					
 			</mx:LineChart>
 		</s:BorderContainer>
 	
-	<mx:Legend dataProvider="{lineChart}" width="30%" height="100%" horizontalCenter="0" verticalCenter="139" fontWeight="normal" fontFamily="Arial" fontSize="11" borderVisible="false" textAlign="left" fontStyle="normal" backgroundAlpha="0.5" contentBackgroundAlpha="0.5">
+	<mx:Legend  width="30%" height="100%" horizontalCenter="0"
+			   verticalCenter="139" fontWeight="normal" fontFamily="Arial" fontSize="11" borderVisible="false" textAlign="left" fontStyle="normal" backgroundAlpha="0.5" contentBackgroundAlpha="0.5"
+			   id="legendChart">
 		<s:DataGroup width="100%" height="100%">
 			<s:layout>
 				<s:HorizontalLayout/>

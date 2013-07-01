@@ -635,6 +635,7 @@
 				updateChartTitles();			
 			}
 			
+			[bindable] public var flagDev:Boolean = false;
 			public function updateChartTitles():void {
 				this.demandChart.updateChartTitle("Demand", 
 					this.flowManager.selDeviceAggLevel, 
@@ -651,13 +652,19 @@
 						fl = false;
 					else 
 						fl = (this.showPerHHFlag == 1); 
-				};
+				};			
+						
+				if ( this.selExoIndi < 200 ) { 
+						 flagDev = false; 
+				} else { 
+						flagDev = this.flowManager.devicesActiveFlag; 
+				};				
 				
 				this.exoChart.updateChartTitle(
 					(exoListDrop.selectedItem ? exoListDrop.selectedItem.namen :
 						exoListDrop.dataProvider.getItemAt(0).namen),
 					this.flowManager.selDeviceAggLevel, 
-					this.flowManager.devicesActiveFlag,
+					flagDev,
 					isLevel, 
 					this.flowManager.selDeviceNamen,
 					fl, 

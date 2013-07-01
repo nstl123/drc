@@ -277,6 +277,8 @@
 				this.panelTabD5.refreshData(null);				
 				this.panelTabF51.refreshData(null);
 				this.panelTabE61.refreshData(null);
+				
+				this.cntryTree.resetScenarioCountries();
 			}
 
 			[bindable] public var changeMadeInScenario:Boolean = false;

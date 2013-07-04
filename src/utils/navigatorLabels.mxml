@@ -14,7 +14,8 @@
 			
 			public function setButtonColors(col:String, k:int, single:Boolean = true):void {
 				if (!col) col = "#0071bb"; // melyna				
-				var colBlack:String = "#000000"; // default juoda "#000000"				
+				var colBlack:String = "#000000"; // default juoda "#000000"
+				
 				
 				if (single) {
 					this.lab1.setStyle("color", colBlack);
@@ -56,16 +57,16 @@
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="10" paddingRight="10"/>
 		</s:layout>
-		<s:Label text="Business Questions" width="21%" height="30" verticalAlign="middle" textAlign="center" 
-				 id="lab1" color="#000000" fontWeight="bold" click="stateSelected(event)"/>
-		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"				 />
-		<s:Label text="Geography List" width="21%" height="30" verticalAlign="middle" textAlign="center"
+		<mx:LinkButton label="Business Questions" enabled="true" width="21%" height="30" textAlign="center" 
+					   id="lab1" color="#000000" fontWeight="bold" click="stateSelected(event)" textDecoration="none"/>
+		<s:Label  text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"				 />
+		<mx:LinkButton label="Geography List" width="21%" height="30" textAlign="center"
 				 id="lab2" fontWeight="bold"  click="stateSelected(event)"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
-		<s:Label text="Data Inputs" width="21%" height="30" verticalAlign="middle" textAlign="center" 
+		<mx:LinkButton label="Data Inputs" width="21%" height="30" textAlign="center" 
 				 id="lab4" fontWeight="bold"  click="stateSelected(event)"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
-		<s:Label text="View Output" width="21%" height="30" verticalAlign="middle" textAlign="center"
+		<mx:LinkButton label="View Output" width="21%" height="30" textAlign="center"
 				 id="lab5" fontWeight="bold"  click="stateSelected(event)"/>
 		
 	</s:BorderContainer>

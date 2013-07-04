@@ -21,7 +21,7 @@
 		<s:CallResponder id="getMacroDataResult" result="getMacroDataResult_resultHandler(event)" fault="getMacroDataResult_faultHandler(event)"/>
 		<s:CallResponder id="getMacroDataCategory" result="getMacroDataCategory_resultHandler(event)" fault="getMacroDataCategory_faultHandler(event)" />
 		
-		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" />
+		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		
 		<s:RadioButtonGroup id="batTypes" />		
 		<s:RadioButtonGroup id="pwrTypes" />
@@ -38,6 +38,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import services.depot31.Depot31;
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
 				var r:Object = event.message;
@@ -56,7 +57,6 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import services.depot1.Depot1;
-			import services.depot3.Depot3;
 			
 			import spark.events.IndexChangeEvent;
 			
@@ -64,7 +64,7 @@
 			
 			public var dataServiceNames:Depot1;
 			public var dataServiceData:Depot21;
-			public var dataServiceUpdate:Depot3;
+			public var dataServiceUpdate:Depot31;
 			
 			[bindable] private var workingScenarioID:int;
 			[bindable] private var baselineScenarioID:int = 10001;
@@ -88,7 +88,7 @@
 			
 			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
 			protected function initShockControls():void {
-				for (var i:int = 2004; i < 2021; i++) {
+				for (var i:int = 2012; i <= 2021; i++) {
 					yrsList.addItem({"yrs":i});
 				};
 				this.shockYears.dataProvider = yrsList;
@@ -279,9 +279,10 @@
 					
 					if (this.alteredData.length > 0) {					
 						if (this.selectedIndi == 207) {
-							this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, tmpType);
+							this.updateData.token = this.dataServiceUpdate.updateData2(temp, false, this.selDevice, tmpType, yrs, val);
 						} else {				
-							this.updateData.token = this.dataServiceUpdate.updateDataProxy(temp, this.selDevice, tmpType);
+							//this.updateData.token = this.dataServiceUpdate.updateDataProxy(temp, this.selDevice, tmpType);
+							this.updateData.token = this.dataServiceUpdate.updateData2(temp, false, this.selDevice, tmpType, yrs, val);
 						};
 						this.dispatchEvent(new Event("changesMadeInScenario", true));
 					} else {
@@ -426,6 +427,13 @@
 			{
 				this.cursorManager.removeBusyCursor();
 				Alert.show("could not read data", "error F51");
+			}
+
+
+			protected function updateData_faultHandler(event:FaultEvent):void
+			{
+				var z:Object = event.message.body;
+				Alert.show(z.toString(), "Error Updateing Data");
 			}
 
 		]]>

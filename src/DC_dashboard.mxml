@@ -4,14 +4,14 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx" 
 			    
 			   xmlns:depot1="services.depot1.*"
-			   xmlns:depot3="services.depot3.*"		   		   
+			   xmlns:depot31="services.depot31.*"		   		   
 			   
 			   creationComplete="application1_creationCompleteHandler(event)"
 			   
 			   xmlns:panelTabs="panelTabs.*" 
 			   width="100%"  xmlns:utils="utils.*"
 			   pageTitle="Battery Demand Tool" 
-			   minHeight="800" height="800" xmlns:wrapperis="services.wrapperis.*" xmlns:depot4="services.depot4.*">
+			   minHeight="800" height="800" xmlns:wrapperis="services.wrapperis.*" xmlns:depot4="services.depot4.*" xmlns:depot311="services.depot31.*">
 	
 	<!-- creationComplete="initAll(event)" !-->
 	
@@ -23,7 +23,7 @@
 		
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 					   showBusyCursor="true"/>		
-		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
+		<depot31:Depot31 id="depot31" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" showBusyCursor="true"/>
 		
 		<s:CallResponder id="createNewWorkingScenarioResult" result="createNewWorkingScenarioResult_resultHandler(event)"
 						 fault="createNewWorkingScenarioResult_faultHandler(event)"/>		
@@ -58,7 +58,7 @@
 			import utils.helper;			
 			private var dataServiceNames:Depot1;
 			private var dataServiceData:Depot21;
-			private var dataServiceUpdate:Depot3;
+			private var dataServiceUpdate:Depot31;
 			
 			public  var masterTab:FlowManager;
 			
@@ -89,7 +89,7 @@
 					//this.pathLabel.text = "Init";						
 					this.dataServiceNames = new Depot1();
 					this.dataServiceData = new Depot21();
-					this.dataServiceUpdate = new Depot3();				
+					this.dataServiceUpdate = new Depot31();			
 					
 					this.workingScenarioID = this.IDgen.generateID();	
 					this.currTime = this.IDgen.generateTimeStamp();
@@ -311,7 +311,7 @@
 				this.changeMadeInScenario = false;
 				this.masterTab.resetScenarioCountries(); // remove data from list	
 				//this.cntryTree.resetScenarioCountries(); //update Tree for new data
-				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(workingScenarioID);
+				createNewWorkingScenarioResult.token = depot31.createNewWorkingScenario(workingScenarioID);
 			}
 			
 			[bindable] private var atLeastOneCntrySelected:Boolean = false;
@@ -416,11 +416,11 @@
 			
 			public function cleanOldScenarios():void {
 				//this.statusLabel.text = "cleaning DB...";
-				deleteAllScenariosResult.token = depot3.deleteAllScenarios();		
+				deleteAllScenariosResult.token = depot31.deleteAllScenarios();		
 			}
 			
 			public function initScenarioDB(evt:Event):void {
-				createNewWorkingScenarioResult.token = depot3.createNewWorkingScenario(workingScenarioID);
+				createNewWorkingScenarioResult.token = depot31.createNewWorkingScenario(workingScenarioID);
 			}		
 			
 			[bindable] private var scenarioCreatedFlag:Boolean = false;
@@ -692,18 +692,7 @@
 								this.updateLabelState();
 							};
 						};
-						break;
-					/*case "indicatorsList":
-						this.digestUpdate(null);
-						currentState = "scenarioState";
-						this.navigatorBox2.setButtonColors(null, 4);							
-						if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
-						if (this.tabaiCreationComplete) this.tabai.selectedIndex = this.selActiveTab;						
-						//var z:ArrayCollection = getSelectedIndicators();
-						//this.masterTab.recordSelectedIndicators(z);
-						this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus						
-						this.cntryTree.setRegionsGridEnabled(true);												
-						break;*/					
+						break;					
 					case "viewingState" :						
 						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);						

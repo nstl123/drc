@@ -8,7 +8,7 @@
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
 		 xmlns:depot21="services.depot21.*"
-		 xmlns:depot3="services.depot3.*"
+		 xmlns:depot31="services.depot31.*"
 		 >
 	
 	<s:layout>
@@ -22,6 +22,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import services.depot31.Depot31;
 			protected function writeViewToTableResult_faultHandler(event:FaultEvent):void
 			{
 				Alert.show("Could not write to DB", "Error D5");
@@ -37,8 +38,7 @@
 			{
 				Alert.show("could not get deviceList form DB", "error D5");
 			}
-	
-			import services.depot3.Depot3;
+			
 			private var deviceNamesFullList:ArrayCollection;
 			protected function getDeviceLits_resultHandler(event:ResultEvent):void
 			{			
@@ -66,7 +66,7 @@
 			
 			public var dataServiceNames:Depot1;
 			public var dataServiceData:Depot21;
-			public var dataServiceUpdate:Depot3;
+			public var dataServiceUpdate:Depot31;
 			
 			[bindable] private var workingScenarioID:int;
 			[bindable] private var baselineScenarioID:int = 10001;
@@ -93,7 +93,7 @@
 			
 			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
 			protected function initShockControls():void {
-				for (var i:int = 2004; i < 2021; i++) {
+				for (var i:int = 2012; i <= 2021; i++) {
 					yrsList.addItem({"yrs":i});
 				};
 				this.shockYears.dataProvider = yrsList;
@@ -198,7 +198,7 @@
 					};					
 					temp = ({'id':1, data:this.alteredData});
 					if (this.alteredData.length > 0) {						
-						this.updateData.token = this.dataServiceUpdate.updateData(temp, false, this.selDevice, 0);
+						this.updateData.token = this.dataServiceUpdate.updateData2(temp, false, this.selDevice, 0, yrs, val);
 						this.dispatchEvent(new Event("changesMadeInScenario", true));
 					} else {
 						this.dispatchEvent(new Event("refreshData", false));

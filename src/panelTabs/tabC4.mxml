@@ -5,8 +5,8 @@
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)"		  
 		 xmlns:depot1="services.depot1.*" 
-		 xmlns:depot21="services.depot21.*"
-		  xmlns:depot3="services.depot3.*">
+		 xmlns:depot21="services.depot21.*"		  
+		 xmlns:depot31="services.depot31.*">
 	
 	<s:layout>
 		<s:BasicLayout/>
@@ -15,6 +15,8 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.charts.AreaChart;
+			
+			import services.depot31.Depot31;
 			protected function getDeviceBase_faultHandler(event:FaultEvent):void
 			{
 				//this.cursorManager.removeBusyCursor();
@@ -114,7 +116,7 @@
 			
 			public var dataServiceNames:Depot1;
 			public var dataServiceData:Depot21;
-			public var dataServiceUpdate:Depot3;
+			public var dataServiceUpdate:Depot31;
 			
 			[bindable] private var workingScenarioID:int;
 			private var hlp:helper;
@@ -158,7 +160,7 @@
 				var temp:Object = new Object();
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
-				this.updateData.token = this.dataServiceUpdate.updateData(temp, true, this.selDevice, 0);
+				this.updateData.token = this.dataServiceUpdate.updateData2(temp, true, this.selDevice, 0, 2012, 0);
 			}
 			
 			
@@ -309,7 +311,7 @@
 					   showBusyCursor="true"/>
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 						 showBusyCursor="true"/>
-		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"
+		<depot31:Depot31 id="depot31" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"
 					   showBusyCursor="true"/>
 		
 

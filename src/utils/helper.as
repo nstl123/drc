@@ -20,12 +20,12 @@ package utils
 				rez.addItem({
 					"scenarioID" : workingScenarioID,
 					"countryID"  : fin.countryID, "indicatorID" : selectedIndi,					
-					"Y2006": (yrs <= 2006) ? (fin.Y2006 * mult) : fin.Y2006,
+					/*"Y2006": (yrs <= 2006) ? (fin.Y2006 * mult) : fin.Y2006,
 					"Y2007": (yrs <= 2007) ? (fin.Y2007 * mult) : fin.Y2007,
 					"Y2008": (yrs <= 2008) ? (fin.Y2008 * mult) : fin.Y2008,
 					"Y2009": (yrs <= 2009) ? (fin.Y2009 * mult) : fin.Y2009,					
 					"Y2010": (yrs <= 2010) ? (fin.Y2010 * mult) : fin.Y2010,					
-					"Y2011": (yrs <= 2011) ? (fin.Y2011 * mult) : fin.Y2011,										
+					"Y2011": (yrs <= 2011) ? (fin.Y2011 * mult) : fin.Y2011,*/										
 					"Y2012": (yrs <= 2012) ? (fin.Y2012 * mult) : fin.Y2012,
 					"Y2013": (yrs <= 2013) ? (fin.Y2013 * mult) : fin.Y2013,
 					"Y2014": (yrs <= 2014) ? (fin.Y2014 * mult) : fin.Y2014,
@@ -35,7 +35,7 @@ package utils
 					"Y2018": (yrs <= 2018) ? (fin.Y2018 * mult) : fin.Y2018,
 					"Y2019": (yrs <= 2019) ? (fin.Y2019 * mult) : fin.Y2019,
 					"Y2020": (yrs <= 2020) ? (fin.Y2020 * mult) : fin.Y2020,					
-					"Y2021": (yrs <= 2021) ? (fin.Y2021 * mult) : fin.Y2021
+					"Y2021": (yrs <= 2021) ? (fin.Y2021 * mult) : (fin.Y2021 ? fin.Y2021 : 0) 
 				});
 			
 			};

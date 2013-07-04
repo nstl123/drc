@@ -6,8 +6,8 @@
 		 xmlns:utils="utils.*"
 		 creationComplete="startApp(event)"
 		 xmlns:depot1="services.depot1.*" 
-		 xmlns:depot21="services.depot21.*" 
-		 xmlns:depot3="services.depot3.*">
+		 xmlns:depot21="services.depot21.*"		  
+		 xmlns:depot31="services.depot31.*">
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -27,8 +27,8 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import services.depot1.Depot1;
-			import services.depot3.Depot3;
+			import services.depot1.Depot1;			
+			import services.depot31.Depot31;
 			
 			import spark.events.IndexChangeEvent;
 			
@@ -36,7 +36,7 @@
 			
 			public var dataServiceNames:Depot1;
 			public var dataServiceData:Depot21;
-			public var dataServiceUpdate:Depot3;
+			public var dataServiceUpdate:Depot31;
 			
 			[bindable] private var workingScenarioID:int;
 			[bindable] private var baselineScenarioID:int = 10001;
@@ -65,7 +65,7 @@
 			
 			[bindable] private var yrsList:ArrayCollection = new ArrayCollection();
 			protected function initShockControls():void {
-				for (var i:int = 2004; i < 2021; i++) {
+				for (var i:int = 2012; i <= 2021; i++) {
 					yrsList.addItem({"yrs":i});
 				};
 				this.shockYears.dataProvider = yrsList;
@@ -213,7 +213,7 @@
 					};					
 					temp = ({'id':1, data:this.alteredData});		
 					if (this.alteredData.length  > 0) {
-						this.updateData.token = this.dataServiceUpdate.updateData(temp, false, 0, 0);						
+						this.updateData.token = this.dataServiceUpdate.updateData2(temp, int(false), 0, 0, yrs, val);						
 						this.dispatchEvent(new Event("changesMadeInScenario", true));
 					} else {
 						this.dispatchEvent(new Event("refreshData", false));
@@ -333,8 +333,8 @@
 		<depot1:Depot1 id="depot1" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
 					   showBusyCursor="true"/>
 		<depot21:Depot21 id="depot21" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)" 
-						 showBusyCursor="true"/>		
-		<depot3:Depot3 id="depot3" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"
+						 showBusyCursor="true"/>	
+		<depot31:Depot31 id="depot31" fault="Alert.show(event.fault.faultString + '\n' + event.fault.faultDetail)"
 					   showBusyCursor="true"/>
 	
 		<s:CallResponder id="indicatorsNamesList" result="setIndicatorsList(event)"/>

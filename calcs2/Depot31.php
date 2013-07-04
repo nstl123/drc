@@ -2,7 +2,7 @@
 
 require_once 'Zend/Db/Adapter/Mysqli.php';
 
-class Depot3 {
+class Depot31 {
 
 	public function __construct() {
 		$this->connection = new Zend_Db_Adapter_Mysqli(array(
@@ -13,45 +13,6 @@ class Depot3 {
 		));
 	}	
 	
-	public function updateData($data, $isDeviceBase, $deviceID, $typeID) { // id indicator hasSplit by batTypes
-		$arr0 = (array)$data;
-		$arr = $arr0['data'];
-		
-		$srcTable = "";		
-		// in this case need to add proxy countries for matching batType and pwrType IDs
-		$srcTable = "Consulting.DC_scenarioData sdt";
-		
-		if ($isDeviceBase) $srcTable = "Consulting.DC_deviceBaseTable"; 				
-		
-		$joinTable = "\r\nLEFT JOIN Consulting.DC_namesDevices ndv ON (ndv.id = sdt.deviceID)\r\n";
-		$devLevel = (($deviceID > 200) ? " ndv.categoryID " : " ndv.id");
-		/*$someYears = ", Y2015 = ".$b['Y2015'].", Y2016 = ".$b['Y2016'].", Y2017 = ".$b['Y2017'].", 
-				Y2018 = ".$b['Y2018'].", Y2019 = ".$b['Y2019'].", Y2020 = ".$b['Y2020'].", Y2021 = ".$b['Y2021'];*/
-		
-		for ($j = 0; $j < count($arr); $j++) {		
-			$b =(array) $arr0['data'][$j]; // need to extend to more data points
-			$stmnt = "
-				UPDATE ".$srcTable.$joinTable." 
-				SET 
-				Y2012 = ".$b['Y2012'].", Y2013 = ".$b['Y2013'].", Y2014 = ".$b['Y2014']."\r\n
-				WHERE scenarioID = ".$b['scenarioID']." AND countryID = ".$b['countryID']." AND indicatorID = ".$b['indicatorID'];
-			
-			if ( ($b['indicatorID'] == 203)||($b['indicatorID'] == 210)||($b['indicatorID'] == 211) ) { 				
-					$stmnt." AND ".$devLevel." = ".$deviceID;
-			} else 			
-			if ($b['indicatorID'] > 200) { // means not macro
-					$stmnt = $stmnt." AND ".$devLevel." = ".$deviceID." AND typeID = ".$typeID.";";
-			};		
-		
-			$result = $this->connection->prepare($stmnt);
-			$result->execute();	
-	
-		}		
-		//return true;
-		return  $stmnt;
-		//return $arr;
-	}		
-
 // this one should not be used; all data are present in scenarioData Table		
 	public function updateDataProxy($data, $deviceID, $typeID) { // id indicator hasSplit by batTypes
 		$arr0 = (array)$data;
@@ -221,26 +182,43 @@ class Depot3 {
 		return $a;
 	}
 
-	/*public function insertExportIds($scenarioID, $countryIDs) {	
-		$b = (array)$countryIDs;
-		$st = "";
-		for ($j = 0; $j < count($b); $j++) {				
-			$stmnt  = "
-				INSERT INTO Consulting.DC_exportIDTable
-					(scenarioID, countryID, indicatorID)
-				VALUES 
-				    (".$scenarioID.",".$b[$j].", NULL);";		
-			$result = $this->connection->prepare($stmnt);
-			$result->execute();					
-			$st = $st.$stmnt;
+	public function updateData2($data, $isDeviceBase, $deviceID, $typeID, $startYear, $shockValue) { // id indicator hasSplit by batTypes
+		$arr0 = (array)$data;
+		$arr = $arr0['data'];		
+		
+		$srcTable = "";	 $srcTable = "Consulting.DC_scenarioData sdt";		
+		if ($isDeviceBase == 1) $srcTable = "Consulting.DC_deviceBaseTable"; 				
+		
+		$updateYears = ""; 
+		for ($u = $startYear; $u <= 2021; $u++) {
+			$updateYears = $updateYears.($u > $startYear ? "," : "" );
+			$updateYears = $updateYears."sdt.Y".$u." = ( a.Y".$u." * ". (1 + $shockValue/100).")";
 		};		
-		return $st;
-	}*/
+		//$joinTable = "\r\nLEFT JOIN Consulting.DC_namesDevices ndv ON (ndv.id = sdt.deviceID)\r\n";
+		$devLevel     = (($deviceID > 200) ? " ndv.categoryID " : " ndv.id");
+		$devLevelFull = (($deviceID >   0) ?  (" AND ".$devLevel."=".$deviceID) : "");
+		
+		for ($j = 0; $j < count($arr); $j++) {		
+			$b =(array) $arr0['data'][$j]; // need to extend to more data points
 
-	/*
-	public function deleteExportIds($scenarioID) {
-		return true;
-	}*/
-
+			$newUpdate = 
+			   "UPDATE ".$srcTable."
+				JOIN (
+					SELECT * FROM Consulting.DC_scenarioData sdt2    
+					LEFT JOIN Consulting.DC_namesDevices ndv ON (ndv.id = sdt2.deviceID)
+					WHERE 
+						sdt2.scenarioID = 10001 AND sdt2.countryID = ".$b['countryID']."
+						AND sdt2.indicatorID = ".$b['indicatorID'].$devLevelFull." AND sdt2.typeID = ".$typeID."
+					) as a
+				ON ( sdt.countryID = a.countryID AND sdt.indicatorID = a.indicatorID
+					 AND sdt.deviceID = a.deviceID AND sdt.typeID = a.typeID)
+				SET ".$updateYears." WHERE sdt.scenarioID = ".$b['scenarioID'];
+			
+			$result = $this->connection->prepare($newUpdate);
+			$result->execute();		
+		};		
+		//return true;
+		return  $newUpdate;		
+	}		
 }		
 ?>

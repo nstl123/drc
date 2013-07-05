@@ -169,40 +169,59 @@ class Depot21 {
 			} else {
 				$getWorldData = 1;
 			}			
-		};	
-		
+		};			
 		$countryList = $countryList." )";		
-		$stmnt = "";
-		
-		$sumStmnt = "";
-		for ($u = 2006; $u < 2022; $u++) {
-			if ((($u - 2006) % 3) == 0) $sumStmnt = $sumStmnt."\r\n";
-			if ($perHH > 0) {
-				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum( dm.Y".$u." / sdt.Y".$u." ) AS Y".$u;
-			} else {
-				$sumStmnt = $sumStmnt.", sum(dm.Y".$u.") AS Y".$u;
+		$stmnt = "";				
+		$sumStmntOuter = ""; 
+		$sumStmntInner="";
+		$sumStmntPop = "";
+		for ($u = 2006; $u < 2009; $u++) {
+			// if ((($u - 2006) % 3) == 0) $sumStmnt = $sumStmnt."\r\n";
+			if (($isRegion > 0) && ($perHH)) {
+				$sumStmntOuter = $sumStmntOuter.", sum(Y".$u.")/ sum(popY".$u.") AS Y".$u;
+				$sumStmntInner = $sumStmntInner.", ".$this->perHHmultiplier." * sum(dm.Y".$u.") AS Y".$u;
+				$sumStmntPop   = $sumStmntPop.", sdt.Y".$u." AS popY".$u;
+			} else if ($perHH > 0) {		
+				$sumStmntOuter = $sumStmntOuter.", ".$this->perHHmultiplier." * sum( dm.Y".$u." / sdt.Y".$u." ) AS Y".$u;
+			} else if ($isRegion > 0) {
+				$sumStmntOuter = $sumStmntOuter.", sum(Y".$u.") AS Y".$u;
+				$sumStmntInner = $sumStmntInner.", ".$this->perHHmultiplier." * sum(dm.Y".$u.") AS Y".$u;	
+				$sumStmntPop = "";
+			} else {				
+				$sumStmntInner = $sumStmntInner.", sum(dm.Y".$u.") AS Y".$u;
 			};			
 		};			
 		
-		$samePart = ", dm.scenarioID, 301 AS indicatorID, batTypeID, pwrTypeID".				
-			($isRegion > 0 ? ", rg.namen as countryName, rg.id AS countryID" : ", nc.namen AS countryName, dm.countryID").	
-				$sumStmnt."
+		$corePart = "SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID, devNam.categoryID, devCat.namen AS categoryName,
+				devNam.namen AS deviceName,	dm.countryID AS countryID, nc.".$useCluster." as regionID".
+				$sumStmntInner.$sumStmntPop."
 			FROM Consulting.DC_demand AS dm
-			JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) ".                    
-				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."				
-			JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
-			JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID					
-			".($perHH > 0 ? "JOIN Consulting.DC_scenarioData sdt ON ((sdt.countryID = dm.countryID) AND (sdt.scenarioID = dm.scenarioID))" : "")."
-			WHERE dm.scenarioID IN (".$scenarioID.", 10001)".				
-				($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").
-				($isRegion > 0 ? " AND nc.".$useCluster." " : " AND dm.countryID ")." IN ".$countryList.
-				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "")."
-			GROUP BY scenarioID ".
-				($isRegion > 0 ? ", nc.".$useCluster : ", countryID").($typeID   > 0 ? ", batTypeID": "").
-				($pwrID    > 0 ? ", pwrTypeID": "");
+				JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id)  
+					JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)			
+					JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
+					JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID					
+					JOIN Consulting.DC_scenarioData sdt ON ((sdt.countryID = dm.countryID) AND (sdt.scenarioID = dm.scenarioID))
+				WHERE dm.scenarioID IN (10001) AND nc.".$useCluster." IN  ".$countryList." 
+				AND sdt.indicatorID = 101".
+				($typeID > 0 ? " AND batTypeID = ".$typeID : "" ).($pwrID > 0 ? " AND pwrTypeID = ".$pwrID : "" )."
+			GROUP BY scenarioID, indicatorID, countryID, deviceID";
 		
-		$stmntDevices    = "dm.deviceID       AS deviceID, devNam.namen AS deviceName"; 
-		$stmntCategories = "devNam.categoryID AS deviceID, devCat.namen AS deviceName";	
+		if (($isRegion > 0)&&($perHH > 0)) { // no outer wrapper SQL otherwise
+			$samePart = ", scenarioID, indicatorID, countryID, regionID".$sumStmntOuter."
+				FROM (".$corePart.") AS a
+				GROUP BY scenarioID, regionID";		
+		} else if ($perHH > 0) {		
+			$samePart = " * FROM (".$corePart." AS a";
+		} else if ($isRegion > 0) {
+			$samePart = ", scenarioID, indicatorID, countryID, regionID".$sumStmntOuter."
+				FROM (".$corePart.") AS a
+				GROUP BY scenarioID, regionID";		
+		} else {
+			$samePart = " * FROM (".$corePart." AS a";
+		};		
+
+		$stmntDevices    = "deviceID, deviceName"; 
+		$stmntCategories = "categoryID AS deviceID, categoryName AS deviceName";	
 		$stmntNull       = "0 			      AS deviceID, null         AS deviceName";	$mainStmnt = "";
 		
 		if ($hasOtherCountries > 0) {	// flag showing there are countries besides World aggregate			
@@ -215,7 +234,7 @@ class Depot21 {
 			};
 		};
 		
-		$sameWorldPart = ", dm.scenarioID, 301 AS indicatorID, batTypeID, pwrTypeID, 'World' as countryName, 1111 AS countryID".
+		/*$sameWorldPart = ", dm.scenarioID, 301 AS indicatorID, batTypeID, pwrTypeID, 'World' as countryName, 1111 AS countryID".
 					$sumStmnt."\r\n".
 					"FROM Consulting.DC_demand AS dm
 					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) 
@@ -228,8 +247,8 @@ class Depot21 {
 				    GROUP BY scenarioID ".						
 						($typeID   > 0 ? ", batTypeID": "").
 						($pwrID    > 0 ? ", pwrTypeID": "");
-		
-		if ($getWorldData > 0) {		
+		*/
+		/*if ($getWorldData > 0) {		
 				$mainStmnt = $mainStmnt.($hasOtherCountries > 0 ? "\r\nUNION\r\n" : " ");
 				
 				if ($showAtDeviceLevel == 0) $mainStmnt = $mainStmnt."SELECT ".$stmntNull.$sameWorldPart;
@@ -239,14 +258,12 @@ class Depot21 {
 					$mainStmnt = $mainStmnt."\r\nUNION\r\n";		
 					$mainStmnt = $mainStmnt."SELECT ".$stmntCategories.$sameWorldPart.", categoryID";			
 				};								
-		};
+		};*/
 		
-		$result = $this->connection->fetchAll($mainStmnt); 
-		array_push($a, $result);		
-		return $result;	
-		//return $mainStmnt;
-		//return $countryArray[1];
-		//return $hasOtherCountries;		
+		//$result = $this->connection->fetchAll($mainStmnt); 
+		//array_push($a, $result);		
+		//return $result;
+		return $mainStmnt;				
 	}
 	
 	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH) {

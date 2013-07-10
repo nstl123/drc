@@ -270,7 +270,7 @@
 				else 
 					tx1 = tx1 +  ( (baseName == "Demand") ? addTx : "" );			
 				//tx1 = tx1 + defaultUnit;				
-				tx2 = tx2 + ( perHH ? ("per HH, ") : "");
+				tx2 = tx2 + ( perHH ? ("per 1000 HHs, ") : "");
 				tx2 = tx2 + ( isLv  ? defaultUnit : ("growth") );
 				
 				this.chartTitle.text = tx1;

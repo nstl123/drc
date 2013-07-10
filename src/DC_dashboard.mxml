@@ -929,7 +929,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Battery Demand Analysis Tool v.1.14"/> 
+				text = "Battery Demand Analysis Tool v.1.15"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="export scenario data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"

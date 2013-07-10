@@ -151,8 +151,7 @@ class Depot21 {
 	}
 	
 	public function getDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH) { 				
-		$getWorldData = 0;
-		$hasOtherCountries = 0;
+		$getWorldData = 0; $hasOtherCountries = 0;
 		
 		$countryArray = explode(",", $countryIDs); // (array)($countryIDs);			
 		$useCluster = 0; // isRegion could be: 0 - countries, 1 - regions, 2 - clusters;
@@ -171,99 +170,69 @@ class Depot21 {
 			}			
 		};			
 		$countryList = $countryList." )";		
-		$stmnt = "";				
-		$sumStmntOuter = ""; 
-		$sumStmntInner="";
-		$sumStmntPop = "";
-		for ($u = 2006; $u < 2009; $u++) {
-			// if ((($u - 2006) % 3) == 0) $sumStmnt = $sumStmnt."\r\n";
-			if (($isRegion > 0) && ($perHH)) {
-				$sumStmntOuter = $sumStmntOuter.", sum(Y".$u.")/ sum(popY".$u.") AS Y".$u;
-				$sumStmntInner = $sumStmntInner.", ".$this->perHHmultiplier." * sum(dm.Y".$u.") AS Y".$u;
-				$sumStmntPop   = $sumStmntPop.", sdt.Y".$u." AS popY".$u;
-			} else if ($perHH > 0) {		
-				$sumStmntOuter = $sumStmntOuter.", ".$this->perHHmultiplier." * sum( dm.Y".$u." / sdt.Y".$u." ) AS Y".$u;
-			} else if ($isRegion > 0) {
-				$sumStmntOuter = $sumStmntOuter.", sum(Y".$u.") AS Y".$u;
-				$sumStmntInner = $sumStmntInner.", ".$this->perHHmultiplier." * sum(dm.Y".$u.") AS Y".$u;	
-				$sumStmntPop = "";
-			} else {				
-				$sumStmntInner = $sumStmntInner.", sum(dm.Y".$u.") AS Y".$u;
-			};			
-		};			
 		
-		$corePart = "SELECT dm.scenarioID, 301 AS indicatorID, dm.deviceID, devNam.categoryID, devCat.namen AS categoryName,
-				devNam.namen AS deviceName,	dm.countryID AS countryID, nc.".$useCluster." as regionID".
-				$sumStmntInner.$sumStmntPop."
-			FROM Consulting.DC_demand AS dm
-				JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id)  
-					JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)			
+		$sumStmnt = ""; $sumStmntPop=""; $sumStmntInner=""; $sumStmntOuter="";
+		
+		$addSum = ($isRegion > 0 ? "sum" : "");
+		for ($u = 2006; $u < 2022; $u++) {	
+			//if ($u % 3 == 0) { $sumStmntInner = $sumStmnt."\r\n"; $sumStmntPop = $sumStmntPop."\r\n"; };			
+			if ($perHH > 0) {			
+				$sumStmntInner = $sumStmntInner.", 1000 * sum(dm.Y".$u.") AS dmY".$u;
+				$sumStmntPop   = $sumStmntPop.", sdt.Y".$u." AS popY".$u;				
+				
+				$sumStmntOuter = $sumStmntOuter.", ".$addSum."(dmY".$u.") / ".$addSum."(popY".$u.") AS Y".$u;
+			} else {
+				$sumStmntInner = $sumStmntInner.", 1000 * sum(dm.Y".$u.") AS dmY".$u;
+				$sumStmntPop   = $sumStmntPop.",  sdt.Y".$u." AS popY".$u;				
+				
+				$sumStmntOuter = $sumStmntOuter.", (dmY".$u.")  AS Y".$u;
+			}
+		};					
+		
+		$coreStmntEnd = "";
+		$coreStmnt = "
+			SELECT  dm.scenarioID, 301 AS indicatorID, dm.deviceID as deviceID, devNam.namen AS deviceName,	
+				    devCat.id as categoryID, devCat.namen as categoryName, dm.countryID AS countryID,". 
+				   ($isRegion > 0 ? "rg.namen " : "nc.namen ")." AS countryName, nc.".$useCluster." as regionID".
+				   ($typeID   > 0 ? ", batTypeID" : ", 0 as batTypeID").($pwrID > 0 ? ", pwrTypeID" : ", 0 as pwrTypeID").
+					"\r\n".$sumStmntInner."\r\n".$sumStmntPop."					
+				FROM Consulting.DC_demand AS dm
+					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id)  
+						JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)			
 					JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
 					JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID					
 					JOIN Consulting.DC_scenarioData sdt ON ((sdt.countryID = dm.countryID) AND (sdt.scenarioID = dm.scenarioID))
-				WHERE dm.scenarioID IN (10001) AND nc.".$useCluster." IN  ".$countryList." 
+				WHERE dm.scenarioID IN (10001, ".$scenarioID.") 
+				AND ".($isRegion > 0 ? "nc.".$useCluster : "dm.countryID")." IN ".$countryList."
 				AND sdt.indicatorID = 101".
-				($typeID > 0 ? " AND batTypeID = ".$typeID : "" ).($pwrID > 0 ? " AND pwrTypeID = ".$pwrID : "" )."
-			GROUP BY scenarioID, indicatorID, countryID, deviceID";
+				($typeID > 0 ? " AND batTypeID = ".$typeID : "").($pwrID > 0 ? " AND pwrTypeID = ".$pwrID : "")."
+			GROUP BY scenarioID, indicatorID, ".($isRegion > 0 ? "nc.".$useCluster : "dm.countryID");
 		
-		if (($isRegion > 0)&&($perHH > 0)) { // no outer wrapper SQL otherwise
-			$samePart = ", scenarioID, indicatorID, countryID, regionID".$sumStmntOuter."
-				FROM (".$corePart.") AS a
-				GROUP BY scenarioID, regionID";		
-		} else if ($perHH > 0) {		
-			$samePart = " * FROM (".$corePart." AS a";
-		} else if ($isRegion > 0) {
-			$samePart = ", scenarioID, indicatorID, countryID, regionID".$sumStmntOuter."
-				FROM (".$corePart.") AS a
-				GROUP BY scenarioID, regionID";		
+		$selFields = "scenarioID,  indicatorID, deviceName, categoryName, countryID, countryName, regionID \r\n".
+					($typeID > 0 ? ", batTypeID" : ", 0 as batTypeID").($pwrID > 0 ? ", pwrTypeID" : ", 0 as pwrTypeID"); 
+						
+		if ($showAtDeviceLevel > 0) {				
+				$coreStmntEnd = $coreStmnt.", deviceID";	
+				$mainStmnt = "SELECT deviceID, ".$selFields."\r\n".$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+					 GROUP BY scenarioID, indicatorID, ".($isRegion > 0 ? "regionID" : "countryID");								
+				$mainStmnt = $mainStmnt.", deviceID";		
 		} else {
-			$samePart = " * FROM (".$corePart." AS a";
-		};		
-
-		$stmntDevices    = "deviceID, deviceName"; 
-		$stmntCategories = "categoryID AS deviceID, categoryName AS deviceName";	
-		$stmntNull       = "0 			      AS deviceID, null         AS deviceName";	$mainStmnt = "";
-		
-		if ($hasOtherCountries > 0) {	// flag showing there are countries besides World aggregate			
-			if ($showAtDeviceLevel == 0) $mainStmnt = "SELECT ".$stmntNull.$samePart;
-			if ($showAtDeviceLevel  > 0) $mainStmnt = "SELECT ".$stmntDevices.$samePart.", deviceID";
-			
-			if ($showAtDeviceLevel  > 0) {
-				$mainStmnt = $mainStmnt."\r\nUNION\r\n";		
-				$mainStmnt = $mainStmnt."SELECT ".$stmntCategories.$samePart.", categoryID";			
-			};
+				$coreStmntEnd = $coreStmnt;	
+				$mainStmnt = "SELECT 0 as deviceID, ".$selFields."\r\n".$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+					 GROUP BY scenarioID, indicatorID, ".($isRegion > 0 ? "regionID" : "countryID");								
 		};
 		
-		/*$sameWorldPart = ", dm.scenarioID, 301 AS indicatorID, batTypeID, pwrTypeID, 'World' as countryName, 1111 AS countryID".
-					$sumStmnt."\r\n".
-					"FROM Consulting.DC_demand AS dm
-					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id) 
-					JOIN Consulting.DC_namesDevices devNam ON devNam.id = deviceID
-					JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID".
-					($perHH > 0 ? "\r\nJOIN Consulting.DC_scenarioData sdt ON ((sdt.countryID = dm.countryID) AND (sdt.scenarioID = dm.scenarioID))" : "").
-				"\r\nWHERE dm.scenarioID IN (".$scenarioID.", 10001)".				
-						($typeID   > 0 ? " AND batTypeID = ".$typeID  : "").($pwrID    > 0 ? " AND pwrTypeID = ".$pwrID   : "").
-						($perHH    > 0 ? " AND sdt.indicatorID = 101" : "")."						
-				    GROUP BY scenarioID ".						
-						($typeID   > 0 ? ", batTypeID": "").
-						($pwrID    > 0 ? ", pwrTypeID": "");
-		*/
-		/*if ($getWorldData > 0) {		
-				$mainStmnt = $mainStmnt.($hasOtherCountries > 0 ? "\r\nUNION\r\n" : " ");
-				
-				if ($showAtDeviceLevel == 0) $mainStmnt = $mainStmnt."SELECT ".$stmntNull.$sameWorldPart;
-				if ($showAtDeviceLevel  > 0) $mainStmnt = $mainStmnt."SELECT ".$stmntDevices.$sameWorldPart.", deviceID";
-				
-				if ($showAtDeviceLevel  > 0) {
-					$mainStmnt = $mainStmnt."\r\nUNION\r\n";		
-					$mainStmnt = $mainStmnt."SELECT ".$stmntCategories.$sameWorldPart.", categoryID";			
-				};								
-		};*/
+		if (($hasOtherCountries > 0) && ($showAtDeviceLevel > 0) ) {	// flag showing there are countries besides World aggregate				
+			$mainStmnt = $mainStmnt."\r\n UNION \r\n";
+			$coreStmntEnd = $coreStmnt.", categoryID";								
+			$mainStmnt = $mainStmnt."SELECT "."categoryID AS deviceID, ".$selFields.$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+						 GROUP BY scenarioID, indicatorID, ".($isRegion > 0 ? "regionID" : "countryID").", categoryID";									
+		};		
 		
-		//$result = $this->connection->fetchAll($mainStmnt); 
-		//array_push($a, $result);		
-		//return $result;
-		return $mainStmnt;				
+		/*$result = $this->connection->fetchAll($mainStmnt); 
+		array_push($a, $result);		
+		return $result;*/
+		return $mainStmnt;
 	}
 	
 	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH) {
@@ -355,13 +324,13 @@ class Depot21 {
 			if ($perHH > 0) {
 				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.shr)/sum(sdt.Y".$u.") as Y".$u;
 			} else {
-				$sumStmnt = $sumStmnt.", sum(dma.Y".$u." * chm.shr) as Y".$u;
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.shr) as Y".$u;
 			};			
 		};		
 		
 		$stmnt = "
-			SELECT dma.scenarioID, 301 AS indicatorID, chm.id as chemistryID, 0 AS deviceID, 0 as categoryID". 
-				($isRegion > 0 ? ", rg.namen as namen, rg.id AS countryID, " : ", nc.namen AS namen, dma.countryID").
+			SELECT dma.scenarioID, 301 AS indicatorID, chm.id as chemistryID, 0 AS deviceID, 0 as categoryID, null as deviceName". 
+				($isRegion > 0 ? ", rg.namen as countryName, rg.id AS countryID, " : ", nc.namen AS countryName, dma.countryID").
 				 $sumStmnt."
 			FROM Consulting.DC_demandAggregated dma
 				JOIN Consulting.DC_chemistry chm ON  chm.countryID = dma.countryID

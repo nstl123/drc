@@ -13,10 +13,10 @@ import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
 import valueObjects.CustomDatatype18;
-import valueObjects.CustomDatatype19;
 import valueObjects.CustomDatatype26;
 import valueObjects.CustomDatatype27;
 import valueObjects.CustomDatatype28;
+import valueObjects.CustomDatatype33;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -36,7 +36,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         valueObjects.CountryName._initRemoteClassAlias();
         valueObjects.CustomDatatype27._initRemoteClassAlias();
         valueObjects.CustomDatatype28._initRemoteClassAlias();
-        valueObjects.CustomDatatype19._initRemoteClassAlias();
+        valueObjects.CustomDatatype33._initRemoteClassAlias();
         valueObjects.CustomDatatype26._initRemoteClassAlias();
 
         var operations:Object = new Object();
@@ -55,7 +55,7 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CustomDatatype28;
         operations["getDeviceBase"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getDemandByChemistry");
-         operation.resultElementType = valueObjects.CustomDatatype19;
+         operation.resultElementType = valueObjects.CustomDatatype33;
         operations["getDemandByChemistry"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getMacroDataCategory");
          operation.resultElementType = valueObjects.CustomDatatype26;

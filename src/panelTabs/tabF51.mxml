@@ -444,8 +444,9 @@
 	
 	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="492" left="10" top.viewingOnly="437" left.viewingOnly="10" top.default="504" left.default="10">
 	</utils:CInteractiveGrid>
-	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#007E9D" includeIn="default"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="381" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default"/>
+	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#007E9D" includeIn="default" id="labelTop"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" 
+			 verticalAlign="middle" fontStyle="normal" fontSize="13" top="381" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default" id="labelBot"/>
 	
 	<s:DropDownList width="242" height="18" id="indicatorsBox" 
 					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" left="50" top.viewingOnly="17" left.viewingOnly="50"/>

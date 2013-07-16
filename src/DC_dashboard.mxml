@@ -355,7 +355,14 @@
 				this.selPathObjLabel = (event.target.hasOwnProperty("selPathLabel")) ?
 											event.target.selPathLabel :	"none";			
 				
-				selActiveTab = ((event.target.hasOwnProperty("selTabIndex")) ? event.target.selTabIndex : 0); 
+				/*if (this.viewMode == "viewDataOnly") {
+					this geoListLabel.text = "Step 2: Please select your geographies of interest on the left and click “Next” to continue.";					
+				} else if (this.viewMode == "runScenarios") {
+					this.geoListLabel.text = "Step 3: Please select your geographies of interest on the left and click “Next” to continue.";
+				};*/
+				
+				// 1 instead of zero because need to show 2nd graph
+				selActiveTab = ((event.target.hasOwnProperty("selTabIndex")) ? event.target.selTabIndex : 1);				
 				//if (isStart  < 2) { isStart = isStart + 1;	};
 				isStart = isStart + 1;
 				
@@ -625,14 +632,44 @@
 
 			
 			[bindable] private var viewMode:String = "viewDataOnly";
+			[bindable] private var labelTop:String = ""; 
+			[bindable] private var labelBottom:String = "";
+			[bindable] private var labelDemand:String = "";
+			[bindable] private var geoLabel:String = "";			
+			
 			protected function modeSwitch_clickHandler(event:Event):void
 			{
 				this.viewMode = String(this.viewingModeGroup.selection.value);
 				if (!this.masterTab) masterTab = new FlowManager();
 				this.masterTab.registerViewingMode(this.viewMode);				
 				this.dispatchEvent(new Event("pathChanged", true));
+				
+				if (this.viewMode == "runScenarios") {
+					this.geoLabel    = "Step 3: Please select your geographies of interest on the left and click “Next” to continue.";
+					this.labelTop    = "Step 4: Click the dropdown below to adjust chosen indicator";
+					this.labelBottom = "Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario"; 
+					this.labelDemand = "Step 6: select battery parameters";
+				} else {
+					this.geoLabel    = "Step 2: Please select your geographies of interest on the left and click “Next” to continue.";
+					this.labelTop    = "";
+					this.labelBottom = "";
+					this.labelDemand = "Step 3: select battery parameters";
+				};			
 			}			
 
+			public function updateLabels():void {
+				this.panelTabA2.labelTop.text  = this.labelTop;
+				this.panelTabA2.labelBot.text  = this.labelBottom;
+				this.panelTabB3.labelTop.text  = this.labelTop;
+				this.panelTabB3.labelBot.text  = this.labelBottom;
+				this.panelTabD5.labelTop.text  = this.labelTop;
+				this.panelTabD5.labelBot.text  = this.labelBottom;
+				this.panelTabF51.labelTop.text = this.labelTop;
+				this.panelTabF51.labelBot.text = this.labelBottom;
+				
+				this.cntryTree.labelDemand.text = this.labelDemand;					
+			}				
+			
 			protected function btnNext_clickHandler(event:MouseEvent):void		
 			{								
 				this.viewMode = String(this.viewingModeGroup.selection.value);
@@ -642,6 +679,7 @@
 					case "landingState" :
 						if (viewMode == "viewDataOnly") {							
 							this.currentState =  "geoList";
+							this.geoListLabel.text = this.geoLabel;
 							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false);
 							this.navigatorBox2.setButtonColors(null,      2, false);
 							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
@@ -655,11 +693,14 @@
 							this.startApp(null);
 						};						
 						break;
-					case "BQList" :											
-						this.currentState = "geoList";
+					case "BQList" :							
+						this.currentState = "geoList";						
 						this.navigatorBox2.setButtonColors(null, 2);
 						this.startApp(null);
 						this.btnNext.enabled = this.atLeastOneCntrySelected;
+						
+						this.geoListLabel.text = this.geoLabel;
+						this.cntryTree.labelDemand.text = this.labelDemand;
 						break;
 					case "geoList" :				
 						if (atLeastOneCntrySelected) {
@@ -672,9 +713,9 @@
 								this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
 								this.navigatorBox2.setButtonColors(null,      5, false);
 								
-								if (!tabaiCreationComplete) 
-										this.tabai.createDeferredContent()
-								else 	this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);								
+								if (!tabaiCreationComplete)  
+										this.tabai.createDeferredContent();								
+								else    this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);																					
 							} else {														
 								this.digestUpdate(null);
 								currentState = "scenarioState";
@@ -684,12 +725,13 @@
 								else     					this.tabai.selectedIndex = this.selActiveTab;											
 								//this.navigatorBox2.setButtonColors(null, 3);	
 								//this.originalBQLabel.text = this.selPathObjLabel;
-							};	
-							this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus
+							};							
+							this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus							
 							//this.cntryTree.setRegionsGridEnabled(true);				
 							if (tabaiCreationComplete) {									
 								tabai_changeHandler(null);
 								this.updateLabelState();
+								updateLabels();
 							};
 						};
 						break;					
@@ -699,14 +741,12 @@
 						if (this.tabaiCreationComplete) { 
 							this.tabai.selectedIndex = 4;							
 						};	
-						this.btnNext.enabled = false;
-						//this.cntryTree.currentState = "slicing";
+						this.btnNext.enabled = false;					
 						break;					
 					case "scenarioState" :
 						this.navigatorBox2.setButtonColors(null, 5);
 						this.tabai.selectedIndex = 4;
 						this.btnNext.enabled = false;			
-						//this.cntryTree.currentState = "slicing";
 						break;					
 				}				
 				//this.currentStateLabel.text = "Current State: " + this.currentState;
@@ -929,7 +969,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Battery Demand Analysis Tool v.1.15"/> 
+				text = "Duracell Device Based Consumption Model – Analysis Tool v.1.16"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="export scenario data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
@@ -947,25 +987,30 @@
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
-		<s:RadioButton y="182" value="viewDataOnly"
+		<s:RadioButton y="209" value="viewDataOnly"
 					   groupName="viewingModeGroup" 
 					   selected="true" click="modeSwitch_clickHandler(event)" 
 					   fontFamily="Arial" fontSize="14" color="#000000" fontWeight="bold" label="View base case data" left="200"/>
-		<s:RadioButton y="244" label="Run scenarios" value="runScenarios" 
+		<s:RadioButton y="271" label="Run scenarios" value="runScenarios" 
 					   groupName="viewingModeGroup"
 					   click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#000000" fontWeight="bold" left="200"/>
 		<s:Label y="18" text="Home" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-331"/>
 		
-		<mx:Text width="671" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery-powered device data across 53 markets globally.  In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios." 
-				 y="44" height="85" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
+		<mx:Text width="667" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery powered device data (in units) &amp; forecasted battery demand (in cells) across 53 markets globally. Forecasted years include 2006-2021. In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios."
+				 		 y="44" height="102" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
+		
+		<mx:Text width="671" text="NOTE: The Device Based Consumption Model (DBCM) research was completed in ?FY12/13"
+				 y="143" height="25" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
+				
 		<mx:Text width="671" text="Step 1: Indicate below how you intend to use the tool:" 
-				 y="141" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" color="#007E9D"/>		
-		<mx:Text width="500" text="Click this selection to simply jump to output options" y="204" height="35" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
-		<mx:Text width="500" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="268" height="108" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
-		<s:RadioButton includeIn="landingState" label="Final Data File (XLS)" y="402" left="246" enabled="false" color="#656565"/>
-		<s:RadioButton label="Executive Summary (PPT)" y="430" left="246" enabled="false" color="#656565"/>
-		<s:RadioButton label="Full Report (PPT)" y="456" left="246" enabled="false" color="#656565"/>
-		<s:Label text="Get final project files" fontWeight="bold" fontSize="14" left="200" top="371" color="#000000"/>
+				 y="177" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" color="#007E9D"/>		
+		<mx:Text width="569" text="Choose this selection to look at the data output from the base case scenario. Output includes battery powered device data (in units), and battery demand forecast (in cells)." 
+				 y="231" height="45" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
+		<mx:Text width="557" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="295" height="94" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
+		<s:RadioButton includeIn="landingState" label="Final Data File (XLS)" y="429" left="246" enabled="false" color="#656565"/>
+		<s:RadioButton label="Executive Summary (PPT)" y="457" left="246" enabled="false" color="#656565"/>
+		<s:RadioButton label="Full Report (PPT)" y="483" left="246" enabled="false" color="#656565"/>
+		<s:Label text="Get final project files" fontWeight="bold" fontSize="14" left="200" top="398" color="#000000"/>
 	</s:BorderContainer>
 
 <s:BorderContainer width="992" height="100%" borderVisible="false" 
@@ -1088,7 +1133,7 @@
 			</mx:TabNavigator>
 		</s:BorderContainer>
 		<s:BorderContainer height="100%" borderVisible="false">
-			<mx:Text text="Step 3: Please select your geographies of interest on the right and click “Next” to continue." 
+			<mx:Text id="geoListLabel" text="Step 2: Please select your geographies of interest on the left and click “Next” to continue." 
 					 includeIn="geoList"  color="#007E9D" verticalCenter="-115" horizontalCenter="-10" height="120" fontSize="14"/>
 			<!-- &#13;You may also select regions or clusters (developed, developing, or emerging) by changing the grouping below. !-->
 		</s:BorderContainer>

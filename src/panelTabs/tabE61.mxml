@@ -636,8 +636,19 @@
 			}
 			
 			[bindable] public var flagDev:Boolean = false;
-			public function updateChartTitles():void {
-				this.demandChart.updateChartTitle("Demand", 
+			[bindable] public var batTypesNames:Array = ["C", "D", "AAA", "9V", "AA"];
+			[bindable] public var pwrTypesNames:Array = ["Disposable (DPP)", "Round Cell Rechargeable (RCR)", "Built-in Rechargeable"];
+			[bindable] public var chemTypesNames:Array = ["Alkaline", "Zinc", "Lithium", "Hearing Aid", "Coin and Button"];
+			
+			public function updateChartTitles():void {	
+				var lbl : String = " ";
+				var enFlag:Boolean = true;
+				
+				if (this.flowManager.batTypesActiveFlag)  lbl = ", " + batTypesNames[this.flowManager.selBatType - 1] + ",";			
+				if (this.flowManager.pwrTypesActiveFlag)  lbl = ", " + pwrTypesNames[this.flowManager.selPwrType - 1] + ",";
+				if (this.flowManager.chemTypesActiveFlag) lbl = ", " + chemTypesNames[this.flowManager.selChemType-1] + ",";
+				
+				this.demandChart.updateChartTitle( ("Battery demand" + lbl + " from"), 
 					this.flowManager.selDeviceAggLevel, 
 					this.flowManager.devicesActiveFlag,	
 					this.isLevel, 
@@ -745,7 +756,7 @@
 </s:BorderContainer>	
 	
 	<s:Label text="Show Data in:" id="selDeviceLabel2" fontStyle="italic" fontSize="11" left="10" fontFamily="Arial" top="6"/>
-	<s:Label text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="167" fontFamily="Arial" top="6"/>
+	<s:Label text="Show Data in:" id="granulation" fontStyle="italic" fontSize="11" left="209" fontFamily="Arial" top="6"/>
 <!--	<s:Label text="Battery Types" id="selDeviceLabel3" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="57"/>
 !-->
 	<!--	<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" left="20">
@@ -814,10 +825,10 @@
 			  click="exoIndi_clickHandler(event)" id="button" enabled="true" visible="false"/>
 	
 
-	<s:RadioButton label="Levels" groupName="growthType" enabled="true" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="17" left="33"/>
-	<s:RadioButton x="91" label="Growths" groupName="growthType" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="12" top="17"/>
+	<s:RadioButton label="Absolutes" groupName="growthType" enabled="true" 
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11" top="17" left="33"/>
+	<s:RadioButton label="Growth Rates" groupName="growthType" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" fontFamily="Arial" fontSize="11" top="17" left="112"/>
 
 	<!--
 	<s:BorderContainer width="236" x="603" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height="69">
@@ -868,9 +879,9 @@
 	!-->
 	<utils:CTwoAxisChart id="exoChart" top="341" left="10" width="747" height="250">
 	</utils:CTwoAxisChart>
-	<s:RadioButton x="194" label="Devices in Total" groupName="granGroup" value="0" top="17" 
+	<s:RadioButton x="239" label="Total" groupName="granGroup" value="0" top="17" 
 				   selected="true" click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
-	<s:RadioButton x="296" label="Devices per HH" groupName="granGroup" value="1" top="17" 
+	<s:RadioButton x="308" label="per HH" groupName="granGroup" value="1" top="17" 
 				   click="radiobutton3_changeHandler(event)" fontFamily="Arial" fontSize="11"/>
 	<s:Button x="612" y="14" label="Export Scenario to Excel" 
 			  width="144" height="23" enabled="true" fontWeight="normal" fontSize="10"

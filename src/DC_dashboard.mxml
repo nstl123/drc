@@ -352,9 +352,7 @@
 				this.isBQSelected = true;
 				this.btnNext.enabled = true;
 				this.selPathObj = (event) ? String(event.target.selPath) : "none";
-				this.selPathObjLabel = (event.target.hasOwnProperty("selPathLabel")) ?
-											event.target.selPathLabel :	"none";			
-				
+				this.selPathObjLabel = (event.target.hasOwnProperty("selPathLabel")) ? event.target.selPathLabel : "none";				
 				/*if (this.viewMode == "viewDataOnly") {
 					this geoListLabel.text = "Step 2: Please select your geographies of interest on the left and click “Next” to continue.";					
 				} else if (this.viewMode == "runScenarios") {
@@ -601,7 +599,7 @@
 						//this.nc_00.createDeferredContent();
 						//this.panelTabPath.enablePaths(false);
 						//this.pathLabel.text = "Content Loaded";						
-						this.panelTabA2.enabled = true;
+						if (this.panelTabA2) this.panelTabA2.enabled = true;
 						this.panelTabB3.enabled = true;
 						//this.panelTabC4.enabled = false;					
 						this.panelTabE61.enabled = true;
@@ -628,10 +626,9 @@
 			protected function deleteAllScenariosResult_faultHandler(event:FaultEvent):void
 			{
 				Alert.show("could not clean old scenarios from DB...", "Error");
-			}					
-
+			}				
 			
-			[bindable] private var viewMode:String = "viewDataOnly";
+			[bindable] private var viewMode:String = ""; //"viewDataOnly";
 			[bindable] private var labelTop:String = ""; 
 			[bindable] private var labelBottom:String = "";
 			[bindable] private var labelDemand:String = "";
@@ -671,12 +668,14 @@
 			}				
 			
 			protected function btnNext_clickHandler(event:MouseEvent):void		
-			{								
-				this.viewMode = String(this.viewingModeGroup.selection.value);
-				var tmp:String;				
-				
+			{				
+				if (this.viewMode == "") {
+					this.viewMode = String(this.viewingModeGroup.selection.value);
+					modeSwitch_clickHandler(null);
+				};
+				//var tmp:String;								
 				switch (this.currentState) {
-					case "landingState" :
+					case "landingState" :						
 						if (viewMode == "viewDataOnly") {							
 							this.currentState =  "geoList";
 							this.geoListLabel.text = this.geoLabel;
@@ -699,8 +698,8 @@
 						this.startApp(null);
 						this.btnNext.enabled = this.atLeastOneCntrySelected;
 						
-						this.geoListLabel.text = this.geoLabel;
-						this.cntryTree.labelDemand.text = this.labelDemand;
+						this.geoListLabel.text = this.geoLabel;						
+						if (this.BQselection.selPath == "") this.BQselection.radiobutton1_clickHandler(null);
 						break;
 					case "geoList" :				
 						if (atLeastOneCntrySelected) {
@@ -713,9 +712,10 @@
 								this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
 								this.navigatorBox2.setButtonColors(null,      5, false);
 								
-								if (!tabaiCreationComplete)  
-										this.tabai.createDeferredContent();								
-								else    this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);																					
+								if (!tabaiCreationComplete)  {
+										this.tabai.createDeferredContent();
+								} else   
+										this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);								
 							} else {														
 								this.digestUpdate(null);
 								currentState = "scenarioState";
@@ -735,15 +735,16 @@
 							};
 						};
 						break;					
-					case "viewingState" :						
+					case "viewingState" :	
+						// set this into initialization stage of these
+						this.cntryTree.setLabelDemand(this.labelDemand);
 						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
 						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);						
-						if (this.tabaiCreationComplete) { 
-							this.tabai.selectedIndex = 4;							
-						};	
+						if (this.tabaiCreationComplete) { this.tabai.selectedIndex = 4; };	
 						this.btnNext.enabled = false;					
 						break;					
 					case "scenarioState" :
+						this.cntryTree.setLabelDemand(this.labelDemand);
 						this.navigatorBox2.setButtonColors(null, 5);
 						this.tabai.selectedIndex = 4;
 						this.btnNext.enabled = false;			
@@ -1085,7 +1086,7 @@
 							 fontSize="11" dropShadowVisible="false"
 							 verticalCenter="0" horizontalCenter="0" 
 							 textAlign="left" chromeColor="#F8F8F8"
-							 backgroundAlpha="1.0" contentBackgroundAlpha="0.95" tabWidth="140"
+							 backgroundAlpha="1.0" contentBackgroundAlpha="0.95" tabWidth="153"
 							 change="tabai_changeHandler(event)" 
 							 borderVisible="false" borderColor="#8E8E8E">	
 				
@@ -1109,7 +1110,7 @@
 					</panelTabs:tabB3> 
 				</s:NavigatorContent>
 				
-				<s:NavigatorContent id="nc_D5" label="Market Size" width="100%" height="100%" 
+				<s:NavigatorContent id="nc_D5" label="Device Annual Market Size" width="100%" height="100%" 
 									creationPolicy="none">
 					<panelTabs:tabD5 id="panelTabD5" creationComplete="tabd11_creationCompleteHandler(event)"
 									 enabled="true" top="0" width="100%" height="100%" left="0">					
@@ -1147,7 +1148,7 @@
 	</s:BorderContainer>
 	
 	<s:BorderContainer borderVisible="false" width="90%" height="100%" includeIn="BQList">
-		<panelTabs:tabPathSelection width="95%" height="100%"
+		<panelTabs:tabPathSelection id="BQselection" width="95%" height="100%"
 									horizontalCenter="0" visible="true" top="10">
 		</panelTabs:tabPathSelection>
 	</s:BorderContainer>	

@@ -15,10 +15,11 @@
 			[bindable] public var selPathLabel:String = "";		
 			[bindable] public var selTabIndex:int = 0;
 			
-			protected function radiobutton1_clickHandler(event:Event):void
+			public function radiobutton1_clickHandler(event:Event):void
 			{
 				this.selPath = String(this.pathTypes.selectedValue);
 				this.selPathLabel = this.getSelPath();
+				
 				this.dispatchEvent(new Event("pathChanged", true));
 			}
 
@@ -101,7 +102,7 @@
 						   	   	value="A"  selected="true" enabled="true" color="#000000"/>				
 				<s:RadioButton label="{this.pathNames.getItemAt(1)}" 
 							   	value="B" enabled="true" 
-						   	   	groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)" width="100%" 
+						   	   	groupName="pathTypes" selected="true" click="radiobutton1_clickHandler(event)" width="100%" 
 								textAlign="left" height="40" fontFamily="Arial" fontSize="12"  color="#000000"/>
 				<s:RadioButton label="{this.pathNames.getItemAt(2)}"
 						   		groupName="pathTypes" enabled="true"

@@ -442,22 +442,22 @@
 		<s:RadioButton x="66" label="All countries  (right)" groupName="shockType" enabled="true" value="0"
 					   top="35" fontSize="11" click="changeShockType_handler(event)" id="shockBtn2"/>
 	</s:BorderContainer>
-	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
+	<s:RadioButton label="Absolutes" groupName="growthType" enabled="true" value="0" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="62" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="77"/>
-	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="62" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="140"/>
+	<s:RadioButton label="Growth Rates" groupName="growthType" value="1" 
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="62" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="157" top.default="63" left.default="157"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="42" left.viewingOnly="10"/>
 	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" fontFamily="Arial" top.viewingOnly="6" top.default="21" left.default="469" left.viewingOnly="469"/>
 	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#007E9D" includeIn="default" id="labelTop"/>
 	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="347" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default" id="labelBot"/>
-	<s:RadioButton value="2" label="Device category" groupName="splitByDevices_C" 
+	<s:RadioButton visible="false" value="2" label="Device category" groupName="splitByDevices_C" 
 				   selected="false" fontFamily="Arial" fontSize="11" left="340" top="56" 
 				   top.viewingOnly="41" left.viewingOnly="340" click="devicesActive_clickHandler(event)"/>
-	<s:RadioButton value="1" label="Single device" groupName="splitByDevices_C" 
+	<s:RadioButton visible="false" value="1" label="Single device" groupName="splitByDevices_C" 
 				   selected="true" fontFamily="Arial" fontSize="11" left="340" top="35" top.viewingOnly="20" left.viewingOnly="340"
 				   click="devicesActive_clickHandler(event)" />
-	<s:Label text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
+	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF"  top.viewingOnly="6" left.viewingOnly="313"
 			 		/>
 </s:Group>

@@ -366,10 +366,13 @@
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
 	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" 
 			 verticalAlign="middle" fontStyle="normal" fontSize="13" top="347" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default" id="labelBot"/>
-	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0"
-				   selected="true" height="19" change="radiobutton2_clickHandler(event)" top="62" left="77" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="77"/>
-	<s:RadioButton label="Growths" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_clickHandler(event)" top="62" left="140" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="140"/>
+	<s:RadioButton groupName="growthType" enabled="true" value="0"
+				   selected="true" height="19" change="radiobutton2_clickHandler(event)" 
+				   top="62" left="77" fontSize="11" fontFamily="Arial" top.viewingOnly="47" 
+				   left.viewingOnly="77" label="Absolutes"/>
+	<s:RadioButton groupName="growthType" value="1" 
+				   enabled="true" height="19" change="radiobutton2_clickHandler(event)" top="62" left="140" fontSize="11" fontFamily="Arial" top.viewingOnly="47" left.viewingOnly="157" top.default="62" left.default="157" 
+				   label="Growth Rates"/>
 	<s:Button label="reset scenario" width="222" id="button" click="button_clickHandler(event)"
 			  height="23" top="425" left="535" top.viewingOnly="369" 
 			  left.viewingOnly="535" top.default="425" left.default="535" label.default="Reset Scenario"

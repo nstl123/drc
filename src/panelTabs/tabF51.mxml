@@ -358,10 +358,27 @@
 				this.currentDataChart.refresh();				
 				
 				this.testChart.setData(currentDataChart, isLevel); // transformation is performed inside chart component
-				this.testGrid.setData(currentDataGrid, isLevel);
+				this.testGrid.setData(currentDataGrid, isLevel);				
+				//204 - split by size
+				//205, 206, 207 - split by PWR				
+				var lblp:String = this.pwrTypes.selection.label;								
+				var lbls:String = this.batTypes.selection.label;			
+				var lbl : String = "";
+				var enFlag:Boolean = true;
+				
+				if (this.indicatorsBox.selectedItem){
+					if ((indicatorsBox.selectedItem.id == 204)||(indicatorsBox.selectedItem.id == 206)) {
+						lbl = lbls;	enFlag = true;
+					} else {
+						lbl = lblp; enFlag = false;
+					};					
+				};
+				
+				this.pwrTypes.enabled = !enFlag;
+				this.batTypes.enabled = enFlag;
 				
 				this.testChart.updateChartTitle(
-					(indicatorsBox.selectedItem ? indicatorsBox.selectedItem.namen : "-"),
+					(indicatorsBox.selectedItem ? (indicatorsBox.selectedItem.namen + ", " + lbl) : "-"),
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
@@ -464,9 +481,9 @@
 	
 	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" x.default="542" top.default="64" left.viewingOnly="542"/>
 	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="167" top.viewingOnly="46" x.default="150" top.default="64"/>
-	<s:RadioButton label="Levels" groupName="growthType" enabled="true" value="0" 
+	<s:RadioButton label="Absolutes" groupName="growthType" enabled="true" value="0" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="59" left.viewingOnly="77" top.default="74" left.default="58"/>
-	<s:RadioButton label="Growths" groupName="growthType" value="1" 
+	<s:RadioButton label="Growth Rates" groupName="growthType" value="1" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="77" left.viewingOnly="77" top.default="96" left.default="58"/>
 	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" top.viewingOnly="425" left.default="10" top.default="490"/>
 	<s:BorderContainer width="517" left="10" top="410" borderVisible="false" top.viewingOnly="367" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" height.default="59" height.viewingOnly="55" top.default="428" left.default="10">
@@ -490,22 +507,22 @@
 	<s:RadioButton label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="true"
 				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" left="245" top.viewingOnly="59" left.viewingOnly="197" top.default="74" left.default="180"/>
 	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245" top.viewingOnly="77" left.viewingOnly="197" top.default="96" left.default="306"/>	
+				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245" top.viewingOnly="59" left.viewingOnly="319" top.default="74" left.default="319"/>	
 	<s:RadioButton label="Built-in Rechargeable" value="3" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false" left="380" left.viewingOnly="398" left.default="180" top.default="96" top.viewingOnly="77"/>
+				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false" left="380" left.viewingOnly="197" left.default="180" top.default="96" top.viewingOnly="77"/>
 
 	<s:RadioButton x="564" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" top.default="74"/>
 	<s:RadioButton x="612" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="612" top.viewingOnly="59" x.default="612" top.default="74"/>	
 	<s:RadioButton x="653" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="653" top.viewingOnly="59" x.default="653" top.default="74"/>
 	<s:RadioButton x="688" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="688" top.viewingOnly="59" x.default="688" top.default="74"/>	
 	<s:RadioButton x="724" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" top.default="74"/>
-	<s:RadioButton value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
+	<s:RadioButton visible="false" value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
 				   left="340" top="56" top.viewingOnly="41" left.viewingOnly="340"
 				   groupName="splitByDevices_C" click="devicesActive_clickHandler(event)"/>
-	<s:RadioButton value="1" label="Single device" selected="true" fontFamily="Arial" fontSize="11" 
+	<s:RadioButton visible="false" value="1" label="Single device" selected="true" fontFamily="Arial" fontSize="11" 
 				   left="340" top="35" top.viewingOnly="20" left.viewingOnly="340"
 				   groupName="splitByDevices_C"  click="devicesActive_clickHandler(event)"/>
-	<s:Label text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
+	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF" top.viewingOnly="6" left.viewingOnly="313"/>
 
 

@@ -34,9 +34,8 @@ class Depot1 {
 	}		
 	
 	public function getCountryListADG() {	
-		$a = array('a'=>"");
-		// false AS active, false AS modified
-		$sqlSr = "	SELECT nc1.id, nc1.isRegion, nc1.namen as namen, nc1.region as regionID, nc2.namen as region, 
+		$a = array('a'=>"");		
+		/*$sqlSr = "	SELECT nc1.id, nc1.isRegion, nc1.namen as namen, nc1.region as regionID, nc2.namen as region, 
 						nc3.namen as subRegion, false AS active, false AS modified
 					FROM Consulting.DC_namesCountries nc1
 						JOIN Consulting.DC_namesCountries nc2 ON (nc1.region    = nc2.id)
@@ -48,7 +47,24 @@ class Depot1 {
 					FROM Consulting.DC_namesCountries nc1
 						JOIN Consulting.DC_namesCountries nc2 ON (nc1.region    = nc2.id)    
 					WHERE nc1.subRegion = 99
-					ORDER BY region, subregion, namen;";
+					ORDER BY region, subregion, namen;";*/
+		$sqlSr = "SELECT nc1.id, nc1.isRegion, nc1.namen as namen, nc1.region as regionID, 
+					nc3.namen as subRegion, nc2.namen as region, 
+					false AS active, false AS modified
+						  FROM Consulting.DC_namesCountries nc1
+								JOIN Consulting.DC_namesCountries nc2 ON (nc1.region    = nc2.id)
+								JOIN Consulting.DC_namesCountries nc3 ON (nc1.subRegion = nc3.id)
+							WHERE nc1.isRegion = 0 -- ORDER BY nc2.namen , nc3.namen, nc1.namen
+					UNION
+					SELECT nc1.id, nc1.isRegion, nc1.namen as namen, nc1.region as regionID,
+					-- 'Others' as region, nc2.namen as subRegion, 
+					   'SELECT COUNTRIES' as suRegion, nc2.namen as region, 
+					false AS active, false AS modified    
+						FROM Consulting.DC_namesCountries nc1
+							JOIN Consulting.DC_namesCountries nc2 ON (nc1.region    = nc2.id)    
+				WHERE nc1.subRegion = 99
+				ORDER BY region, subregion, namen;";
+					
 		$result = $this->connection->fetchAll($sqlSr);
 		array_push($a, $result);		
 	    return $result;

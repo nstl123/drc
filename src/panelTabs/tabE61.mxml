@@ -161,21 +161,21 @@
 					this.flowManager.devicesActiveFlag  ? this.tmpDevices  = this.flowManager.selDevice  : this.tmpDevices = -1;
 					this.flowManager.pwrTypesActiveFlag ? this.tmpPwrTypes = this.flowManager.selPwrType : this.tmpPwrTypes = -1;					
 					this.flowManager.batTypesActiveFlag ? this.tmpBatTypes = this.flowManager.selBatType : this.tmpBatTypes = -1;				
-										
-					this.cursorManager.setBusyCursor();
-					
+									
 					if ((this.flowManager.chemTypesActiveFlag)&&(tmp2.length > 0)) {
+						this.cursorManager.setBusyCursor();
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster), showPerHHFlag);
 					} else if ((this.flowManager.chemTypesActiveFlag)&&(tmp.length > 0)) {
+						this.cursorManager.setBusyCursor();
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0, showPerHHFlag);					
 					} else if (tmp2.length > 0) {
+						this.cursorManager.setBusyCursor();
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
 							this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), this.flowManager.selDeviceAggLevel, showPerHHFlag);					
-					} else if (tmp.length > 0) {				
+					} else if (tmp.length > 0) {
+						this.cursorManager.setBusyCursor();
 						this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
 							this.tmpBatTypes, this.tmpPwrTypes, 0,  this.flowManager.selDeviceAggLevel, showPerHHFlag);					
-					} else {
-						this.cursorManager.removeBusyCursor();						
 					};
 				};
 			}			

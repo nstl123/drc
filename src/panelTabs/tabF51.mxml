@@ -181,10 +181,10 @@
 							tmpType = this.selPwrType;
 							fl = false;
 							break;
-					};				
-				
-					this.cursorManager.setBusyCursor();
-					if (tmp.length > 0) {						
+					};			
+					
+					if (tmp.length > 0) {
+						this.cursorManager.setBusyCursor();
 						//if (selDeviceAggLevel > 1 ) { // category level
 						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
 							workingScenarioID, int(fl), tmpType, 1);
@@ -193,7 +193,6 @@
 								fl, tmpType, 1);*/
 						//};
 					} else {					
-						this.cursorManager.removeBusyCursor();
 						Alert.show("select at least one country", "Error F51");					
 					};
 				
@@ -345,7 +344,8 @@
 				this.dispatchEvent(new Event("updateCharts", false));				
 				
 				var tmp:int = 1 - int(this.growthType.selection.value);
-				this.enableGrid(tmp == 0 && this.tabEditable, true);		
+				this.enableGrid(tmp == 0 && this.tabEditable, true);	
+				if (this.currentState == "viewingOnly") tmp = 0;
 				this.saveBtn.enabled = (tmp == 0);// && this.tabEditable);
 			}
 			

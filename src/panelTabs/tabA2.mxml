@@ -168,11 +168,10 @@
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
 			{					
 				this.cursorManager.removeBusyCursor();
-				this.currentData = this.getMacroDataResult.lastResult as ArrayCollection;							
 				
+				this.currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
 				this.currentDataChart.source = this.currentData.source;
-				this.currentDataGrid.source  = this.currentData.source;
-				
+				this.currentDataGrid.source  = this.currentData.source;				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
@@ -274,7 +273,8 @@
 				this.dispatchEvent(new Event("updateCharts", false));	
 				// 0 for levels, 1 for growth				 
 				this.enableGrid(tmp == 0 && this.tabEditable, true);	
-				this.saveBtn.enabled = (tmp == 0); // && this.tabEditable);
+				if (this.currentState == "viewingOnly") tmp = 0;
+				this.saveBtn.enabled = (tmp == 0); 
 			}
 			
 			protected function updateCharts(evt:Event):void {				

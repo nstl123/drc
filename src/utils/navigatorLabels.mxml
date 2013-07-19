@@ -57,9 +57,12 @@
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="10" paddingRight="10"/>
 		</s:layout>
+		<mx:LinkButton label="Home Screen" enabled="true" width="21%" height="30" textAlign="center" 
+					   id="lab0" color="#000000" fontWeight="bold" click="stateSelected(event)" textDecoration="none"/>
+		<s:Label  text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<mx:LinkButton label="Business Questions" enabled="true" width="21%" height="30" textAlign="center" 
 					   id="lab1" color="#000000" fontWeight="bold" click="stateSelected(event)" textDecoration="none"/>
-		<s:Label  text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"				 />
+		<s:Label  text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<mx:LinkButton label="Geography List" width="21%" height="30" textAlign="center"
 				 id="lab2" fontWeight="bold"  click="stateSelected(event)"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>

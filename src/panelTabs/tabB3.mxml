@@ -80,6 +80,7 @@
 			protected function getMacroDataCategory_resultHandler(event:ResultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
+				
 				currentData = this.getMacroDataCategory.lastResult as ArrayCollection;			
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source  = this.currentData.source;
@@ -338,6 +339,8 @@
 				
 				var tmp:int = 1 - int(this.growthType.selection.value);
 				this.enableGrid(tmp == 0 && this.tabEditable, true);
+				
+				if (this.currentState == "viewingOnly") tmp = 0;				 
 				this.saveBtn.enabled = (tmp == 0);// && this.tabEditable);
 			}
 			

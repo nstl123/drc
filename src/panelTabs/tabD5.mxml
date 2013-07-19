@@ -228,7 +228,8 @@
 				this.dispatchEvent(new Event("updateCharts", false));
 
 				var tmp:int = 1 - int(this.growthType.selection.value);
-				this.enableGrid(tmp == 0 && this.tabEditable, true);	
+				this.enableGrid(tmp == 0 && this.tabEditable, true);
+				if (this.currentState == "viewingOnly") tmp = 0;				
 				this.saveBtn.enabled = (tmp == 0);// && this.tabEditable);
 			}			
 			

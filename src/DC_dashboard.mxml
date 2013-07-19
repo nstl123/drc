@@ -121,7 +121,7 @@
 					this.addEventListener("tabaiCreated", finalTouches);					
 					this.addEventListener("indicatorsLoaded", fillIndicatorNames);						
 						
-					this.addEventListener("stateChanged", changeState); // further get state from navControl					
+					//this.addEventListener("stateChanged", changeState); // further get state from navControl					
 					this.addEventListener("viewingModeChanged", manageViewModeChanged);					
 					//events form countryTree
 					this.addEventListener("refreshData_C",  refreshData_C);					
@@ -143,22 +143,34 @@
 			};
 			
 			public function switchSate(evt:Event):void {
-				var t:String = this.navigatorBox2.currentStateSelected;
-				
+				var t:String = this.navigatorBox2.currentStateSelected;		
+				var viewOnly:Boolean = this.masterTab.isViewingMode();
 				switch (t) {
-					case "lab1":
-						this.currentState = "BQList";
+					case "lab0": // home page
+						this.currentState = "landingState";
+						this.cntryTree.currentState = "default";												
+						break;
+					case "lab1": // tab BQ
+						if (!viewOnly) {							
+							this.currentState = "BQList";
+							this.cntryTree.currentState = "default";
+						};
 						break;
 					case "lab2":
 						this.currentState = "geoList";
+						this.cntryTree.currentState = "default";
 						break;
-					case "lab4":
-						this.currentState = "viewingState";
-						this.tabai.selectedIndex = 1;
+					case "lab4": // some tabs become active, need refresh of data
+						this.currentState = (viewOnly ? "viewingState" : "scenarioState");
+						this.tabai.selectedIndex = this.selActiveTab;
+						//this.cntryTree.currentState = "default";
+						tabai_changeHandler(null);
 						break;
-					case "lab5":
-						this.currentState = "viewingState";
+					case "lab5": // some tabs become active, need refresh of data
+						this.currentState = (viewOnly ? "viewingState" : "scenarioState");
 						this.tabai.selectedIndex = 4;
+						//this.cntryTree.currentState = "slicing";
+						tabai_changeHandler(null);
 						break;
 					default:
 						break;				
@@ -185,6 +197,7 @@
 				this.cursorManager.removeBusyCursor();
 				
 				this.panelTabA2.refreshData(null);				
+				
 				this.updateLabelState();				
 				Alert.show("Base data has been populated", "Info");
 			}
@@ -227,11 +240,6 @@
 			}
 			
 			[bindable] private var currState:int;
-			public function changeState(evt:Event) : void {
-				//this.currState = this.navigatorBox.getState();
-				//this.digestStateChange(this.currState);
-				// take approprate action hide/show tabs
-			}
 			
 			private function manageViewModeChanged(evt:Event):void {
 				/*var crntSt:String = this.panelTabPath.getViewingState();
@@ -459,6 +467,7 @@
 				//this.panelTabPath.enablePaths(true);
 				
 				this.tabai.enabled = false;
+				
 				this.cursorManager.setBusyCursor();
 				
 				this.dispatchEvent(new Event("tabA", true));				
@@ -664,7 +673,7 @@
 				this.panelTabF51.labelTop.text = this.labelTop;
 				this.panelTabF51.labelBot.text = this.labelBottom;
 				
-				this.cntryTree.labelDemand.text = this.labelDemand;					
+				//this.cntryTree.labelDemand.text = this.labelDemand;					
 			}				
 			
 			protected function btnNext_clickHandler(event:MouseEvent):void		
@@ -749,7 +758,7 @@
 						this.tabai.selectedIndex = 4;
 						this.btnNext.enabled = false;			
 						break;					
-				}				
+				};			
 				//this.currentStateLabel.text = "Current State: " + this.currentState;
 				//this.invalidateDisplayList();			
 			}
@@ -970,7 +979,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Duracell Device Based Consumption Model – Analysis Tool v.1.16"/> 
+				text = "Duracell Device Based Consumption Model – Analysis Tool v.1.17"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="export scenario data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
@@ -1029,7 +1038,7 @@
 		</s:layout>
 		
 		<s:BorderContainer width="225" height="100%" horizontalCenter="0" top="" borderVisible="false"
-						   creationPolicy="auto"  width.scenarioState="250">
+						   creationPolicy="auto"  width.scenarioState="250" width.geoList="228">
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
@@ -1087,7 +1096,7 @@
 							 verticalCenter="0" horizontalCenter="0" 
 							 textAlign="left" chromeColor="#F8F8F8"
 							 backgroundAlpha="1.0" contentBackgroundAlpha="0.95" tabWidth="153"
-							 change="tabai_changeHandler(event)" 
+							 change="tabai_changeHandler(event)"						  
 							 borderVisible="false" borderColor="#8E8E8E">	
 				
 				<s:NavigatorContent id="nc_A2" label="Macro Environment"

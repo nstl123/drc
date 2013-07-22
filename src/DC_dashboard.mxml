@@ -148,27 +148,33 @@
 				switch (t) {
 					case "lab0": // home page
 						this.currentState = "landingState";
-						this.cntryTree.currentState = "default";												
+						this.cntryTree.currentState = "default";
+						this.btnNext.enabled = true;
 						break;
 					case "lab1": // tab BQ
 						if (!viewOnly) {							
 							this.currentState = "BQList";
 							this.cntryTree.currentState = "default";
+							this.navigatorBox2.setStateVector([1, 1, 1, 0, 0]);
+							this.btnNext.enabled = true;
 						};
 						break;
 					case "lab2":
 						this.currentState = "geoList";
 						this.cntryTree.currentState = "default";
+						this.btnNext.enabled = true;
 						break;
-					case "lab4": // some tabs become active, need refresh of data
+					case "lab3": // some tabs become active, need refresh of data
 						this.currentState = (viewOnly ? "viewingState" : "scenarioState");
 						this.tabai.selectedIndex = this.selActiveTab;
+						this.btnNext.enabled = true;
 						//this.cntryTree.currentState = "default";
 						tabai_changeHandler(null);
 						break;
-					case "lab5": // some tabs become active, need refresh of data
+					case "lab4": // some tabs become active, need refresh of data
 						this.currentState = (viewOnly ? "viewingState" : "scenarioState");
 						this.tabai.selectedIndex = 4;
+						this.btnNext.enabled = false;
 						//this.cntryTree.currentState = "slicing";
 						tabai_changeHandler(null);
 						break;
@@ -467,7 +473,7 @@
 				//this.panelTabPath.enablePaths(true);
 				
 				this.tabai.enabled = false;
-				
+								
 				this.cursorManager.setBusyCursor();
 				
 				this.dispatchEvent(new Event("tabA", true));				
@@ -688,22 +694,19 @@
 						if (viewMode == "viewDataOnly") {							
 							this.currentState =  "geoList";
 							this.geoListLabel.text = this.geoLabel;
-							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false);
-							this.navigatorBox2.setButtonColors(null,      2, false);
-							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
+							this.navigatorBox2.setStateVector([1, 0, 1, 0, 0]);
 							this.startApp(null);
 							if (this.flagApplicationStarted < 2) this.dispatchEvent(new Event("init", true));
 							this.btnNext.enabled = this.atLeastOneCntrySelected;
 						} else {
 							this.currentState =  "BQList"
-							this.navigatorBox2.setButtonColors(null, 1);
+							this.navigatorBox2.setStateVector([1, 1, 0, 0, 0]);
 							this.startApp(null);
 						};						
 						break;
 					case "BQList" :							
 						this.currentState = "geoList";						
-						this.navigatorBox2.setButtonColors(null, 2);
+						this.navigatorBox2.setStateVector([1, 1, 1, 0, 0]);
 						this.startApp(null);
 						this.btnNext.enabled = this.atLeastOneCntrySelected;
 						
@@ -716,11 +719,7 @@
 							if (this.viewMode == "viewDataOnly") {							
 								this.digestUpdate(null);														
 								currentState = "viewingState";
-								this.navigatorBox2.setButtonColors("#000000", 2, false);
-								this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-								this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);							
-								this.navigatorBox2.setButtonColors(null,      5, false);
-								
+								this.navigatorBox2.setStateVector([1, 0, 1, 1, 1]);							
 								if (!tabaiCreationComplete)  {
 										this.tabai.createDeferredContent();
 								} else   
@@ -728,15 +727,11 @@
 							} else {														
 								this.digestUpdate(null);
 								currentState = "scenarioState";
-								this.navigatorBox2.setButtonColors(null, 4);					
-								
+								this.navigatorBox2.setStateVector([1, 1, 1, 1, 1]);								
 								if (!tabaiCreationComplete) this.tabai.createDeferredContent();					
 								else     					this.tabai.selectedIndex = this.selActiveTab;											
-								//this.navigatorBox2.setButtonColors(null, 3);	
-								//this.originalBQLabel.text = this.selPathObjLabel;
 							};							
-							this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus							
-							//this.cntryTree.setRegionsGridEnabled(true);				
+							this.masterTab.notifyAll();	// used for default selection of IndisDropDownMenus								
 							if (tabaiCreationComplete) {									
 								tabai_changeHandler(null);
 								this.updateLabelState();
@@ -747,14 +742,12 @@
 					case "viewingState" :	
 						// set this into initialization stage of these
 						this.cntryTree.setLabelDemand(this.labelDemand);
-						this.navigatorBox2.setButtonColors("#8c8c8c", 3, false);
-						this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);						
-						if (this.tabaiCreationComplete) { this.tabai.selectedIndex = 4; };	
+						this.navigatorBox2.setStateVector([1, 0, 1, 1, 1]);						if (this.tabaiCreationComplete) { this.tabai.selectedIndex = 4; };	
 						this.btnNext.enabled = false;					
 						break;					
 					case "scenarioState" :
 						this.cntryTree.setLabelDemand(this.labelDemand);
-						this.navigatorBox2.setButtonColors(null, 5);
+						this.navigatorBox2.setStateVector([1, 1, 1, 1, 1]);
 						this.tabai.selectedIndex = 4;
 						this.btnNext.enabled = false;			
 						break;					
@@ -777,44 +770,30 @@
 							currentState =  "landingState";							
 						} else {
 							currentState = "BQList";
-							this.navigatorBox2.setButtonColors(null, 1);
+							this.navigatorBox2.setStateVector([1, 1, 0, 0, 0]);
 						};
 						this.btnNext.enabled = true;
 						break;					
-					/*case "indicatorsList" :
-						currentState = "geoList";
-						this.navigatorBox2.setButtonColors(null, 2);						 
-						break;*/					
 					case "viewingState" :
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = this.selActiveTab;
-							//this.cntryTree.currentState = "default";
 						} else {
 							this.currentState = "geoList";
-							this.navigatorBox2.setButtonColors("#8c8c8c", 1, false); // data inputs disabled
-							this.navigatorBox2.setButtonColors(null,      2, false);
-							this.navigatorBox2.setButtonColors("#8c8c8c", 3, false); // data inputs disabled
-							this.navigatorBox2.setButtonColors("#8c8c8c", 4, false);
-							this.navigatorBox2.setButtonColors("#000000", 5, false);
-							//this.cntryTree.setRegionsGridEnabled(false);
+							this.navigatorBox2.setStateVector([1, 0, 1, 0, 0]);
 						};
 						this.btnNext.enabled = true;
 						break;					
 					case "scenarioState" :
 						if (this.tabai.selectedIndex == 4) {
 							this.tabai.selectedIndex = this.selActiveTab;
-							this.navigatorBox2.setButtonColors(null, 4);
-							//this.cntryTree.currentState = "default";
+							this.navigatorBox2.setStateVector([1, 1, 1, 1, 1]);
 						} else {
 							currentState = "geoList";
-							this.navigatorBox2.setButtonColors(null, 2);			
-							///this.cntryTree.setRegionsGridEnabled(false);
+							this.navigatorBox2.setStateVector([1, 1, 1, 0, 0]);							
 						};
 						this.btnNext.enabled = true;					
 						break;					
 				}				
-				//this.currentStateLabel.text = "Current State: " + this.currentState;
-				//this.invalidateDisplayList();
 			}			
 			
 			public function getTheData(evt:Event):void {

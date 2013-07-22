@@ -184,6 +184,7 @@
 					};			
 					
 					if (tmp.length > 0) {
+						this.cursorManager.removeAllCursors();
 						this.cursorManager.setBusyCursor();
 						//if (selDeviceAggLevel > 1 ) { // category level
 						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,

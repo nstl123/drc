@@ -308,6 +308,7 @@
 					var countryIDs:Array = this.dataList.source;
 					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);
 					
+					this.cursorManager.removeAllCursors();
 					this.cursorManager.setBusyCursor();
 					//if (selDeviceAggLevel > 1 ) { // category level
 					getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,

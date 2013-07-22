@@ -162,6 +162,7 @@
 					this.flowManager.pwrTypesActiveFlag ? this.tmpPwrTypes = this.flowManager.selPwrType : this.tmpPwrTypes = -1;					
 					this.flowManager.batTypesActiveFlag ? this.tmpBatTypes = this.flowManager.selBatType : this.tmpBatTypes = -1;				
 									
+					this.cursorManager.removeAllCursors();
 					if ((this.flowManager.chemTypesActiveFlag)&&(tmp2.length > 0)) {
 						this.cursorManager.setBusyCursor();
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster), showPerHHFlag);

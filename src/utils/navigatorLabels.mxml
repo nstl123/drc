@@ -14,15 +14,14 @@
 			
 			public function setButtonColors(col:String, k:int, single:Boolean = true):void {
 				if (!col) col = "#0071bb"; // melyna				
-				var colBlack:String = "#000000"; // default juoda "#000000"
-				
+				var colBlack:String = "#000000"; // default juoda "#000000"			
 				
 				if (single) {
 					this.lab1.setStyle("color", colBlack);
 					this.lab2.setStyle("color", colBlack);
 					//this.lab3.setStyle("color", colBlack);
+					this.lab3.setStyle("color", colBlack);
 					this.lab4.setStyle("color", colBlack);
-					this.lab5.setStyle("color", colBlack);
 				};
 				
 				switch (k) {
@@ -32,14 +31,11 @@
 					case 2:
 						this.lab2.setStyle("color", col);
 						break;
-					/*case 3:
-						this.lab3.setStyle("color", col);
-						break;*/
 					case 4:
-						this.lab4.setStyle("color", col);
+						this.lab3.setStyle("color", col);
 						break;
 					case 5:
-						this.lab5.setStyle("color", col);
+						this.lab4.setStyle("color", col);
 						break;
 				};
 			}
@@ -48,6 +44,30 @@
 			public function stateSelected(evt:Event):void {				
 				this.currentStateSelected = evt.target.id;				
 				this.dispatchEvent(new Event("stateClicked", true));				
+			}
+			
+			public function setStateVector(vc:Array):void {
+				var flag:Boolean = false;
+				for (var i:int = 0; i < vc.length; i++) {
+					flag = (vc[i] == 1);
+					switch (i) {
+						case 0:
+							this.lab0.enabled = flag;
+							break;
+						case 1:
+							this.lab1.enabled = flag;
+							break;
+						case 2:
+							this.lab2.enabled = flag;
+							break;
+						case 3:
+							this.lab3.enabled = flag;
+							break;
+						case 4:
+							this.lab4.enabled = flag;
+							break;
+					};
+				};			
 			}
 			
 		]]>
@@ -67,10 +87,10 @@
 				 id="lab2" fontWeight="bold"  click="stateSelected(event)"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<mx:LinkButton label="Data Inputs" width="21%" height="30" textAlign="center" 
-				 id="lab4" fontWeight="bold"  click="stateSelected(event)"/>
+				 id="lab3" fontWeight="bold"  click="stateSelected(event)"/>
 		<s:Label text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<mx:LinkButton label="View Output" width="21%" height="30" textAlign="center"
-				 id="lab5" fontWeight="bold"  click="stateSelected(event)"/>
+				 id="lab4" fontWeight="bold"  click="stateSelected(event)"/>
 		
 	</s:BorderContainer>
 </s:Group>

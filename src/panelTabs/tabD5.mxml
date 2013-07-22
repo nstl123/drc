@@ -173,14 +173,12 @@
 				this.currentDataGrid.source  = this.currentData.source;
 				
 				this.dispatchEvent(new Event("updateCharts", false));
-			}
-			
+			}			
 
 			protected function button4_clickHandler(event:MouseEvent):void
 			{
 				this.dispatchEvent(new Event("scenarioResetRequested", true));
 			}
-
 
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {				
@@ -330,6 +328,10 @@
 			{
 				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
 				this.selDevice = this.deviceListDrop.selectedItem.id;
+				
+				selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
+				this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
+				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}			
 			

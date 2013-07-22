@@ -532,12 +532,15 @@
 				 this.dispatchEvent(new Event("dbCleaned"));
 				 
 			}
-
+			
+			[bindable] private var startOnce:uint = 0;
 			protected function cntryTreeInit():void
 			{
-				this.cntryTree.dataServiceNames = this.dataServiceNames;
-				this.cntryTree.initNames();
-				
+				startOnce = startOnce + 1;
+				if (startOnce == 1) {
+					this.cntryTree.dataServiceNames = this.dataServiceNames;
+					this.cntryTree.initNames();
+				};				
 				//this.dispatchEvent(new Event("cTree", true));
 				trace("creation complete of cTree");				
 			}
@@ -636,6 +639,7 @@
 			{
 				trace("tabai creation complete");	
 				this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);
+				if (this.currentState == "viewingState") this.tabai.selectedIndex = 1;
 			}			
 
 			protected function deleteAllScenariosResult_faultHandler(event:FaultEvent):void
@@ -720,10 +724,12 @@
 								this.digestUpdate(null);														
 								currentState = "viewingState";
 								this.navigatorBox2.setStateVector([1, 0, 1, 1, 1]);							
-								if (!tabaiCreationComplete)  {
-										this.tabai.createDeferredContent();
-								} else   
-										this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);								
+								if (!tabaiCreationComplete) {									
+									this.tabai.createDeferredContent();									
+								} else {									
+									this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);
+									this.tabai.selectedIndex = 1;
+								};								
 							} else {														
 								this.digestUpdate(null);
 								currentState = "scenarioState";
@@ -735,14 +741,15 @@
 							if (tabaiCreationComplete) {									
 								tabai_changeHandler(null);
 								this.updateLabelState();
-								updateLabels();
+								updateLabels();								
 							};
 						};
 						break;					
 					case "viewingState" :	
 						// set this into initialization stage of these
 						this.cntryTree.setLabelDemand(this.labelDemand);
-						this.navigatorBox2.setStateVector([1, 0, 1, 1, 1]);						if (this.tabaiCreationComplete) { this.tabai.selectedIndex = 4; };	
+						this.navigatorBox2.setStateVector([1, 0, 1, 1, 1]);
+						if (this.tabaiCreationComplete) { this.tabai.selectedIndex = 4; };	
 						this.btnNext.enabled = false;					
 						break;					
 					case "scenarioState" :
@@ -776,7 +783,7 @@
 						break;					
 					case "viewingState" :
 						if (this.tabai.selectedIndex == 4) {
-							this.tabai.selectedIndex = this.selActiveTab;
+							this.tabai.selectedIndex = 1 //this.selActiveTab;
 						} else {
 							this.currentState = "geoList";
 							this.navigatorBox2.setStateVector([1, 0, 1, 0, 0]);
@@ -888,7 +895,7 @@
 						break;				
 				};							
 				
-				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp, indicatorID);
+				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp, indicatorID);					
 			}			
 
 			protected function insertExportIdsResult_resultHandler(event:ResultEvent):void
@@ -901,8 +908,8 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			//public var address:String = "192.168.44.200";
-			public var address:String = "213.197.173.50";
+			public var address:String = "192.168.44.200";
+			//public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{			
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 

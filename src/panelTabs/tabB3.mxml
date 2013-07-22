@@ -323,12 +323,15 @@
 			}
 
 			[bindable] private var selDevice:int = 1;
-			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void {		
-				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0; 				
+			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void {			
 				
-				this.selDevice = this.deviceListDrop.selectedItem.id;	
-				
+				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;				
+				this.selDevice = this.deviceListDrop.selectedItem.id;			
 				this.flMngr.setSelDevice(this.selDevice);
+				
+				selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
+				this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);				
+				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			

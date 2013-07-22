@@ -23,6 +23,7 @@ switch ($typeID) {
 						ON (nind.id = dma.indicatorID)";
 		$indiCond  = "AND dma.indicatorID = dxt.indicatorID";
 		$a = "nind.namen AS indicatorName";
+		$multipl = "";
 		break;
 	case 1: // means battery factors	
 		$fromTable = "FROM Consulting.DC_scenarioData dma";
@@ -32,6 +33,7 @@ switch ($typeID) {
 						ON (nind.id = dma.indicatorID)";		
 		$indiCond  = "AND dma.indicatorID = dxt.indicatorID";
 		$a         = "nind.namen AS indicatorName";
+		$multipl = "";
 		break;				
 	case 2:	 // nothing there yet
 		//	deviseBase Table
@@ -44,6 +46,7 @@ switch ($typeID) {
 		$indiJoin   = "";
 		$indiCond   = "";
 		$a          = "'demand' AS indicatorName"; 
+		$multipl    = " 1000 * ";
 		break;	
 };
 
@@ -54,28 +57,30 @@ if ($k == 300) {
 		$namesPart = ", 'NA'       AS deviceName";
 		$groupPart = "";		
 } else if  ($k == 301) {	
-		$namesPart = ", ndv.namen  AS deviceName";
-		$groupPart = ", deviceID";		
+		$namesPart = ($aggLevel == 1 ? ", ndv.namen AS deviceName" : ", ndvc.namen AS deviceName");			
+		$groupPart = ($aggLevel == 1 ? ", deviceID" : ", categoryID");	
 } else if  ($k == 302) {		
-		$namesPart = ", ndvc.namen AS deviceName";
-		$groupPart = ", categoryID";		
+		$namesPart = ($aggLevel == 1 ? ", ndv.namen AS deviceName" : ", ndvc.namen AS deviceName");			
+		$groupPart = ($aggLevel == 1 ? ", deviceID" : ", categoryID");	
+		/*$namesPart = ", ndvc.namen AS deviceName";
+		$groupPart = ", categoryID";		*/
 } else if  ($k < 200) {	// macro
 		$namesPart = ", null AS deviceName";
-		$groupPart = "";
-		
+		$groupPart = "";		
 } else if  ($k == 401) { // deviceBase		
 
 		// add another table		
 		
 } else if  ($k > 200) {	// all exogenous		
 		// need to add pwrTypes and dop summing
-		$namesPart = ", ndv.namen AS deviceName";
-		$groupPart = ($aggLevel == 1 ? ", deviceID" : ", categoryID");				
+		//$namesPart = ", ndv.namen AS deviceName";
+		$groupPart = ($aggLevel == 1 ? ", deviceID" : ", categoryID");	
+		$namesPart = ($aggLevel == 1 ? ", ndv.namen AS deviceName" : ", ndvc.namen AS deviceName");	
 };
 
 $yrsList = "";
 for ($u = 2006; $u < 2022; $u++) { 
-	$yrsList = $yrsList.", sum( dma.Y".$u." ) AS Y".$u; 
+	$yrsList = $yrsList.",".$multipl." sum( dma.Y".$u." ) AS Y".$u; 
 };
 
 $query  = "\r\n SELECT dma.scenarioID, dma.countryID, cntn.namen as countryName, ".$a."

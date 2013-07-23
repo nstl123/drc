@@ -158,24 +158,33 @@ class Depot31 {
 					 
 		$isMarket = 0;
 		// for now lets override Market method
+		$isMarketSize = 0;
 		
-		$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
+		if ($isMarketSize == 0) {
+			$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
+		} else { // delete market size from DB 
+			$delStmnt = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID = 210 and scenarioID = ".$scenarioID.";";
+		};		
+		
 		$result = $this->connection->prepare($delStmnt);		
 		$result->execute();	
 		
-		$insStmnt = "
-			INSERT INTO `Consulting`.`DC_deviceBaseTable`
-				(`scenarioID`,`countryID`,`deviceID`,`indicatorID`,
-				".$yrsField.")
-			SELECT
-				`scenarioID`,`countryID`,`deviceID`,`indicatorID`,
-				".$yrsField."
-			FROM `Consulting`.".(($isMarket == 0) ? 'DC_deviceBase' : 'DC_deviceBaseMarket')."
-				WHERE scenarioID = ".$scenarioID.";";
+		if ($isMarketSize == 0) {		
+			$insStmnt = "\r\n	INSERT INTO `Consulting`.`DC_deviceBaseTable` \r\n (`scenarioID`,`countryID`,`deviceID`,`indicatorID`,".$yrsField.")
+							SELECT `scenarioID`,`countryID`,`deviceID`,`indicatorID`, ".$yrsField."
+							FROM `Consulting`.".(($isMarket == 0) ? 'DC_deviceBase' : 'DC_deviceBaseMarket')."
+							WHERE scenarioID = ".$scenarioID.";";
+		} else {
+			$insStmnt = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`,".$yrsField.")
+							SELECT `scenarioID`,`countryID`,`deviceID`, 210 as `indicatorID`, ".$yrsField."
+							FROM `Consulting`.`DC_salesWTrend`
+							WHERE scenarioID = ".$scenarioID.";";
+		};
+		
 		$result = $this->connection->prepare($insStmnt);		
 		$result->execute();		
 		
-		return "ok"; // some error handling would be nice
+		return "ok"; // $insStmnt; // some error handling would be nice
 	}
 
 	public function testFile($a) {

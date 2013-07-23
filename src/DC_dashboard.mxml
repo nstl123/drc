@@ -102,6 +102,8 @@
 					this.addEventListener("cntryUnChecked", digestUpdate);				
 					this.addEventListener("updateClusterType", digestUpdate);				
 					this.addEventListener("NewScenarioUpdated", refreshDeviceBase);				
+					this.addEventListener("deviceBaseWritten",  refreshMarketSize);
+					
 					this.addEventListener("scenarioResetRequested", resetScenario);
 					this.addEventListener("scenarioResetDone", refreshAllTabs);
 					
@@ -196,13 +198,12 @@
 				this.masterTab.notifyAll();
 				this.masterTab.setIndicatorNamesAll();
 				this.masterTab.enableGrids(this.masterTab.getPathFlags());		
-				this.tabai.selectedIndex = this.selActiveTab;
 				
-				this.tabai.enabled = true;
-				
-				this.cursorManager.removeBusyCursor();
-				
-				this.panelTabA2.refreshData(null);				
+				this.tabai.selectedIndex = 1; //this.selActiveTab;				
+				this.tabai.enabled = true;				
+				this.cursorManager.removeBusyCursor();				
+				//this.panelTabA2.refreshData(null);
+				this.panelTabB3.refreshData(null);
 				
 				this.updateLabelState();				
 				Alert.show("Base data has been populated", "Info");
@@ -299,11 +300,9 @@
 			protected function recordState(evt:Event):void {			
 				this.saveSomeData(evt);
 				changeMadeInScenario = true;				
-				masterTab.setStateSpacePos(4);
-				
+				masterTab.setStateSpacePos(4);				
 				//update CTree with new data
-				this.cntryTree.setScenarioCountries(this.masterTab.getScenarioCountryListData());
-				
+				this.cntryTree.setScenarioCountries(this.masterTab.getScenarioCountryListData());				
 				//this.updateStateSpaceLabel();
 				//or record cTree values here
 			}
@@ -320,6 +319,11 @@
 				this.firstDeviceBase = this.firstDeviceBase + 1;				 
 				this.panelTabC4.rewriteDeviceBase();				
 			}
+			
+			protected function refreshMarketSize(evt:Event):void {								 
+				this.panelTabD5.rewriteMarketSize();				
+			}	
+			
 			
 			public function resetScenario(evt:Event):void {
 				this.changeMadeInScenario = false;
@@ -639,7 +643,7 @@
 			{
 				trace("tabai creation complete");	
 				this.masterTab.enableGrids([0, 0, 0, 0, 0, 0]);
-				if (this.currentState == "viewingState") this.tabai.selectedIndex = 1;
+				//if (this.currentState == "viewingState") this.tabai.selectedIndex = 1;
 			}			
 
 			protected function deleteAllScenariosResult_faultHandler(event:FaultEvent):void
@@ -908,8 +912,8 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			public var address:String = "192.168.44.200";
-			//public var address:String = "213.197.173.50";
+			//public var address:String = "192.168.44.200";
+			public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{			
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
@@ -965,7 +969,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Duracell Device Based Consumption Model – Analysis Tool v.1.17"/> 
+				text = "Duracell Device Based Consumption Model – Analysis Tool v.1.18"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="export scenario data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
@@ -995,7 +999,7 @@
 		<mx:Text width="667" text="Welcome to the Duracell Device-Based Consumption Model Data Tool. This tool, developed by Euromonitor International, allows for immediate access to battery powered device data (in units) &amp; forecasted battery demand (in cells) across 53 markets globally. Forecasted years include 2006-2021. In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios."
 				 		 y="44" height="102" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 		
-		<mx:Text width="671" text="NOTE: The Device Based Consumption Model (DBCM) research was completed in ?FY12/13"
+		<mx:Text width="671" text="NOTE: The Device Based Consumption Model (DBCM) research was completed in FY2012"
 				 y="143" height="25" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 				
 		<mx:Text width="671" text="Step 1: Indicate below how you intend to use the tool:" 

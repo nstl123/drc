@@ -31,7 +31,7 @@
 			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void
 			{
 				if (event.message.body != "ok") //this.someLabel.text = "view written successfully";
-					Alert.show("data could not be written to DB", "Error D4");
+					Alert.show("data could not be written to DB", "Error in message format");
 			}
 	
 			protected function getDeviceLits_faultHandler(event:FaultEvent):void
@@ -80,7 +80,7 @@
 				this.addEventListener("refreshData", refreshData);
 				
 				this.addEventListener("deviceBaseWritten", refreshData);
-				this.rewriteDeviceBase();
+				this.rewriteMarketSize();
 				
 				initShockControls();		
 			}
@@ -294,7 +294,7 @@
 			}
 
 			public function refreshData(evt:Event):void {
-				this.rewriteDeviceBase();								
+				//this.rewriteMarketSize();								
 					
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					Alert.show("Please select at least one country", "Selection error");
@@ -348,10 +348,10 @@
 			}	
 			
 			public var startInd:int = 0;
-			public function rewriteDeviceBase():void {
+			public function rewriteMarketSize():void {
 				startInd = startInd + 1;
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
-				if (this.startInd > 1) writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 1);
+				if (this.startInd > 1) writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 0, 1);
 			}
 			
 			public function setActiveIndis(k:int, idd:int = -1):void {

@@ -229,6 +229,7 @@
 			{
 				Alert.show("Data updated successfully", "Info");
 				this.dispatchEvent(new Event("NewScenarioUpdated", true));
+
 				this.dispatchEvent(new Event("refreshData", false));
 			}
 

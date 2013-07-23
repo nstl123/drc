@@ -77,7 +77,7 @@
 		<s:layout>
 			<s:HorizontalLayout paddingLeft="10" paddingRight="10"/>
 		</s:layout>
-		<mx:LinkButton label="Home Screen" enabled="true" width="21%" height="30" textAlign="center" 
+		<mx:LinkButton label="Home" enabled="true" width="21%" height="30" textAlign="center" 
 					   id="lab0" color="#000000" fontWeight="bold" click="stateSelected(event)" textDecoration="none"/>
 		<s:Label  text="--" height="30" verticalAlign="middle" textAlign="center" width="4%"/>
 		<mx:LinkButton label="Business Questions" enabled="true" width="21%" height="30" textAlign="center" 

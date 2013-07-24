@@ -300,7 +300,7 @@
 					};					
 					temp = ({'id':1, data:this.alteredData});
 					if (this.alteredData.length  > 0) {
-						this.updateData.token = this.dataServiceUpdate.updateData2(temp, false, this.selDevice, 0, yrs, val);
+						this.updateData.token = this.dataServiceUpdate.updateData2(temp, int(false), this.selDevice, 0, yrs, val);
 						this.dispatchEvent(new Event("changesMadeInScenario", true));
 					} else {
 						this.dispatchEvent(new Event("refreshData", false));

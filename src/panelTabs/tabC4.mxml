@@ -160,7 +160,7 @@
 				var temp:Object = new Object();
 				temp = ({'id':1, data:this.alteredData});
 				//hasSplit by batteryTypes = false
-				this.updateData.token = this.dataServiceUpdate.updateData2(temp, true, this.selDevice, 0, 2012, 0);
+				this.updateData.token = this.dataServiceUpdate.updateData2(temp, int(true), this.selDevice, 0, 2012, 0);
 			}
 			
 			

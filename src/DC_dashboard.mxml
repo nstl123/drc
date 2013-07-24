@@ -11,7 +11,8 @@
 			   xmlns:panelTabs="panelTabs.*" 
 			   width="100%"  xmlns:utils="utils.*"
 			   pageTitle="Battery Demand Tool" 
-			   minHeight="800" height="800" xmlns:wrapperis="services.wrapperis.*" xmlns:depot4="services.depot4.*" xmlns:depot311="services.depot31.*">
+			   minHeight="800" height="800" xmlns:wrapperis="services.wrapperis.*" 
+			   xmlns:depot4="services.depot4.*" xmlns:depot311="services.depot31.*">
 	
 	<!-- creationComplete="initAll(event)" !-->
 	

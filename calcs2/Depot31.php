@@ -116,7 +116,7 @@ class Depot31 {
 	}	
 		
 	public function insertWorkingScenario($scenarioID) {
-		$yrsField = "`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
+		$yrsField = "`Y2002`, `Y2003`, `Y2004`, `Y2005`, `Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
 					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";
 
 		$stmntMacro = "
@@ -152,13 +152,13 @@ class Depot31 {
 		return $result;
 	} 
 	
-	public function writeViewToTable($scenarioID, $isMarket) {	
+	public function writeViewToTable($scenarioID, $isMarket, $isMarketSize) {	
 		$yrsField = "`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
 					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";
 					 
 		$isMarket = 0;
 		// for now lets override Market method
-		$isMarketSize = 0;
+		//$isMarketSize = 0;
 		
 		if ($isMarketSize == 0) {
 			$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
@@ -196,32 +196,42 @@ class Depot31 {
 		$arr = $arr0['data'];		
 		
 		$srcTable = "";	 $srcTable = "Consulting.DC_scenarioData sdt";		
-		if ($isDeviceBase == 1) $srcTable = "Consulting.DC_deviceBaseTable"; 				
+		//if ($isDeviceBase == 1) $srcTable = "Consulting.DC_deviceBaseTable"; 				
 		
 		$updateYears = ""; 
 		for ($u = $startYear; $u <= 2021; $u++) {
-			$updateYears = $updateYears.($u > $startYear ? "," : "" );
-			$updateYears = $updateYears."sdt.Y".$u." = ( a.Y".$u." * ". (1 + $shockValue/100).")";
+			if (($u % 3) == 0)  $updateYears = $updateYears."\r\n";		
+			$updateYears = $updateYears.($u > $startYear ? ", " : "" );
+			
+			if ($shockValue != 0) $updateYears = $updateYears."sdt.Y".$u." = ( a.Y".$u." * ". (1 + $shockValue/100).")";			
 		};		
-		//$joinTable = "\r\nLEFT JOIN Consulting.DC_namesDevices ndv ON (ndv.id = sdt.deviceID)\r\n";
+
 		$devLevel     = (($deviceID > 200) ? " ndv.categoryID " : " ndv.id");
 		$devLevelFull = (($deviceID >   0) ?  (" AND ".$devLevel."=".$deviceID) : "");
 		
 		for ($j = 0; $j < count($arr); $j++) {		
-			$b =(array) $arr0['data'][$j]; // need to extend to more data points
+			$b =(array) $arr0['data'][$j]; 
+			
+			if ($shockValue == 0) { // this code part for single value update from dataGrid
+				$updateYears = "";
+				for ($u = $startYear; $u <= 2021; $u++) {
+					if (($u % 3) == 0) $updateYears = $updateYears."\r\n";
+					$updateYears = $updateYears.($u > $startYear ? ", " : "" );
+					$updateYears = $updateYears.'sdt.Y'.$u." = ".$b['Y'.$u]; 
+				};
+			};
 
-			$newUpdate = 
-			   "UPDATE ".$srcTable."
-				JOIN (
-					SELECT * FROM Consulting.DC_scenarioData sdt2    
-					LEFT JOIN Consulting.DC_namesDevices ndv ON (ndv.id = sdt2.deviceID)
-					WHERE 
-						sdt2.scenarioID = 10001 AND sdt2.countryID = ".$b['countryID']."
-						AND sdt2.indicatorID = ".$b['indicatorID'].$devLevelFull." AND sdt2.typeID = ".$typeID."
-					) as a
-				ON ( sdt.countryID = a.countryID AND sdt.indicatorID = a.indicatorID
-					 AND sdt.deviceID = a.deviceID AND sdt.typeID = a.typeID)
-				SET ".$updateYears." WHERE sdt.scenarioID = ".$b['scenarioID'];
+			$newUpdate = "\r\n UPDATE ".$srcTable."
+							JOIN (
+								SELECT * FROM Consulting.DC_scenarioData sdt2    
+								LEFT JOIN Consulting.DC_namesDevices ndv ON (ndv.id = sdt2.deviceID)
+								WHERE 
+									sdt2.scenarioID = 10001 AND sdt2.countryID = ".$b['countryID']."
+									AND sdt2.indicatorID = ".$b['indicatorID'].$devLevelFull." AND sdt2.typeID = ".$typeID."
+								) as a
+							ON ( sdt.countryID = a.countryID AND sdt.indicatorID = a.indicatorID
+								 AND sdt.deviceID = a.deviceID AND sdt.typeID = a.typeID)
+							SET ".$updateYears." WHERE sdt.scenarioID = ".$b['scenarioID'];
 			
 			$result = $this->connection->prepare($newUpdate);
 			$result->execute();		

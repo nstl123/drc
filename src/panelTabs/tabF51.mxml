@@ -160,10 +160,10 @@
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					Alert.show("Please select at least one country", "Selection error");
 				} else {						
-					if (this.dataList.length >= 10 ) {
+					/*if (this.dataList.length >= 10 ) {
 						Alert.show("Maximum number of selected counties should less of equal to 10", "Info");
 						this.dataList.source.splice(10, this.dataList.source.length - 10);
-					};	
+					};*/	
 					var countryIDs:Array = this.dataList.source;				
 					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);				
 					trace("calling macro data token");
@@ -207,7 +207,7 @@
 			
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;				
-				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;
+				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;				
 				
 				this.dispatchEvent(new Event("refreshData", false));
 			}			
@@ -316,17 +316,20 @@
 				Alert.show("Error retrieving data from DB", "Error F51");
 			}
 
-			[bindable] private var selBatType:int = 3;
-			[bindable] private var selPwrType:int = 1;
+			[bindable] public var selBatType:int = 3;
+			[bindable] public var selPwrType:int = 1;
 			protected function batTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selBatType = int(this.batTypes.selectedValue);
+				this.flMngr.setSelBatType(this.selBatType);
 				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
 			protected function pwrTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selPwrType = int(this.pwrTypes.selectedValue);
+				this.flMngr.setSelPwrType(this.selPwrType);	
+				
 				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
@@ -381,6 +384,9 @@
 				
 				this.pwrTypes.enabled = !enFlag;
 				this.batTypes.enabled = enFlag;
+				
+				this.flMngr.setSelBatType(this.selBatType * int(enFlag) );
+				this.flMngr.setSelPwrType(this.selPwrType * int(!enFlag));
 				
 				this.testChart.updateChartTitle(
 					(indicatorsBox.selectedItem ? (indicatorsBox.selectedItem.namen + ", " + lbl) : "-"),
@@ -510,9 +516,11 @@
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
 	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="469" top.default="21" left.default="469"/>
 	<s:RadioButton label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="true"
-				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" left="245" top.viewingOnly="59" left.viewingOnly="197" top.default="74" left.default="180"/>
+				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" 
+				   left="245" top.viewingOnly="59" left.viewingOnly="197" top.default="74" left.default="180"/>
 	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245" top.viewingOnly="59" left.viewingOnly="319" top.default="74" left.default="319"/>	
+				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245" 
+				   top.viewingOnly="59" left.viewingOnly="319" top.default="74" left.default="319"/>	
 	<s:RadioButton label="Built-in Rechargeable" value="3" groupName="pwrTypes"
 				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false" left="380" left.viewingOnly="197" left.default="180" top.default="96" top.viewingOnly="77"/>
 

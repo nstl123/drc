@@ -43,6 +43,7 @@ package controls
 		
 		[bindable] public var selBatType:int = 0;
 		[bindable] public var selPwrType:int = 0;
+		[bindable] public var selGenBatType:int = 0;		
 		[bindable] public var selChemType:int = 1;
 		[bindable] public var selDevice:int = 1;
 
@@ -85,6 +86,10 @@ package controls
 		public function setSelPwrType(k:int):void {
 			this.selPwrType = k;
 		}
+		
+		public function setSelGenBatType(k:int) : void {
+			this.selGenBatType = k;
+		}		
 		
 		public function setSelChemType(k:int):void {
 			this.selChemType = k;

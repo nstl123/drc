@@ -300,10 +300,10 @@
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					Alert.show("Please select at least one country", "Selection error");
 				} else {					
-					if (this.dataList.length >= 10 ) {
+					/*if (this.dataList.length >= 10 ) {
 						Alert.show("Maximum number of selected counties should less of equal to 10", "Info");
 						this.dataList.source.splice(10, this.dataList.source.length - 10);
-					};				
+					};*/				
 					var countryIDs:Array = this.dataList.source;
 					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);
 					
@@ -332,7 +332,8 @@
 				
 				selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
 				this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
-				
+				this.flMngr.setSelBatType(0);
+				this.flMngr.setSelPwrType(0);
 				this.dispatchEvent(new Event("updateCharts", false));
 			}			
 			

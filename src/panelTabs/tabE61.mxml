@@ -148,10 +148,10 @@
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					Alert.show("Please select at least one country", "Selection error");
 				} else {						
-					if (this.dataList.length >= 10 ) {
+					/*if (this.dataList.length >= 10 ) {
 						Alert.show("Maximum number of selected counties should less of equal to 10", "Info");
 						this.dataList.source.splice(10, this.dataList.source.length - 10);
-					};				
+					};*/				
 					var countryIDs:Array = this.dataList.source;				
 					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);				
 					
@@ -655,7 +655,7 @@
 					this.isLevel, 
 					this.flowManager.selDeviceNamen,
 					(this.showPerHHFlag == 1),
-					"000's"
+					"Number of units (000’s)"
 				);		
 				
 				var fl:Boolean = false;

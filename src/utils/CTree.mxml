@@ -85,7 +85,7 @@
 				
 				var i:uint;				
 				for (i = 0; i < selectionList.length; i++) {		
-					if (selectionList[i].active) {
+					if ((selectionList[i].active)&&(res.length <= 10)) {
 						res.addItem({
 							"namen"   : selectionList[i].namen, 
 							"id"	  : selectionList[i].id, 
@@ -197,16 +197,17 @@
 			public var lastSelection:Object = {id:-1, namen:"null"};
 			private function onIncrValue(e:Event):void
 			{
-				checkedCount++;		
-				if (cntryListGridADG.selectedItem) {
-					this.lastSelection = {id:cntryListGridADG.selectedItem.id, 
-										namen:cntryListGridADG.selectedItem.namen};
-				};
-				//if (checkedCount == 1)
-				dispatchEvent(new Event(CTree.CHECKED, true));
-				/*if (this.checkedCount >= 10) {
+				checkedCount++;
+				if (checkedCount <= 10) {							
+					if (cntryListGridADG.selectedItem) {
+						this.lastSelection = {id:cntryListGridADG.selectedItem.id, 
+											namen:cntryListGridADG.selectedItem.namen};
+					};								
+					dispatchEvent(new Event(CTree.CHECKED, true));					
+				}  // (this.checkedCount > 10) 
+				else {					
 					this.dispatchEvent(new Event("overSelection", false));
-				}*/
+				}
 			}
 			
 			//decrement number of checked elements
@@ -240,15 +241,13 @@
 			}		
 			
 			protected function cutOverSelections(event:Event):void {
-				for (var s:int = this.selectionList.length - 1; s > 0; s--) {
-					if (this.selectionList[s].active) {						
-						selectionList[s].active = false;
-						checkedCount--;
-					};
-					if (this.checkedCount <= 10) break;
-				};						
-				this.preserveRefresh();
-				dispatchEvent(new Event(CTree.UNCHECKED, true));
+				var msg1:String = "You are not allowed to select more than 10 countries at once. \r\n" +
+					"Please contact your manager if you have 2nd thoughts about this limitation";
+				var msg2:String = "This tool can only display up to 10 countries at one time. \r\n" +
+					"You have selected: " + checkedCount.toString() + "\r\n" +   					
+					"Of your selected countries, 10 are displayed. To change the countries, modify your selection & click the UPDATE CHART button";				
+				
+				Alert.show(msg2, "Limit");
 			}
 			
 			//when the link button is clicked, select all checkboxes
@@ -400,9 +399,10 @@
 			{
 				this.selPwrType = int(this.pwrTypes_C.selectedValue);
 				this.flowManager.setSelPwrType(this.selPwrType);
+				this.flowManager.setSelBatType(0);
 				
 				this.pwrTypesActiveFlag = (this.selPwrType > 0);	
-				this.flowManager.setPwrTypesActiveFlag(this.pwrTypesActiveFlag);
+				this.flowManager.setPwrTypesActiveFlag(this.pwrTypesActiveFlag);				
 				/*if (this.selPwrType == 0) { */ 
 					this.dispatchEvent(new Event("demandAggChanged", false)); 
 				// } else {				
@@ -415,7 +415,7 @@
 			{
 				this.selBatType = int(this.batTypes_C.selectedValue);				
 				this.flowManager.setSelBatType(this.selBatType);
-				
+				this.flowManager.setSelPwrType(0);
 				this.batTypesActiveFlag = (this.selBatType > 0);	
 				this.flowManager.setBatTypesActiveFlag(this.batTypesActiveFlag);
 				

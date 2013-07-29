@@ -271,7 +271,7 @@
 					tx1 = tx1 + ( ((baseName.substr(0, 14) == "Battery demand")) ? addTx : "" );			
 				//tx1 = tx1 + defaultUnit;				
 				tx2 = tx2 + ( perHH ? ("per 1000 HHs, ") : "");
-				tx2 = tx2 + ( isLv  ? defaultUnit : ("growth") );
+				tx2 = tx2 + ( isLv  ? defaultUnit : ("Growth (%)") );
 				
 				this.chartTitle.text = tx1;
 				this.chartSubtitle.text = tx2;
@@ -296,7 +296,7 @@
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
 				
-	<!--		<mx:verticalAxisRenderers>
+		<mx:verticalAxisRenderers>
 		 		<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 					 <mx:axisStroke>
 						 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
@@ -310,7 +310,7 @@
 					</mx:axisStroke>
 				</mx:AxisRenderer>
 			</mx:horizontalAxisRenderers>
-	!-->
+	
 			</mx:LineChart>
 		</s:BorderContainer>
 	

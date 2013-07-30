@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Zend/Db/Adapter/Mysqli.php';
+require_once 'Depot5_sqlFormation.php';
 
 class Depot21 {
 
@@ -74,80 +75,15 @@ class Depot21 {
 	}
 	
 	// scenarioProxy data is distinct that uses proxy countries
-	public function getMacroDataCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames) {
+	public function getMacroDataCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames) {		
+		$rawText =  new Depot5_sqlFormation();
+		$mainStmnt = $rawText->formGetMacroCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames, false, false);
+		
 		$a = array('a'=>"");		
-		$countryArray = explode(",", $countryIDs);		
-		$countryList = " (";
-		for ($i = 0; $i < count($countryArray); $i++) {
-			if ($i > 0) { $countryList = $countryList.", ".$countryArray[$i]; }			
-			else $countryList = $countryList.$countryArray[$i];
-		}
-		$countryList = $countryList." )";
-		
-		$stmnt = ""; $selfields = ""; $sumStmnt = "";
-		
-		for ($u = 2006;  $u < 2022; $u++) {			
-			if ($indicatorID > 200) {
-				$sumStmnt = $sumStmnt.$this->perHHmultiplier." * sum(sdt.Y".$u." * wdb.Y".$u.") AS Y".$u.",";			
-			} else {
-				$sumStmnt = $sumStmnt." sdt.Y".$u." AS Y".$u.",";			
-			};
-		};
-		
-		$selFields = "SELECT sdt.scenarioID, sdt.indicatorID,";
-		if ($indicatorID > 200) {
-			$selFields = $selFields." nmd.categoryID AS deviceID, ndc.namen AS deviceName, sdt.typeID, ";
-		} else {
-			$selFields = $selFields." 0 AS deviceID, Null AS deviceName, 0 AS typeID, ";
-		};		
-		
-		// category level first		
-		$stmnt = $selFields.$sumStmnt." nc.namen AS countryName, nc.id as countryID				
-			FROM `Consulting`.`DC_scenarioData` sdt				
-				JOIN `Consulting`.`DC_namesCountries` nc
-					ON sdt.countryID = nc.id".
-			 ($indicatorID > 200 ? "
-				JOIN Consulting.DC_weigthsFromDeviceBase wdb
-					ON (wdb.countryID = nc.id AND wdb.deviceID = sdt.deviceID)
-				JOIN Consulting.DC_namesDevices nmd
-					ON (nmd.id = sdt.deviceID)	
-			    JOIN Consulting.DC_namesDeviceCategories ndc
-				    ON (ndc.id = nmd.categoryID)" : "")."
-			WHERE 
-				sdt.scenarioID IN (".$scenarioID.", 10001)
-				AND nc.id IN ".$countryList." 
-				AND sdt.indicatorID = ".$indicatorID."
-				AND sdt.typeID = ".$typeID;					
-		
-		$stmnt = $stmnt."\r\n GROUP BY sdt.scenarioID, sdt.countryID, sdt.indicatorID". 
-				($indicatorID > 200 ? ", nmd.categoryID, typeID" : "");				
-		
-		// device level next		
-		$sumStmnt2 = "";
-		for ($u = 2006;  $u < 2022; $u++) { $sumStmnt2 = $sumStmnt2."sd.Y".$u.","; };		
-		$selFields2 = "sd.scenarioID, sd.indicatorID, ";					
-		
-		if ($indicatorID > 200) {
-			$selFields2 = $selFields2." sd.deviceID, nmd.namen AS deviceName, sd.typeID, ";		
-			$stmnt2 = "SELECT ".$selFields2.$sumStmnt2." nc.namen AS countryName, nc.id as countryID 
-				FROM `Consulting`.`DC_scenarioData` sd
-				JOIN `Consulting`.`DC_namesCountries` nc				
-					ON sd.countryID = nc.id
-				JOIN Consulting.DC_namesDevices nmd
-					ON (nmd.id = sd.deviceID)				
-				WHERE 	scenarioID IN (".$scenarioID.", 10001)
-						AND nc.id IN ".$countryList." 
-						AND sd.indicatorID = ".$indicatorID."
-						AND typeID = ".$typeID;					
-			$mainStmnt = $stmnt."\r\n UNION \r\n".$stmnt2;		
-		} else {
-			$mainStmnt = $stmnt;		
-		};		
-		
 		$result = $this->connection->fetchAll($mainStmnt); 
-		array_push($a, $result);		
-		return $result;
-		//return ($mainStmnt);
+		array_push($a, $result);	
+		return $result;		
+		//return $mainStmnt;
 	}
 	
 	public function getDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH) { 				
@@ -285,7 +221,8 @@ class Depot21 {
 				$sumStmnt = $sumStmnt.", sum( dbt.Y".$u." ) AS Y".$u;
 			};			
 		};		
-// --- summing statement formation END ---		
+// --- summing statement formation END ---	
+	
 		$joinOn = "id";
 		$stmntDevices    = "dbt.deviceID 	  AS deviceID, devNam.namen as deviceName"; 
 		$stmntCategories = "devNam.categoryID AS deviceID, devCat.namen as deviceName";	
@@ -307,7 +244,7 @@ class Depot21 {
 			JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID	
 				".($perHH   > 0 ? "\r\n JOIN Consulting.DC_scenarioData sdt 
 					ON ((sdt.countryID = dbt.countryID) AND (sdt.scenarioID = dbt.scenarioID))" : "").
-				($pwrType > 0 ? "\r\n JOIN Consulting.DC_scenarioDataProxy sdp
+				($pwrType > 0 ? "\r\n JOIN Consulting.DC_scenarioData sdp
 					ON  (sdp.countryID = nc.".$joinOn.") AND (sdp.deviceID  = dbt.deviceID)	AND (sdp.scenarioID = dbt.scenarioID)" : "")."			
 			WHERE dbt.scenarioID IN (".$scenarioID.", 10001)".
 				($pwrType  > 0 ? " AND sdp.indicatorID = 205 AND sdp.typeID = ".$pwrType : "").

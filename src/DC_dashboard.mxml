@@ -917,12 +917,12 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			//public var address:String = "192.168.44.200";
-			public var address:String = "213.197.173.50";
+			public var address:String = "192.168.44.200";
+			//public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{			
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
-					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcel_DC.php?"					 
+					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcelAuto_DC.php?"					 
 					+ "scenarioID=" + this.workingScenarioID
 					+ "&typeID="    + this.exportTypeID // 3 - for demand; 1 for deviceBase; 0 for exo vars;
 					+ "&aggLevel="  + this.masterTab.selDeviceAggLevel

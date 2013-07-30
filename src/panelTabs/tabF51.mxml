@@ -515,13 +515,13 @@
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="46" left.viewingOnly="10" top.default="64" left.default="10"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
 	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="469" top.default="21" left.default="469"/>
-	<s:RadioButton label="Disposable (DPP)" value="1" groupName="pwrTypes" selected="true"
+	<s:RadioButton label="Disposable (DPP)" value="101" groupName="pwrTypes" selected="true"
 				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" 
 				   left="245" top.viewingOnly="59" left.viewingOnly="197" top.default="74" left.default="180"/>
-	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="2" groupName="pwrTypes"
+	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="102" groupName="pwrTypes"
 				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245" 
 				   top.viewingOnly="59" left.viewingOnly="319" top.default="74" left.default="319"/>	
-	<s:RadioButton label="Built-in Rechargeable" value="3" groupName="pwrTypes"
+	<s:RadioButton label="Built-in Rechargeable" value="103" groupName="pwrTypes"
 				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false" left="380" left.viewingOnly="197" left.default="180" top.default="96" top.viewingOnly="77"/>
 
 	<s:RadioButton x="564" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" top.default="74"/>

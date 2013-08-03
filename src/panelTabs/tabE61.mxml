@@ -487,9 +487,7 @@
 			private function filterB(item:Object):Boolean {			
 				// here should be all indis within ID range
 				var fl:Boolean = true;				
-				if ((item.isOutputIndicator == 0)) {					
-					fl = true
-				}  else fl = false;				
+				fl = ( (item.isOutputIndicator == 0) && (item.isVisible == 1) ); 				
 				return fl;
 			}					
 			
@@ -531,7 +529,7 @@
 					if ( (this.selExoIndi == 204)||(this.selExoIndi == 206) ) 
 						typeID = this.flowManager.selBatType;
 					else 
-					if ( (this.selExoIndi == 205)||(this.selExoIndi == 207) ) 
+					if ( (this.selExoIndi == 205)||(this.selExoIndi == 277) ) 
 						typeID = this.flowManager.selPwrType;				
 					if ( (this.selExoIndi >= 204) && (this.selExoIndi <= 206) ) 
 							tmpSplit = 1; 

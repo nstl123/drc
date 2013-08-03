@@ -145,7 +145,7 @@
 			
 			private function filterB(item:Object):Boolean {				
 				var fl:Boolean = true;				
-				( (item.id >= 204)&&(item.id <= 207) ) ?  fl = true : fl = false;				
+				( ((item.id >= 204)&&(item.id <= 206))||(item.id == 277) ) ?  fl = true : fl = false;				
 				return fl;
 			}					
 			
@@ -177,7 +177,7 @@
 							tmpType = this.selPwrType; break;					
 						case 206: 
 							tmpType = this.selBatType; break;
-						case 207: 
+						case 277: 
 							tmpType = 0;
 							fl = false;
 							break;
@@ -387,7 +387,7 @@
 				this.flMngr.setSelBatType(this.selBatType * int(enFlag) );
 				this.flMngr.setSelPwrType(this.selPwrType * int(!enFlag));
 				
-				if (indicatorsBox.selectedItem.id == 207) {
+				if (indicatorsBox.selectedItem.id == 277) {
 					this.pwrTypes.enabled = false; this.batTypes.enabled = false;
 					this.flMngr.setSelBatType(0);  this.flMngr.setSelPwrType(0);
 				}

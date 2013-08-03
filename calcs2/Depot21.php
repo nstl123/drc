@@ -113,12 +113,12 @@ class Depot21 {
 		for ($u = 2006; $u < 2022; $u++) {	
 			//if ($u % 3 == 0) { $sumStmntInner = $sumStmnt."\r\n"; $sumStmntPop = $sumStmntPop."\r\n"; };			
 			if ($perHH > 0) {			
-				$sumStmntInner = $sumStmntInner.", 1000 * sum(dm.Y".$u.") AS dmY".$u;
+				$sumStmntInner = $sumStmntInner.", sum(dm.Y".$u.") AS dmY".$u;
 				$sumStmntPop   = $sumStmntPop.", sdt.Y".$u." AS popY".$u;				
 				
 				$sumStmntOuter = $sumStmntOuter.", ".$addSum."(dmY".$u.") / ".$addSum."(popY".$u.") AS Y".$u;
 			} else {
-				$sumStmntInner = $sumStmntInner.", 1000 * sum(dm.Y".$u.") AS dmY".$u;
+				$sumStmntInner = $sumStmntInner.", sum(dm.Y".$u.") AS dmY".$u;
 				$sumStmntPop   = $sumStmntPop.",  sdt.Y".$u." AS popY".$u;				
 				
 				$sumStmntOuter = $sumStmntOuter.", ".$addSum."(dmY".$u.")  AS Y".$u;

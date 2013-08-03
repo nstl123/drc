@@ -178,7 +178,7 @@
 						case 206: 
 							tmpType = this.selBatType; break;
 						case 207: 
-							tmpType = this.selPwrType;
+							tmpType = 0;
 							fl = false;
 							break;
 					};			
@@ -317,7 +317,7 @@
 			}
 
 			[bindable] public var selBatType:int = 3;
-			[bindable] public var selPwrType:int = 1;
+			[bindable] public var selPwrType:int = 101;
 			protected function batTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selBatType = int(this.batTypes.selectedValue);
@@ -377,16 +377,20 @@
 				if (this.indicatorsBox.selectedItem){
 					if ((indicatorsBox.selectedItem.id == 204)||(indicatorsBox.selectedItem.id == 206)) {
 						lbl = lbls;	enFlag = true;
-					} else {
+					} else 	if (indicatorsBox.selectedItem.id == 205) {
 						lbl = lblp; enFlag = false;
-					};					
-				};
+					};				
+				};		
 				
 				this.pwrTypes.enabled = !enFlag;
-				this.batTypes.enabled = enFlag;
-				
+				this.batTypes.enabled = enFlag;				
 				this.flMngr.setSelBatType(this.selBatType * int(enFlag) );
 				this.flMngr.setSelPwrType(this.selPwrType * int(!enFlag));
+				
+				if (indicatorsBox.selectedItem.id == 207) {
+					this.pwrTypes.enabled = false; this.batTypes.enabled = false;
+					this.flMngr.setSelBatType(0);  this.flMngr.setSelPwrType(0);
+				}
 				
 				this.testChart.updateChartTitle(
 					(indicatorsBox.selectedItem ? (indicatorsBox.selectedItem.namen + ", " + lbl) : "-"),
@@ -448,7 +452,7 @@
 				this.currentDataGrid.source  = this.currentData.source;
 				
 				this.deviceListDrop_changeHandler(null);
-				this.dispatchEvent(new Event("updateCharts", false));
+				//this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
 			protected function getMacroDataCategory_faultHandler(event:FaultEvent):void
@@ -520,15 +524,16 @@
 				   left="245" top.viewingOnly="59" left.viewingOnly="197" top.default="74" left.default="180"/>
 	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="102" groupName="pwrTypes"
 				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245" 
-				   top.viewingOnly="59" left.viewingOnly="319" top.default="74" left.default="319"/>	
+				   top.viewingOnly="59" left.viewingOnly="319" top.default="74" left.default="289"/>	
 	<s:RadioButton label="Built-in Rechargeable" value="103" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" enabled="false" left="380" left.viewingOnly="197" left.default="180" top.default="96" top.viewingOnly="77"/>
+				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" left="380" left.viewingOnly="197" left.default="180" top.default="96" top.viewingOnly="77"/>
 
 	<s:RadioButton x="564" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" top.default="74"/>
 	<s:RadioButton x="612" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="612" top.viewingOnly="59" x.default="612" top.default="74"/>	
 	<s:RadioButton x="653" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="653" top.viewingOnly="59" x.default="653" top.default="74"/>
 	<s:RadioButton x="688" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="688" top.viewingOnly="59" x.default="688" top.default="74"/>	
-	<s:RadioButton x="724" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" top.default="74"/>
+	<s:RadioButton x="724" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" top.default="74"/>	
+	
 	<s:RadioButton visible="false" value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
 				   left="340" top="56" top.viewingOnly="41" left.viewingOnly="340"
 				   groupName="splitByDevices_C" click="devicesActive_clickHandler(event)"/>

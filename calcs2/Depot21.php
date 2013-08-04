@@ -14,7 +14,7 @@ class Depot21 {
 			'password' => 'c5ul1Use1QP',
 			'dbname'   => 'Consulting'
 		));
-		$this->perHHmultiplier = 1000;		
+		$this->perHHmultiplier = 1;		
 	}	
 	
 	public function getMacroDataFormat($n) {
@@ -116,7 +116,7 @@ class Depot21 {
 				$sumStmntInner = $sumStmntInner.", sum(dm.Y".$u.") AS dmY".$u;
 				$sumStmntPop   = $sumStmntPop.", sdt.Y".$u." AS popY".$u;				
 				
-				$sumStmntOuter = $sumStmntOuter.", ".$addSum."(dmY".$u.") / ".$addSum."(popY".$u.") AS Y".$u;
+				$sumStmntOuter = $sumStmntOuter.", ".$this->perHHmultiplier." * ".$addSum."(dmY".$u.") / ".$addSum."(popY".$u.") AS Y".$u;
 			} else {
 				$sumStmntInner = $sumStmntInner.", sum(dm.Y".$u.") AS dmY".$u;
 				$sumStmntPop   = $sumStmntPop.",  sdt.Y".$u." AS popY".$u;				

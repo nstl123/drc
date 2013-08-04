@@ -33,8 +33,13 @@ $indicatorHasSplit = ($indis[3]);
 // can i take params from exportDBTable?
 $stmnt = "SELECT distinct countryID FROM `Consulting`.`DC_exportIDTable` WHERE scenarioID = ".$scenID;				  
 $res = mysql_query($stmnt);
-$d = mysql_fetch_array($res);
-$cntryIDs = implode(",", $d);
+$cntryIDs=""; $k = 0;
+
+while ($row = mysql_fetch_array($res, MYSQL_NUM)) {	 
+	if ($k > 0) $cntryIDs = $cntryIDs.",";
+	$k++;
+	$cntryIDs = $cntryIDs.$row[0];  
+};
 
 // $sizeID or $pwrID !!!!
 $query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, ($sizeID + $pwrID), 1, true, $indicatorHasSplit);
@@ -69,7 +74,7 @@ if ($select_result) {
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 2, $indicatorName);				
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 2, $indicatorUnit);				
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 2, (($indicatorHasSplit>0) ? $row["typeName"] : "") );				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 2, $row["deviceName"]);				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 2, $row["namen"]);				
 		
 		for ($u = 0; $u < 16; $u++) {	
 			$yr = (string)("Y".(string)(2006+$u));
@@ -88,9 +93,8 @@ if ($select_result) {
 	echo "data exported successfully";
 	//echo $query;
 }// if select result
-else {
-	//echo "DB_Error\r\n".$query;
-	echo $cntryIDs;
+else {	
+	echo $query;
 	//echo $indis['indicatorID'];
 	/*echo "DB_Error";	
 	exit;	*/

@@ -11,7 +11,7 @@ class Depot5_sqlFormation {
 			'password' => 'c5ul1Use1QP',
 			'dbname'   => 'Consulting'
 		));
-		$this->perHHmultiplier = 1000;		
+		$this->perHHmultiplier = 1;		
 	}	
 	
 	public function formGetMacroCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames, $singleScenario, $wTypes) {
@@ -28,10 +28,11 @@ class Depot5_sqlFormation {
 			$countryList = $countryList." )";
 			
 			$stmnt = ""; $selfields = ""; $sumStmnt = "";
-			
-			for ($u = 2006;  $u < 2022; $u++) {			
+		    $weightFlag = ""; 
+			for ($u = 2006;  $u < 2022; $u++) {							
 				if ($indicatorID > 200) {
-					$sumStmnt = $sumStmnt.$this->perHHmultiplier." * sum(sdt.Y".$u." * wdb.Y".$u.") AS Y".$u.",";			
+					$weightFlag = ( ($indicatorID == 210) ? "" : " * wdb.Y".$u );
+					$sumStmnt = $sumStmnt.$this->perHHmultiplier." * sum(sdt.Y".$u.$weightFlag.") AS Y".$u.",";			
 				} else {
 					$sumStmnt = $sumStmnt." sdt.Y".$u." AS Y".$u.",";			
 				};
@@ -39,25 +40,22 @@ class Depot5_sqlFormation {
 			
 			$selFields = "SELECT sdt.scenarioID, sdt.indicatorID,";
 			if ($indicatorID > 200) {
-				$selFields = $selFields." nmd.categoryID AS deviceID, ndc.namen AS deviceName, sdt.typeID, ";
+				$selFields = $selFields." nmd.categoryID AS deviceID, sdt.typeID, ";
 			} else {
 				$selFields = $selFields." 0 AS deviceID, Null AS deviceName, 0 AS typeID, ";
 			};		
 			
+			$namesForDevices = "\r\n JOIN Consulting.DC_namesDevicesVisual nmd ON (nmd.id = a.deviceID)";
 			if ($wTypes) { $selFields = $selFields.$batTypesNamesCols; };
 			// category level first		
 			$stmnt = $selFields.$sumStmnt." nc.namen AS countryName, nc.id as countryID				
 				FROM `Consulting`.`DC_scenarioData` sdt				
-					JOIN `Consulting`.`DC_namesCountries` nc
-						ON sdt.countryID = nc.id".
+					JOIN `Consulting`.`DC_namesCountries` nc     ON sdt.countryID = nc.id".
 				 ($indicatorID > 200 ? "
-					JOIN Consulting.DC_weigthsFromDeviceBase wdb
-						ON (wdb.countryID = nc.id AND wdb.deviceID = sdt.deviceID)
-					JOIN Consulting.DC_namesDevices nmd
-						ON (nmd.id = sdt.deviceID)	
-					JOIN Consulting.DC_namesDeviceCategories ndc
-						ON (ndc.id = nmd.categoryID)" : "").
-						($wTypes ? $batTypesNamesJoin : "")."
+					JOIN Consulting.DC_weightsPerDeviceBase wdb  ON (wdb.countryID = nc.id AND wdb.deviceID = sdt.deviceID)".					
+					"\r\n JOIN Consulting.DC_namesDevices  nmd         ON (nmd.id = sdt.deviceID)	".
+					"\r\n JOIN Consulting.DC_namesDeviceCategories ndc ON (ndc.id = nmd.categoryID)" : "").
+					($wTypes ? $batTypesNamesJoin : "")."
 				WHERE 
 					sdt.scenarioID IN ".$scenarioClause."
 					AND nc.id IN ".$countryList." 
@@ -73,14 +71,13 @@ class Depot5_sqlFormation {
 			$selFields2 = "sdt.scenarioID, sdt.indicatorID, ";						
 			$stmnt2 = "";
 			if ($indicatorID > 200) {
-				$selFields2 = $selFields2." sdt.deviceID, nmd.namen AS deviceName, sdt.typeID, ";		
+				$selFields2 = $selFields2." sdt.deviceID, sdt.typeID, ";		
 				if ($wTypes) { $selFields2 = $selFields2.$batTypesNamesCols; };
 				$stmnt2 = "SELECT ".$selFields2.$sumStmnt2." nc.namen AS countryName, nc.id as countryID 
 					FROM `Consulting`.`DC_scenarioData` sdt
 					JOIN `Consulting`.`DC_namesCountries` nc				
-						ON sdt.countryID = nc.id
-					JOIN Consulting.DC_namesDevices nmd
-						ON (nmd.id = sdt.deviceID)".($wTypes ? $batTypesNamesJoin : "")."				
+						ON sdt.countryID = nc.id".					
+					($wTypes ? $batTypesNamesJoin : "")."				
 					WHERE 	scenarioID IN ".$scenarioClause."
 							AND nc.id IN ".$countryList." 
 							AND sdt.indicatorID = ".$indicatorID."
@@ -88,8 +85,12 @@ class Depot5_sqlFormation {
 				$mainStmnt = $stmnt."\r\n UNION \r\n".$stmnt2;		
 			} else {
 				$mainStmnt = $stmnt;		
-			};		
-
+			};	
+			if ($indicatorID > 200) {
+				$mainStmnt = "SELECT * FROM (\r\n".$mainStmnt.") AS a \r\n".$namesForDevices."\r\n ORDER BY countryID, orderID";
+			} else {
+				$mainStmnt = "SELECT *, null as namen FROM (\r\n".$mainStmnt.") AS a ";
+			};
 			return ($mainStmnt);	
 	}
 

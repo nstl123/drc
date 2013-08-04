@@ -87,11 +87,119 @@ class Depot5_sqlFormation {
 				$mainStmnt = $stmnt;		
 			};	
 			if ($indicatorID > 200) {
-				$mainStmnt = "SELECT * FROM (\r\n".$mainStmnt.") AS a \r\n".$namesForDevices."\r\n ORDER BY countryID, orderID";
+				$mainStmnt = "SELECT *, namen as deviceName FROM (\r\n".$mainStmnt.") AS a \r\n".$namesForDevices."\r\n ORDER BY countryID, orderID";
 			} else {
-				$mainStmnt = "SELECT *, null as namen FROM (\r\n".$mainStmnt.") AS a ";
+				$mainStmnt = "SELECT *,  null as deviceName FROM (\r\n".$mainStmnt.") AS a ";
 			};
 			return ($mainStmnt);	
+	}
+
+	public function formGetDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH) {
+		$getWorldData = 0; $hasOtherCountries = 0;
+		
+		$countryArray = explode(",", $countryIDs); // (array)($countryIDs);			
+		$useCluster = 0; // isRegion could be: 0 - countries, 1 - regions, 2 - clusters;
+		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
+		// aggType = 0 for device level, 1 - for country level
+		$a = array('a'=>"");							
+		$countryList = " (";				
+		
+		for ($i = 0; $i < count($countryArray); $i++) {		
+			if ($countryArray[$i] < 10000) {
+				$hasOtherCountries = 1;
+				if ($i > 0)  $countryList = $countryList.", ".$countryArray[$i]; 
+				else 		 $countryList = $countryList.$countryArray[$i]; 
+			} else {
+				$getWorldData = 1;
+			}			
+		};			
+		$countryList = $countryList." )";		
+		
+		$sumStmnt = ""; $sumStmntPop=""; $sumStmntInner=""; $sumStmntOuter=""; $mainStmnt="";
+		
+		$addSum = ($isRegion > 0 ? "sum" : "");
+		for ($u = 2006; $u < 2022; $u++) {	
+			//if ($u % 3 == 0) { $sumStmntInner = $sumStmnt."\r\n"; $sumStmntPop = $sumStmntPop."\r\n"; };			
+			if ($perHH > 0) {			
+				$sumStmntInner = $sumStmntInner.", sum(dm.Y".$u.") AS dmY".$u;
+				$sumStmntPop   = $sumStmntPop.", sdt.Y".$u." AS popY".$u;								
+				$sumStmntOuter = $sumStmntOuter.", ".$this->perHHmultiplier." * ".$addSum."(dmY".$u.") / ".$addSum."(popY".$u.") AS Y".$u;
+			} else {
+				$sumStmntInner = $sumStmntInner.", sum(dm.Y".$u.") AS dmY".$u;
+				$sumStmntPop   = $sumStmntPop.",  sdt.Y".$u." AS popY".$u;								
+				$sumStmntOuter = $sumStmntOuter.", ".$addSum."(dmY".$u.")  AS Y".$u;
+			}
+		};					
+		
+		$coreStmntEnd = "";
+		$cntryNameFields = ($isRegion > 0 ? "rg.namen " : "nc.namen ")." AS countryName, dm.countryID AS countryID";
+		$globalNameFields = "'World' AS countryName, 11111 AS countryID";
+		$cntryLevelWhereFields = " AND ".($isRegion > 0 ? "nc.".$useCluster : "dm.countryID")." IN ".$countryList;
+		$cntryLevelGroupFields = " GROUP BY scenarioID, indicatorID, dm.countryID ";
+		
+		$devNameFields = ",	devCat.id as categoryID, devCat.namen as categoryName, dm.deviceID as deviceID, devNam.namen AS deviceName"; 
+		//used to pass names to device categories. needed for export;
+		$coreStmnt = ", dm.scenarioID, 301 AS indicatorID, 
+					nc.".$useCluster." as regionID".
+				   ($typeID   > 0 ? ", batTypeID" : ", 0 as batTypeID").($pwrID > 0 ? ", pwrTypeID" : ", 0 as pwrTypeID").
+					"\r\n".$sumStmntInner."\r\n".$sumStmntPop."					
+				FROM Consulting.DC_demand AS dm
+					JOIN Consulting.DC_namesCountries AS nc ON (dm.countryID = nc.id)  
+						JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)			
+					JOIN Consulting.DC_namesDevicesVisual devNam ON devNam.id = deviceID
+					JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID					
+					JOIN Consulting.DC_scenarioData sdt ON ((sdt.countryID = dm.countryID) AND (sdt.scenarioID = dm.scenarioID))
+				WHERE dm.scenarioID IN (10001, ".$scenarioID.") AND sdt.indicatorID = 101".
+				($typeID > 0 ? " AND batTypeID = ".$typeID : "").($pwrID > 0 ? " AND pwrTypeID = ".$pwrID : "");				
+				
+		$selFields = "scenarioID,  indicatorID, deviceName, categoryName, countryID, countryName, regionID \r\n".
+					($typeID > 0 ? ", batTypeID" : ", 0 as batTypeID").($pwrID > 0 ? ", pwrTypeID" : ", 0 as pwrTypeID"); 
+						
+		if ($hasOtherCountries > 0) {
+			if ($showAtDeviceLevel > 0) {				
+				$coreStmntEnd = "SELECT ".$cntryNameFields.$devNameFields.$coreStmnt.$cntryLevelWhereFields.$cntryLevelGroupFields.", deviceID";	
+				$mainStmnt = "SELECT deviceID, ".$selFields."\r\n".$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+					 GROUP BY scenarioID, indicatorID, ".($isRegion > 0 ? "regionID" : "countryID");								
+				$mainStmnt = $mainStmnt.", deviceID";		
+				
+				$mainStmnt = $mainStmnt."\r\n UNION \r\n";
+				$devNameFields = ",	devCat.id as categoryID, devCat.namen as categoryName, dm.deviceID as deviceID, devCat.namen AS deviceName"; 
+				$coreStmntEnd = "SELECT ".$cntryNameFields.$devNameFields.$coreStmnt.$cntryLevelWhereFields.$cntryLevelGroupFields.", categoryID";								
+				$mainStmnt = $mainStmnt."SELECT "."categoryID AS deviceID, ".$selFields.$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+							 GROUP BY scenarioID, indicatorID, ".($isRegion > 0 ? "regionID" : "countryID").", categoryID";														
+			} else {			
+				$coreStmntEnd = "SELECT ".$cntryNameFields.$devNameFields.$coreStmnt.$cntryLevelWhereFields.$cntryLevelGroupFields;	
+				$mainStmnt = "SELECT 0 as deviceID, ".$selFields."\r\n".$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+					 GROUP BY scenarioID, indicatorID, ".($isRegion > 0 ? "regionID" : "countryID");								
+			};		
+		};
+		
+		if ($getWorldData > 0) {			
+			$mainStmnt = ($hasOtherCountries > 0 ? $mainStmnt."\r\n UNION \r\n" : "");
+			if ($showAtDeviceLevel > 0) {							
+					$coreStmntEnd = "SELECT ".$globalNameFields.$devNameFields.$coreStmnt.$cntryLevelGroupFields.", deviceID";	
+					$mainStmnt = $mainStmnt."SELECT deviceID, ".$selFields."\r\n".$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+							GROUP BY scenarioID, indicatorID, deviceID";
+				
+					$mainStmnt = $mainStmnt."\r\n UNION \r\n";
+					$devNameFields = ",	devCat.id as categoryID, devCat.namen as categoryName, dm.deviceID as deviceID, devCat.namen AS deviceName"; 
+					$coreStmntEnd = "SELECT ".$globalNameFields.$devNameFields.$coreStmnt.$cntryLevelGroupFields.", categoryID";
+					$mainStmnt = $mainStmnt."SELECT categoryID AS deviceID, ".$selFields.$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+							GROUP BY scenarioID, indicatorID, categoryID";														
+			} else  {					
+					$coreStmntEnd = "SELECT ".$globalNameFields.$devNameFields.$coreStmnt.$cntryLevelGroupFields;	
+					$mainStmnt = $mainStmnt."SELECT 0 as deviceID, ".$selFields."\r\n".$sumStmntOuter."\r\n FROM (".$coreStmntEnd.") AS a 
+							GROUP BY scenarioID, indicatorID";										
+			};					
+		};
+		if ($showAtDeviceLevel > 0) {
+			$mainStmnt = "SELECT *, nm.orderID FROM (".$mainStmnt.") AS a JOIN Consulting.DC_namesDevicesVisual as nm on (a.deviceID = nm.id)
+						ORDER BY orderID, countryID" ;
+		};
+		$result = $this->connection->fetchAll($mainStmnt); 
+		array_push($a, $result);		
+		//return $result;
+		return $mainStmnt;
 	}
 
 	public function formGetIndicatorNames() {

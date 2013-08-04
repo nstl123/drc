@@ -42,7 +42,13 @@ while ($row = mysql_fetch_array($res, MYSQL_NUM)) {
 };
 
 // $sizeID or $pwrID !!!!
-$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, ($sizeID + $pwrID), 1, true, $indicatorHasSplit);
+if ($indis[0] < 300) {
+	$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, ($sizeID + $pwrID), 1, true, $indicatorHasSplit);
+} else {
+	$indicatorHasSplit = 0;
+	// add device aggregation paramater here
+	$query = $sqlMaker->formGetDemandData($cntryIDs, $scenID, ($sizeID + $pwrID), $pwrID, 0, 2, 0);
+};
 $select_result = mysql_query($query); 
 // -- END   form indicator names array -- 
 
@@ -74,7 +80,7 @@ if ($select_result) {
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 2, $indicatorName);				
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 2, $indicatorUnit);				
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 2, (($indicatorHasSplit>0) ? $row["typeName"] : "") );				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 2, $row["namen"]);				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 2, $row["deviceName"]);				
 		
 		for ($u = 0; $u < 16; $u++) {	
 			$yr = (string)("Y".(string)(2006+$u));

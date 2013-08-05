@@ -38,30 +38,30 @@ public class _Super_CustomDatatype33 extends flash.events.EventDispatcher implem
     /**
      * properties
      */
-    private var _internal_Y2013 : Number = Number(0);
-    private var _internal_Y2012 : Number = Number(0);
+    private var _internal_Y2013 : Number;
+    private var _internal_Y2012 : Number;
     private var _internal_indicatorID : int;
-    private var _internal_Y2015 : Number = Number(0);
+    private var _internal_Y2015 : Number;
     private var _internal_chemistryID : int;
     private var _internal_countryName : String;
-    private var _internal_Y2014 : Number = Number(0);
-    private var _internal_Y2017 : Number = Number(0);
-    private var _internal_Y2008 : Number = Number(0);
-    private var _internal_Y2016 : Number = Number(0);
+    private var _internal_Y2014 : Number;
+    private var _internal_Y2017 : Number;
+    private var _internal_Y2008 : Number;
+    private var _internal_Y2016 : Number;
     private var _internal_categoryID : int;
-    private var _internal_Y2007 : Number = Number(0);
-    private var _internal_Y2019 : Number = Number(0);
+    private var _internal_Y2007 : Number;
+    private var _internal_Y2019 : Number;
     private var _internal_countryID : int;
-    private var _internal_Y2006 : Number = Number(0);
-    private var _internal_Y2018 : Number = Number(0);
+    private var _internal_Y2006 : Number;
+    private var _internal_Y2018 : Number;
     private var _internal_deviceID : int;
-    private var _internal_Y2021 : Number = Number(0);
-    private var _internal_Y2020 : Number = Number(0);
-    private var _internal_Y2011 : Number = Number(0);
-    private var _internal_Y2010 : Number = Number(0);
+    private var _internal_Y2021 : Number;
+    private var _internal_Y2020 : Number;
+    private var _internal_Y2011 : Number;
+    private var _internal_Y2010 : Number;
     private var _internal_deviceName : Object;
     private var _internal_scenarioID : int;
-    private var _internal_Y2009 : Number = Number(0);
+    private var _internal_Y2009 : Number;
 
     private static var emptyArray:Array = new Array();
 

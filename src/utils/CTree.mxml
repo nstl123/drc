@@ -431,7 +431,7 @@
 				this.chemTypesActiveFlag = (int(this.splitByChemistry_C.selectedValue) > 0);
 				this.flowManager.setChemTypesActiveFlag(this.chemTypesActiveFlag);
 				
-				this.chemTypes_C.enabled = false; //this.chemTypesActiveFlag;				
+				this.chemTypes_C.enabled = this.chemTypesActiveFlag;				
 				//if (this.chemTypesActiveFlag) {					
 				this.pwrTypesActiveFlag = (!this.chemTypesActiveFlag) && (selBatType > 0);					
 				this.pwrTypes_C.enabled = !this.chemTypesActiveFlag;
@@ -629,7 +629,7 @@
 			</s:layout>
 			<s:RadioButton value="0" label="All chemistry" groupName="splitByChemistry_C" enabled="true" 
 						   selected="true" y="10" top="70" click="chemTypesActive_clickHandler(event)"/>
-			<s:RadioButton x="575" value="1" label="Use split by:" groupName="splitByChemistry_C" enabled="false" 
+			<s:RadioButton x="575" value="1" label="Use split by:" groupName="splitByChemistry_C" enabled="true" 
 						   top="70" click="chemTypesActive_clickHandler(event)"/>
 
 		</s:BorderContainer>
@@ -638,13 +638,13 @@
 			<s:layout>
 				<s:TileLayout/>
 			</s:layout>
-			<s:RadioButton label="Alkaline" groupName="chemTypes_C" value="1" selected="true" 
-						   fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="false"/>
-			<s:RadioButton label="Lithium" groupName="chemTypes_C" value="3"  fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="false"/>
-			<s:RadioButton x="629" y="106" label="Zinc" groupName="chemTypes_C" value="2" fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="false"/>
-			<s:RadioButton x="629" y="106" label="Hearing Aid " groupName="chemTypes_C" value="4" fontFamily="Arial" fontSize="11" enabled="false" click="chemTypes_clickHandler(event)"/>
-			<s:RadioButton x="629" y="106" label="Coin and Button" groupName="chemTypes_C" value="5" fontFamily="Arial" fontSize="11" enabled="false" click="chemTypes_clickHandler(event)"/>	
-			
+			<s:RadioButton label="Alkaline" groupName="chemTypes_C" value="201" selected="true" 
+						   fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="true"/>
+			<s:RadioButton label="Lithium" groupName="chemTypes_C" value="202"  fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="true"/>
+			<s:RadioButton x="629" y="106" label="Zinc" groupName="chemTypes_C" value="204" fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="true"/>
+			<s:RadioButton x="629" y="106" label="Rechargeable Major Cells" groupName="chemTypes_C" value="203" fontFamily="Arial" fontSize="11" enabled="true" click="chemTypes_clickHandler(event)"/>
+			<!-- <s:RadioButton x="629" y="106" label="Coin and Button" groupName="chemTypes_C" value="205" fontFamily="Arial" fontSize="11" enabled="false" click="chemTypes_clickHandler(event)"/>	
+			!-->
 		</s:BorderContainer>
 		
 	</s:BorderContainer>

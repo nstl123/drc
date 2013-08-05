@@ -206,18 +206,18 @@ class Depot21 {
 			if ((($u - 2006) % 3) == 0) $sumStmnt = $sumStmnt."
 				";
 			if ($perHH > 0) {
-				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.shr)/sum(sdt.Y".$u.") as Y".$u;
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.Y".$u.")/sum(sdt.Y".$u.") as Y".$u;
 			} else {
-				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.shr) as Y".$u;
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.Y".$u.") as Y".$u;
 			};			
 		};		
 		
 		$stmnt = "
-			SELECT dma.scenarioID, 301 AS indicatorID, chm.id as chemistryID, 0 AS deviceID, 0 as categoryID, null as deviceName". 
-				($isRegion > 0 ? ", rg.namen as countryName, rg.id AS countryID, " : ", nc.namen AS countryName, dma.countryID").
+			SELECT dma.scenarioID, 301 AS indicatorID, chm.chemid as chemistryID, 0 AS deviceID, 0 as categoryID, null as deviceName". 
+				($isRegion > 0 ? ", rg.namen as countryName, rg.id AS countryID" : ", nc.namen AS countryName, dma.countryID").
 				 $sumStmnt."
 			FROM Consulting.DC_demandAggregated dma
-				JOIN Consulting.DC_chemistry chm ON  chm.countryID = dma.countryID
+				JOIN Consulting.DC_chemistry chm ON (chm.countryID = dma.countryID AND chm.scenarioID = dma.scenarioID)
 			JOIN Consulting.DC_namesCountries AS nc ON (dma.countryID = nc.id) ".                    
 				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "").
 			    ($perHH    > 0 ? "
@@ -226,7 +226,7 @@ class Depot21 {
 			WHERE dma.scenarioID IN (".$scenarioID.", 10001)".				
 				($isRegion > 0 ? " AND nc.".$useCluster : " AND dma.countryID ")." IN ".$countryList.
 				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "")."				
-			GROUP BY dma.scenarioID, chemistryID ".
+			GROUP BY dma.scenarioID, chemistryID".
 				($isRegion > 0 ? ", nc.".$useCluster : ", dma.countryID");
 			
 		$result = $this->connection->fetchAll($stmnt); 

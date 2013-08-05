@@ -30,8 +30,12 @@
 
 			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void
 			{
-				if (event.message.body != "ok") //this.someLabel.text = "view written successfully";
+				if (event.message.body != "ok") { //this.someLabel.text = "view written successfully";
 					Alert.show("data could not be written to DB", "Error in message format");
+				} else {
+					this.refreshData(null);	
+					this.dispatchEvent(new Event("marketSizeWritten", true));
+				};
 			}
 	
 			protected function getDeviceLits_faultHandler(event:FaultEvent):void

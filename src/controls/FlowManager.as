@@ -42,9 +42,9 @@ package controls
 		[bindable] public var batTypesActiveFlag:Boolean = false;		
 		
 		[bindable] public var selBatType:int = 0;
-		[bindable] public var selPwrType:int = 0;
+		[bindable] public var selPwrType:int = 101;
 		[bindable] public var selGenBatType:int = 0;		
-		[bindable] public var selChemType:int = 1;
+		[bindable] public var selChemType:int = 201;
 		[bindable] public var selDevice:int = 1;
 
 		public function getSelectedDemandIndi():int {

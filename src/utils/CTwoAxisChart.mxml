@@ -194,7 +194,8 @@
 					//var legItem:LegendItem = this.legendChart.getElementAt(0) as LegendItem;
 					legItem.label = series.displayName.split(",")[0];
 					
-					var ui:int = k % this.pssprtQualitativeMapColours.length						
+					var ui:int = ( k % (2*this.pssprtQualitativeMapColours.length) );	
+					
 					if ( (int(series.dataProvider[0].scenarioID) == baselineScenarioID) && !vwMode ) {
 						transp = 0.75;  wght = 1;						
 						series.setStyle('lineStroke', new SolidColorStroke(this.pssprtQualitativeMapColours[ui - u], wght, transp));						
@@ -296,7 +297,7 @@
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
 				
-	<mx:verticalAxisRenderers>
+	<!-- <mx:verticalAxisRenderers>
 		 		<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 					 <mx:axisStroke>
 						 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
@@ -310,7 +311,7 @@
 					</mx:axisStroke>
 				</mx:AxisRenderer>
 			</mx:horizontalAxisRenderers>
-	
+	!-->
 			</mx:LineChart>
 		</s:BorderContainer>
 	

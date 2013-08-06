@@ -176,10 +176,11 @@ class Depot21 {
 			if ($showAtDeviceLevel  > 0)  {
 				$mainStmnt = $mainStmnt."SELECT ".$stmntDevices.$globalNamePart.$samePart."".$globalLevelGroupBy.", deviceID";		
 				$mainStmnt = $mainStmnt."\r\nUNION\r\n";		
-				$mainStmnt = $mainStmnt."SELECT ".$stmntCategories.$globalNamePart.$samePart."".$globalLevelGroupBy.", categoryID";						
+				$mainStmnt = $mainStmnt."SELECT ".$stmntCategories.$globalNamePart.$samePart."".$globalLevelGroupBy.", categoryID";					
 			};			
 		}
-			
+		
+		$mainStmnt = $mainStmnt."\r\n ORDER BY scenarioID, countryID";
 		$result = $this->connection->fetchAll($mainStmnt); 
 		array_push($a, $result);		
 		return $result;

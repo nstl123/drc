@@ -30,6 +30,7 @@ switch ($typeID) {
 		$multipl = "";
 		$typeGroupBy = "";
 		$typeJoins = "";
+		$typeNames   = ", 'NA' as batTypeName, 'NA' AS typeName";	
 		break;
 	case 1: // means battery factors	
 		$fromTable = "FROM Consulting.DC_scenarioData dma";
@@ -65,6 +66,7 @@ switch ($typeID) {
 		$a          = "'Demand' AS indicatorName"; 
 		$multipl    = " 1000 * ";		
 		$b = "";
+		$typeNames   = ", 'NA' as batTypeName, 'total' AS typeName";	
 		
 		if ($sizeID > 0) { 
 			$typeNames = ", batTypeID as typeID, batTp.namen AS typeName"; 

@@ -317,7 +317,7 @@
 			}
 
 			[bindable] public var selBatType:int = 3;
-			[bindable] public var selPwrType:int = 101;
+			[bindable] public var selPwrType:int = 103;
 			protected function batTypes_clickHandler(event:MouseEvent):void
 			{
 				this.selBatType = int(this.batTypes.selectedValue);
@@ -382,7 +382,7 @@
 					};				
 				};		
 				
-				this.pwrTypes.enabled = !enFlag;
+				this.pwrTypes.enabled = !enFlag;				
 				this.batTypes.enabled = enFlag;				
 				this.flMngr.setSelBatType(this.selBatType * int(enFlag) );
 				this.flMngr.setSelPwrType(this.selPwrType * int(!enFlag));
@@ -489,17 +489,17 @@
 			  height="23" top.viewingOnly="399" left.viewingOnly="535" top.default="463" 
 			  left.default="535" label="Reset Scenario" enabled.viewingOnly="false" enabled.default="true"/>
 	<s:DropDownList width="272" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="482" top.default="32" left.default="482"></s:DropDownList>
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="481" top.default="32" left.default="484"></s:DropDownList>
 	
 	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" width="122" height="25" 
 			  fontWeight="bold" left="607" top="0" visible="false" top.viewingOnly="-15" left.viewingOnly="607"/>
 	
-	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" x.default="542" top.default="64" left.viewingOnly="542"/>
-	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="167" top.viewingOnly="46" x.default="150" top.default="64"/>
+	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="460" left.default="471"/>
+	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="114" top.viewingOnly="46" x.default="128" top.default="64"/>
 	<s:RadioButton label="Absolutes" groupName="growthType" enabled="true" value="0" 
-				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="59" left.viewingOnly="77" top.default="74" left.default="58"/>
+				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="58" left.viewingOnly="30" top.default="74" left.default="31"/>
 	<s:RadioButton label="Growth Rates" groupName="growthType" value="1" 
-				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="77" left.viewingOnly="77" top.default="96" left.default="58"/>
+				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="76" left.viewingOnly="30" top.default="91" left.default="31"/>
 	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" top.viewingOnly="425" left.default="10" top.default="490"/>
 	<s:BorderContainer width="517" left="10" top="410" borderVisible="false" top.viewingOnly="367" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" height.default="59" height.viewingOnly="55" top.default="428" left.default="10">
 		<s:Label text="Scenario Mechanism" fontStyle="italic" fontSize="11" y="8" 
@@ -518,21 +518,8 @@
 	</s:BorderContainer>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="46" left.viewingOnly="10" top.default="64" left.default="10"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
-	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="469" top.default="21" left.default="469"/>
-	<s:RadioButton label="Disposable (DPP)" value="101" groupName="pwrTypes" selected="true"
-				   click="pwrTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" 
-				   left="245" top.viewingOnly="59" left.viewingOnly="197" top.default="74" left.default="180"/>
-	<s:RadioButton label="Round Cell Rechargeable (RCR)" value="102" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" top="87" fontSize="11" fontFamily="Arial" left="245" 
-				   top.viewingOnly="59" left.viewingOnly="319" top.default="74" left.default="289"/>	
-	<s:RadioButton label="Built-in Rechargeable" value="103" groupName="pwrTypes"
-				   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" left="380" left.viewingOnly="197" left.default="180" top.default="96" top.viewingOnly="77"/>
-
-	<s:RadioButton x="564" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" top.default="74"/>
-	<s:RadioButton x="612" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="612" top.viewingOnly="59" x.default="612" top.default="74"/>	
-	<s:RadioButton x="653" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="653" top.viewingOnly="59" x.default="653" top.default="74"/>
-	<s:RadioButton x="688" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="688" top.viewingOnly="59" x.default="688" top.default="74"/>	
-	<s:RadioButton x="724" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" top="69" fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" top.default="74"/>	
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="460" top.default="21" left.default="471"/>
+	
 	
 	<s:RadioButton visible="false" value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
 				   left="340" top="56" top.viewingOnly="41" left.viewingOnly="340"
@@ -542,6 +529,52 @@
 				   groupName="splitByDevices_C"  click="devicesActive_clickHandler(event)"/>
 	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF" top.viewingOnly="6" left.viewingOnly="313"/>
+	<s:BorderContainer width="401" height="60" left="480" top="74" 
+					   borderVisible="false" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" id="batTypesFrame" top.viewingOnly="58" left.viewingOnly="489" height.default="55" top.default="75" left.default="488">
+		<s:layout>
+			<s:TileLayout horizontalGap="3" verticalGap="1"/>
+		</s:layout>
+		<s:RadioButton x="44" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" 
+					   selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" y="15"/>
+		<s:RadioButton x="124" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" 
+					   fontSize="11" fontFamily="Arial" x.viewingOnly="612" top.viewingOnly="59" x.default="612" y="10"/>
+		<s:RadioButton x="182" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)"
+					   fontSize="11" fontFamily="Arial" x.viewingOnly="653" top.viewingOnly="59" x.default="653" y="44"/>
+		<s:RadioButton x="182" label="D"  value="2" groupName="batTypes" click="batTypes_clickHandler(event)" fontSize="11" 
+					   fontFamily="Arial" x.viewingOnly="688" top.viewingOnly="59" x.default="688" y="10"/>
+		<!-- <s:RadioButton x="198" label="AC Wall Outlet"  value="9" groupName="batTypes" click="batTypes_clickHandler(event)" 
+					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="11"/>
+		<s:RadioButton x="217" label="Built In RCR"  value="8" groupName="batTypes" click="batTypes_clickHandler(event)" 
+					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
+		!-->
+		<s:RadioButton x="245" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontSize="11" 
+					   fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
+		<!-- <s:RadioButton x="227" label="Hearing Aid"  value="7" groupName="batTypes" click="batTypes_clickHandler(event)" 
+					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
+		!-->
+		<s:RadioButton x="237" label="Coin And Button"  value="6" groupName="batTypes" click="batTypes_clickHandler(event)" 
+					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
+		
+	</s:BorderContainer>
+	<s:BorderContainer width="245" height="51" left="164" top="74" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" borderVisible="false" id="pwrTypesFrame" top.viewingOnly="58" left.viewingOnly="131" width.viewingOnly="350" height.viewingOnly="55" height.default="43" width.default="354" top.default="75" left.default="133">
+		<s:layout>
+			<s:VerticalLayout gap="2"/>
+		</s:layout>
+		<s:layout.default>
+			<s:TileLayout horizontalGap="5" verticalGap="1"/>
+		</s:layout.default>
+		<s:layout.viewingOnly>
+			<s:TileLayout horizontalGap="5" verticalGap="1"/>
+		</s:layout.viewingOnly>
+		<s:RadioButton enabled="false" label="Disposable (DPP)" value="101" groupName="pwrTypes" selected="true"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
+					   top.viewingOnly="59" left.viewingOnly="197" x="10" y="15"/>
+		<s:RadioButton label="Built-in RCR" value="103" groupName="pwrTypes"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" left.viewingOnly="197" top.viewingOnly="77" x="11" y="27" selected.viewingOnly="true"/>
+		<s:RadioButton enabled="false" label="Round Cell Rechargeable (RCR)" value="102" groupName="pwrTypes"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
+					   top.viewingOnly="59" left.viewingOnly="319" x="-1" y="47"/>
+	</s:BorderContainer>
 
 
 </s:Group>

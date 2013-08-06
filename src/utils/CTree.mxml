@@ -581,7 +581,7 @@
 		</s:BorderContainer>
 		<s:Label text="Battery type/size" id="selDeviceLabel1" fontStyle="italic" fontSize="11"
 				 verticalAlign="middle" fontFamily="Arial" top="169" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
-		<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210" height.default="70" height="80">
+		<s:BorderContainer fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="sizeBorder" width="210" height.default="70" height="100">
 			<s:layout>
 				<s:TileLayout horizontalGap="5" verticalGap="1"/>
 			</s:layout>
@@ -599,15 +599,20 @@
 						   click="batTypes_clickHandler(event)"/>
 			<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="true" selected="false"
 						   click="batTypes_clickHandler(event)"/>
-			<s:RadioButton x="430" y="75" label="Hearing Aid"  value="6" groupName="batTypes_C"  fontFamily="Arial" fontSize="11" enabled="true" selected="false"
+			<s:RadioButton x="430" y="75" label="Coin And Button"  value="6" groupName="batTypes_C"  fontFamily="Arial" fontSize="11" enabled="true" selected="false"
 						   click="batTypes_clickHandler(event)"/>
-			<s:RadioButton x="440" y="75" label="Coin And Button"  value="7" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="true" selected="false"
-						   click="batTypes_clickHandler(event)"/>	
-			
-		</s:BorderContainer>
+		<!--	<s:RadioButton x="440" y="75" label="Hearing Aid"  value="7" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="true" selected="false"
+						   click="batTypes_clickHandler(event)"/> !-->	
+<!--
+			<s:RadioButton x="440" y="75" label="Built In RCR"  value="8" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="true" selected="false"
+						   click="batTypes_clickHandler(event)"/>			
+			<s:RadioButton x="440" y="75" label="AC Wall Outlet"  value="9" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="true" selected="false"
+						   click="batTypes_clickHandler(event)"/>			
+		!-->
+			</s:BorderContainer>
 		
 		<s:Label text="Battery Types" id="selDeviceLabel0" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="104" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
-		<s:BorderContainer width="100%" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height.default="67" height="80">
+		<s:BorderContainer width="210" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height.default="67" height="60">
 			<s:layout>
 				<s:VerticalLayout gap="1"/>
 			</s:layout>
@@ -634,7 +639,7 @@
 
 		</s:BorderContainer>
 			
-		<s:BorderContainer x="603" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height.default="69" height="60" width="100%">			
+		<s:BorderContainer x="603" fontFamily="Verdana" fontSize="11" top="91" borderVisible="false" backgroundAlpha="0.0" height.default="69" height="60" width="210">			
 			<s:layout>
 				<s:TileLayout/>
 			</s:layout>
@@ -642,7 +647,7 @@
 						   fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="true"/>
 			<s:RadioButton label="Lithium" groupName="chemTypes_C" value="202"  fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="true"/>
 			<s:RadioButton x="629" y="106" label="Zinc" groupName="chemTypes_C" value="204" fontFamily="Arial" fontSize="11" click="chemTypes_clickHandler(event)" enabled="true"/>
-			<s:RadioButton x="629" y="106" label="Rechargeable Major Cells" groupName="chemTypes_C" value="203" fontFamily="Arial" fontSize="11" enabled="true" click="chemTypes_clickHandler(event)"/>
+			<s:RadioButton x="629" y="106" label="RCR Major Cells" groupName="chemTypes_C" value="203" fontFamily="Arial" fontSize="11" enabled="true" click="chemTypes_clickHandler(event)"/>
 			<!-- <s:RadioButton x="629" y="106" label="Coin and Button" groupName="chemTypes_C" value="205" fontFamily="Arial" fontSize="11" enabled="false" click="chemTypes_clickHandler(event)"/>	
 			!-->
 		</s:BorderContainer>

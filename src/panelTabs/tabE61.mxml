@@ -635,9 +635,9 @@
 			}
 			
 			[bindable] public var flagDev:Boolean = false;
-			[bindable] public var batTypesNames:Array = ["C", "D", "AAA", "9V", "AA"];
+			[bindable] public var batTypesNames:Array = ["C", "D", "AAA", "9V", "AA", "Coin And Button"];
 			[bindable] public var pwrTypesNames:Array = ["Disposable (DPP)", "Round Cell Rechargeable (RCR)", "Built-in Rechargeable"];
-			[bindable] public var chemTypesNames:Array = ["Alkaline", "Zinc", "Lithium", "Hearing Aid", "Coin and Button"];
+			[bindable] public var chemTypesNames:Array = ["Alkaline", "Lithium", "RCR Major Cells","Zinc"];
 			
 			public function updateChartTitles():void {	
 				var lbl : String = " ";
@@ -645,7 +645,7 @@
 				
 				if (this.flowManager.batTypesActiveFlag)  lbl = ", " + batTypesNames[this.flowManager.selBatType - 1] + ",";			
 				if (this.flowManager.pwrTypesActiveFlag)  lbl = ", " + pwrTypesNames[this.flowManager.selPwrType - 1] + ",";
-				if (this.flowManager.chemTypesActiveFlag) lbl = ", " + chemTypesNames[this.flowManager.selChemType-1] + ",";
+				if (this.flowManager.chemTypesActiveFlag) lbl = ", " + chemTypesNames[this.flowManager.selChemType-201] + ",";
 				
 				this.demandChart.updateChartTitle( ("Battery demand" + lbl + " from"), 
 					this.flowManager.selDeviceAggLevel, 

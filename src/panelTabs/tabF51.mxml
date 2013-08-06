@@ -369,7 +369,7 @@
 				this.testGrid.setData(currentDataGrid, isLevel);				
 				//204 - split by size
 				//205, 206, 207 - split by PWR				
-				var lblp:String = this.pwrTypes.selection.label;								
+				//var lblp:String = this.pwrTypes.selection.label;								
 				var lbls:String = this.batTypes.selection.label;			
 				var lbl : String = "";
 				var enFlag:Boolean = true;
@@ -378,7 +378,8 @@
 					if ((indicatorsBox.selectedItem.id == 204)||(indicatorsBox.selectedItem.id == 206)) {
 						lbl = lbls;	enFlag = true;
 					} else 	if (indicatorsBox.selectedItem.id == 205) {
-						lbl = lblp; enFlag = false;
+						//lbl = lblp;
+						enFlag = false;
 					};				
 				};		
 				

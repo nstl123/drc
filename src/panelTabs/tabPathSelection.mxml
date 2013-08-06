@@ -113,7 +113,7 @@
 								value="E2" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" 
 								fontFamily="Arial" fontSize="12" selected="false"  color="#000000"/>
 				<s:RadioButton label="{this.pathNames.getItemAt(4)}"
-							   	groupName="pathTypes" enabled="false"
+							   	groupName="pathTypes" enabled="true"
 								value="D" click="radiobutton1_clickHandler(event)" width="100%" textAlign="left" height="40" 
 								fontFamily="Arial" fontSize="12" selected="false" />
 				

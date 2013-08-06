@@ -261,7 +261,7 @@ package controls
 					pathFlags = [0, 1, 0, 0, 0, 0];
 					activeIndi = 0;
 					break;
-				case "D":
+				case "D": // market size direct changes
 					pathFlags = [0, 0, 0, 1, 0, 0];
 					activeIndi = 0;
 					break;				

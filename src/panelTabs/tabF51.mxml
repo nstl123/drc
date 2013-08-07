@@ -273,12 +273,12 @@
 							tmpType = this.selPwrType; break;					
 						case 206: 
 							tmpType = this.selBatType; break;
-						case 207: 
+						case 277: 
 							tmpType = this.selPwrType; break;
 					};
 					
 					if (this.alteredData.length > 0) {					
-						if (this.selectedIndi == 207) {
+						if (this.selectedIndi == 277) {
 							this.updateData.token = this.dataServiceUpdate.updateData2(temp, 0, this.selDevice, tmpType, yrs, val);
 						} else {				
 							//this.updateData.token = this.dataServiceUpdate.updateDataProxy(temp, this.selDevice, tmpType);

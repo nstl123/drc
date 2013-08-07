@@ -18,10 +18,25 @@
 	<s:states>
 		<s:State name="default" />
 		<s:State name="viewingOnly" />
+
 	</s:states>
-	
-	<fx:Script>
+		<fx:Script>
 		<![CDATA[
+			protected function writeReplacementRates_faultHandler(event:FaultEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+			
+			protected function writeReplacementRates_resultHandler(event:ResultEvent):void
+			{
+				if (event.message.body != "ok") { //this.someLabel.text = "view written successfully";
+					Alert.show("data could not be written to DB", "Error in message format");
+				} else {
+					//this.refreshData(null);	
+					this.dispatchEvent(new Event("replacementRatesWritten", true));
+				};
+			}
+			
 			import services.depot31.Depot31;
 			protected function writeViewToTableResult_faultHandler(event:FaultEvent):void
 			{
@@ -346,6 +361,7 @@
 				var rez:Object = this.updateData.lastResult;				
 				Alert.show("data updated", "Info");			
 				this.dispatchEvent(new Event("refreshData", false));
+				this.rewriteReplacementRates();
 			}	
 			
 			protected function updateData_faultHandler(event:FaultEvent):void
@@ -358,6 +374,14 @@
 				startInd = startInd + 1;
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
 				if (this.startInd > 1) writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 0, 1);
+			}
+			
+			public function rewriteReplacementRates():void {
+				startInd = startInd + 1;
+				// flag == 2 - for replcement rates
+				if (this.startInd > 2) {
+					this.writeReplacementRates.token = this.dataServiceUpdate.writeViewToTable(this.workingScenarioID, 0, 2);
+				};					
 			}
 			
 			public function setActiveIndis(k:int, idd:int = -1):void {
@@ -436,6 +460,7 @@
 		<s:CallResponder id="getDeviceList" result="getDeviceLits_resultHandler(event)" fault="getDeviceLits_faultHandler(event)" />
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		<s:CallResponder id="writeViewToTableResult" result="writeViewToTableResult_resultHandler(event)" fault="writeViewToTableResult_faultHandler(event)" />
+		<s:CallResponder id="writeReplacementRates" result="writeReplacementRates_resultHandler(event)" fault="writeReplacementRates_faultHandler(event)" />		
 		
 	</fx:Declarations>
 	

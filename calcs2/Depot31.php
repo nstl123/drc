@@ -149,19 +149,54 @@ class Depot31 {
 		$result = $this->connection->prepare($stmntTest);
 		$result->execute();			
 		
+		$this->insertReplacementRate($scenarioID); // for replcemenet rates
+		
 		return $result;
 	} 
+	
+	public function insertReplacementRate($scenarioID) {
+		$yrsField = "`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
+					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";
+					 
+		// clean table
+		$delStmnt1 = "DELETE FROM `Consulting`.`DC_newReplacementRateTable` WHERE scenarioID = ".$scenarioID.";";
+		$result1 = $this->connection->prepare($delStmnt1);		
+		$result1->execute();	
+		// write from view to static table;
+		$insStmnt1 = "\r\n	INSERT INTO `Consulting`.`DC_newReplacementRateTable` \r\n (`scenarioID`,`countryID`,`deviceID`, ".$yrsField.")
+					SELECT `scenarioID`,`countryID`,`deviceID`, ".$yrsField."
+					FROM `Consulting`.`DC_newReplacementRate`
+					WHERE scenarioID = ".$scenarioID.";";	
+		$result2 = $this->connection->prepare($insStmnt1);		
+		$result2->execute();	
+	}
 	
 	public function writeViewToTable($scenarioID, $isMarket, $isMarketSize) {	
 		$yrsField = "`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
 					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";
 					 
-		$isMarket = 0;
+		//$isMarket = 0;
 		// for now lets override Market method
 		//$isMarketSize = 0;
 		
+		if ($isMarketSize == 2) {
+			// clean table
+			$delStmnt1 = "DELETE FROM `Consulting`.`DC_newReplacementRateTable` WHERE scenarioID = ".$scenarioID.";";
+			$result1 = $this->connection->prepare($delStmnt1);		
+			$result1->execute();	
+			// write from view to static table;
+			$insStmnt1 = "\r\n	INSERT INTO `Consulting`.`DC_newReplacementRateTable` \r\n (`scenarioID`,`countryID`,`deviceID`, ".$yrsField.")
+						SELECT `scenarioID`,`countryID`,`deviceID`, ".$yrsField."
+						FROM `Consulting`.`DC_newReplacementRate`
+						WHERE scenarioID = ".$scenarioID.";";	
+			$result2 = $this->connection->prepare($insStmnt1);		
+			$result2->execute();	
+		};
+		
 		if ($isMarketSize == 0) {
 			$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
+		} else if ($isMarketSize == 2) {
+			$delStmnt = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID = 277 and scenarioID = ".$scenarioID.";";
 		} else { // delete market size from DB 
 			$delStmnt = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID = 210 and scenarioID = ".$scenarioID.";";
 		};		
@@ -174,6 +209,11 @@ class Depot31 {
 							SELECT `scenarioID`,`countryID`,`deviceID`,`indicatorID`, ".$yrsField."
 							FROM `Consulting`.".(($isMarket == 0) ? 'DC_deviceBase' : 'DC_deviceBaseMarket')."
 							WHERE scenarioID = ".$scenarioID.";";
+		} else if ($isMarketSize == 2) {
+			$insStmnt = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`, ".$yrsField.")
+							SELECT `scenarioID`,`countryID`,`deviceID`, 277 as `indicatorID`, ".$yrsField."
+							FROM `Consulting`.`DC_newReplacementRateTable`
+							WHERE scenarioID = ".$scenarioID.";";		
 		} else {
 			$insStmnt = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`,".$yrsField.")
 							SELECT `scenarioID`,`countryID`,`deviceID`, 210 as `indicatorID`, ".$yrsField."

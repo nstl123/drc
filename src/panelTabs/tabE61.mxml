@@ -162,11 +162,11 @@
 					} else if (tmp2.length > 0) {
 						this.cursorManager.setBusyCursor();
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
-							this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), this.flowManager.selDeviceAggLevel, showPerHHFlag);					
+							this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), this.flowManager.getSelDeviceAggLevel(), showPerHHFlag);					
 					} else if (tmp.length > 0) {
 						this.cursorManager.setBusyCursor();
 						this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
-							this.tmpBatTypes, this.tmpPwrTypes, 0,  this.flowManager.selDeviceAggLevel, showPerHHFlag);					
+							this.tmpBatTypes, this.tmpPwrTypes, 0,  this.flowManager.getSelDeviceAggLevel(), showPerHHFlag);					
 					};
 				};
 			}			
@@ -235,10 +235,10 @@
 			private var showAtDeviceLevel:int = 0;
 			private function filterDeviceList(item:Object):Boolean {
 				var f:Boolean = false;
-				if  ( (flowManager.selDeviceAggLevel == 1)&&(item.categoryID > 0) )
+				if  ( (flowManager.getSelDeviceAggLevel() == 1)&&(item.categoryID > 0) )
 					f = true;
 				else 
-				if  ( (flowManager.selDeviceAggLevel == 2)&&(!item.categoryID)  )
+				if  ( (flowManager.getSelDeviceAggLevel() == 2)&&(!item.categoryID)  )
 					f = true;
 				return f;
 			}		
@@ -261,7 +261,7 @@
 				if (this.flowManager.chemTypesActiveFlag) {
 					f = (item.chemistryID == this.flowManager.selChemType);					
 				} else 
-				if (this.flowManager.selDeviceAggLevel > 0) {					
+				if (this.flowManager.getSelDeviceAggLevel() > 0) {					
 					f = (z == this.flowManager.selDevice);   															
 				} else {
 					f = (z == 0) ; 
@@ -533,10 +533,10 @@
 					
 					if ((this.selExoIndi == 401)&&(tmp2.length > 0)) {				
 							getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp2, workingScenarioID,
-								flowManager.selPwrType,  1 + int(useCluster), flowManager.selDeviceAggLevel, showPerHHFlag);							
+								flowManager.selPwrType,  1 + int(useCluster), flowManager.getSelDeviceAggLevel(), showPerHHFlag);							
 					} else if (this.selExoIndi == 401) {
 						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID,
-							flowManager.selPwrType,  0, flowManager.selDeviceAggLevel, showPerHHFlag);					
+							flowManager.selPwrType,  0, flowManager.getSelDeviceAggLevel(), showPerHHFlag);					
 					} else { //if (this.flowManager.selDeviceAggLevel > 1 ) { // category level
 							getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selExoIndi,
 								workingScenarioID, tmpSplit, typeID, 1);
@@ -577,10 +577,10 @@
 					flagForView = true;
 				};	
 				
-				if (this.flowManager.selDeviceAggLevel == 0) {									
+				if (this.flowManager.getSelDeviceAggLevel() == 0) {									
 					f = ( (item.deviceID == 0) && ((selExoIndi < 200)||(selExoIndi == 401)) );
 				} else 
-				if (this.flowManager.selDeviceAggLevel == 1) {									
+				if (this.flowManager.getSelDeviceAggLevel() == 1) {									
 					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi < 200) );
 				} else {					
 					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi < 200) );
@@ -638,7 +638,7 @@
 				if (this.flowManager.chemTypesActiveFlag) lbl = ", " + chemTypesNames[this.flowManager.selChemType-201] + ",";
 				
 				this.demandChart.updateChartTitle( ("Battery demand" + lbl + " from"), 
-					this.flowManager.selDeviceAggLevel, 
+					this.flowManager.getSelDeviceAggLevel(), 
 					this.flowManager.devicesActiveFlag,	
 					this.isLevel, 
 					this.flowManager.selDeviceNamen,
@@ -663,7 +663,7 @@
 				this.exoChart.updateChartTitle(
 					(exoListDrop.selectedItem ? exoListDrop.selectedItem.namen :
 						exoListDrop.dataProvider.getItemAt(0).namen),
-					this.flowManager.selDeviceAggLevel, 
+					this.flowManager.getSelDeviceAggLevel(), 
 					flagDev,
 					isLevel, 
 					this.flowManager.selDeviceNamen,

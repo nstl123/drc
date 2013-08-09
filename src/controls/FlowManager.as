@@ -32,7 +32,7 @@ package controls
 		//this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);			
 		//this.devicesActiveFlag = (this.selDeviceAggLevel > 0);
 		
-		[bindable] public var selDeviceAggLevel:int;
+		[bindable] private var selDeviceAggLevel:int;
 		[bindable] public var selDemandIndi:int;
 		[bindable] public var selDeviceNamen:String;
 		
@@ -69,6 +69,10 @@ package controls
 				
 		public function setSelDeviceAggLevel (k:int):void {
 			this.selDeviceAggLevel = k;
+		}
+		
+		public function getSelDeviceAggLevel ():int {
+			return this.selDeviceAggLevel;
 		}
 		
 		public function setSelDeviceNamen (k:String):void {

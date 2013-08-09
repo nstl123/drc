@@ -81,8 +81,7 @@
 			public var labelText:String;		
 			
 			public function getDataList():ArrayCollection {
-				var res:ArrayCollection = new ArrayCollection();
-				
+				var res:ArrayCollection = new ArrayCollection();				
 				var i:uint;				
 				for (i = 0; i < selectionList.length; i++) {		
 					if ((selectionList[i].active)&&(res.length <= 10)) {
@@ -96,7 +95,17 @@
 					};
 				};		
 				return res;	
-			}		
+			}	
+			
+			public function isRegionPresent():Boolean {		
+				var z:ArrayCollection;
+				if (this.regionsListGrid) {
+					z = this.regionsListGrid.getActiveDataList();
+				} else {
+					z = new ArrayCollection();
+				}
+				return (z.length > 0);								
+			}
 			
 			public function getRegionsDataList():ArrayCollection {
 				if (this.regionsListGrid) {

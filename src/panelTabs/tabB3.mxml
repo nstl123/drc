@@ -89,12 +89,30 @@
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 
+			protected function getDeviceBase_resultHandler(event:ResultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+				
+				currentData = this.getDeviceBase.lastResult as ArrayCollection;			
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source  = this.currentData.source;
+				
+				deviceListDrop_changeHandler(null);
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+			
 			protected function getMacroDataCategory_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
 				Alert.show("could not read data", "error B3");
 			}
-
+			
+			protected function getDeviceBase_faultHandler(event:FaultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+				Alert.show("could not read data for device base", "error B4");
+			}
+			
 		]]>
 	</fx:Script>
 
@@ -200,9 +218,8 @@
 			
 			private function filterB(item:Object):Boolean {
 				var fl:Boolean = true;				
-				if ((item.id == 201)||(item.id == 202)) {					
-					fl = true
-				}  else fl = false;				
+				fl = ( (item.id == 201)||(item.id == 202)||(item.id == 401) );
+				// added device base				
 				return fl;
 			}					
 			
@@ -225,14 +242,14 @@
 					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);			 			
 					
 					this.cursorManager.removeAllCursors();
-					this.cursorManager.setBusyCursor()
-					//if (selDeviceAggLevel > 1 ) { // category level
-					getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
-						workingScenarioID, 0, 0, 1);
-					/*} else {
-						getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, 
-							workingScenarioID, 0, 0, 1);*/
-					//};					 
+					this.cursorManager.setBusyCursor();					
+						
+					if (selectedIndi == 401) {
+						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, 0, 0, 1, 0);					
+					} else {						
+						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
+							workingScenarioID, 0, 0, 1);
+					};										 
 				};
 			}
 			
@@ -409,6 +426,9 @@
 		
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		<s:CallResponder id="getDeviceList" result="getDeviceList_resultHandler(event)" />
+		
+		<s:CallResponder id="getDeviceBase" result="getDeviceBase_resultHandler(event)" 
+						 fault="getDeviceBase_faultHandler(event)"/> 
 		
 		<s:RadioButtonGroup id="growthType" />
 		<s:RadioButtonGroup id="shockType" />

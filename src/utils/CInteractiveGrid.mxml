@@ -53,6 +53,10 @@
 				return saveDataFromGrid();
 			}
 			
+			public function removeAllData():void {
+				this.alteredSplitData = new Array();
+			}
+			
 			public function getAllData():ArrayCollection {
 				// is there a filter function here?
 				return (this.testGrid.dataProvider as ArrayCollection);
@@ -113,7 +117,7 @@
 			protected function saveDataFromGrid():ArrayCollection {
 				this.scenarioDataChanged = false;
 				this.alteredData.removeAll();
-				// here data is collected form rezaigrod by a list of IDs from alteredMacroData
+				// here data is collected form rezaiGrid by a list of IDs from alteredMacroData
 				if (this.alteredSplitData.length > 0) {
 					this.scenarioDataChanged = true;
 					for (var i:int = 0; i < this.alteredSplitData.length; i++) {

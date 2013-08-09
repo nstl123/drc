@@ -225,10 +225,11 @@
 			
 			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = true;				
-				if ((item.scenarioID == this.workingScenarioID)
-					&& (item.deviceID == this.selDevice)) {					
-					f = true
-				}  else f = false;				
+				if (this.currentState == "viewingOnly") {
+					f = ((item.scenarioID == 10001) && (item.deviceID == this.selDevice));
+				} else {
+					f = ((item.scenarioID == workingScenarioID) && (item.deviceID == this.selDevice));
+				};						
 				return f;
 			}	
 			

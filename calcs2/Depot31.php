@@ -88,6 +88,12 @@ class Depot31 {
 		$result = $this->connection->prepare($stmntDvbt);
 		$result->execute();			
 		
+		$stmntRPC = "DELETE FROM `Consulting`.`DC_newReplacementRateTable`
+						USING `Consulting`.`DC_scenarioNamesDead`, `Consulting`.`DC_newReplacementRateTable`
+						WHERE id = scenarioID";
+		$result = $this->connection->prepare($stmntRPC);
+		$result->execute();			
+		
 		$stmnt = "SELECT count(*) as cnt FROM `Consulting`.`DC_scenarioNames` WHERE id < 9999";
 		$result = $this->connection->fetchAll($stmnt); 		
 		

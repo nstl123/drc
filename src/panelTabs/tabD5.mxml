@@ -24,7 +24,7 @@
 		<![CDATA[
 			protected function writeReplacementRates_faultHandler(event:FaultEvent):void
 			{
-				// TODO Auto-generated method stub
+				Alert.show("could not re-write RPR to DB", "too bad");
 			}
 			
 			protected function writeReplacementRates_resultHandler(event:ResultEvent):void
@@ -197,7 +197,8 @@
 
 			protected function button4_clickHandler(event:MouseEvent):void
 			{
-				this.dispatchEvent(new Event("scenarioResetRequested", true));
+				this.dispatchEvent(new Event("scenarioResetRequested", true));		
+				this.testGrid.removeAllData();
 			}
 
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
@@ -367,6 +368,7 @@
 			protected function updateData_faultHandler(event:FaultEvent):void
 			{
 				var z:Object = event.message.body.toString();
+				Alert.show("could not update scenario", "we are f'ckd up");
 			}	
 			
 			public var startInd:int = 0;
@@ -379,7 +381,7 @@
 			public function rewriteReplacementRates():void {
 				startInd = startInd + 1;
 				// flag == 2 - for replcement rates
-				if (this.startInd > 2) {
+				if (this.startInd > 1) {
 					this.writeReplacementRates.token = this.dataServiceUpdate.writeViewToTable(this.workingScenarioID, 0, 2);
 				};					
 			}

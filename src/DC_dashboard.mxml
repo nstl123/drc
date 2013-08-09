@@ -110,7 +110,8 @@
 					
 					
 					this.addEventListener("scenarioResetRequested", resetScenario);
-					this.addEventListener("scenarioResetDone", refreshAllTabs);
+					this.addEventListener("scenarioDataCleaned", refreshDeviceBase);
+					//this.addEventListener("scenarioDataCleaned", refreshAllTabs);
 					
 					this.addEventListener("changesMadeInScenario", recordState);
 					
@@ -145,8 +146,7 @@
 				};
 			}			
 			
-			public function refreshDeviceID_C(evt:Event):void {
-				//this.panelTabE61.refreshData(null);
+			public function refreshDeviceID_C(evt:Event):void {								
 				this.panelTabE61.dropdownlist1_changeHandler(null);
 			};
 			
@@ -475,9 +475,9 @@
 			protected function createNewWorkingScenarioResult_resultHandler(event:ResultEvent):void
 			{ 
 				scenarioCreatedFlag = true;
-				startas = startas + 1;
-				if (startas > 1) dispatchEvent(new Event("scenarioResetDone", true));
-				//this.statusLabel.text = "new scenario created: " + this.workingScenarioID + "  ";
+				startas = startas + 1;							
+				//if (startas > 1) dispatchEvent(new Event("scenarioResetDone", true));
+				if (startas > 1) dispatchEvent(new Event("scenarioDataCleaned", true));
 			}		
 
 			protected function createNewWorkingScenarioResult_faultHandler(event:FaultEvent):void

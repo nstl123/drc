@@ -129,19 +129,9 @@
 			
 			protected function getSomeData_clickHandler(event:MouseEvent):void
 			{	
-				exoIndi_clickHandler(null);
-				this.dispatchEvent(new Event("refreshData", false));				
-			}		
-			
-			/*public function updateChartTitle():void {
-				var tx:String = "Demand";
-				if ((deviceListDrop.selectedIndex >= 0) && (devicesActive)) 
-					tx = tx + ", " + this.deviceListDrop.selectedItem.namen;
-				else 
-					tx = tx +  ", All Devices";				
-				tx = tx + ( isLevel ? (", units") : (", growth") );				
-				this.testChart.setChartTitle(tx);			
-			}*/
+				this.refreshData(null);
+				this.exoIndi_clickHandler(null);			
+			}			
 			
 			[bindable] public var useCluster:Boolean = false;
 			public function refreshData(evt:Event):void {

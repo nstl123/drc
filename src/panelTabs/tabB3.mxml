@@ -160,8 +160,8 @@
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
 				var rez:Object = this.updateData.lastResult;
-				this.dispatchEvent(new Event("NewScenarioUpdated", true));
-				this.dispatchEvent(new Event("refreshData", true));
+				this.dispatchEvent(new Event("refreshData", false));				
+				this.dispatchEvent(new Event("NewScenarioUpdated", true));				
 			}				
 				
 			protected function startApp(event:FlexEvent):void {
@@ -303,22 +303,21 @@
 
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
+				var yrs:int = 2012;									
+				var val:Number = 0;		
 				if (this.tabEditable) {			
 					var temp:Object = new Object();				
 					if (this.isSingleGeo) { 				
 						alteredData = this.testGrid.getData();									
-					} else {
-						var yrs:int = 2010;
+					} else {						
 						yrs = (this.shockYears.selectedItem ? this.shockYears.selectedItem.yrs : 2012);					
-						var val:Number = this.shockValue.value;							
-						// var rawData:ArrayCollection = this.grid.getAllData();
-						// need additional filtering on devicID, where applicable
+						val = this.shockValue.value;					
 						var rawData:ArrayCollection = this.testChart.getBaseData(this.flMngr.baselineScenarioID);
 						alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);		
 					};					
 					temp = ({'id':1, data:this.alteredData});
 					if (this.alteredData.length  > 0) {
-						this.updateData.token = this.dataServiceUpdate.updateData2(temp, int(false), this.selDevice, 0, yrs, val);
+						this.updateData.token = this.dataServiceUpdate.updateData2(temp, 0, this.selDevice, 0, yrs, val);
 						this.dispatchEvent(new Event("changesMadeInScenario", true));
 					} else {
 						this.dispatchEvent(new Event("refreshData", false));

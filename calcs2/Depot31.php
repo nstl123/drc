@@ -56,6 +56,7 @@ class Depot31 {
 		$this -> deleteWorkingScenario($scenarioID);
 		$this -> insertWorkingScenario($scenarioID);
 		
+		
 		$a = array('a'=>"");
 		$stmnt = "SELECT count(*) as cnt FROM `Consulting`.`DC_scenarioNames` where id = ".$scenarioID.";";
 		$result = $this->connection->fetchAll($stmnt);				
@@ -67,6 +68,7 @@ class Depot31 {
 		};
 
 		return $stmnt;
+		return true;
 	}
 	
 	public function deleteAllScenarios() {
@@ -115,6 +117,10 @@ class Depot31 {
 		$stmntProxy = "DELETE FROM `Consulting`.`DC_scenarioDataProxy` WHERE scenarioID = ".$scenarioID;
 		$result = $this->connection->prepare($stmntProxy);
 		$result->execute();	
+		
+		$stmntRp = "DELETE FROM `Consulting`.`DC_newReplacementRateTable` WHERE scenarioID = ".$scenarioID.";";
+		$result = $this->connection->prepare($stmntRp);		
+		$result->execute();
 		
 		/*$stmntScen = "DELETE FROM `Consulting`.`DC_scenarioNames` WHERE id = ".$scenarioID;
 		$result = $this->connection->prepare($stmntScen);

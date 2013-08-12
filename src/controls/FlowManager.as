@@ -32,11 +32,11 @@ package controls
 		//this.selDeviceAggLevel = int(this.splitByDevices.selectedValue);			
 		//this.devicesActiveFlag = (this.selDeviceAggLevel > 0);
 		
-		[bindable] private var selDeviceAggLevel:int;
+		[bindable] private var selDeviceAggLevel:int = 1;
 		[bindable] public var selDemandIndi:int;
 		[bindable] public var selDeviceNamen:String;
 		
-		[bindable] public var devicesActiveFlag:Boolean = false;
+		[bindable] public var devicesActiveFlag:Boolean = true;
 		[bindable] public var chemTypesActiveFlag:Boolean = false;		
 		[bindable] public var pwrTypesActiveFlag:Boolean = false;
 		[bindable] public var batTypesActiveFlag:Boolean = false;		
@@ -45,7 +45,7 @@ package controls
 		[bindable] public var selPwrType:int = 101;
 		[bindable] public var selGenBatType:int = 0;		
 		[bindable] public var selChemType:int = 201;
-		[bindable] public var selDevice:int = 1;
+		[bindable] private var selectedDeviceID:int = 21;
 
 		public function getSelectedDemandIndi():int {
 			return this.selDemandIndi;
@@ -63,10 +63,14 @@ package controls
 			this.chemTypesActiveFlag = k;
 		}
 		
-		public function setSelDevice (k:int):void {
-			this.selDevice = k;
+		public function setSelectedDeviceID (k:int):void {
+			this.selectedDeviceID = k;
 		}		
 				
+		public function getSelectedDeviceID ():int {
+			return this.selectedDeviceID;
+		}
+		
 		public function setSelDeviceAggLevel (k:int):void {
 			this.selDeviceAggLevel = k;
 		}

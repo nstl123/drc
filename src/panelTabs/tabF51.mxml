@@ -156,6 +156,11 @@
 				//this.refreshData();
 			}
 			
+			public function updateSelectedDeviceID():void {
+				this.selDevice = this.flMngr.getSelectedDeviceID();								
+				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice);
+			}	
+			
 			public function refreshData(evt:Event):void {
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					Alert.show("Please select at least one country", "Selection error");
@@ -303,10 +308,12 @@
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
-				this.selDevice = this.deviceListDrop.selectedItem.id;	
+				this.selDevice = this.deviceListDrop.selectedItem.id;
 				
-				selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
-				this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
+				this.flMngr.setSelectedDeviceID(this.selDevice);
+				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
+				//selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
+				//this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
 				
 				this.dispatchEvent(new Event("updateCharts", false));			
 			}

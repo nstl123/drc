@@ -863,26 +863,32 @@
 						break;
 					case 1:
 						//tab B - HHs
+						this.panelTabB3.updateSelectedDeviceID();
+						
 						this.panelTabB3.refreshData(null);
 						this.cntryTree.currentState = "default";
 						break;
 					case 2:
 						//tab D - Market Size
+						this.panelTabD5.updateSelectedDeviceID();
 						this.panelTabD5.refreshData(null);
 						this.cntryTree.currentState = "default";
 						break;
 					case 3:
-						//tab F - Other, Power Shares						
+						//tab F - Other, Power Shares			
+						this.panelTabF51.updateSelectedDeviceID();							
 						this.masterTab.setSelPwrType(this.panelTabF51.selPwrType);
-						this.masterTab.setSelBatType(this.panelTabF51.selBatType);
+						this.masterTab.setSelBatType(this.panelTabF51.selBatType);						
 						this.panelTabF51.refreshData(null);
 						this.cntryTree.currentState = "default";
 						break;
 					case 4:
-						//tab E - Demand
-						this.panelTabE61.refreshData(null);
-						this.panelTabE61.exoIndi_clickHandler(null);
+						//tab E - Demand							
 						this.cntryTree.currentState = "slicing";
+						this.cntryTree.updateSelectedDeviceID();
+						
+						this.panelTabE61.refreshData(null);
+						this.panelTabE61.exoIndi_clickHandler(null);												
 						break;		
 				};				
 				//Alert.show("Selected Tab:" + f,"info"); 
@@ -999,7 +1005,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.24"/> 
+				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.25"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"

@@ -171,7 +171,13 @@ package utils
 			return list;	
 		}
 
-		
-		
+	
+		public function getIndexFromID(src:Array, toFind:int):int {
+			var kk:int = 1;
+			for (var u:int = 0; u < src.length; u++) {
+				if (src[u].id == toFind) {kk = u;};
+			};	
+			return kk;
+		}		
 	}
 }

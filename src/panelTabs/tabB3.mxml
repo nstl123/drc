@@ -97,7 +97,7 @@
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source  = this.currentData.source;
 				
-				deviceListDrop_changeHandler(null);
+				//deviceListDrop_changeHandler(null);
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
@@ -215,6 +215,11 @@
 				if (rr) this.setActiveIndis(0, rr.getItemAt(0).id)
 				else this.setActiveIndis(0);
 			}
+			
+			public function updateSelectedDeviceID():void {
+				this.selDevice = this.flMngr.getSelectedDeviceID();				
+				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice);					
+			}			
 			
 			private function filterB(item:Object):Boolean {
 				var fl:Boolean = true;				
@@ -344,12 +349,15 @@
 				
 				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;				
 				this.selDevice = this.deviceListDrop.selectedItem.id;			
-				this.flMngr.setSelDevice(this.selDevice);
+				
+				this.flMngr.setSelectedDeviceID(this.selDevice);				
+				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
+				
 				this.flMngr.setSelBatType(0);
 				this.flMngr.setSelPwrType(0);
 				
-				selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
-				this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);				
+				//selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
+				//this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);				
 				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}

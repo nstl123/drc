@@ -148,7 +148,7 @@
 					var regionIDs:Array = this.dataListReg.source;
 					var tmp2:String = this.hlp.formStringFromIDs2(regionIDs);					
 					
-					this.flowManager.devicesActiveFlag  ? this.tmpDevices  = this.flowManager.selDevice  : this.tmpDevices = -1;
+					this.flowManager.devicesActiveFlag  ? this.tmpDevices  = this.flowManager.getSelectedDeviceID()  : this.tmpDevices = -1;
 					this.flowManager.pwrTypesActiveFlag ? this.tmpPwrTypes = this.flowManager.selPwrType : this.tmpPwrTypes = -1;					
 					this.flowManager.batTypesActiveFlag ? this.tmpBatTypes = this.flowManager.selBatType : this.tmpBatTypes = -1;				
 									
@@ -262,7 +262,7 @@
 					f = (item.chemistryID == this.flowManager.selChemType);					
 				} else 
 				if (this.flowManager.getSelDeviceAggLevel() > 0) {					
-					f = (z == this.flowManager.selDevice);   															
+					f = (z == this.flowManager.getSelectedDeviceID());   															
 				} else {
 					f = (z == 0) ; 
 				};			
@@ -417,7 +417,7 @@
 			public function dropdownlist1_changeHandler(event:IndexChangeEvent):void
 			{
 				//this.selDevice = deviceListDrop.selectedItem.id;
-				this.selDevice = this.flowManager.selDevice;
+				this.selDevice = this.flowManager.getSelectedDeviceID();
 				
 				this.currentDataChart.filterFunction = this.filterChart;							
 				this.currentDataChart.refresh();								
@@ -529,7 +529,7 @@
 						tmpDev = 0; 
 						tmpSplit = 0; 
 					} else 
-						tmpDev = this.flowManager.selDevice;				
+						tmpDev = this.flowManager.getSelectedDeviceID();				
 					
 					if ((this.selExoIndi == 401)&&(tmp2.length > 0)) {				
 							getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp2, workingScenarioID,
@@ -609,6 +609,8 @@
 			
 			// this is used for drawing update only
 			public function updateCharts(evt:Event):void {	
+				this.selDevice = this.flowManager.getSelectedDeviceID();
+				
 				this.demandChart.setVwmode(this.flowManager.isViewingMode());
 				this.exoChart.setVwmode(this.flowManager.isViewingMode());
 				
@@ -635,7 +637,7 @@
 				
 				if (this.flowManager.batTypesActiveFlag)  lbl = ", " + batTypesNames[this.flowManager.selBatType - 1] + ",";			
 				if (this.flowManager.pwrTypesActiveFlag)  lbl = ", " + pwrTypesNames[this.flowManager.selPwrType - 1] + ",";
-				if (this.flowManager.chemTypesActiveFlag) lbl = ", " + chemTypesNames[this.flowManager.selChemType-201] + ",";
+				if (this.flowManager.chemTypesActiveFlag) lbl = ", " + chemTypesNames[this.flowManager.selChemType-201] + ",";				
 				
 				this.demandChart.updateChartTitle( ("Battery demand" + lbl + " from"), 
 					this.flowManager.getSelDeviceAggLevel(), 

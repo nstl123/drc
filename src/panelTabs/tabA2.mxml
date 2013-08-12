@@ -159,7 +159,7 @@
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();
 				
 			public function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
-				this.selectedIndi = this.indicatorsBox.selectedItem.id;		
+				this.selectedIndi = this.indicatorsBox.selectedItem.id;			
 				this.flMngr.setSelBatType(0);
 				this.flMngr.setSelPwrType(0);
 				//this.dispatchEvent(new Event("refreshData", false));

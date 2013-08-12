@@ -43,9 +43,9 @@
 			private var checkedCount:uint;
 			[bindable] 
 			private var regList:ArrayCollection;
+			private var hlp:helper;
 			
-			
-			[bindable] private var selDeviceAggLevel:int = 0;
+			[bindable] private var selDeviceAggLevel:int = 1;
 			[bindable] private var batTypesActiveFlag:Boolean = false;
 			[bindable] private var pwrTypesActiveFlag:Boolean = false;
 			[bindable] private var chemTypesActiveFlag:Boolean = false;
@@ -166,7 +166,9 @@
 			protected function startApp(event:FlexEvent):void
 			{
 				trace("creation complete in checkBox component");
-				checkedCount = 0;				
+				checkedCount = 0;	
+				hlp = new helper();
+				
 				addEventListener(CCheckBoxRendererADG.INCR_COUNT, onIncrValue);
 				addEventListener(CCheckBoxRendererADG.DECR_COUNT, onDecrValue);
 				
@@ -365,7 +367,7 @@
 					this.deviceListDrop_C.selectedIndex = 2 - this.selDeviceAggLevel; // should be cate 0; dev - 1;
 					this.deviceListDrop_C_changeHandler(null);		
 				} else {
-					this.flowManager.setSelDevice(0);
+					this.flowManager.setSelectedDeviceID(0);
 				};
 					
 				this.dispatchEvent(new Event("demandAggChanged", false));				
@@ -382,6 +384,7 @@
 				this.deviceNamesFullList.filterFunction = this.filterDeviceList;
 				this.deviceNamesFullList.refresh();
 				this.deviceListDrop_C.dataProvider = this.deviceNamesFullList;
+				this.deviceListDrop_C.selectedIndex = this.hlp.getIndexFromID(this.deviceNamesFullList.source, flowManager.getSelectedDeviceID() );				
 			}
 			
 			private var showAtDeviceLevel:int = 0;
@@ -477,31 +480,29 @@
 			protected function deviceListDrop_C_changeHandler(event:IndexChangeEvent):void
 			{
 				this.selDevice = deviceListDrop_C.selectedItem.id;
-				this.flowManager.setSelDevice(this.selDevice);
+				
+				this.flowManager.setSelectedDeviceID(this.selDevice);
 				this.flowManager.setSelDeviceNamen(this.deviceListDrop_C.selectedItem.namen);
 				
 				this.dispatchEvent(new Event("refreshDeviceID_C", true));
 				// dispatch refresh on tabE
 			}
 
+			public function updateSelectedDeviceID():void {
+				this.selDevice = this.flowManager.getSelectedDeviceID();	
+								
+				if ((this.flowManager.devicesActiveFlag)&&(this.deviceNamesFullList)) {				
+					this.deviceListDrop_C.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice);
+				};
+			}
+			
 			// counter to maintain the uid
 			private var iCount:int = 0;
 			private function grpObjFunc(value:String):Object {
 				// we need to assign the same uid for same grouped Objects
 				// use count or value + count
 				return {uid: value + iCount++};
-			}			
-			
-			/*private function positionCompareFunction(a:Object, b:Object, z:Object):int
-			{
-				return  int((a.region + "_" +  a.id) == (b.region + "_" + b.id));
-			}*/
-			
-
-			/*protected function cntryListGridADG_creationCompleteHandler(event:FlexEvent):void
-			{
-				sortData();
-			}*/
+			}
 
 			private function sortData():void {
 				var sort:Sort = new Sort();
@@ -576,15 +577,15 @@
 			</s:layout>
 			
 			<s:RadioButton x="201" y="92"  value="0" label="All devices (aggregate)" groupName="splitByDevices_C" 
-						   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevAll_C"/>
+						   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevAll_C"/>
 			<s:RadioButton x="201" y="118" value="2" label="Device category" groupName="splitByDevices_C" 
 						   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevCat_C"/>
 			<s:RadioButton value="1" label="Single device" groupName="splitByDevices_C" 
-						   selected="false" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle_C"/>			
+						   selected="true" click="devicesActive_clickHandler(event)" fontFamily="Arial" fontSize="11" id="radioDevSingle_C"/>			
 			
 			<s:DropDownList width="100%" id="deviceListDrop_C"	 creationComplete="deviceListDrop_C_creationCompleteHandler(event)"						
 							labelField="namen" selectedIndex="1" height="20" top="29" left="472" 
-							enabled="false" fontFamily="Arial" fontSize="11" contentBackgroundAlpha="0.9" 
+							enabled="true" fontFamily="Arial" fontSize="11" contentBackgroundAlpha="0.9" 
 							borderVisible="false" change="deviceListDrop_C_changeHandler(event)"/>
 		
 		</s:BorderContainer>

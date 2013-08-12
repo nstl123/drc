@@ -345,13 +345,20 @@
 				Alert.show("could not read DB", "error D5");
 			}
 
+			public function updateSelectedDeviceID():void {
+				this.selDevice = this.flMngr.getSelectedDeviceID();								
+				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice);
+			}			
+			
 			public function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
 				this.selDevice = this.deviceListDrop.selectedItem.id;
 				
-				selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
-				this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
+				this.flMngr.setSelectedDeviceID(this.selDevice);
+				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
+				//selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
+				//this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
 				this.flMngr.setSelBatType(0);
 				this.flMngr.setSelPwrType(0);
 				this.dispatchEvent(new Event("updateCharts", false));
@@ -433,7 +440,7 @@
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source  = this.currentData.source;
 				
-				deviceListDrop_changeHandler(null);				
+				//deviceListDrop_changeHandler(null);				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			

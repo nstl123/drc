@@ -252,16 +252,17 @@ class Depot5_sqlFormation {
 	
 		$samePart= ", dbt.scenarioID, dbt.indicatorID \r\n".
 				($pwrType  > 0 ? ", sdp.indicatorID, sdp.typeID " : ", 0 as indicatorID, 0 as typeID").				
-				$sumStmnt."\r\n	FROM Consulting.DC_deviceBaseTable dbt
-			JOIN Consulting.DC_namesCountries nc ON dbt.countryID = nc.id".    
+				$sumStmnt."\r\n	
+				FROM Consulting.DC_deviceBaseTable dbt
+				JOIN Consulting.DC_namesCountries nc ON dbt.countryID = nc.id".    
 					($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."				
-			JOIN Consulting.DC_namesDevices devNam ON devNam.id = dbt.deviceID
-			JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID	
+				JOIN Consulting.DC_namesDevices devNam ON devNam.id = dbt.deviceID
+				JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID	
 				".($perHH   > 0 ? "\r\n JOIN Consulting.DC_scenarioData sdt 
 					ON ((sdt.countryID = dbt.countryID) AND (sdt.scenarioID = dbt.scenarioID))" : "").
 				($pwrType > 0 ? "\r\n JOIN Consulting.DC_scenarioData sdp
 					ON  (sdp.countryID = nc.".$joinOn.") AND (sdp.deviceID  = dbt.deviceID)	AND (sdp.scenarioID = dbt.scenarioID)" : "")."			
-			WHERE dbt.scenarioID IN (".$scenarioID.", 10001)".
+				WHERE dbt.scenarioID IN (".$scenarioID.", 10001)".
 				($pwrType  > 0 ? " AND sdp.indicatorID = 205 AND sdp.typeID = ".$pwrType : "").
 				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "");				
 
@@ -290,7 +291,7 @@ class Depot5_sqlFormation {
 		return $mainStmnt;
 	}
 
-	public function formGetIndicatorNames() {
+	public function formGetIndicatorNames() {	
 		//$a = array('a'=>"");
 		$stmnt = "SELECT * \r\n FROM `Consulting`.`DC_namesIndicators`
 				WHERE -- AND isOutputIndicator = 0 AND
@@ -298,6 +299,96 @@ class Depot5_sqlFormation {
 		/*$result = $this->connection->fetchAll($stmnt);		
 		array_push($a, $result);		*/
 		return $stmnt;
+	}
+
+	public function formDeleteDataFromDevBase($scenID) {
+		if ($scenID == 10001) // saving baseline
+				$s = "SELECT 1 as REZ";
+		else 	$s = "DELETE FROM `Consulting`.`DC_deviceBaseTable`					
+					  WHERE scenarioID = ".$scenID;
+		return $s;
+	}
+	
+	public function formGetDataForDevBase($scenID) {
+		$s = "SELECT 
+				dvb.scenarioID, dvb.countryID, dvb.deviceID,
+				dvb.Y2006 as dvb06, dvb.Y2007 as dvb07, dvb.Y2008 as dvb08, dvb.Y2009 as dvb09, dvb.Y2010 as dvb10, dvb.Y2011 as dvb11,
+				dvb.Y2012 as dvb12, dvb.Y2013 as dvb13, dvb.Y2014 as dvb14, dvb.Y2015 as dvb15, dvb.Y2016 as dvb16, dvb.Y2017 as dvb17,
+				dvb.Y2018 as dvb18, dvb.Y2019 as dvb19, dvb.Y2020 as dvb20, dvb.Y2021 as dvb21,
+				
+				dpr.Y2006 as dpr06, dpr.Y2007 as dpr07, dpr.Y2008 as dpr08, dpr.Y2009 as dpr09, dpr.Y2010 as dpr10, dpr.Y2011 as dpr11,
+				dpr.Y2012 as dpr12, dpr.Y2013 as dpr13, dpr.Y2014 as dpr14, dpr.Y2015 as dpr15, dpr.Y2016 as dpr16, dpr.Y2017 as dpr17,
+				dpr.Y2018 as dpr18, dpr.Y2019 as dpr19, dpr.Y2020 as dpr20, dpr.Y2021 as dpr21,
+				
+				sls.Y2006 as sls06, sls.Y2007 as sls07, sls.Y2008 as sls08, sls.Y2009 as sls09, sls.Y2010 as sls10, sls.Y2011 as sls11,
+				sls.Y2012 as sls12, sls.Y2013 as sls13, sls.Y2014 as sls14, sls.Y2015 as sls15, sls.Y2016 as sls16, sls.Y2017 as sls17,
+				sls.Y2018 as sls18, sls.Y2019 as sls19, sls.Y2020 as sls20, sls.Y2021 as sls21				
+			FROM Consulting.DC_deviceBaseTable dvb
+			JOIN Consulting.DC_scenarioData dpr
+				ON (dvb.scenarioID = dpr.scenarioID and dvb.countryID = dpr.countryID and dvb.deviceID = dpr.deviceID)
+			JOIN Consulting.DC_scenarioData sls
+				ON (dvb.scenarioID = sls.scenarioID and dvb.countryID = sls.countryID and dvb.deviceID = sls.deviceID)
+			WHERE dpr.indicatorID = 212 and sls.indicatorID = 210
+				and dvb.scenarioID = ".$scenID.
+				" AND dvb.countryID in (1,2,3,4,5,6,7,8,9,10)";
+				//AND dvb.deviceID = 51;";
+		// this can be optimized by using just countries under consideration; time shoould decrease by X10 scale
+		return $s;
+	}
+	
+	public function calcNewDevBase($src) {
+		$devB = array();
+		for ($u = 0; $u < count($src); $u++) { 			
+			$ndb06 = ($src[$u]['dvb06']) ;
+			$ndb07 = ($ndb06 + $src[$u]['sls07'])*(1 - $src[$u]['dpr07']);
+			$ndb08 = ($ndb07 + $src[$u]['sls08'])*(1 - $src[$u]['dpr08']);
+			$ndb09 = ($ndb08 + $src[$u]['sls09'])*(1 - $src[$u]['dpr09']);
+			$ndb10 = ($ndb09 + $src[$u]['sls10'])*(1 - $src[$u]['dpr10']);
+			$ndb11 = ($ndb10 + $src[$u]['sls11'])*(1 - $src[$u]['dpr11']);
+			$ndb12 = ($ndb11 + $src[$u]['sls12'])*(1 - $src[$u]['dpr12']);
+			$ndb13 = ($ndb12 + $src[$u]['sls13'])*(1 - $src[$u]['dpr13']);
+			$ndb14 = ($ndb13 + $src[$u]['sls14'])*(1 - $src[$u]['dpr14']);
+			$ndb15 = ($ndb14 + $src[$u]['sls15'])*(1 - $src[$u]['dpr15']);
+			$ndb16 = ($ndb15 + $src[$u]['sls16'])*(1 - $src[$u]['dpr16']);
+			$ndb17 = ($ndb16 + $src[$u]['sls17'])*(1 - $src[$u]['dpr17']);
+			$ndb18 = ($ndb17 + $src[$u]['sls18'])*(1 - $src[$u]['dpr18']);
+			$ndb19 = ($ndb18 + $src[$u]['sls19'])*(1 - $src[$u]['dpr19']);
+			$ndb20 = ($ndb19 + $src[$u]['sls20'])*(1 - $src[$u]['dpr20']);
+			$ndb21 = ($ndb20 + $src[$u]['sls21'])*(1 - $src[$u]['dpr21']);
+			
+			$oneRow = array('countryID'=> $src[$u]['countryID'], 'deviceID'=> $src[$u]['deviceID'], 
+							'Y2006'=>$ndb06, 'Y2007'=>$ndb07, 'Y2008'=>$ndb08, 'Y2009'=>$ndb09, 'Y2010'=>$ndb10, 'Y2011'=>$ndb11, 'Y2012'=>$ndb12,
+							'Y2013'=>$ndb13, 'Y2014'=>$ndb14, 'Y2015'=>$ndb15, 'Y2016'=>$ndb16, 'Y2017'=>$ndb17, 'Y2018'=>$ndb18,
+							'Y2019'=>$ndb19, 'Y2020'=>$ndb20, 'Y2021'=>$ndb21);					
+			array_push($devB, $oneRow);		
+		};
+		return $devB;
+	}
+
+	public function formInsertDataForDevBase($scenID, $src, $cycleLength) {	
+		$s = "INSERT INTO `Consulting`.`DC_deviceBaseTable`
+					(`scenarioID`,`countryID`,`deviceID`,`indicatorID`,
+						`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,
+						`Y2014`,`Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`)
+			  VALUES \r\n";
+		$baseSql = "";
+		for ($u = 0; $u < min($cycleLength, count($src)); $u++) {
+			if ($u > 0) $baseSql = $baseSql.", \r\n";
+			$app = "(".$scenID.",".$src[$u]['countryID'].", ".$src[$u]['deviceID'].", 203,".
+					$src[$u]['Y2006'].",".$src[$u]['Y2007'].",".$src[$u]['Y2008'].",".$src[$u]['Y2009'].",".
+					$src[$u]['Y2010'].",".$src[$u]['Y2011'].",".$src[$u]['Y2012'].",".$src[$u]['Y2013'].",".$src[$u]['Y2014'].",".
+					$src[$u]['Y2015'].",".$src[$u]['Y2016'].",".$src[$u]['Y2017'].",".$src[$u]['Y2018'].",".$src[$u]['Y2019'].",".
+					$src[$u]['Y2020'].",".$src[$u]['Y2021'].")";			
+			$baseSql = $baseSql.$app;
+		};
+		$baseSql = $s.$baseSql;
+		return $baseSql;
+	}
+	
+	public function formTestInsertion($scenID) {
+		$s = "SELECT count(*) as tot FROM `Consulting`.`DC_deviceBaseTable`
+			  WHERE scenarioID = ".$scenID;
+		return $s;
 	}
 }		
 ?>

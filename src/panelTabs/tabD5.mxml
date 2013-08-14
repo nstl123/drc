@@ -369,7 +369,8 @@
 				var rez:Object = this.updateData.lastResult;				
 				Alert.show("data updated", "Info");			
 				this.dispatchEvent(new Event("refreshData", false));
-				this.rewriteReplacementRates();
+				
+				this.dispatchEvent(new Event("marketSizeWritten", true));
 			}	
 			
 			protected function updateData_faultHandler(event:FaultEvent):void
@@ -379,6 +380,14 @@
 			}	
 			
 			public var startInd:int = 0;
+			public function calcNewDevBase():void {
+				startInd = startInd + 1;
+				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
+				var countryIDs:Array = this.dataList.source;				
+				var cntryList:String = this.hlp.formStringFromIDs2(countryIDs);
+				if (this.startInd > 1)  this.recalcDeviceBase.token = this.dataServiceUpdate.recalcDeviceBase(this.workingScenarioID, cntryList);
+			}
+
 			public function rewriteMarketSize():void {
 				startInd = startInd + 1;
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
@@ -449,6 +458,18 @@
 				this.cursorManager.removeBusyCursor();
 				Alert.show("could not read data", "error B3");
 			}
+
+			protected function recalcDeviceBase_resultHandler(event:ResultEvent):void
+			{
+				this.dispatchEvent(new Event("newDevBaseCalculated", true));
+			}
+
+
+			protected function recalcDeviceBase_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("today i am just too lazy.. i cannot finish calculations of new device base...", "Sorry");
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -469,6 +490,7 @@
 		<s:CallResponder id="getDeviceList" result="getDeviceLits_resultHandler(event)" fault="getDeviceLits_faultHandler(event)" />
 		<s:CallResponder id="updateData" result="updateData_resultHandler(event)" fault="updateData_faultHandler(event)" />
 		<s:CallResponder id="writeViewToTableResult" result="writeViewToTableResult_resultHandler(event)" fault="writeViewToTableResult_faultHandler(event)" />
+		<s:CallResponder id="recalcDeviceBase" result="recalcDeviceBase_resultHandler(event)" fault="recalcDeviceBase_faultHandler(event)" />
 		<s:CallResponder id="writeReplacementRates" result="writeReplacementRates_resultHandler(event)" fault="writeReplacementRates_faultHandler(event)" />		
 		
 	</fx:Declarations>

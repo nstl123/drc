@@ -44,6 +44,8 @@
 				var r:Object = event.message;
 				Alert.show("Data Updated Successfully", "Info");
 				this.dispatchEvent(new Event("refreshData", false));
+				
+				this.dispatchEvent(new Event("NewScenarioUpdated", true));
 			}
 			
 			import controls.*;

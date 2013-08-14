@@ -301,15 +301,16 @@ class Depot5_sqlFormation {
 		return $stmnt;
 	}
 
-	public function formDeleteDataFromDevBase($scenID) {
+	public function formDeleteDataFromDevBase($scenID, $cntryList) {
 		if ($scenID == 10001) // saving baseline
-				$s = "SELECT 1 as REZ";
+				$s = "SELECT null as REZ";
 		else 	$s = "DELETE FROM `Consulting`.`DC_deviceBaseTable`					
-					  WHERE scenarioID = ".$scenID;
+					  WHERE scenarioID = ".$scenID." AND countryID IN (".$cntryList.") 
+					  AND indicatorID = 203";
 		return $s;
 	}
 	
-	public function formGetDataForDevBase($scenID) {
+	public function formGetDataForDevBase($scenID, $cntryList) {
 		$s = "SELECT 
 				dvb.scenarioID, dvb.countryID, dvb.deviceID,
 				dvb.Y2006 as dvb06, dvb.Y2007 as dvb07, dvb.Y2008 as dvb08, dvb.Y2009 as dvb09, dvb.Y2010 as dvb10, dvb.Y2011 as dvb11,
@@ -325,14 +326,12 @@ class Depot5_sqlFormation {
 				sls.Y2018 as sls18, sls.Y2019 as sls19, sls.Y2020 as sls20, sls.Y2021 as sls21				
 			FROM Consulting.DC_deviceBaseTable dvb
 			JOIN Consulting.DC_scenarioData dpr
-				ON (dvb.scenarioID = dpr.scenarioID and dvb.countryID = dpr.countryID and dvb.deviceID = dpr.deviceID)
+				ON (dvb.countryID = dpr.countryID AND dvb.deviceID = dpr.deviceID)
 			JOIN Consulting.DC_scenarioData sls
-				ON (dvb.scenarioID = sls.scenarioID and dvb.countryID = sls.countryID and dvb.deviceID = sls.deviceID)
+				ON (dpr.scenarioID = sls.scenarioID AND dvb.countryID = sls.countryID AND dvb.deviceID = sls.deviceID)
 			WHERE dpr.indicatorID = 212 and sls.indicatorID = 210
-				and dvb.scenarioID = ".$scenID.
-				" AND dvb.countryID in (1,2,3,4,5,6,7,8,9,10)";
-				//AND dvb.deviceID = 51;";
-		// this can be optimized by using just countries under consideration; time shoould decrease by X10 scale
+				AND dvb.scenarioID = 10001 AND dpr.scenarioID = ".$scenID."
+				AND dvb.countryID IN (".$cntryList.")";						
 		return $s;
 	}
 	
@@ -385,9 +384,9 @@ class Depot5_sqlFormation {
 		return $baseSql;
 	}
 	
-	public function formTestInsertion($scenID) {
+	public function formTestInsertion($scenID, $cntryList) {
 		$s = "SELECT count(*) as tot FROM `Consulting`.`DC_deviceBaseTable`
-			  WHERE scenarioID = ".$scenID;
+			   WHERE scenarioID = ".$scenID." AND countryID IN (".$cntryList.") AND indicatorID = 203";
 		return $s;
 	}
 }		

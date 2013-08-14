@@ -293,23 +293,23 @@ class Depot31 {
 		return  $newUpdate;		
 	}		
 
-	public function recalcDeviceBase($scenarioID) {
+	public function recalcDeviceBase($scenarioID, $cntryList) {
 		$depot =  new Depot5_sqlFormation();		
 		// clean up
-		$delStmnt = $depot->formDeleteDataFromDevBase(777);
+		$delStmnt = $depot->formDeleteDataFromDevBase($scenarioID, $cntryList);
 		$resDel = $this->connection->prepare($delStmnt);		
 		$resDel->execute();
 		// get data
-		$readStmnt = $depot->formGetDataForDevBase($scenarioID);
+		$readStmnt = $depot->formGetDataForDevBase($scenarioID, $cntryList);
 		$rawDataArray = $this->connection->fetchAll($readStmnt);					
 		// calc
 		$rezArray = $depot->calcNewDevBase($rawDataArray);		
 		// update tbl
-		$updStmnt = $depot->formInsertDataForDevBase(777, $rezArray, 3000);
+		$updStmnt = $depot->formInsertDataForDevBase($scenarioID, $rezArray, 1000);
 		$resUpd = $this->connection->prepare($updStmnt);		
 		$resUpd->execute();
 		// check if all ok
-		$testIns = $depot->formTestInsertion(777);	
+		$testIns = $depot->formTestInsertion($scenarioID, $cntryList);	
 		$resIns  = $this->connection->fetchAll($testIns);					
 		$cnt = $resIns[0]['tot'];
 		

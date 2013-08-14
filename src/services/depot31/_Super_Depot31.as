@@ -58,7 +58,7 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultType = Object;
         operations["insertReplacementRate"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "recalcDeviceBase");
-         operation.resultType = Object;
+         operation.resultType = int;
         operations["recalcDeviceBase"] = operation;
 
         _serviceControl.operations = operations;
@@ -254,10 +254,10 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function recalcDeviceBase(scenarioID:Object) : mx.rpc.AsyncToken
+    public function recalcDeviceBase(scenarioID:int, cntryList:String) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("recalcDeviceBase");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID,cntryList) ;
 
         return _internal_token;
     }

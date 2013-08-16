@@ -156,5 +156,15 @@ class Depot21 {
 		return $result;
 		//return $stmnt;
 	}		
+
+	public function getHHpenSplit($countryIDs, $scenarioID) {
+		$rawText =  new Depot5_sqlFormation();
+		$mainStmnt = $rawText->formGetHHPenSplitData($countryIDs, $scenarioID);		
+		$a = array('a'=>"");		
+		$result = $this->connection->fetchAll($mainStmnt); 
+		array_push($a, $result);	
+		return $result;
+		//return $mainStmnt;
+	}
 }		
 ?>

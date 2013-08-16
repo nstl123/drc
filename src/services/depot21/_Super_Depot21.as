@@ -13,10 +13,11 @@ import mx.rpc.remoting.Operation;
 import mx.rpc.remoting.RemoteObject;
 import valueObjects.CountryName;
 import valueObjects.CustomDatatype18;
-import valueObjects.CustomDatatype26;
 import valueObjects.CustomDatatype27;
 import valueObjects.CustomDatatype28;
 import valueObjects.CustomDatatype33;
+import valueObjects.CustomDatatype35;
+import valueObjects.CustomDatatype36;
 
 import mx.collections.ItemResponder;
 import com.adobe.fiber.valueobjects.AvailablePropertyIterator;
@@ -37,7 +38,8 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
         valueObjects.CustomDatatype27._initRemoteClassAlias();
         valueObjects.CustomDatatype28._initRemoteClassAlias();
         valueObjects.CustomDatatype33._initRemoteClassAlias();
-        valueObjects.CustomDatatype26._initRemoteClassAlias();
+        valueObjects.CustomDatatype36._initRemoteClassAlias();
+        valueObjects.CustomDatatype35._initRemoteClassAlias();
 
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
@@ -58,8 +60,11 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
          operation.resultElementType = valueObjects.CustomDatatype33;
         operations["getDemandByChemistry"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "getMacroDataCategory");
-         operation.resultElementType = valueObjects.CustomDatatype26;
+         operation.resultElementType = valueObjects.CustomDatatype36;
         operations["getMacroDataCategory"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "getHHpenSplit");
+         operation.resultElementType = valueObjects.CustomDatatype35;
+        operations["getHHpenSplit"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -182,6 +187,25 @@ internal class _Super_Depot21 extends com.adobe.fiber.services.wrapper.RemoteObj
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getMacroDataCategory");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,indicatorID,scenarioID,hasSplit,typeID,wNames) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'getHHpenSplit' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function getHHpenSplit(countryIDs:Object, scenarioID:int) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("getHHpenSplit");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(countryIDs,scenarioID) ;
 
         return _internal_token;
     }

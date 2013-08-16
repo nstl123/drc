@@ -19,7 +19,7 @@ select `msz`.`scenarioID` AS `scenarioID`,`msz`.`countryID` AS `countryID`,`msz`
 (`msz`.`Y2021` / `devB`.`Y2021`) AS `Y2021` 
 
 from (`DC_scenarioData` `msz` 
-	join `DC_deviceBase` `devB` 
+	join `DC_deviceBaseTable` `devB` 
 		on(((`msz`.`scenarioID` = `devB`.`scenarioID`) and (`msz`.`countryID` = `devB`.`countryID`) and (`msz`.`deviceID` = `devB`.`deviceID`)))) 
 
 where ((`msz`.`indicatorID` = 210) and (`devB`.`indicatorID` = 203))

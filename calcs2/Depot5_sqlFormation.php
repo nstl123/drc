@@ -38,7 +38,7 @@ class Depot5_sqlFormation {
 				};
 			};
 			
-			$selFields = "SELECT sdt.scenarioID, sdt.indicatorID,";
+			$selFields = "SELECT 0 as batClass, sdt.scenarioID, sdt.indicatorID,";
 			if ($indicatorID > 200) {
 				$selFields = $selFields." nmd.categoryID AS deviceID, sdt.typeID, ";
 			} else {
@@ -68,7 +68,7 @@ class Depot5_sqlFormation {
 			// device level next		
 			$sumStmnt2 = "";
 			for ($u = 2006;  $u < 2022; $u++) { $sumStmnt2 = $sumStmnt2."sdt.Y".$u.","; };		
-			$selFields2 = "sdt.scenarioID, sdt.indicatorID, ";						
+			$selFields2 = "0 as batClass, sdt.scenarioID, sdt.indicatorID, ";						
 			$stmnt2 = "";
 			if ($indicatorID > 200) {
 				$selFields2 = $selFields2." sdt.deviceID, sdt.typeID, ";		
@@ -290,6 +290,62 @@ class Depot5_sqlFormation {
 		$mainStmnt = $mainStmnt."\r\n ORDER BY scenarioID, countryID";
 		return $mainStmnt;
 	}
+
+	public function formGetHHPenSplitData($countryIDs, $scenarioID) {
+		$countryArray = explode(",", $countryIDs); 				
+		$hasOtherCountries = 0; $getWorldData = 0;
+		$countryList = " (";
+		for ($i = 0; $i < count($countryArray); $i++) {		
+			if ($countryArray[$i] < 10000) {
+				$hasOtherCountries = 1;
+				if ($i > 0)  $countryList = $countryList.", ".$countryArray[$i]; 
+				else 		 $countryList = $countryList.$countryArray[$i]; 
+			} else {
+				$getWorldData = 1;
+			}			
+		};			
+		$countryList = $countryList." )";				
+	
+		$sumStmnt = "";	$sumStmntC = "";
+		for ($u = 2006; $u < 2022; $u++) {
+			if ((($u - 2006) % 3) == 0) {	$sumStmnt = $sumStmnt."\r\n";	};			
+			$sumStmnt = $sumStmnt.", sz.Y".$u."  AS Y".$u;			
+			$sumStmntC = $sumStmntC.", sum(sdt.Y".$u." * hhp.Y".$u.")/ifnull(sum(sdt.Y".$u."), 1)  AS Y".$u;			
+		};			
+		$devPart = ", sz.deviceID as deviceID,  nd.namen as deviceName";
+		$catPart = ", nd.categoryID as deviceID, ndv.namen as deviceName";
+		$ndv = "\r\n JOIN Consulting.DC_namesDevicesVisual ndv ON (ndv.id = nd.categoryID) \r\n";
+		
+		$mainDQ = "SELECT sz.scenarioID, sz.countryID, nc.namen as countryName, 
+				sz.indicatorID, sz.batClass".$devPart.$sumStmnt."\r\n
+				FROM Consulting.DC_deviceWeightsBySizes sz
+				JOIN Consulting.DC_namesCountries nc
+					ON (nc.id = sz.countryID)			
+				JOIN Consulting.DC_namesDevices nd
+					ON (nd.id = sz.deviceID)			
+				WHERE sz.scenarioID IN (10001, ".$scenarioID.")
+					AND sz.countryID IN ".$countryList;
+		
+		$mainCQ = "SELECT
+				sdt.scenarioID AS scenarioID, sdt.countryID AS countryID, nc.namen as countryName,
+				sdt.indicatorID AS indicatorID, sz.batClass AS batClass".$catPart.$sumStmntC."				
+				from Consulting.`DC_scenarioData` `sdt` 	
+					join Consulting.`DC_scenarioData` `hhp` 
+						on ( (`hhp`.`scenarioID` = `sdt`.`scenarioID`) and (`hhp`.`countryID` = `sdt`.`countryID`) 
+						and (`hhp`.`deviceID` = `sdt`.`deviceID`) )
+					join Consulting.`DC_namesBatSizeTypes` `sz` on (`sz`.`id` = `sdt`.`typeID`)
+					join Consulting.DC_namesCountries nc ON (nc.id = sdt.countryID)
+					JOIn Consulting.DC_namesDevices   nd  on (nd.id = sdt.deviceID)
+					JOIn Consulting.DC_namesDevicesVisual ndv on (nd.categoryID = ndv.id)						
+				where ((`sdt`.`indicatorID` = 204) and (`hhp`.`indicatorID` = 201) and (`sz`.`batClass` in (1,2,3))
+						AND sdt.scenarioID IN (10001, ".$scenarioID.")
+						AND sdt.countryID IN ".$countryList.")
+				GROUP BY `sdt`.`scenarioID`,`sdt`.`countryID`,`nd`.`categoryID`,`sz`.`batClass` ";
+		
+		$mainQ = $mainDQ."\r\n UNION \r\n".$mainCQ;
+		
+		return $mainQ;			
+	} 
 
 	public function formGetIndicatorNames() {	
 		//$a = array('a'=>"");

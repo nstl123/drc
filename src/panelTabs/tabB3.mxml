@@ -18,6 +18,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 
 			private var deviceNamesFullList:ArrayCollection;
 			protected function getDeviceList_resultHandler(event:ResultEvent):void
@@ -113,6 +115,43 @@
 				Alert.show("could not read data for device base", "error B4");
 			}
 			
+			private var hhpenIsSplit:Boolean = false;
+			private var hhpenSizeID:int = 1;
+			protected function sizesSplit_clickHandler(event:MouseEvent):void
+			{
+				this.hhpenIsSplit = (splitByTypesM.selectedValue > 0);
+				if (this.hhpenIsSplit) {
+					this.splitByTypes.enabled = true;
+					this.hhpenSizeID = int(this.splitByTypes.selectedValue);					
+				} else { 
+					this.splitByTypes.enabled = false;
+				};			
+				this.dispatchEvent(new Event("refreshData", false));
+			}
+
+			protected function getHHPenSplit_resultHandler(event:ResultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+				currentData = this.getHHPenSplit.lastResult as ArrayCollection;				
+				this.currentDataChart.source = this.currentData.source;
+				this.currentDataGrid.source  = this.currentData.source;				
+				
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+
+			protected function getHHPenSplit_faultHandler(event:FaultEvent):void
+			{
+				this.cursorManager.removeBusyCursor();
+				Alert.show("Could not read HH pen split by sizes", "Data read error");
+			}
+
+
+			protected function sizeID_clickHandler(event:MouseEvent):void
+			{
+				this.hhpenSizeID = int(this.splitByTypes.selectedValue); 
+				this.dispatchEvent(new Event("updateCharts", false));
+			}
+
 		]]>
 	</fx:Script>
 
@@ -251,6 +290,8 @@
 						
 					if (selectedIndi == 401) {
 						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, 0, 0, 1, 0);					
+					} else if ((this.selectedIndi == 201)&&(this.hhpenIsSplit)) {
+						getHHPenSplit.token = this.dataServiceData.getHHpenSplit(tmp, workingScenarioID);
 					} else {						
 						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
 							workingScenarioID, 0, 0, 1);
@@ -266,9 +307,17 @@
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				if (event != null) {					
 					this.selectedIndi = this.indicatorsBox.selectedItem.id;
+				};				
+				if (this.selectedIndi == 201) { // if  HHpen is selected					
+					sizeSplitDetailed.enabled = true;
+				} else {					
+					sizeSplitAllTypes.selected = true;
+					splitByTypesM.selectedValue = 0;
+					sizeSplitDetailed.enabled = false;
+					splitByTypes.enabled = false;
 				};
-				//this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;								
-				this.refreshData(null);
+				sizesSplit_clickHandler(null);
+				//this.refreshData(null);
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
@@ -283,24 +332,25 @@
 
 			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = false;		
-				/*if (this.selDeviceAggLevel > 1) {
-					f = ((item.scenarioID == workingScenarioID) && (item.categoryID == this.selDevice));
-				} else {				*/
-				if (this.currentState == "viewingOnly") {
+				if (this.flMngr.isViewingMode()) {
 					f = ((item.scenarioID == 10001) && (item.deviceID == this.selDevice));
 				} else {
 					f = ((item.scenarioID == workingScenarioID) && (item.deviceID == this.selDevice));
-				};
-				//};			
+				};			
 				return f;
 			}	
 
 			private function filterChart(item:Object):Boolean {				
-				var f:Boolean = false;	
+				var f:Boolean = false;				
+				var cmprBarSizes:Boolean = true;
+				if (this.hhpenIsSplit) {
+					cmprBarSizes = (this.hhpenSizeID == item.batClass);
+				} 
+				
 				if (this.flMngr.isViewingMode()) {
-					f = ((item.scenarioID == baselineScenarioID) && (item.deviceID == this.selDevice));
+					f = ((item.scenarioID == baselineScenarioID) && (item.deviceID == this.selDevice) && cmprBarSizes);
 				} else {
-					f = (item.deviceID == this.selDevice); 				
+					f = ((item.deviceID == this.selDevice) && cmprBarSizes); 				
 				};
 				
 				return f;
@@ -436,11 +486,14 @@
 		
 		<s:CallResponder id="getDeviceBase" result="getDeviceBase_resultHandler(event)" 
 						 fault="getDeviceBase_faultHandler(event)"/> 
+		<s:CallResponder id="getHHPenSplit" result="getHHPenSplit_resultHandler(event)" 
+						 fault="getHHPenSplit_faultHandler(event)" />
 		
 		<s:RadioButtonGroup id="growthType" />
 		<s:RadioButtonGroup id="shockType" />
 		<s:RadioButtonGroup id="splitByDevices_C" />
-		<s:RadioButtonGroup id="splitByTypes"/>
+		<s:RadioButtonGroup id="splitByTypesM"/>
+		<s:RadioButtonGroup id="splitByTypes" enabled="false"/>
 	</fx:Declarations>
 	
 	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="93" left="10" top.viewingOnly="78" left.viewingOnly="9" top.default="90" left.default="10">
@@ -501,13 +554,20 @@
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF"  top.viewingOnly="6" left.viewingOnly="313"
 			 		/>
 	<s:BorderContainer height="20" borderVisible="false" backgroundAlpha="0.0" contentBackgroundAlpha="0.0" 
-					   left="383" top="66" width="250" top.viewingOnly="52" left.viewingOnly="383">
+					   left="383" top="66" top.viewingOnly="52" left.viewingOnly="383" width.default="250">
 		<s:layout>
 			<s:HorizontalLayout gap="10"/>
 		</s:layout>
-		<s:RadioButton  x="13" y="14" label="All types" groupName="splitByTypes" fontSize="12" selected="true"/>
-		<s:RadioButton  x="13" y="40" label="GP" groupName="splitByTypes" fontSize="11" enabled="false"/>
-		<s:RadioButton  x="13" y="66" label="HA" groupName="splitByTypes" fontSize="11" enabled="false"/>
-		<s:RadioButton  x="13" y="92" label="CB" groupName="splitByTypes" fontSize="11" enabled="false"/>
+		<s:RadioButton x="13" y="14" label="All types" groupName="splitByTypesM" fontSize="12" 
+					   selected="true" value="0" click="sizesSplit_clickHandler(event)" id="sizeSplitAllTypes"/>
+		<s:RadioButton label="Use Split By" groupName="splitByTypesM" fontSize="12"
+					   selected="false" value="1"  click="sizesSplit_clickHandler(event)" id="sizeSplitDetailed"/>
+		<s:RadioButton label="GP" groupName="splitByTypes" fontSize="11"  
+					   x.default="13" y.default="40" value="1" selected="true" 
+					   click="sizeID_clickHandler(event)"/>
+		<s:RadioButton label="CB" groupName="splitByTypes" fontSize="11"  
+					   x.default="13" y.default="66" value="2" click="sizeID_clickHandler(event)"/>
+		<s:RadioButton label="HA" groupName="splitByTypes" fontSize="11"  
+					   x.default="13" y.default="92" value="3" click="sizeID_clickHandler(event)"/>
 	</s:BorderContainer>
 </s:Group>

@@ -29,6 +29,8 @@
 			
 			protected function writeReplacementRates_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeAllCursors();
+				this.cursorManager.setBusyCursor();
 				if (event.message.body != "ok") { //this.someLabel.text = "view written successfully";
 					Alert.show("data could not be written to DB", "Error in message format");
 				} else {
@@ -45,6 +47,8 @@
 
 			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void
 			{
+				this.cursorManager.removeAllCursors();
+				this.cursorManager.setBusyCursor();
 				if (event.message.body != "ok") { //this.someLabel.text = "view written successfully";
 					Alert.show("data could not be written to DB", "Error in message format");
 				} else {
@@ -288,7 +292,7 @@
 			
 			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = true;				
-				if (this.currentState == "viewingOnly") {
+				if (this.flMngr.isViewingMode()) {
 					f = ((item.scenarioID == baselineScenarioID)&&(item.deviceID == selDevice));
 				} else {				
 					f = ((item.scenarioID == workingScenarioID) && (item.deviceID == selDevice));
@@ -389,12 +393,14 @@
 			}
 
 			public function rewriteMarketSize():void {
+				this.cursorManager.setBusyCursor();
 				startInd = startInd + 1;
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
 				if (this.startInd > 1) writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 0, 1);
 			}
 			
 			public function rewriteReplacementRates():void {
+				this.cursorManager.setBusyCursor();
 				startInd = startInd + 1;
 				// flag == 2 - for replcement rates
 				if (this.startInd > 1) {

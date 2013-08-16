@@ -232,7 +232,7 @@
 			
 			private function filterGrid(item:Object):Boolean {				
 				var f:Boolean = true;				
-				if (this.currentState == "viewingOnly") {
+				if (this.flMngr.isViewingMode()) {
 					f = ((item.scenarioID == 10001) && (item.deviceID == this.selDevice));
 				} else {
 					f = ((item.scenarioID == workingScenarioID) && (item.deviceID == this.selDevice));
@@ -260,14 +260,14 @@
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
 				if (this.tabEditable) {			
-					var temp:Object = new Object();				
+					var val:Number = 0;
+					var yrs:int = 2012;
+					var temp:Object = new Object();					
 					if (this.isSingleGeo) { 				
 						alteredData = this.testGrid.getData();									
-					} else {
-						var yrs:int = 2010;
+					} else {						
 						yrs = (this.shockYears.selectedItem ? this.shockYears.selectedItem.yrs : 2010);					
-						var val:Number = this.shockValue.value;							
-						//var rawData:ArrayCollection = this.grid.getAllData();
+						val = this.shockValue.value;						
 						var rawData:ArrayCollection = this.testChart.getBaseData(this.flMngr.baselineScenarioID);
 						alteredData = hlp.formShockArray(selectedIndi, this.workingScenarioID, yrs, val, rawData);					
 					};					
@@ -476,7 +476,7 @@
 			protected function updateData_faultHandler(event:FaultEvent):void
 			{
 				var z:Object = event.message.body;
-				Alert.show(z.toString(), "Error Updateing Data");
+				Alert.show(z.toString(), "Error Updating Data");
 			}
 
 		]]>
@@ -500,12 +500,12 @@
 			  height="23" top.viewingOnly="399" left.viewingOnly="535" top.default="463" 
 			  left.default="535" label="Reset Scenario" enabled.viewingOnly="false" enabled.default="true"/>
 	<s:DropDownList width="272" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="481" top.default="32" left.default="484"></s:DropDownList>
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="481" top.default="32" left.default="432"></s:DropDownList>
 	
 	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" width="122" height="25" 
 			  fontWeight="bold" left="607" top="0" visible="false" top.viewingOnly="-15" left.viewingOnly="607"/>
 	
-	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="460" left.default="471"/>
+	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="460" left.default="419"/>
 	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="114" top.viewingOnly="46" x.default="128" top.default="64"/>
 	<s:RadioButton label="Absolutes" groupName="growthType" enabled="true" value="0" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="58" left.viewingOnly="30" top.default="74" left.default="31"/>
@@ -529,7 +529,7 @@
 	</s:BorderContainer>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="46" left.viewingOnly="10" top.default="64" left.default="10"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
-	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="460" top.default="21" left.default="471"/>
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="460" top.default="21" left.default="419"/>
 	
 	
 	<s:RadioButton visible="false" value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
@@ -540,8 +540,8 @@
 				   groupName="splitByDevices_C"  click="devicesActive_clickHandler(event)"/>
 	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF" top.viewingOnly="6" left.viewingOnly="313"/>
-	<s:BorderContainer width="401" height="60" left="480" top="74" 
-					   borderVisible="false" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" id="batTypesFrame" top.viewingOnly="58" left.viewingOnly="489" height.default="55" top.default="75" left.default="488">
+	<s:BorderContainer height="60" left="480" top="74" 
+					   borderVisible="false" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" id="batTypesFrame" top.viewingOnly="58" left.viewingOnly="489" height.default="42" top.default="75" left.default="436" width.viewingOnly="401" width.default="300">
 		<s:layout>
 			<s:TileLayout horizontalGap="3" verticalGap="1"/>
 		</s:layout>

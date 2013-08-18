@@ -306,7 +306,8 @@
 				this.dispatchEvent(new Event("scenarioResetRequested", true));
 			}
 
-			[bindable] private var selDevice:int = 1;			
+			[bindable] private var selDevice:int = 1;
+			[bindable] private var selDeviceNamen:String = "";
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
@@ -314,8 +315,6 @@
 				
 				this.flMngr.setSelectedDeviceID(this.selDevice);
 				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
-				//selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
-				//this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
 				
 				this.dispatchEvent(new Event("updateCharts", false));			
 			}
@@ -368,6 +367,9 @@
 			}
 			
 			protected function updateCharts(evt:Event):void {
+				this.selDevice = this.flMngr.getSelectedDeviceID();
+				this.selDeviceNamen = this.flMngr.selDeviceNamen;
+				
 				this.testChart.setVwmode(this.flMngr.isViewingMode());
 				
 				this.currentDataGrid.filterFunction = this.filterGrid;
@@ -408,7 +410,7 @@
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
-					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
+					(this.flMngr.selDeviceNamen),
 					false, 
 					(indicatorsBox.selectedItem  ? indicatorsBox.selectedItem.unit : ""));
 			}
@@ -451,7 +453,7 @@
 				} else {
 					deviceListDrop.selectedIndex = 1;
 				};				
-				deviceListDrop_changeHandler(null);
+				//deviceListDrop_changeHandler(null);
 				this.dispatchEvent(new Event("refreshData", false));				
 			}
 			
@@ -462,8 +464,8 @@
 				this.currentDataChart.source = this.currentData.source;
 				this.currentDataGrid.source  = this.currentData.source;
 				
-				this.deviceListDrop_changeHandler(null);
-				//this.dispatchEvent(new Event("updateCharts", false));
+				//this.deviceListDrop_changeHandler(null);
+				this.dispatchEvent(new Event("updateCharts", false));
 			}
 			
 			protected function getMacroDataCategory_faultHandler(event:FaultEvent):void
@@ -482,13 +484,13 @@
 		]]>
 	</fx:Script>
 
-	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="107" left="10" top.viewingOnly="114" left.viewingOnly="10" top.default="125" left.default="10">
+	<utils:CTwoAxisChart width="747" height="250" id="testChart" top="107" left="10" top.viewingOnly="114" left.viewingOnly="10" top.default="129" left.default="10">
 	</utils:CTwoAxisChart>
 	
 	<utils:CInteractiveGrid width="747" height="195" id="testGrid" top="492" left="10" top.viewingOnly="437" left.viewingOnly="10" top.default="504" left.default="10">
 	</utils:CInteractiveGrid>
 	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#007E9D" includeIn="default" id="labelTop"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" 
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario&quot;" 
 			 verticalAlign="middle" fontStyle="normal" fontSize="13" top="381" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default" id="labelBot"/>
 	
 	<s:DropDownList width="242" height="18" id="indicatorsBox" 
@@ -500,12 +502,12 @@
 			  height="23" top.viewingOnly="399" left.viewingOnly="535" top.default="463" 
 			  left.default="535" label="Reset Scenario" enabled.viewingOnly="false" enabled.default="true"/>
 	<s:DropDownList width="272" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="481" top.default="32" left.default="432"></s:DropDownList>
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="430" top.default="32" left.default="432"></s:DropDownList>
 	
 	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" width="122" height="25" 
 			  fontWeight="bold" left="607" top="0" visible="false" top.viewingOnly="-15" left.viewingOnly="607"/>
 	
-	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="460" left.default="419"/>
+	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="409" left.default="419"/>
 	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="114" top.viewingOnly="46" x.default="128" top.default="64"/>
 	<s:RadioButton label="Absolutes" groupName="growthType" enabled="true" value="0" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="58" left.viewingOnly="30" top.default="74" left.default="31"/>
@@ -529,7 +531,7 @@
 	</s:BorderContainer>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="46" left.viewingOnly="10" top.default="64" left.default="10"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
-	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="460" top.default="21" left.default="419"/>
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="409" top.default="21" left.default="419"/>
 	
 	
 	<s:RadioButton visible="false" value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
@@ -541,9 +543,9 @@
 	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF" top.viewingOnly="6" left.viewingOnly="313"/>
 	<s:BorderContainer height="60" left="480" top="74" 
-					   borderVisible="false" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" id="batTypesFrame" top.viewingOnly="58" left.viewingOnly="489" height.default="42" top.default="75" left.default="436" width.viewingOnly="401" width.default="300">
+					   borderVisible="false" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" id="batTypesFrame" top.viewingOnly="58" left.viewingOnly="436" height.default="42" top.default="75" left.default="436" width.viewingOnly="353" width.default="300" height.viewingOnly="50">
 		<s:layout>
-			<s:TileLayout horizontalGap="3" verticalGap="1"/>
+			<s:TileLayout horizontalGap="3" verticalGap="1" horizontalGap.viewingOnly="0"/>
 		</s:layout>
 		<s:RadioButton x="44" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" 
 					   selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" y="15"/>
@@ -567,7 +569,7 @@
 					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
 		
 	</s:BorderContainer>
-	<s:BorderContainer width="245" height="51" left="164" top="74" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" borderVisible="false" id="pwrTypesFrame" top.viewingOnly="58" left.viewingOnly="131" width.viewingOnly="350" height.viewingOnly="55" height.default="43" width.default="354" top.default="75" left.default="133">
+	<s:BorderContainer left="164" top="74" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" borderVisible="false" id="pwrTypesFrame" top.viewingOnly="58" left.viewingOnly="131" height.viewingOnly="55" width.default="281" top.default="75" left.default="133" height.default="55">
 		<s:layout>
 			<s:VerticalLayout gap="2"/>
 		</s:layout>
@@ -577,11 +579,11 @@
 		<s:layout.viewingOnly>
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
 		</s:layout.viewingOnly>
-		<s:RadioButton enabled="false" label="Disposable (DPP)" value="101" groupName="pwrTypes" selected="true"
+		<s:RadioButton enabled="false" label="Disposable (DPP)" value="101" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
 					   top.viewingOnly="59" left.viewingOnly="197" x="10" y="15"/>
 		<s:RadioButton label="Built-in RCR" value="103" groupName="pwrTypes"
-					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="false" left.viewingOnly="197" top.viewingOnly="77" x="11" y="27" selected.viewingOnly="true"/>
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="true" left.viewingOnly="197" top.viewingOnly="77" x="11" y="27"/>
 		<s:RadioButton enabled="false" label="Round Cell Rechargeable (RCR)" value="102" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
 					   top.viewingOnly="59" left.viewingOnly="319" x="-1" y="47"/>

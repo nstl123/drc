@@ -18,11 +18,7 @@ select `sdt1`.`scenarioID` AS `scenarioID`,`sdt1`.`countryID` AS `countryID`,`sd
 (((`sdt1`.`Y2018` * `sdt2`.`Y2018`) * `sdm`.`Y2018`) / 100) AS `Y2018`,
 (((`sdt1`.`Y2019` * `sdt2`.`Y2019`) * `sdm`.`Y2019`) / 100) AS `Y2019`,
 (((`sdt1`.`Y2020` * `sdt2`.`Y2020`) * `sdm`.`Y2020`) / 100) AS `Y2020`,
-(((`sdt1`.`Y2021` * `sdt2`.`Y2021`) * `sdm`.`Y2021`) / 100) AS `Y2021`,
-(((`sdt1`.`Y2022` * `sdt2`.`Y2022`) * `sdm`.`Y2022`) / 100) AS `Y2022`,
-(((`sdt1`.`Y2023` * `sdt2`.`Y2023`) * `sdm`.`Y2023`) / 100) AS `Y2023`,
-(((`sdt1`.`Y2024` * `sdt2`.`Y2024`) * `sdm`.`Y2024`) / 100) AS `Y2024`,
-(((`sdt1`.`Y2025` * `sdt2`.`Y2025`) * `sdm`.`Y2025`) / 100) AS `Y2025` 
+(((`sdt1`.`Y2021` * `sdt2`.`Y2021`) * `sdm`.`Y2021`) / 100) AS `Y2021`
 
 from ((`DC_scenarioData` `sdt1` 
 	join `DC_scenarioData` `sdt2` 

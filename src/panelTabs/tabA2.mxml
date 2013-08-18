@@ -371,7 +371,7 @@
 			 fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" 
 			 color="#007E9D" includeIn="default" id="labelTop"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" 
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario&quot;" 
 			 verticalAlign="middle" fontStyle="normal" fontSize="13" top="347" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default" id="labelBot"/>
 	<s:RadioButton groupName="growthType" enabled="true" value="0"
 				   selected="true" height="19" change="radiobutton2_clickHandler(event)" 

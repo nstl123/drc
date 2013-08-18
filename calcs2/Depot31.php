@@ -207,7 +207,7 @@ class Depot31 {
 		};
 		
 		if ($isMarketSize == 0) {
-			$delStmnt = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID."; ";
+			$delStmnt  = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID.";";			
 		} else if ($isMarketSize == 2) {
 			$delStmnt = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID = 277 and scenarioID = ".$scenarioID.";";
 		} else { // delete market size from DB 
@@ -217,11 +217,15 @@ class Depot31 {
 		$result = $this->connection->prepare($delStmnt);		
 		$result->execute();	
 		
+		$delStmnt2 = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID = 213 AND scenarioID = ".$scenarioID.";";
+		$result = $this->connection->prepare($delStmnt2);		
+		$result->execute();	
+		
 		if ($isMarketSize == 0) {		
 			$insStmnt = "\r\n	INSERT INTO `Consulting`.`DC_deviceBaseTable` \r\n (`scenarioID`,`countryID`,`deviceID`,`indicatorID`,".$yrsField.")
 							SELECT `scenarioID`,`countryID`,`deviceID`,`indicatorID`, ".$yrsField."
 							FROM `Consulting`.".(($isMarket == 0) ? 'DC_deviceBase' : 'DC_deviceBaseMarket')."
-							WHERE scenarioID = ".$scenarioID.";";
+							WHERE scenarioID = ".$scenarioID.";";				
 		} else if ($isMarketSize == 2) {
 			$insStmnt = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`, ".$yrsField.")
 							SELECT `scenarioID`,`countryID`,`deviceID`, 277 as `indicatorID`, ".$yrsField."
@@ -237,7 +241,16 @@ class Depot31 {
 		$result = $this->connection->prepare($insStmnt);		
 		$result->execute();		
 		
+		$insStmnt2 = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`, ".$yrsField.")
+							SELECT `scenarioID`,`countryID`,`deviceID`, 213 as `indicatorID`, ".$yrsField."
+							FROM `Consulting`.`DC_scenarioDataHHpenW`
+							WHERE scenarioID = ".$scenarioID.";";	
+		
+		$result = $this->connection->prepare($insStmnt2);		
+		$result->execute();		
+		
 		return "ok"; // $insStmnt; // some error handling would be nice
+		//return $insStmnt;
 	}
 
 	public function testFile($a) {

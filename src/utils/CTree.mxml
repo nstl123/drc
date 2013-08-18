@@ -367,8 +367,8 @@
 					this.deviceListDrop_C.selectedIndex = 2 - this.selDeviceAggLevel; // should be cate 0; dev - 1;
 					this.deviceListDrop_C_changeHandler(null);		
 				} else {
-					this.flowManager.setSelectedDeviceID(0);
-				};
+					//this.flowManager.setSelectedDeviceID(0);
+				};				
 					
 				this.dispatchEvent(new Event("demandAggChanged", false));				
 			}

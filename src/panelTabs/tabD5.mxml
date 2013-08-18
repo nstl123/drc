@@ -259,8 +259,12 @@
 			[bindable] private var currentDataGrid:ArrayCollection = new ArrayCollection();
 			[bindable] private var currentDataChart:ArrayCollection = new ArrayCollection();			
 			[bindable] private var selDevice:int = 1;
+			[bindable] private var selDeviceNamen:String = "";
 			
 			protected function updateCharts(evt:Event):void {
+				this.selDevice = this.flMngr.getSelectedDeviceID();
+				this.selDeviceNamen = this.flMngr.selDeviceNamen;
+				
 				this.testChart.setVwmode(this.flMngr.isViewingMode());
 				
 				this.currentDataGrid.filterFunction = this.filterGrid;
@@ -277,7 +281,7 @@
 					(deviceListDrop.selectedIndex ? deviceListDrop.selectedIndex : 0), 
 					(deviceListDrop.selectedIndex >= 0), 
 					this.isLevel, 
-					(deviceListDrop.selectedItem ? deviceListDrop.selectedItem.namen : ""),
+					(this.flMngr.selDeviceNamen),
 					false,
 					(indicatorsBox.selectedItem  ? indicatorsBox.selectedItem.unit : ""));
 
@@ -361,8 +365,7 @@
 				
 				this.flMngr.setSelectedDeviceID(this.selDevice);
 				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
-				//selDeviceAggLevel = 1 - int(this.deviceListDrop.selectedItem.id == this.deviceListDrop.selectedItem.categoryID);
-				//this.flMngr.setSelDeviceAggLevel(selDeviceAggLevel);
+
 				this.flMngr.setSelBatType(0);
 				this.flMngr.setSelPwrType(0);
 				this.dispatchEvent(new Event("updateCharts", false));
@@ -444,7 +447,7 @@
 				} else {
 					deviceListDrop.selectedIndex = 1;
 				};				
-				deviceListDrop_changeHandler(null);
+				//deviceListDrop_changeHandler(null);
 				this.dispatchEvent(new Event("refreshData", false));				
 			}
 			
@@ -543,7 +546,7 @@
 					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="32" height="20" left="370" top.viewingOnly="17" left.viewingOnly="482" top.default="32" left.default="482"></s:DropDownList>
 	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="341" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="469" top.default="21" left.default="469"/>
 	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#007E9D" includeIn="default" id="labelTop"/>
-	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario" verticalAlign="middle" fontStyle="normal" fontSize="13" top="347" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default" id="labelBot"/>
+	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario&quot;" verticalAlign="middle" fontStyle="normal" fontSize="13" top="347" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default" id="labelBot"/>
 	<s:RadioButton visible="false" value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
 				   left="340" top="56" top.viewingOnly="41" left.viewingOnly="340"
 				   groupName="splitByDevices_C" click="devicesActive_clickHandler(event)"/>

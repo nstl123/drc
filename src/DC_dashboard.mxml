@@ -890,7 +890,8 @@
 						break;
 					case 3:
 						//tab F - Other, Power Shares						
-						this.panelTabF51.updateSelectedDeviceID();							
+						this.panelTabF51.updateSelectedDeviceID();	
+						this.masterTab.setBatTypesActiveFlag(true);
 						this.masterTab.setSelPwrType(this.panelTabF51.selPwrType);
 						this.masterTab.setSelBatType(this.panelTabF51.selBatType);						
 						this.panelTabF51.refreshData(null);
@@ -914,7 +915,8 @@
 			}
 
 			private var hlp:helper;
-			private var exportTypeID:int = 0; 
+			private var exportTypeID:int = 0;
+			private var indicatorID:int = 0;		
 			protected function button_clickHandler(event:MouseEvent):void
 			{				
 				var countryIDs:Array = this.masterTab.getDataList().source;				
@@ -924,10 +926,8 @@
 				var tmp2:String = this.hlp.formStringFromIDs2(regionIDs);
 				
 				var tmp3:String = "";
-				tmp3 = ( (tmp2.length > 0) ? tmp2 : tmp); 
-				
-				var indicatorID:int;				
-				// 0 - for exoVars, 1 - fro deviceBAse, 2 - for demand;				
+				tmp3 = ( (tmp2.length > 0) ? tmp2 : tmp);					
+								
 				switch (this.tabai.selectedIndex) {
 					case 0: // HH
 						indicatorID = this.panelTabA2.selectedIndi;
@@ -973,13 +973,19 @@
 				var tmpBatTypes:int = 0;				
 				var tmpPwrTypes:int = 0;
 				
-				masterTab.devicesActiveFlag  ? tmpDevices  = masterTab.getSelectedDeviceID() : tmpDevices = -1;
-				masterTab.pwrTypesActiveFlag ? tmpPwrTypes = masterTab.selPwrType : tmpPwrTypes = -1;					
-				masterTab.batTypesActiveFlag ? tmpBatTypes = masterTab.selBatType : tmpBatTypes = -1;				
-				
-			/*	(tmp, this.workingScenarioID, this.tmpBatTypes, 
-					this.tmpPwrTypes, 0,  this.flowManager.getSelDeviceAggLevel(), showPerHHFlag);*/
-				
+				if (indicatorID == 205) {
+					tmpPwrTypes = masterTab.selPwrType;
+				} else if (indicatorID == 204) {
+					tmpBatTypes = masterTab.selBatType;
+				} else if (indicatorID == 277) {
+					tmpBatTypes = 0;
+					tmpPwrTypes = 0; 
+				} else {				
+					masterTab.devicesActiveFlag  ? tmpDevices  = masterTab.getSelectedDeviceID() : tmpDevices = -1;
+					masterTab.pwrTypesActiveFlag ? tmpPwrTypes = masterTab.selPwrType : tmpPwrTypes = -1;					
+					masterTab.batTypesActiveFlag ? tmpBatTypes = masterTab.selBatType : tmpBatTypes = -1;				
+				}				
+
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
 					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcelAuto_DC.php?"					 
@@ -1037,7 +1043,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.27"/> 
+				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.28"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"

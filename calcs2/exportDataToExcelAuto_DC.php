@@ -45,8 +45,10 @@ while ($row = mysql_fetch_array($res, MYSQL_NUM)) {
 	if ($row[0] > 999) $isRegion = 2;
 };
 
-if ($indis[0] < 300) {
-	$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, $pwrID, 1, true, $indicatorHasSplit);
+if ($indis[0] < 300) {						
+	$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, true, $indicatorHasSplit);
+} else if ($indis[0] == 401) { 
+	$query = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH);
 } else {				
 	$query = $sqlMaker->formGetDemandData($cntryIDs, $scenID, $batTypeID, $pwrID, $isRegion, $aggLevel, $showPerHH);
 };
@@ -79,8 +81,11 @@ if ($select_result) {
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0,  $m + 2, (($row["scenarioID"]==10001) ? "baseline" : "workingScenario")  );	
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1,  $m + 2, $row["countryName"]);		
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 2, $indicatorName);				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 2, (($showPerHH > 0) ? ($indicatorUnit.", per HH")       : $indicatorUnit));				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 2, (($batTypeID > 0) ? ($sizeNames[$row["batTypeID"]-1]) : "All types"   ));				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 2, (($showPerHH > 0) ? ($indicatorUnit.", per HH")       : $indicatorUnit));	
+		if (($indis[0] == 204)||($indis[0] ==206))      { $rz = ($sizeNames[$row["typeID"]    - 1]); } 
+		else if ($indis[0] == 205)              { $rz = ("Built-In RCR"); 					} 
+		else if (max($batTypeID, $pwrID) > 0)	{ $rz = ($sizeNames[$row["batTypeID"] - 1]); };
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 2, ((max($batTypeID, $pwrID) > 0) ? $rz : "All types"   ));				
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 2, (($aggLevel  > 0) ? ($row["deviceName"])              : "All devices" ));				
 		
 		for ($u = 0; $u < 16; $u++) {	

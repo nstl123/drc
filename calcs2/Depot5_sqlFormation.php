@@ -252,11 +252,11 @@ class Depot5_sqlFormation {
 	
 		$samePart= ", dbt.scenarioID, dbt.indicatorID \r\n".
 				($pwrType  > 0 ? ", sdp.indicatorID, sdp.typeID " : ", 0 as indicatorID, 0 as typeID").				
-				$sumStmnt."\r\n	
+				$sumStmnt.", devNam.orderID \r\n	
 				FROM Consulting.DC_deviceBaseTable dbt
 				JOIN Consulting.DC_namesCountries nc ON dbt.countryID = nc.id".    
 					($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "")."				
-				JOIN Consulting.DC_namesDevices devNam ON devNam.id = dbt.deviceID
+				JOIN Consulting.DC_namesDevicesVisual devNam ON devNam.id = dbt.deviceID
 				JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID	
 				".($perHH   > 0 ? "\r\n JOIN Consulting.DC_scenarioData sdt 
 					ON ((sdt.countryID = dbt.countryID) AND (sdt.scenarioID = dbt.scenarioID))" : "").
@@ -287,7 +287,7 @@ class Depot5_sqlFormation {
 			};			
 		}
 		
-		$mainStmnt = $mainStmnt."\r\n ORDER BY scenarioID, countryID";
+		$mainStmnt = $mainStmnt."\r\n ORDER BY scenarioID, countryID, orderID";
 		return $mainStmnt;
 	}
 

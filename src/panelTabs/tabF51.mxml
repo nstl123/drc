@@ -194,8 +194,7 @@
 						this.cursorManager.removeAllCursors();
 						this.cursorManager.setBusyCursor();
 						//if (selDeviceAggLevel > 1 ) { // category level
-						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
-							workingScenarioID, int(fl), tmpType, 1);
+						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi, workingScenarioID, int(fl), tmpType, 1);
 						/*} else {						
 							getMacroDataResult.token = dataServiceData.getMacroData(tmp, selectedIndi, workingScenarioID, 
 								fl, tmpType, 1);*/
@@ -215,6 +214,8 @@
 			protected function indicatorsBox_changeHandler(event:IndexChangeEvent):void {
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;				
 				this.hasSplitFlag.selected = this.indicatorsBox.selectedItem.hasSplitByTypes;				
+				
+				this.flMngr.setBatTypesActiveFlag(true);
 				
 				this.dispatchEvent(new Event("refreshData", false));
 			}			
@@ -331,6 +332,7 @@
 			{
 				this.selBatType = int(this.batTypes.selectedValue);
 				this.flMngr.setSelBatType(this.selBatType);
+				this.flMngr.setBatTypesActiveFlag(true);				
 				this.dispatchEvent(new Event("refreshData", false));
 			}
 			
@@ -338,6 +340,7 @@
 			{
 				this.selPwrType = int(this.pwrTypes.selectedValue);
 				this.flMngr.setSelPwrType(this.selPwrType);	
+				this.flMngr.setPwrTypesActiveFlag(true); //103
 				
 				this.dispatchEvent(new Event("refreshData", false));
 			}
@@ -583,7 +586,8 @@
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
 					   top.viewingOnly="59" left.viewingOnly="197" x="10" y="15"/>
 		<s:RadioButton label="Built-in RCR" value="103" groupName="pwrTypes"
-					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="true" left.viewingOnly="197" top.viewingOnly="77" x="11" y="27"/>
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="true" 
+					   left.viewingOnly="197" top.viewingOnly="77" x="11" y="27" enabled="true"/>
 		<s:RadioButton enabled="false" label="Round Cell Rechargeable (RCR)" value="102" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
 					   top.viewingOnly="59" left.viewingOnly="319" x="-1" y="47"/>

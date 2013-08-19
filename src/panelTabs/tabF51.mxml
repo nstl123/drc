@@ -496,8 +496,9 @@
 	<s:Label text="Step 5: Make changes to the data by editing right within the table below. You may also input shocks into the data by using the drop down menus. Once data has been adjusted, click “Update Chart” to view changes. To remove changes, click “Reset Scenario&quot;" 
 			 verticalAlign="middle" fontStyle="normal" fontSize="13" top="381" left="10" fontFamily="Arial" color="#007E9D" width="747" includeIn="default" id="labelBot"/>
 	
-	<s:DropDownList width="242" height="18" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" left="50" top.viewingOnly="17" left.viewingOnly="50"/>
+	<s:DropDownList width="262" height="18" id="indicatorsBox" 
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" 
+					left="50" top.viewingOnly="17" left.viewingOnly="50"/>
 	
 	<s:CheckBox x="300" y="34" label="hasSplit" enabled="false" id="hasSplitFlag" visible="false" x.viewingOnly="300" y.viewingOnly="19"/>
 	<s:Button label="Update Chart" width="222" click="digestChanges(event)" id="saveBtn" left="535" top="412" fontWeight="bold" height="27" top.viewingOnly="367" left.viewingOnly="535" top.default="430" left.default="535"/>

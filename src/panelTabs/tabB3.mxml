@@ -503,7 +503,9 @@
 	</utils:CInteractiveGrid>
 	
 	<s:DropDownList height="20" id="indicatorsBox" 
-					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" selectedIndex="0" width="243" top.viewingOnly="17" top.default="32" left.default="50" left.viewingOnly="50"/>
+					change="indicatorsBox_changeHandler(event)" labelField="namen" top="32" 
+					selectedIndex="0" width="283" top.viewingOnly="17" 
+					top.default="32" left.default="50" left.viewingOnly="50"/>
 	
 	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" top="61" 
 			  width="241" height="25" fontWeight="bold" left="222" visible="false" top.viewingOnly="46" left.viewingOnly="221"/>
@@ -539,7 +541,7 @@
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="62" fontSize="11" fontFamily="Arial" top.viewingOnly="52" left.viewingOnly="157" top.default="63" left.default="157"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="42" left.viewingOnly="10"/>
-	<s:Label text="Split By Sizes:" fontStyle="italic" fontSize="11" left="348" top="57" 
+	<s:Label visible="false" text="Split By Sizes:" fontStyle="italic" fontSize="11" left="348" top="57" 
 			 fontFamily="Arial" top.viewingOnly="42" left.viewingOnly="348"/>
 	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" fontFamily="Arial" top.viewingOnly="6" top.default="21" left.default="469" left.viewingOnly="469"/>
 	<s:Label text="Step 4: Click the dropdown below to adjust chosen indicator" verticalAlign="middle" fontStyle="normal" fontSize="13" top="2" left="10" fontFamily="Arial" color="#007E9D" includeIn="default" id="labelTop"/>
@@ -553,7 +555,8 @@
 	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF"  top.viewingOnly="6" left.viewingOnly="313"
 			 		/>
-	<s:BorderContainer height="20" borderVisible="false" backgroundAlpha="0.0" contentBackgroundAlpha="0.0" 
+	<s:BorderContainer visible="false"
+		height="20" borderVisible="false" backgroundAlpha="0.0" contentBackgroundAlpha="0.0" 
 					   left="383" top="66" top.viewingOnly="52" left.viewingOnly="383" width.default="250">
 		<s:layout>
 			<s:HorizontalLayout gap="10"/>

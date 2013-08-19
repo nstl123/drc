@@ -5,9 +5,16 @@
 		 creationComplete="appStart(event)">
 	
 	<fx:Declarations>
-		<!-- some dataservice calls here !--> 
-	</fx:Declarations>
+			
+	<mx:CurrencyFormatter id="euroPrice" precision="2" 
+						  rounding="none"						  
+						  useThousandsSeparator="true"
+						  currencySymbol="" 
+						  useNegativeSign="true"						  
+						  alignSymbol="right" />
 	
+	</fx:Declarations>
+		
 	<fx:Script>
 		<![CDATA[
 			import flashx.textLayout.formats.Float;
@@ -39,6 +46,13 @@
 			
 			public function get isEditable():Boolean {
 				return this.isEditable;
+			}
+			
+			public function formatCcy(item:Object, column:DataGridColumn):String
+			{
+				var z:String = String(column.dataField);
+				var k:Number = item[z];
+				return euroPrice.format(k);
 			}
 			
 			public function setWorkingScenario(nv:int, isEditable:Boolean):void {
@@ -192,22 +206,22 @@
 			<!-- <mx:DataGridColumn headerText="scenarioID" dataField="scenarioID"/> !-->
 			<!-- <mx:DataGridColumn headerText="deviceID" dataField="deviceID"/> !-->
 			<mx:DataGridColumn headerText="device" dataField="deviceName"/>	
-			<mx:DataGridColumn headerText="2006" dataField="Y2006" />
-			<mx:DataGridColumn headerText="2007" dataField="Y2007" />
-			<mx:DataGridColumn headerText="2008" dataField="Y2008" />
-			<mx:DataGridColumn headerText="2009" dataField="Y2009" />
-			<mx:DataGridColumn headerText="2010" dataField="Y2010" />
-			<mx:DataGridColumn headerText="2011" dataField="Y2011" />
-			<mx:DataGridColumn headerText="2012" dataField="Y2012"/>
-			<mx:DataGridColumn headerText="2013" dataField="Y2013"/>
-			<mx:DataGridColumn headerText="2014" dataField="Y2014"/>
-			<mx:DataGridColumn headerText="2015" dataField="Y2015"/>
-			<mx:DataGridColumn headerText="2016" dataField="Y2016"/>
-			<mx:DataGridColumn headerText="2017" dataField="Y2017"/>
-			<mx:DataGridColumn headerText="2018" dataField="Y2018"/>
-			<mx:DataGridColumn headerText="2019" dataField="Y2019"/>			
-			<mx:DataGridColumn headerText="2020" dataField="Y2020"/>
-			<mx:DataGridColumn headerText="2021" dataField="Y2021"/>		
+			<mx:DataGridColumn headerText="2006" dataField="Y2006" labelFunction="formatCcy" />
+			<mx:DataGridColumn headerText="2007" dataField="Y2007" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2008" dataField="Y2008" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2009" dataField="Y2009" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2010" dataField="Y2010" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2011" dataField="Y2011" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2012" dataField="Y2012" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2013" dataField="Y2013" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2014" dataField="Y2014" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2015" dataField="Y2015" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2016" dataField="Y2016" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2017" dataField="Y2017" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2018" dataField="Y2018" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2019" dataField="Y2019" labelFunction="formatCcy"/>			
+			<mx:DataGridColumn headerText="2020" dataField="Y2020" labelFunction="formatCcy"/>
+			<mx:DataGridColumn headerText="2021" dataField="Y2021" labelFunction="formatCcy"/>		
 		</mx:columns>
 	</mx:DataGrid>
 </s:Group>

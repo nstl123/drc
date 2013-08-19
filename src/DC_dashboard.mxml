@@ -1043,7 +1043,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.28"/> 
+				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.29"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"

@@ -3,8 +3,8 @@
 include 'Classes/PHPExcel/IOFactory.php';
 include 'Depot5_sqlFormation.php';
 
-$scenID = $_GET['scenarioID']; $typeID =  $_GET['typeID']; $aggLevel = $_GET['aggLevel']; 
-$sizeID = $_GET['sizeID']; $pwrID = $_GET['pwrID'];
+$scenID    = $_GET['scenarioID']; $typeID = $_GET['typeID'];  $aggLevel  = $_GET['aggLevel']; 
+$batTypeID = $_GET['batTypeID'];  $pwrID  = $_GET['pwrID'];   $showPerHH = $_GET['perHH']; 
 
 $link = mysql_connect('192.168.44.200', 'cFullUserPW', 'c5ul1Use1QP');
 mysql_select_db('Consulting');
@@ -13,6 +13,8 @@ mysql_select_db('Consulting');
 $namesPart = ""; $groupPart = "";  $a = ""; $fromTable="";
 $indiCond = "";  $addTables  = ""; $indiJoin = "";
 $typeNames = ""; $typeJoins = ""; $typeGroupBy = "";
+
+$sizeNames = array("C", "D", "AAA", "9V", "AA", "Coin And Button", "Hearing Aid");
 
 $stmnt1 = "SELECT distinct indicatorID, nmi.namen, nmi.unit, hasSplitByTypes FROM `Consulting`.`DC_exportIDTable` xid
 			JOIN `Consulting`.`DC_namesIndicators` nmi ON (xid.indicatorID = nmi.id)
@@ -33,21 +35,20 @@ $indicatorHasSplit = ($indis[3]);
 // can i take params from exportDBTable?
 $stmnt = "SELECT distinct countryID FROM `Consulting`.`DC_exportIDTable` WHERE scenarioID = ".$scenID;				  
 $res = mysql_query($stmnt);
-$cntryIDs=""; $k = 0;
+$cntryIDs=""; $k = 0; $isRegion=0;
 
 while ($row = mysql_fetch_array($res, MYSQL_NUM)) {	 
 	if ($k > 0) $cntryIDs = $cntryIDs.",";
 	$k++;
 	$cntryIDs = $cntryIDs.$row[0];  
+	if ($row[0] > 100) $isRegion = 1;
+	if ($row[0] > 999) $isRegion = 2;
 };
 
-// $sizeID or $pwrID !!!!
 if ($indis[0] < 300) {
-	$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, ($sizeID + $pwrID), 1, true, $indicatorHasSplit);
-} else {
-	$indicatorHasSplit = 0;
-	// add device aggregation paramater here
-	$query = $sqlMaker->formGetDemandData($cntryIDs, $scenID, ($sizeID + $pwrID), $pwrID, 0, 2, 0);
+	$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, $pwrID, 1, true, $indicatorHasSplit);
+} else {				
+	$query = $sqlMaker->formGetDemandData($cntryIDs, $scenID, $batTypeID, $pwrID, $isRegion, $aggLevel, $showPerHH);
 };
 $select_result = mysql_query($query); 
 // -- END   form indicator names array -- 
@@ -62,7 +63,7 @@ if ($select_result) {
 	$phpExcel->getActiveSheet()->setTitle("Demand_".$scenID);
 
 	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, "scenarioID");
-	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, "countryName");	
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, (($isRegion > 0) ? "RegionName" : "CountryName") );	
 	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, "indicator");	
 	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, "unit");	
 	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, "typeName");
@@ -75,12 +76,12 @@ if ($select_result) {
 	
 	$m = 0;	
 	while ($row = mysql_fetch_array($select_result, MYSQL_ASSOC)) {
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0,  $m + 2, $row["scenarioID"]);	
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0,  $m + 2, (($row["scenarioID"]==10001) ? "baseline" : "workingScenario")  );	
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1,  $m + 2, $row["countryName"]);		
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 2, $indicatorName);				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 2, $indicatorUnit);				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 2, (($indicatorHasSplit>0) ? $row["typeName"] : "") );				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 2, $row["deviceName"]);				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 2, (($showPerHH > 0) ? ($indicatorUnit.", per HH")       : $indicatorUnit));				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 2, (($batTypeID > 0) ? ($sizeNames[$row["batTypeID"]-1]) : "All types"   ));				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 2, (($aggLevel  > 0) ? ($row["deviceName"])              : "All devices" ));				
 		
 		for ($u = 0; $u < 16; $u++) {	
 			$yr = (string)("Y".(string)(2006+$u));
@@ -100,8 +101,9 @@ if ($select_result) {
 	//echo $query;
 }// if select result
 else {	
+	//echo "cntry=".$cntryIDs.",scen=".$scenID.",batTypeID=".$batTypeID.",pwrID=".$pwrID.",isRegion=".$isRegion.",agg=".$aggLevel.",perHH=".$showPerHH;
+	//echo ($isRegion);
 	echo $query;
-	//echo $indis['indicatorID'];
 	/*echo "DB_Error";	
 	exit;	*/
 };

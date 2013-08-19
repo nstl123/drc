@@ -103,6 +103,15 @@ package controls
 			this.selChemType = k;
 		}
 	
+		private var showPerHHFlag:int;
+		public function setPerHHFlag(k:int):void {
+			this.showPerHHFlag = k;
+		}
+		
+		public function getPerHHFlag():int {
+			return this.showPerHHFlag;
+		}
+		
 		public function FlowManager()
 		{			
 			if (this.countSelf < 1) this.countSelf++
@@ -188,6 +197,10 @@ package controls
 		public function getDataList():ArrayCollection {
 			return dataList;
 		}
+		
+		public function getDataListReg():ArrayCollection {
+			return dataListReg;
+		}		
 		
 		public function addTab(A:Object, jk:int):void {			
 			tabList.addItem(A);

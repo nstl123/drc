@@ -342,6 +342,7 @@
 			protected function radiobutton3_changeHandler(event:Event):void
 			{
 				this.showPerHHFlag = int(this.granGroup.selectedValue);
+				this.flowManager.setPerHHFlag(this.showPerHHFlag);
 				// call refresh data event here;
 				this.dispatchEvent(new Event("refreshData", false));
 				// for demand

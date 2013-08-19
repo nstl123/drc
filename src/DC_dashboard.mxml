@@ -868,6 +868,7 @@
 				var f:int = this.tabai.selectedIndex;
 				this.masterTab.setSelBatType(0);
 				this.masterTab.setSelPwrType(0);
+				this.btnNext.enabled = true;
 				switch (f) {
 					case 0:
 						//tab A - macro
@@ -888,7 +889,7 @@
 						this.cntryTree.currentState = "default";
 						break;
 					case 3:
-						//tab F - Other, Power Shares			
+						//tab F - Other, Power Shares						
 						this.panelTabF51.updateSelectedDeviceID();							
 						this.masterTab.setSelPwrType(this.panelTabF51.selPwrType);
 						this.masterTab.setSelBatType(this.panelTabF51.selBatType);						
@@ -896,10 +897,10 @@
 						this.cntryTree.currentState = "default";
 						break;
 					case 4:
-						//tab E - Demand							
+						//tab E - Demand	
+						this.btnNext.enabled = false;
 						this.cntryTree.currentState = "slicing";
-						this.cntryTree.updateSelectedDeviceID();
-						
+						this.cntryTree.updateSelectedDeviceID();						
 						this.panelTabE61.refreshData(null);
 						this.panelTabE61.exoIndi_clickHandler(null);												
 						break;		
@@ -917,10 +918,16 @@
 			protected function button_clickHandler(event:MouseEvent):void
 			{				
 				var countryIDs:Array = this.masterTab.getDataList().source;				
-				var tmp:String = this.hlp.formStringFromIDs2(countryIDs);	
-				var indicatorID:int;				
-				// 0 - for exoVars, 1 - fro deviceBAse, 2 - for demand;
+				var tmp:String = this.hlp.formStringFromIDs2(countryIDs);
 				
+				var regionIDs:Array = this.masterTab.getDataListReg().source;
+				var tmp2:String = this.hlp.formStringFromIDs2(regionIDs);
+				
+				var tmp3:String = "";
+				tmp3 = ( (tmp2.length > 0) ? tmp2 : tmp); 
+				
+				var indicatorID:int;				
+				// 0 - for exoVars, 1 - fro deviceBAse, 2 - for demand;				
 				switch (this.tabai.selectedIndex) {
 					case 0: // HH
 						indicatorID = this.panelTabA2.selectedIndi;
@@ -939,14 +946,14 @@
 						exportTypeID = 1;
 						break;
 					case 4: // demand
-						indicatorID = this.masterTab.selDemandIndi;
+						indicatorID = 300;//this.masterTab.selDemandIndi;
 						exportTypeID = 3;
 						break;
 					default :						
 						break;				
 				};							
 				
-				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp, indicatorID);					
+				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp3, indicatorID);					
 			}			
 
 			protected function insertExportIdsResult_resultHandler(event:ResultEvent):void
@@ -961,15 +968,27 @@
 			
 			//public var address:String = "192.168.44.200";
 			public var address:String = "213.197.173.50";
-			protected function exportToExcel():void 	{			
+			protected function exportToExcel():void 	{	
+				var tmpDevices:int = 0;	
+				var tmpBatTypes:int = 0;				
+				var tmpPwrTypes:int = 0;
+				
+				masterTab.devicesActiveFlag  ? tmpDevices  = masterTab.getSelectedDeviceID() : tmpDevices = -1;
+				masterTab.pwrTypesActiveFlag ? tmpPwrTypes = masterTab.selPwrType : tmpPwrTypes = -1;					
+				masterTab.batTypesActiveFlag ? tmpBatTypes = masterTab.selBatType : tmpBatTypes = -1;				
+				
+			/*	(tmp, this.workingScenarioID, this.tmpBatTypes, 
+					this.tmpPwrTypes, 0,  this.flowManager.getSelDeviceAggLevel(), showPerHHFlag);*/
+				
 				var request:URLRequest = new URLRequest();
 				request.url = "http://" 
 					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcelAuto_DC.php?"					 
 					+ "scenarioID=" + this.workingScenarioID
 					+ "&typeID="    + this.exportTypeID // 3 - for demand; 1 for deviceBase; 0 for exo vars;
 					+ "&aggLevel="  + this.masterTab.getSelDeviceAggLevel()
-					+ "&sizeID="    + this.masterTab.selBatType 
-					+ "&pwrID="     + this.masterTab.selPwrType
+					+ "&batTypeID=" + tmpBatTypes 
+					+ "&pwrID="     + tmpPwrTypes
+					+ "&perHH="     + this.masterTab.getPerHHFlag()
  					+ "&tmp="       + String(Math.round(Math.random()*1000));
 				navigateToURL(request, "_blank");
 			}

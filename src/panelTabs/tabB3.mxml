@@ -256,7 +256,7 @@
 			
 			public function updateSelectedDeviceID():void {
 				this.selDevice = this.flMngr.getSelectedDeviceID();				
-				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice);					
+				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);					
 			}			
 			
 			private function filterB(item:Object):Boolean {

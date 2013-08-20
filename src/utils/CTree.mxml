@@ -384,7 +384,7 @@
 				this.deviceNamesFullList.filterFunction = this.filterDeviceList;
 				this.deviceNamesFullList.refresh();
 				this.deviceListDrop_C.dataProvider = this.deviceNamesFullList;
-				this.deviceListDrop_C.selectedIndex = this.hlp.getIndexFromID(this.deviceNamesFullList.source, flowManager.getSelectedDeviceID() );				
+				this.deviceListDrop_C.selectedIndex = this.hlp.getIndexFromID(this.deviceNamesFullList.source, flowManager.getSelectedDeviceID(), this.flowManager.getSelDeviceAggLevel());				
 			}
 			
 			private var showAtDeviceLevel:int = 0;
@@ -478,22 +478,37 @@
 
 			[bindable] public var selDevice:int = 1; 
 			protected function deviceListDrop_C_changeHandler(event:IndexChangeEvent):void
-			{
-				this.selDevice = deviceListDrop_C.selectedItem.id;
+			{				
+				this.selDevice = deviceListDrop_C.selectedItem.id;				
 				
-				this.flowManager.setSelectedDeviceID(this.selDevice);
-				this.flowManager.setSelDeviceNamen(this.deviceListDrop_C.selectedItem.namen);
+				if (this.flowManager.getSelDeviceAggLevel() > 0) {
+					this.flowManager.setSelectedDeviceID(this.selDevice);
+					this.flowManager.setSelDeviceNamen(this.deviceListDrop_C.selectedItem.namen);				
+				};
+				handleHA();				
+				this.dispatchEvent(new Event("refreshDeviceID_C", true));				
+			}
+			
+			protected function handleHA():void {
+				//if (this.deviceListDrop_C.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
+				var isHA:Boolean = (this.deviceListDrop_C.selectedItem.categoryID == 213);
+				this.radioHA.enabled = isHA;
+				this.radioHA.selected = isHA;
 				
-				this.dispatchEvent(new Event("refreshDeviceID_C", true));
-				// dispatch refresh on tabE
+				if (isHA) this.batTypes_C.selectedValue = 7; 
+				else  {					
+					this.batTypes_C.selectedValue = 0;					
+				};
 			}
 
 			public function updateSelectedDeviceID():void {
 				this.selDevice = this.flowManager.getSelectedDeviceID();	
 								
 				if ((this.flowManager.devicesActiveFlag)&&(this.deviceNamesFullList)) {				
-					this.deviceListDrop_C.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice);
+					this.deviceListDrop_C.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, this.flowManager.getSelDeviceAggLevel());
+					this.handleHA();
 				};
+				
 			}
 			
 			// counter to maintain the uid
@@ -611,8 +626,8 @@
 						   click="batTypes_clickHandler(event)"/>
 			<s:RadioButton x="430" y="75" label="Coin And Button"  value="6" groupName="batTypes_C"  fontFamily="Arial" fontSize="11" enabled="true" selected="false"
 						   click="batTypes_clickHandler(event)"/>
-		<!--	<s:RadioButton x="440" y="75" label="Hearing Aid"  value="7" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="true" selected="false"
-						   click="batTypes_clickHandler(event)"/> !-->	
+			<s:RadioButton x="440" y="75" label="Hearing Aid"  value="7" groupName="batTypes_C" fontFamily="Arial" fontSize="11" selected="false"
+						   click="batTypes_clickHandler(event)" enabled="false" id="radioHA"/> 	
 <!--
 			<s:RadioButton x="440" y="75" label="Built In RCR"  value="8" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="true" selected="false"
 						   click="batTypes_clickHandler(event)"/>			

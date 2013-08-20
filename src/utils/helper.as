@@ -172,11 +172,15 @@ package utils
 		}
 
 	
-		public function getIndexFromID(src:Array, toFind:int):int {
-			var kk:int = 1;
+		public function getIndexFromID(src:Array, toFind:int, aggLevel:int):int {
+			var kk:int = 1;			
 			for (var u:int = 0; u < src.length; u++) {
-				if (src[u].id == toFind) {kk = u;};
-			};	
+				if (aggLevel == 1) {
+					if (src[u].id == toFind)         { kk = u;  break; };
+				} else if (aggLevel == 2 ) {
+					if (src[u].categoryID == toFind) { kk = u;  break; };
+				};
+			};		 
 			return kk;
 		}		
 	}

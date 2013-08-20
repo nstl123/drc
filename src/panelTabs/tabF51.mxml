@@ -160,7 +160,8 @@
 			
 			public function updateSelectedDeviceID():void {
 				this.selDevice = this.flMngr.getSelectedDeviceID();								
-				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice);
+				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);
+				this.handleHA();
 			}	
 			
 			public function refreshData(evt:Event):void {
@@ -312,14 +313,34 @@
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
-				this.selDevice = this.deviceListDrop.selectedItem.id;
-				
+				this.selDevice = this.deviceListDrop.selectedItem.id;				
 				this.flMngr.setSelectedDeviceID(this.selDevice);
 				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
 				
-				this.dispatchEvent(new Event("updateCharts", false));			
+				this.handleHA();
+			}		
+			
+			private var isCurrentHA :Boolean = false;
+			private var isPreviousHA:Boolean = false;
+			protected function handleHA():void {				
+				this.isCurrentHA = (this.deviceListDrop.selectedItem.categoryID == 213);				
+				
+				if ( Math.abs( int(isCurrentHA) - int(isPreviousHA) ) > 0 ) { // means change in HA vs not HA
+					this.radioHA.enabled  = this.isCurrentHA;
+					//this.radioHA.selected = this.isCurrentHA;
+					//this.radio3A.selected = !this.isCurrentHA;
+					if (this.isCurrentHA) {						
+						this.batTypes.selectedValue = 7;
+					} else {
+						this.batTypes.selectedValue = 3;	
+					};					
+					batTypes_clickHandler(null); // has updateChart embedded
+				} else {
+					this.dispatchEvent(new Event("updateCharts", false));			
+				};						
+				this.isPreviousHA = this.isCurrentHA;
 			}
-
+			
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
@@ -506,13 +527,13 @@
 			  height="23" top.viewingOnly="399" left.viewingOnly="535" top.default="463" 
 			  left.default="535" label="Reset Scenario" enabled.viewingOnly="false" enabled.default="true"/>
 	<s:DropDownList width="272" id="deviceListDrop"
-					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="430" top.default="32" left.default="432"></s:DropDownList>
+					 labelField="namen" change="deviceListDrop_changeHandler(event)" top="32" left="371" top.viewingOnly="17" left.viewingOnly="411" top.default="32" left.default="395"></s:DropDownList>
 	
 	<s:Button label="Update Chart" click="button3_clickHandler(event)" id="button" width="122" height="25" 
 			  fontWeight="bold" left="607" top="0" visible="false" top.viewingOnly="-15" left.viewingOnly="607"/>
 	
-	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="409" left.default="419"/>
-	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="114" top.viewingOnly="46" x.default="128" top.default="64"/>
+	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="390" left.default="382"/>
+	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="114" top.viewingOnly="46" x.default="119" top.default="64"/>
 	<s:RadioButton label="Absolutes" groupName="growthType" enabled="true" value="0" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="58" left.viewingOnly="30" top.default="74" left.default="31"/>
 	<s:RadioButton label="Growth Rates" groupName="growthType" value="1" 
@@ -535,7 +556,7 @@
 	</s:BorderContainer>
 	<s:Label text="Data In:" fontStyle="italic" fontSize="11" left="10" top="57" fontFamily="Arial" top.viewingOnly="46" left.viewingOnly="10" top.default="64" left.default="10"/>
 	<s:Label text="Select Indicator" fontStyle="italic" fontSize="11" top="21" height="10" left="10" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="10"/>
-	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="409" top.default="21" left.default="419"/>
+	<s:Label text="Select Device" fontStyle="italic" fontSize="11" top="21" height="10" left="342" fontFamily="Arial" top.viewingOnly="6" left.viewingOnly="390" top.default="21" left.default="382"/>
 	
 	
 	<s:RadioButton visible="false" value="2" label="Device category" selected="false" fontFamily="Arial" fontSize="11" 
@@ -547,12 +568,12 @@
 	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF" top.viewingOnly="6" left.viewingOnly="313"/>
 	<s:BorderContainer height="60" left="480" top="74" 
-					   borderVisible="false" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" id="batTypesFrame" top.viewingOnly="58" left.viewingOnly="436" height.default="42" top.default="75" left.default="436" width.viewingOnly="353" width.default="300" height.viewingOnly="50">
+					   borderVisible="false" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" id="batTypesFrame" top.viewingOnly="58" left.viewingOnly="417" height.default="52" top.default="75" left.default="399" width.viewingOnly="353" width.default="357" height.viewingOnly="52">
 		<s:layout>
 			<s:TileLayout horizontalGap="3" verticalGap="1" horizontalGap.viewingOnly="0"/>
 		</s:layout>
 		<s:RadioButton x="44" label="AAA"  value="3" groupName="batTypes" click="batTypes_clickHandler(event)" 
-					   selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" y="15"/>
+					   selected="true" fontSize="11" fontFamily="Arial" x.viewingOnly="564" top.viewingOnly="59" x.default="564" y="15" id="radio3A"/>
 		<s:RadioButton x="124" label="AA" value="5" groupName="batTypes" click="batTypes_clickHandler(event)" 
 					   fontSize="11" fontFamily="Arial" x.viewingOnly="612" top.viewingOnly="59" x.default="612" y="10"/>
 		<s:RadioButton x="182" label="C"  value="1" groupName="batTypes" selected="true" click="batTypes_clickHandler(event)"
@@ -566,14 +587,13 @@
 		!-->
 		<s:RadioButton x="245" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontSize="11" 
 					   fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
-		<!-- <s:RadioButton x="227" label="Hearing Aid"  value="7" groupName="batTypes" click="batTypes_clickHandler(event)" 
-					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
-		!-->
+		<s:RadioButton x="227" label="Hearing Aid"  value="7" groupName="batTypes" click="batTypes_clickHandler(event)" 
+					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10" id="radioHA" enabled="false"/>		
 		<s:RadioButton x="237" label="Coin And Button"  value="6" groupName="batTypes" click="batTypes_clickHandler(event)" 
 					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
 		
 	</s:BorderContainer>
-	<s:BorderContainer left="164" top="74" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" borderVisible="false" id="pwrTypesFrame" top.viewingOnly="58" left.viewingOnly="131" height.viewingOnly="55" width.default="281" top.default="75" left.default="133" height.default="55">
+	<s:BorderContainer left="164" top="74" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" borderVisible="false" id="pwrTypesFrame" top.viewingOnly="58" left.viewingOnly="131" height.viewingOnly="55" width.default="236" top.default="75" left.default="133" height.default="55">
 		<s:layout>
 			<s:VerticalLayout gap="2"/>
 		</s:layout>

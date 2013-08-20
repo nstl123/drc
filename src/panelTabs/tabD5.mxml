@@ -359,7 +359,7 @@
 
 			public function updateSelectedDeviceID():void {
 				this.selDevice = this.flMngr.getSelectedDeviceID();								
-				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice);
+				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);
 			}			
 			
 			public function deviceListDrop_changeHandler(event:IndexChangeEvent):void

@@ -64,33 +64,41 @@ if ($select_result) {
 	$phpExcel->setActiveSheetIndex(0);
 	$phpExcel->getActiveSheet()->setTitle("Demand_".$scenID);
 
-	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, "scenarioID");
-	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, (($isRegion > 0) ? "RegionName" : "CountryName") );	
-	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, "indicator");	
-	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, "unit");	
-	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, "typeName");
-	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, "device/category");
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 2, "Device And Battery Demand Landscape Tool (Data extraction)");
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 3, ("Indicator: ".$indicatorName) );
+	//$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 4, "Date of extraction: ".date('Y-m-d') );
+	//date('l jS \of F Y h:i:s A');
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 4, "Date of extraction: ".date('jS \of F Y'));
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 5, "Data in this tool was researched, developed and modeled by Euromonitor International in 2013");
+
+	$startLine = 7;
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $startLine, "scenarioID");
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $startLine, (($isRegion > 0) ? "RegionName" : "CountryName") );	
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $startLine, "indicator");	
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $startLine, "unit");	
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $startLine, "typeName");
+	$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $startLine, "device/category");
 	
 	for ($u = 0; $u < 16; $u++) {		
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(6 + $u, 1, (string)("Y".(string)(2006 + $u)) );	
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(6 + $u, $startLine, (string)("Y".(string)(2006 + $u)) );	
 	};
 		
 	
-	$m = 0;	
+	$m = $startLine;	
 	while ($row = mysql_fetch_array($select_result, MYSQL_ASSOC)) {
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0,  $m + 2, (($row["scenarioID"]==10001) ? "baseline" : "workingScenario")  );	
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1,  $m + 2, $row["countryName"]);		
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 2, $indicatorName);				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 2, (($showPerHH > 0) ? ($indicatorUnit.", per HH")       : $indicatorUnit));	
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0,  $m + 1, (($row["scenarioID"]==10001) ? "baseline" : "workingScenario")  );	
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1,  $m + 1, $row["countryName"]);		
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 1, $indicatorName);				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 1, (($showPerHH > 0) ? ($indicatorUnit.", per HH")       : $indicatorUnit));	
 		if (($indis[0] == 204)||($indis[0] ==206))      { $rz = ($sizeNames[$row["typeID"]    - 1]); } 
 		else if ($indis[0] == 205)              { $rz = ("Built-In RCR"); 					} 
 		else if (max($batTypeID, $pwrID) > 0)	{ $rz = ($sizeNames[$row["batTypeID"] - 1]); };
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 2, ((max($batTypeID, $pwrID) > 0) ? $rz : "All types"   ));				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 2, (($aggLevel  > 0) ? ($row["deviceName"])              : "All devices" ));				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 1, ((max($batTypeID, $pwrID) > 0) ? $rz : "All types"   ));				
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 1, (($aggLevel  > 0) ? ($row["deviceName"])              : "All devices" ));				
 		
 		for ($u = 0; $u < 16; $u++) {	
 			$yr = (string)("Y".(string)(2006+$u));
-			$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(6 + $u, $m + 2,  $row[$yr]);	
+			$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(6 + $u, $m + 1,  $row[$yr]);	
 		};
 		
 		$m += 1;

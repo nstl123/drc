@@ -35,6 +35,9 @@
 					Alert.show("data could not be written to DB", "Error in message format");
 				} else {
 					//this.refreshData(null);	
+					this.flMngr.setStatusLabel("New Replcement Rates Updated");
+					this.dispatchEvent(new Event("updateStatusLabel", true));
+
 					this.dispatchEvent(new Event("replacementRatesWritten", true));
 				};
 			}
@@ -53,6 +56,9 @@
 					Alert.show("data could not be written to DB", "Error in message format");
 				} else {
 					this.refreshData(null);	
+					this.flMngr.setStatusLabel("Market Size Update done ");
+					this.dispatchEvent(new Event("updateStatusLabel", true));
+
 					this.dispatchEvent(new Event("marketSizeWritten", true));
 				};
 			}
@@ -165,9 +171,7 @@
 			
 			private function filterB(item:Object):Boolean {						
 				var fl:Boolean = true;				
-				if ((item.id == 210)||(item.id == 211)) {					
-					fl = true
-				}  else fl = false;				
+				fl = ((item.id == 210)||(item.id == 211)||(item.id == 214));					
 				return fl;
 			}					
 			
@@ -392,14 +396,24 @@
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
 				var countryIDs:Array = this.dataList.source;				
 				var cntryList:String = this.hlp.formStringFromIDs2(countryIDs);
-				if (this.startInd > 1)  this.recalcDeviceBase.token = this.dataServiceUpdate.recalcDeviceBase(this.workingScenarioID, cntryList);
+				if (this.startInd > 1) {
+					this.flMngr.setStatusLabel("Calculating New Device Base");
+					this.dispatchEvent(new Event("updateStatusLabel", true));
+		
+					this.recalcDeviceBase.token = this.dataServiceUpdate.recalcDeviceBase(this.workingScenarioID, cntryList);
+				}
 			}
 
 			public function rewriteMarketSize():void {
 				this.cursorManager.setBusyCursor();
 				startInd = startInd + 1;
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
-				if (this.startInd > 1) writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 0, 1);
+				if (this.startInd > 1) {
+					this.flMngr.setStatusLabel("Updating Market Size");
+					this.dispatchEvent(new Event("updateStatusLabel", true));
+	
+					writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 0, 1);
+				}
 			}
 			
 			public function rewriteReplacementRates():void {
@@ -407,6 +421,9 @@
 				startInd = startInd + 1;
 				// flag == 2 - for replcement rates
 				if (this.startInd > 1) {
+					this.flMngr.setStatusLabel("Updating New Replcement Rates");
+					this.dispatchEvent(new Event("updateStatusLabel", true));
+
 					this.writeReplacementRates.token = this.dataServiceUpdate.writeViewToTable(this.workingScenarioID, 0, 2);
 				};					
 			}
@@ -470,6 +487,9 @@
 
 			protected function recalcDeviceBase_resultHandler(event:ResultEvent):void
 			{
+				this.flMngr.setStatusLabel("New Device Base Calculated");
+				this.dispatchEvent(new Event("updateStatusLabel", true));
+
 				this.dispatchEvent(new Event("newDevBaseCalculated", true));
 			}
 

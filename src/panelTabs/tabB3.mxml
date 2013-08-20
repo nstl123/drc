@@ -261,7 +261,7 @@
 			
 			private function filterB(item:Object):Boolean {
 				var fl:Boolean = true;				
-				fl = ( (item.id == 201)||(item.id == 202)||(item.id == 213)||(item.id == 401) );
+				fl = ( (item.id == 201)||(item.id == 202)||(item.id == 213)||(item.id == 215)||(item.id == 401) );
 				// added device base				
 				return fl;
 			}					
@@ -289,9 +289,9 @@
 						
 					if (selectedIndi == 401) {
 						getDeviceBase.token = this.dataServiceData.getDeviceBase(tmp, workingScenarioID, 0, 0, 1, 0);					
-					} else if ((this.selectedIndi == 201)&&(this.hhpenIsSplit)) {
+					}/* else if ((this.selectedIndi == 201)&&(this.hhpenIsSplit)) {
 						getHHPenSplit.token = this.dataServiceData.getHHpenSplit(tmp, workingScenarioID);
-					} else {						
+					}*/ else {						
 						getMacroDataCategory.token = dataServiceData.getMacroDataCategory(tmp, selectedIndi,
 							workingScenarioID, 0, 0, 1);
 					};										 

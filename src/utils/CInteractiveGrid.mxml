@@ -8,7 +8,7 @@
 			
 	<mx:CurrencyFormatter id="euroPrice" precision="2" 
 						  rounding="none"						  
-						  useThousandsSeparator="true"
+						  useThousandsSeparator="false"
 						  currencySymbol="" 
 						  useNegativeSign="true"						  
 						  alignSymbol="right" />

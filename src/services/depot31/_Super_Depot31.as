@@ -30,9 +30,6 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
         var operations:Object = new Object();
         var operation:mx.rpc.remoting.Operation;
 
-        operation = new mx.rpc.remoting.Operation(null, "updateDataProxy");
-         operation.resultType = Object;
-        operations["updateDataProxy"] = operation;
         operation = new mx.rpc.remoting.Operation(null, "createNewWorkingScenario");
          operation.resultType = Object;
         operations["createNewWorkingScenario"] = operation;
@@ -60,6 +57,9 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
         operation = new mx.rpc.remoting.Operation(null, "recalcDeviceBase");
          operation.resultType = int;
         operations["recalcDeviceBase"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "updateData");
+         operation.resultType = Object;
+        operations["updateData"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -72,25 +72,6 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
          model_internal::initialize();
     }
 
-    /**
-      * This method is a generated wrapper used to call the 'updateDataProxy' operation. It returns an mx.rpc.AsyncToken whose 
-      * result property will be populated with the result of the operation when the server response is received. 
-      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
-      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
-      *
-      * @see mx.rpc.AsyncToken
-      * @see mx.rpc.CallResponder 
-      *
-      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
-      */
-    public function updateDataProxy(data:Object, deviceID:Object, typeID:Object) : mx.rpc.AsyncToken
-    {
-        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateDataProxy");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,deviceID,typeID) ;
-
-        return _internal_token;
-    }
-     
     /**
       * This method is a generated wrapper used to call the 'createNewWorkingScenario' operation. It returns an mx.rpc.AsyncToken whose 
       * result property will be populated with the result of the operation when the server response is received. 
@@ -178,7 +159,7 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function writeViewToTable(scenarioID:Object, isMarket:Object, isMarketSize:Object) : mx.rpc.AsyncToken
+    public function writeViewToTable(scenarioID:int, isMarket:int, isMarketSize:int) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("writeViewToTable");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID,isMarket,isMarketSize) ;
@@ -258,6 +239,25 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("recalcDeviceBase");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID,cntryList) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'updateData' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function updateData(data:Object, deviceID:Object, typeID:Object) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateData");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,deviceID,typeID) ;
 
         return _internal_token;
     }

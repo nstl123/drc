@@ -47,6 +47,16 @@ package controls
 		[bindable] public var selChemType:int = 201;
 		[bindable] private var selectedDeviceID:int = 21;
 
+		[bindable] private var statusLabel:String = "Status: Data ready";
+		
+		public function getStatusLabel():String {
+			return this.statusLabel;
+		}	
+		
+		public function setStatusLabel(k:String):void {
+			this.statusLabel = "Status: " + k;			
+		}
+		
 		public function getSelectedDemandIndi():int {
 			return this.selDemandIndi;
 		}

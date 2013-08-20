@@ -109,9 +109,11 @@
 					
 					this.addEventListener("NewScenarioUpdated",      refreshDeviceBase);					
 					this.addEventListener("newDevBaseCalculated",    refreshReplacementRates);
-					this.addEventListener("deviceBaseWritten",       refreshReplacementRates);					
+					this.addEventListener("deviceBaseWritten",       refreshReplacementRates);	
+					this.addEventListener("replacementRatesWritten", refreshSzWeightedIndis);
 					this.addEventListener("replacementRatesWritten", refreshAllTabs);						
 					
+					this.addEventListener("updateStatusLabel", updateStatusLabel);
 					/*this.addEventListener("NewScenarioUpdated", refreshDeviceBase);				
 					this.addEventListener("deviceBaseWritten",  refreshMarketSize);
 					this.addEventListener("marketSizeWritten",  refreshReplacementRates);
@@ -294,15 +296,24 @@
 				};
 			}
 			
+			protected function updateStatusLabel(evt:Event):void {
+				this.statusBar.text = this.masterTab.getStatusLabel();
+				if (this.masterTab.getStatusLabel() == "Status: Data Prepation Done") { 
+					this.cursorManager.removeAllCursors();
+					this.cursorManager.removeBusyCursor();
+				};
+			}		
+			
 			protected function refreshAllTabs(evt:Event):void {
-				this.panelTabA2.refreshData(null);
+				this.masterTab.setStatusLabel("Data Prepation Done");
+				this.dispatchEvent(new Event("updateStatusLabel", true));
+				/*this.panelTabA2.refreshData(null);
 				this.panelTabB3.refreshData(null);		
 				if (this.panelTabC4.getWorkingScenario() == 0) 
-					this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);
-				//this.panelTabC4.rewriteDeviceBase();				
+					this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);				
 				this.panelTabD5.refreshData(null);				
 				this.panelTabF51.refreshData(null);
-				this.panelTabE61.refreshData(null);
+				this.panelTabE61.refreshData(null);*/
 				
 				this.cntryTree.resetScenarioCountries();
 			}
@@ -337,6 +348,11 @@
 			
 			protected function calcNewDevBase(evt:Event):void {
 				this.panelTabD5.calcNewDevBase();
+			}
+			
+			protected function refreshSzWeightedIndis(evt:Event):void {
+				this.masterTab.setStatusLabel("Data Prepation Done");
+				this.dispatchEvent(new Event("updateStatusLabel", true));
 			}
 			
 			protected function refreshReplacementRates(evt:Event):void {
@@ -966,8 +982,8 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			//public var address:String = "192.168.44.200";
-			public var address:String = "213.197.173.50";
+			public var address:String = "192.168.44.200";
+			//public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{	
 				var tmpDevices:int = 0;	
 				var tmpBatTypes:int = 0;				
@@ -1047,8 +1063,14 @@
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
-				  height="25" y="10" 
-				  verticalCenter="0" x="446" horizontalCenter="0" width="125"/>
+				  height="25" 
+				  verticalCenter="0" horizontalCenter="-20" width="125" 
+				  
+				  />
+		<s:Label includeIn="scenarioState,viewingState" text="Status:" fontWeight="normal" fontSize="11" 
+				 fontFamily="Arial" fontStyle="normal" textDecoration="none" color="#247BDC" 
+				 height="15" verticalCenter="0" verticalAlign="middle" textAlign="left" 
+				 width="206" id="statusBar" left="557"/>
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 

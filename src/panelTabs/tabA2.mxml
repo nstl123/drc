@@ -27,7 +27,7 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import services.depot1.Depot1;			
+			import services.depot1.Depot1;
 			import services.depot31.Depot31;
 			
 			import spark.events.IndexChangeEvent;
@@ -218,6 +218,9 @@
 					};					
 					temp = ({'id':1, data:this.alteredData});		
 					if (this.alteredData.length  > 0) {
+						this.flMngr.setStatusLabel("Updating Data...");
+						this.dispatchEvent(new Event("updateStatusLabel", true));
+						
 						this.updateData.token = this.dataServiceUpdate.updateData2(temp, int(false), 0, 0, yrs, val);						
 						this.dispatchEvent(new Event("changesMadeInScenario", true));
 					} else {
@@ -231,8 +234,10 @@
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
 				Alert.show("Data updated successfully", "Info");
+				this.flMngr.setStatusLabel("Data Update Done");
+				this.dispatchEvent(new Event("updateStatusLabel", true));
+				
 				this.dispatchEvent(new Event("NewScenarioUpdatedSales", true));
-
 				this.dispatchEvent(new Event("refreshData", false));
 			}
 

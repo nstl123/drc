@@ -15,7 +15,7 @@ class Depot31 {
 	}	
 	
 // this one should not be used; all data are present in scenarioData Table		
-	public function updateDataProxy($data, $deviceID, $typeID) { // id indicator hasSplit by batTypes
+	public function updateData($data, $deviceID, $typeID) { // id indicator hasSplit by batTypes
 		$arr0 = (array)$data;
 		$arr = $arr0['data'];
 		
@@ -77,12 +77,6 @@ class Depot31 {
 					      USING `Consulting`.`DC_scenarioNamesDead`, `Consulting`.`DC_scenarioData`
 						  WHERE id = scenarioID";
 		$result = $this->connection->prepare($stmntData);		
-		$result->execute();	
-		
-		$stmntProxy = "DELETE FROM `Consulting`.`DC_scenarioDataProxy`
-						USING `Consulting`.`DC_scenarioNamesDead`, `Consulting`.`DC_scenarioDataProxy`
-						WHERE id = scenarioID";
-		$result = $this->connection->prepare($stmntProxy);
 		$result->execute();			
 		
 		$stmntDvbt = "DELETE FROM `Consulting`.`DC_deviceBaseTable`
@@ -115,13 +109,9 @@ class Depot31 {
 		$result = $this->connection->prepare($stmntData);		
 		$result->execute();	
 		
-		$stmntProxy = "DELETE FROM `Consulting`.`DC_scenarioDataProxy` WHERE scenarioID = ".$scenarioID;
-		$result = $this->connection->prepare($stmntProxy);
-		$result->execute();	
-		
 		$stmntRp = "DELETE FROM `Consulting`.`DC_newReplacementRateTable` WHERE scenarioID = ".$scenarioID.";";
 		$result = $this->connection->prepare($stmntRp);		
-		$result->execute();
+		$result->execute();			
 		
 		/*$stmntScen = "DELETE FROM `Consulting`.`DC_scenarioNames` WHERE id = ".$scenarioID;
 		$result = $this->connection->prepare($stmntScen);
@@ -143,19 +133,6 @@ class Depot31 {
 				WHERE scenarioID = 10001;";
 		
 		$result = $this->connection->prepare($stmntMacro);
-		$result->execute();	
-		
-		$stmntProxy = "
-			INSERT INTO `Consulting`.`DC_scenarioDataProxy`
-				(`scenarioID`,`countryID`,`indicatorID`,`deviceID`,	`typeID`,`unitID`,
-				".$yrsField.")
-			SELECT
-				".$scenarioID." as `scenarioID`,`countryID`,`indicatorID`,`deviceID`, `typeID`, `unitID`,
-				".$yrsField."
-			FROM `Consulting`.`DC_scenarioDataProxy`
-				WHERE scenarioID = 10001;"; // get the base scenario
-		
-		$result = $this->connection->prepare($stmntProxy);
 		$result->execute();			
 		
 		$stmntTest = "SELECT count(*) FROM `Consulting`.`DC_scenarioData` where scenarioID = ".$scenarioID.";";		
@@ -217,7 +194,7 @@ class Depot31 {
 		$result = $this->connection->prepare($delStmnt);		
 		$result->execute();	
 		
-		$delStmnt2 = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID = 213 AND scenarioID = ".$scenarioID.";";
+		$delStmnt2 = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID IN (213, 214, 215) AND scenarioID = ".$scenarioID.";";
 		$result = $this->connection->prepare($delStmnt2);		
 		$result->execute();	
 		
@@ -241,13 +218,16 @@ class Depot31 {
 		$result = $this->connection->prepare($insStmnt);		
 		$result->execute();		
 		
-		$insStmnt2 = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`, ".$yrsField.")
-							SELECT `scenarioID`,`countryID`,`deviceID`, 213 as `indicatorID`, ".$yrsField."
-							FROM `Consulting`.`DC_scenarioDataHHpenW`
-							WHERE scenarioID = ".$scenarioID.";";	
-		
-		$result = $this->connection->prepare($insStmnt2);		
-		$result->execute();		
+		if ($isMarket == 0) {
+			$insStmnt2 = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`, ".$yrsField.")
+								SELECT `scenarioID`,`countryID`,`deviceID`, `indicatorID`, ".$yrsField."
+								FROM `Consulting`.`DC_scenarioDataIndisWeightedBySz`
+								WHERE scenarioID = ".$scenarioID.";";	
+			
+			$result = $this->connection->prepare($insStmnt2);		
+			$result->execute();		
+			// ERROR IN HERE?
+		};
 		
 		return "ok"; // $insStmnt; // some error handling would be nice
 		//return $insStmnt;

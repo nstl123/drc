@@ -20,28 +20,39 @@ class Depot4 {
 		return $emptyTable;
 	}
 
-	public function insertExportIds($scenarioID, $countryIDs, $indicatorID) {	
+	public function insertExportIds($scenarioID, $countryIDs, $indicatorID, $indicatorID2) {	
 		// 1. test for this scenario count
 		$isZero = $this -> testScenario($scenarioID);
 		// delete if there are any
 		if (!$isZero) { $this -> deleteExportIds($scenarioID); };
 	
 		$b = explode(",", $countryIDs);		
-		$stmnt  = "";
+		$stmnt  = ""; $a = "";		
 		$st = " \r\n INSERT INTO Consulting.DC_exportIDTable
 						(scenarioID, countryID, indicatorID, aggLevel)
-					VALUES \r\n";			
-		$a = "";
+					VALUES \r\n";		
 		for ($j = 0; $j < count($b); $j++) {							
 			if ($j > 0)  $a = ","; 
 			$stmnt  = $a."(".$scenarioID.", ".$b[$j].", ".$indicatorID.", 0) ";					
 			$st = $st.$stmnt;
-		};		
-		
+		};				
 		$result = $this->connection->prepare($st);
 		$result->execute();					
 		
-		return $st;
+		$stmnt  = ""; $a = "";		
+		$st = " \r\n INSERT INTO Consulting.DC_exportIDTable
+						(scenarioID, countryID, indicatorID, aggLevel)
+					VALUES \r\n";	
+		if ($indicatorID2 > 0) {
+			for ($j = 0; $j < count($b); $j++) {							
+				if ($j > 0)  $a = ","; 
+				$stmnt  = $a."(".$scenarioID.", ".$b[$j].", ".$indicatorID2.", 0) ";					
+				$st = $st.$stmnt;
+			};				
+			$result = $this->connection->prepare($st);
+			$result->execute();					
+		};
+		return $st;		
 	}
 
 	

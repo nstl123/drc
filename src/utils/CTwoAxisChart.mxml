@@ -142,16 +142,22 @@
 					series2.yField="data";
 					
 					var tmp:Object = someData.getItemAt(i)[0]; 
+					var indi:int = (int)(someData.getItemAt(i)[0]['indicatorID']);
+					var isDevice:Boolean = false;
+					if (someData.getItemAt(i)[0]['deviceName']) {
+						isDevice = (someData.getItemAt(i)[0]['deviceName'].substr(0, 2) == "  ");
+					};
 					
 					series2.verticalAxis = vaxis1;					
 					series2.displayName = tmp.countryName + ", " 
 						+ (tmp.scenarioID == 10001 ? "Baseline" : "Scenario");	
 					
-					hAxis.dataProvider = someData.getItemAt(i);
+					hAxis.dataProvider = someData.getItemAt(i);					
 					vaxis1.baseAtZero = false;
 					vaxis2.baseAtZero = false;
 					vaxis1.labelFunction = this.defineLabel;				
-					
+					if ((indi == 206)&&(isDevice))	this.vaxis1.maximum = 10; 
+					else 							this.vaxis1.maximum= NaN;
 					//vaxis2.labelFunction = this.defineLabel;
 					mySeries.push(series2);
 				};	
@@ -296,7 +302,7 @@
 			<s:Label text="Label" width="100%" height="15" verticalAlign="middle" textAlign="center" fontSize="10" id="chartSubtitle"/>
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
-				
+			
 	<mx:verticalAxisRenderers>
 		 		<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 					 <mx:axisStroke>
@@ -304,7 +310,8 @@
 					 </mx:axisStroke>
 				 </mx:AxisRenderer>									 
 			 </mx:verticalAxisRenderers> 
-			 <mx:horizontalAxisRenderers>
+	
+				<mx:horizontalAxisRenderers>
 				<mx:AxisRenderer axis="{this.hAxis}">
 					<mx:axisStroke>
 						<s:SolidColorStroke weight="1" alpha=".6" caps="round"/>

@@ -311,9 +311,9 @@
 				this.panelTabB3.refreshData(null);		
 				if (this.panelTabC4.getWorkingScenario() == 0) 
 					this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);				
-				this.panelTabD5.refreshData(null);				
+				this.panelTabD5.refreshData(null);*/				
 				this.panelTabF51.refreshData(null);
-				this.panelTabE61.refreshData(null);*/
+				/*this.panelTabE61.refreshData(null);*/
 				
 				this.cntryTree.resetScenarioCountries();
 			}
@@ -932,7 +932,8 @@
 
 			private var hlp:helper;
 			private var exportTypeID:int = 0;
-			private var indicatorID:int = 0;		
+			private var indicatorID:int = 0;
+			private var exoIndicatorID:int = 0;
 			protected function button_clickHandler(event:MouseEvent):void
 			{				
 				var countryIDs:Array = this.masterTab.getDataList().source;				
@@ -943,7 +944,7 @@
 				
 				var tmp3:String = "";
 				tmp3 = ( (tmp2.length > 0) ? tmp2 : tmp);					
-								
+				exoIndicatorID = 0;
 				switch (this.tabai.selectedIndex) {
 					case 0: // HH
 						indicatorID = this.panelTabA2.selectedIndi;
@@ -951,25 +952,27 @@
 						break;
 					case 1:// ownership
 						indicatorID = this.panelTabB3.selectedIndi;
-						exportTypeID = 1;
+						exportTypeID = 0;
 						break;
 					case 2: // market size
 						indicatorID = this.panelTabD5.selectedIndi;
-						exportTypeID = 1;
+						exportTypeID = 0;
 						break;
 					case 3: // dev. spec.
 						indicatorID = this.panelTabF51.selectedIndi;
-						exportTypeID = 1;
+						exportTypeID = 0;
 						break;
 					case 4: // demand
 						indicatorID = 300;//this.masterTab.selDemandIndi;
-						exportTypeID = 3;
+						exportTypeID = 1;
+						exoIndicatorID = this.panelTabE61.selExoIndi;
 						break;
 					default :						
 						break;				
 				};							
-				
-				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp3, indicatorID);					
+				// get a second indicatorID for exoChart				
+				insertExportIdsResult.token = depot4.insertExportIds(this.workingScenarioID, tmp3, indicatorID, exoIndicatorID);				
+				// add second indicator for demand tab!!
 			}			
 
 			protected function insertExportIdsResult_resultHandler(event:ResultEvent):void
@@ -1006,7 +1009,7 @@
 				request.url = "http://" 
 					+  address      + "/Consulting/Duracell/version2/calcs2/exportDataToExcelAuto_DC.php?"					 
 					+ "scenarioID=" + this.workingScenarioID
-					+ "&typeID="    + this.exportTypeID // 3 - for demand; 1 for deviceBase; 0 for exo vars;
+					+ "&exportTypeID=" + this.exportTypeID // 0 for macro indis, 1 for demand, 2 for both;
 					+ "&aggLevel="  + this.masterTab.getSelDeviceAggLevel()
 					+ "&batTypeID=" + tmpBatTypes 
 					+ "&pwrID="     + tmpPwrTypes
@@ -1059,18 +1062,17 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.29"/> 
+				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.30"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
 				  height="25" 
-				  verticalCenter="0" horizontalCenter="-20" width="125" 
-				  
-				  />
+				  verticalCenter="0" horizontalCenter="-25" width="125"		  
+				   />
 		<s:Label includeIn="scenarioState,viewingState" text="Status:" fontWeight="normal" fontSize="11" 
 				 fontFamily="Arial" fontStyle="normal" textDecoration="none" color="#247BDC" 
-				 height="15" verticalCenter="0" verticalAlign="middle" textAlign="left" 
-				 width="206" id="statusBar" left="557"/>
+				 verticalCenter="0" textAlign="left" width="206" id="statusBar" left="557" 
+				 height="35" verticalAlign="middle" backgroundAlpha="0.0" />
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 

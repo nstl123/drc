@@ -62,10 +62,10 @@ internal class _Super_Depot4 extends com.adobe.fiber.services.wrapper.RemoteObje
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function insertExportIds(scenarioID:int, countryIDs:String, indicatorID:int) : mx.rpc.AsyncToken
+    public function insertExportIds(scenarioID:Object, countryIDs:Object, indicatorID:Object, indicatorID2:Object) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("insertExportIds");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID,countryIDs,indicatorID) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID,countryIDs,indicatorID,indicatorID2) ;
 
         return _internal_token;
     }

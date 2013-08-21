@@ -99,7 +99,7 @@ class Depot21 {
 	
 	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH) {
 		$rawText =  new Depot5_sqlFormation();
-		$mainStmnt = $rawText->formGetDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH);
+		$mainStmnt = $rawText->formGetDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH, 0);
 		
 		$a = array('a'=>"");		
 		$result = $this->connection->fetchAll($mainStmnt); 

@@ -482,11 +482,13 @@
 				return fl;
 			}					
 			
-			[bindable] private var selExoIndi:int = 101;
+			[bindable] public var selExoIndi:int = 101;
 			protected function exoListDrop_changeHandler(event:IndexChangeEvent):void
 			{
 				if (this.exoListDrop.selectedIndex < 0) this.exoListDrop.selectedIndex = 0;
 				this.selExoIndi = this.exoListDrop.selectedItem.id;
+				
+				
 				exoIndi_clickHandler(null);
 				
 				/*this.exoChart.updateChartTitle(

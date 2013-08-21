@@ -204,7 +204,7 @@ class Depot5_sqlFormation {
 		return $mainStmnt;
 	}
 
-	public function formGetDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH) {
+	public function formGetDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH, $singleScenario) {
 		$countryArray = explode(",", $countryIDs); //(array)($countryIDs);	
 		$getWorldData = 0; $hasOtherCountries = 0;
 		$useCluster = 0; // isRegion could be: 0 - countries, 1 - regions, 2 - clusters;
@@ -250,7 +250,7 @@ class Depot5_sqlFormation {
 		$cntryNamePart = ($isRegion > 0 ? ", rg.namen AS countryName, rg.id AS countryID" : ", nc.namen AS countryName, dbt.countryID");		
 		$globalNamePart = ", 'World' AS countryName, 11111 as countryID";
 	
-		$samePart= ", dbt.scenarioID, dbt.indicatorID \r\n".
+		$samePart= ", null AS batTypeID, dbt.scenarioID, dbt.indicatorID \r\n".
 				($pwrType  > 0 ? ", sdp.indicatorID, sdp.typeID " : ", 0 as indicatorID, 0 as typeID").				
 				$sumStmnt.", devNam.orderID \r\n	
 				FROM Consulting.DC_deviceBaseTable dbt
@@ -262,7 +262,7 @@ class Depot5_sqlFormation {
 					ON ((sdt.countryID = dbt.countryID) AND (sdt.scenarioID = dbt.scenarioID))" : "").
 				($pwrType > 0 ? "\r\n JOIN Consulting.DC_scenarioData sdp
 					ON  (sdp.countryID = nc.".$joinOn.") AND (sdp.deviceID  = dbt.deviceID)	AND (sdp.scenarioID = dbt.scenarioID)" : "")."			
-				WHERE dbt.scenarioID IN (".$scenarioID.", 10001)".
+				WHERE dbt.scenarioID IN (".$scenarioID.($singleScenario == 1 ? "" : ", 10001").")".
 				($pwrType  > 0 ? " AND sdp.indicatorID = 205 AND sdp.typeID = ".$pwrType : "").
 				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "");				
 
@@ -287,7 +287,7 @@ class Depot5_sqlFormation {
 			};			
 		}
 		
-		$mainStmnt = $mainStmnt."\r\n ORDER BY scenarioID, countryID, orderID";
+		// $mainStmnt = $mainStmnt."\r\n ORDER BY orderID, scenarioID, countryID ";
 		return $mainStmnt;
 	}
 

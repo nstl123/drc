@@ -384,7 +384,9 @@
 				this.deviceNamesFullList.filterFunction = this.filterDeviceList;
 				this.deviceNamesFullList.refresh();
 				this.deviceListDrop_C.dataProvider = this.deviceNamesFullList;
-				this.deviceListDrop_C.selectedIndex = this.hlp.getIndexFromID(this.deviceNamesFullList.source, flowManager.getSelectedDeviceID(), this.flowManager.getSelDeviceAggLevel());				
+				this.deviceListDrop_C.selectedIndex = this.hlp.getIndexFromID(this.deviceNamesFullList.source, flowManager.getSelectedDeviceID(), this.flowManager.getSelDeviceAggLevel());
+				
+				this.updateSelectedDeviceID();
 			}
 			
 			private var showAtDeviceLevel:int = 0;

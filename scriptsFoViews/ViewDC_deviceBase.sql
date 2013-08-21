@@ -20,10 +20,10 @@ select `sdt1`.`scenarioID` AS `scenarioID`,`sdt1`.`countryID` AS `countryID`,`sd
 (((`sdt1`.`Y2020` * `sdt2`.`Y2020`) * `sdm`.`Y2020`) / 100) AS `Y2020`,
 (((`sdt1`.`Y2021` * `sdt2`.`Y2021`) * `sdm`.`Y2021`) / 100) AS `Y2021`
 
-from ((`DC_scenarioData` `sdt1` 
-	join `DC_scenarioData` `sdt2` 
+from ((Consulting.`DC_scenarioData` `sdt1` 
+	join Consulting.`DC_scenarioData` `sdt2` 
 		on(((`sdt1`.`countryID` = `sdt2`.`countryID`) and (`sdt1`.`deviceID` = `sdt2`.`deviceID`) and (`sdt1`.`scenarioID` = `sdt2`.`scenarioID`)))) 
-	join `DC_scenarioData` `sdm` 
+	join Consulting.`DC_scenarioData` `sdm` 
 		on(((`sdm`.`countryID` = `sdt1`.`countryID`) and (`sdm`.`scenarioID` = `sdt1`.`scenarioID`)))) 
 
 where ((`sdt1`.`indicatorID` = 201) and (`sdt2`.`indicatorID` = 202) and (`sdm`.`indicatorID` = 101))

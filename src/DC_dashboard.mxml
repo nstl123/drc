@@ -351,7 +351,7 @@
 			}
 			
 			protected function refreshSzWeightedIndis(evt:Event):void {
-				this.masterTab.setStatusLabel("Data Prepation Done");
+				this.masterTab.setStatusLabel("Data Preparation Done");
 				this.dispatchEvent(new Event("updateStatusLabel", true));
 			}
 			
@@ -982,8 +982,8 @@
 				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
 			}
 			
-			public var address:String = "192.168.44.200";
-			//public var address:String = "213.197.173.50";
+			//public var address:String = "192.168.44.200";
+			public var address:String = "213.197.173.50";
 			protected function exportToExcel():void 	{	
 				var tmpDevices:int = 0;	
 				var tmpBatTypes:int = 0;				

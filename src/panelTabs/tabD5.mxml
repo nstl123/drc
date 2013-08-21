@@ -397,7 +397,7 @@
 				var countryIDs:Array = this.dataList.source;				
 				var cntryList:String = this.hlp.formStringFromIDs2(countryIDs);
 				if (this.startInd > 1) {
-					this.flMngr.setStatusLabel("Calculating New Device Base");
+					this.flMngr.setStatusLabel("Calculating New Device Base...");
 					this.dispatchEvent(new Event("updateStatusLabel", true));
 		
 					this.recalcDeviceBase.token = this.dataServiceUpdate.recalcDeviceBase(this.workingScenarioID, cntryList);
@@ -409,7 +409,7 @@
 				startInd = startInd + 1;
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
 				if (this.startInd > 1) {
-					this.flMngr.setStatusLabel("Updating Market Size");
+					this.flMngr.setStatusLabel("Updating Market Size...");
 					this.dispatchEvent(new Event("updateStatusLabel", true));
 	
 					writeViewToTableResult.token = this.dataServiceUpdate.writeViewToTable(workingScenarioID, 0, 1);
@@ -421,7 +421,7 @@
 				startInd = startInd + 1;
 				// flag == 2 - for replcement rates
 				if (this.startInd > 1) {
-					this.flMngr.setStatusLabel("Updating New Replcement Rates");
+					this.flMngr.setStatusLabel("Updating New Replacement Rates...");
 					this.dispatchEvent(new Event("updateStatusLabel", true));
 
 					this.writeReplacementRates.token = this.dataServiceUpdate.writeViewToTable(this.workingScenarioID, 0, 2);

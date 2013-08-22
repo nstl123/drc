@@ -201,7 +201,7 @@
 								fl, tmpType, 1);*/
 						//};
 					} else {					
-						Alert.show("select at least one country", "Error F51");					
+						Alert.show("Select at least one country", "Error F51");					
 					};
 				
 				};
@@ -495,7 +495,7 @@
 			protected function getMacroDataCategory_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not read data", "error F51");
+				Alert.show("Could not read data", "error F51");
 			}
 
 

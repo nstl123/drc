@@ -12,7 +12,7 @@
 			   width="100%"  xmlns:utils="utils.*"
 			   pageTitle="Battery Demand Tool" 
 			   minHeight="800" height="800" xmlns:wrapperis="services.wrapperis.*" 
-			   xmlns:depot4="services.depot4.*" xmlns:depot311="services.depot31.*">
+			   xmlns:depot4="services.depot4.*" xmlns:depot311="services.depot31.*" xmlns:controls="controls.*">
 	
 	<!-- creationComplete="initAll(event)" !-->
 	
@@ -46,6 +46,7 @@
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
+			import mx.controls.ProgressBar;
 			import mx.events.CloseEvent;
 			import mx.events.FlexEvent;
 			import mx.events.IndexChangedEvent;
@@ -77,7 +78,8 @@
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
 				this.currentState = "landingState";
-				hlp = new helper();			
+				hlp = new helper();		
+				this.addEventListener("downloadFinished", hidePlate);
 				//this.currentStateLabel.text = "Current State: " + this.currentState;				
 			}
 			
@@ -111,14 +113,9 @@
 					this.addEventListener("newDevBaseCalculated",    refreshReplacementRates);
 					this.addEventListener("deviceBaseWritten",       refreshReplacementRates);	
 					this.addEventListener("replacementRatesWritten", refreshSzWeightedIndis);
-					this.addEventListener("replacementRatesWritten", refreshAllTabs);						
+					this.addEventListener("replacementRatesWrittenA", refreshAllTabs);						
 					
 					this.addEventListener("updateStatusLabel", updateStatusLabel);
-					/*this.addEventListener("NewScenarioUpdated", refreshDeviceBase);				
-					this.addEventListener("deviceBaseWritten",  refreshMarketSize);
-					this.addEventListener("marketSizeWritten",  refreshReplacementRates);
-					this.addEventListener("replacementRatesWritten",  refreshAllTabs);*/					
-					
 					this.addEventListener("scenarioResetRequested", resetScenario);
 					this.addEventListener("scenarioDataCleaned", refreshMarketSize);					
 					
@@ -144,6 +141,7 @@
 					this.addEventListener("refreshDeviceID_C", refreshDeviceID_C);					
 					// -- end --
 					this.addEventListener("stateClicked", switchSate);
+					
 					
 					if (!this.masterTab) {	masterTab = new FlowManager(); };					
 					this.masterTab.setStateSpacePos(1);
@@ -218,7 +216,10 @@
 				//this.panelTabA2.refreshData(null);
 				this.panelTabB3.refreshData(null);
 				
-				this.updateLabelState();				
+				this.updateLabelState();
+				
+				dispatchEvent(new Event("scenarioDataCleaned", true));
+				
 				Alert.show("Base data has been populated", "Info");
 			}
 			
@@ -297,7 +298,7 @@
 			}
 			
 			protected function updateStatusLabel(evt:Event):void {
-				this.statusBar.text = this.masterTab.getStatusLabel();
+				if (statusBar) {this.statusBar.text = this.masterTab.getStatusLabel(); };
 				if (this.masterTab.getStatusLabel() == "Status: Data Prepation Done") { 
 					this.cursorManager.removeAllCursors();
 					this.cursorManager.removeBusyCursor();
@@ -501,7 +502,7 @@
 			{ 
 				scenarioCreatedFlag = true;
 				startas = startas + 1;							
-				//if (startas > 1) dispatchEvent(new Event("scenarioResetDone", true));
+				//if (startas > 1) dispatchEvent(new Event("scenarioDataCleaned", true));
 				if (startas > 1) dispatchEvent(new Event("scenarioDataCleaned", true));
 			}		
 
@@ -697,7 +698,7 @@
 
 			protected function deleteAllScenariosResult_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not clean old scenarios from DB...", "Error");
+				Alert.show("Could not delete old scenarios from DataBase...", "Error");
 			}				
 			
 			[bindable] private var viewMode:String = ""; //"viewDataOnly";
@@ -804,13 +805,13 @@
 						break;					
 					case "viewingState" :	
 						// set this into initialization stage of these
-						this.cntryTree.setLabelDemand(this.labelDemand);
+						this.cntryTree.setLabelDemand("Step 3: select battery parameters");
 						this.navigatorBox2.setStateVector([1, 0, 1, 1, 1]);
 						if (this.tabaiCreationComplete) { this.tabai.selectedIndex = 4; };	
 						this.btnNext.enabled = false;					
 						break;					
 					case "scenarioState" :
-						this.cntryTree.setLabelDemand(this.labelDemand);
+						this.cntryTree.setLabelDemand("Step 6: select battery parameters");
 						this.navigatorBox2.setStateVector([1, 1, 1, 1, 1]);
 						this.tabai.selectedIndex = 4;
 						this.btnNext.enabled = false;			
@@ -919,7 +920,9 @@
 						this.cntryTree.currentState = "slicing";
 						this.cntryTree.updateSelectedDeviceID();						
 						this.panelTabE61.refreshData(null);
-						this.panelTabE61.exoIndi_clickHandler(null);												
+						this.panelTabE61.exoIndi_clickHandler(null);	
+						this.cntryTree.setLabelDemand("Step " + (masterTab.isViewingMode() ? "3" : "6") 
+							+ " : select battery parameters");
 						break;		
 				};				
 				//Alert.show("Selected Tab:" + f,"info"); 
@@ -983,7 +986,7 @@
 
 			protected function insertExportIdsResult_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not write countryList to DB. data will not be epxorted", "Error");
+				Alert.show("Could not write countryList to DB. Data will not be epxorted", "Error");
 			}
 			
 			//public var address:String = "192.168.44.200";
@@ -1018,6 +1021,23 @@
 					+ "&modeID="    + int(this.masterTab.isViewingMode())
  					+ "&tmp="       + String(Math.round(Math.random()*1000));
 				navigateToURL(request, "_blank");
+			}
+
+			private var visibleDown:Boolean = false;
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				visibleDown = !visibleDown;
+				this.fdwn.visible = visibleDown;					
+			}
+
+			protected function fdwn_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.fdwn.init();
+			}
+			
+			protected function hidePlate(evt:Event):void {
+				visibleDown = !visibleDown;
+				this.fdwn.visible = visibleDown;
 			}
 
 		]]>
@@ -1064,7 +1084,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.31"/> 
+				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.32_wDown"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
@@ -1110,7 +1130,7 @@
 		<mx:Text width="557" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="295" height="94" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
 		<s:RadioButton includeIn="landingState" label="Final Data File (XLS)" y="429" left="246" enabled="false" color="#656565"/>
 		<s:RadioButton label="Executive Summary (PPT)" y="457" left="246" enabled="false" color="#656565"/>
-		<s:RadioButton label="Full Report (PPT)" y="483" left="246" enabled="false" color="#656565"/>
+		<s:RadioButton label="Full Report (PPT)" y="483" left="246" enabled="true" color="#656565" selected="true"/>
 		<s:Label text="Get final project files" fontWeight="bold" fontSize="14" left="200" top="398" color="#000000"/>
 	
 		<mx:Text text="If you have questions or need support using this tool, please contact the following:&#13;
@@ -1118,6 +1138,11 @@
 				 Euromonitor International&#13;
 				 Mike.jozwik@euromonitorintl.com&#13;
 				 312-922-1115 x 8238"  width="667" height="101" top="542" color="#656565" fontSize="12" fontFamily="Arial" horizontalCenter="0"/>
+
+		<controls:fileIO id="fdwn" visible="false"
+						 creationComplete="fdwn_creationCompleteHandler(event)" left="400" top="250" width="289"/>
+		<s:Button includeIn="landingState" x="429" y="457" label="Save Data to Local Drive" 
+				  click="button1_clickHandler(event)"/>
 	</s:BorderContainer>
 
 <s:BorderContainer width="992" height="100%" borderVisible="false" 

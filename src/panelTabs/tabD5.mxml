@@ -24,15 +24,16 @@
 		<![CDATA[
 			protected function writeReplacementRates_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not re-write RPR to DB", "too bad");
+				this.cursorManager.removeBusyCursor();
+				Alert.show("Could not re-write RPR to DB", "Error D5");
 			}
 			
 			protected function writeReplacementRates_resultHandler(event:ResultEvent):void
 			{
-				this.cursorManager.removeAllCursors();
-				this.cursorManager.setBusyCursor();
+				//this.cursorManager.removeAllCursors();
+				this.cursorManager.removeBusyCursor();
 				if (event.message.body != "ok") { //this.someLabel.text = "view written successfully";
-					Alert.show("data could not be written to DB", "Error in message format");
+					Alert.show("Data could not be written to DB", "Error in message format");
 				} else {
 					//this.refreshData(null);	
 					this.flMngr.setStatusLabel("New Replcement Rates Updated");
@@ -45,15 +46,16 @@
 			import services.depot31.Depot31;
 			protected function writeViewToTableResult_faultHandler(event:FaultEvent):void
 			{
+				this.cursorManager.removeBusyCursor();
 				Alert.show("Could not write to DB", "Error D5");
 			}
 
 			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void
 			{
-				this.cursorManager.removeAllCursors();
-				this.cursorManager.setBusyCursor();
+				//this.cursorManager.removeAllCursors();
+				this.cursorManager.removeBusyCursor();
 				if (event.message.body != "ok") { //this.someLabel.text = "view written successfully";
-					Alert.show("data could not be written to DB", "Error in message format");
+					Alert.show("Data could not be written to DB", "Error in message format");
 				} else {
 					this.refreshData(null);	
 					this.flMngr.setStatusLabel("Market Size Update done ");
@@ -65,7 +67,7 @@
 	
 			protected function getDeviceLits_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not get deviceList form DB", "error D5");
+				Alert.show("Could not get deviceList form DB", "error D5");
 			}
 			
 			private var deviceNamesFullList:ArrayCollection;
@@ -354,7 +356,7 @@
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not read DB", "error D5");
+				Alert.show("Could not read DB", "error D5");
 			}
 
 			public function updateSelectedDeviceID():void {
@@ -378,7 +380,7 @@
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
 				var rez:Object = this.updateData.lastResult;				
-				Alert.show("data updated", "Info");			
+				Alert.show("Data updated", "Info");			
 				this.dispatchEvent(new Event("refreshData", false));
 				
 				this.dispatchEvent(new Event("marketSizeWritten", true));
@@ -387,7 +389,8 @@
 			protected function updateData_faultHandler(event:FaultEvent):void
 			{
 				var z:Object = event.message.body.toString();
-				Alert.show("could not update scenario", "we are f'ckd up");
+				//Alert.show("Could not update scenario", "we are f'ckd up");
+				Alert.show("Could not update scenario", "Error D5");
 			}	
 			
 			public var startInd:int = 0;
@@ -404,11 +407,11 @@
 				}
 			}
 
-			public function rewriteMarketSize():void {
-				this.cursorManager.setBusyCursor();
+			public function rewriteMarketSize():void {			
 				startInd = startInd + 1;
 				// in writeView: 0 goes for view deviceBase, 1 for deviceBaseMarket
 				if (this.startInd > 1) {
+					this.cursorManager.setBusyCursor();
 					this.flMngr.setStatusLabel("Updating Market Size...");
 					this.dispatchEvent(new Event("updateStatusLabel", true));
 	
@@ -416,11 +419,11 @@
 				}
 			}
 			
-			public function rewriteReplacementRates():void {
-				this.cursorManager.setBusyCursor();
+			public function rewriteReplacementRates():void {				
 				startInd = startInd + 1;
 				// flag == 2 - for replcement rates
 				if (this.startInd > 1) {
+					this.cursorManager.setBusyCursor();
 					this.flMngr.setStatusLabel("Updating New Replacement Rates...");
 					this.dispatchEvent(new Event("updateStatusLabel", true));
 
@@ -482,7 +485,7 @@
 			protected function getMacroDataCategory_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not read data", "error B3");
+				Alert.show("Could not read data", "error D5");
 			}
 
 			protected function recalcDeviceBase_resultHandler(event:ResultEvent):void
@@ -496,7 +499,8 @@
 
 			protected function recalcDeviceBase_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("today i am just too lazy.. i cannot finish calculations of new device base...", "Sorry");
+				//Alert.show("today i am just too lazy.. i cannot finish calculations of new device base...", "Sorry");
+				Alert.show("Cannot finish calculations of new device base", "Error D5");
 			}
 
 		]]>

@@ -54,7 +54,7 @@
 			protected function getMacroDataResult_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not read data", "error B3");
+				Alert.show("Could not read data", "error B3");
 			}
 			
 			[bindable] private var selDeviceAggLevel:int = 0;
@@ -105,13 +105,13 @@
 			protected function getMacroDataCategory_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not read data", "error B3");
+				Alert.show("Could not read data", "error B3");
 			}
 			
 			protected function getDeviceBase_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not read data for device base", "error B4");
+				Alert.show("Could not read data for Device Base", "error B4");
 			}
 			
 			private var hhpenIsSplit:Boolean = false;

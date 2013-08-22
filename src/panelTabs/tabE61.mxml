@@ -153,18 +153,16 @@
 					this.flowManager.batTypesActiveFlag ? this.tmpBatTypes = this.flowManager.selBatType : this.tmpBatTypes = -1;				
 									
 					this.cursorManager.removeAllCursors();
-					if ((this.flowManager.chemTypesActiveFlag)&&(tmp2.length > 0)) {
-						this.cursorManager.setBusyCursor();
+					this.cursorManager.setBusyCursor();
+					
+					if ((this.flowManager.chemTypesActiveFlag)&&(tmp2.length > 0)) {					
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp2, workingScenarioID, 1 +  int(useCluster), showPerHHFlag);
-					} else if ((this.flowManager.chemTypesActiveFlag)&&(tmp.length > 0)) {
-						this.cursorManager.setBusyCursor();
+					} else if ((this.flowManager.chemTypesActiveFlag)&&(tmp.length > 0)) {					
 						getDemandByChemistry.token = this.dataServiceData.getDemandByChemistry(tmp, workingScenarioID, 0, showPerHHFlag);					
-					} else if (tmp2.length > 0) {
-						this.cursorManager.setBusyCursor();
+					} else if (tmp2.length > 0) {					
 						this.getDemandRegions.token = this.dataServiceData.getDemandData(tmp2, this.workingScenarioID, 
 							this.tmpBatTypes, this.tmpPwrTypes, 1 + int(useCluster), this.flowManager.getSelDeviceAggLevel(), showPerHHFlag);					
-					} else if (tmp.length > 0) {
-						this.cursorManager.setBusyCursor();
+					} else if (tmp.length > 0) {					
 						this.getDemandData.token = this.dataServiceData.getDemandData(tmp, this.workingScenarioID, 
 							this.tmpBatTypes, this.tmpPwrTypes, 0,  this.flowManager.getSelDeviceAggLevel(), showPerHHFlag);					
 					};
@@ -296,7 +294,7 @@
 			protected function getDemandData_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not get Demand data for cntry level", "Error E61");				
+				Alert.show("Could not get Demand data for cntry level", "Error E61");				
 			}
 			
 			
@@ -304,7 +302,7 @@
 			protected function getDemandRegions_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not get Demand data for regions", "Error E62");
+				Alert.show("Could not get Demand data for regions", "Error E62");
 			}
 
 			protected function getDeviceBase_resultHandler(event:ResultEvent):void
@@ -365,7 +363,7 @@
 			protected function getDemandByChemistry_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("Could not read data by Chemistry Split", "Error");
+				Alert.show("Could not read data by Chemistry Split", "Error E63");
 			}
 
 		]]>
@@ -596,7 +594,7 @@
 			protected function getMacroData_faultHandler(event:FaultEvent):void
 			{	
 				this.cursorManager.removeBusyCursor();
-				Alert.show("error in macroData SQL query", "Error E61");			
+				Alert.show("Error in macroData SQL query", "Error E61");			
 			}	
 			
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {
@@ -716,7 +714,7 @@
 			protected function getMacroDataCategory_faultHandler(event:FaultEvent):void
 			{
 				this.cursorManager.removeBusyCursor();
-				Alert.show("could not read data", "error B3");
+				Alert.show("Could not read data", "error B3");
 			}
 
 		]]>

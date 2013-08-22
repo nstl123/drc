@@ -20,17 +20,17 @@
 			protected function getDeviceBase_faultHandler(event:FaultEvent):void
 			{
 				//this.cursorManager.removeBusyCursor();
-				Alert.show("could not read DeviceBase Table in DB", "Error C4");
+				Alert.show("Could not read DeviceBase Table in DB", "Error C4");
 			}
 
 			protected function updateData_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("could not update DeviceBase Table", "Error C4");	
+				Alert.show("Could not update DeviceBase Table", "Error C4");	
 			}
 	
 			protected function updateData_resultHandler(event:ResultEvent):void
 			{
-				Alert.show("data updated", "Info");
+				Alert.show("Data updated", "Info");
 			}	
 			
 			protected function button_clickHandler(event:MouseEvent):void
@@ -48,7 +48,7 @@
 			protected function writeViewToTableResult_resultHandler(event:ResultEvent):void
 			{
 				if (event.message.body != "ok") //this.someLabel.text = "view written successfully";
-				Alert.show("data could not be written to DB", "Error C4");
+				Alert.show("Data could not be written to DB", "Error C4");
 				this.dispatchEvent(new Event("deviceBaseWritten", true));
 			}
 
@@ -95,7 +95,7 @@
 
 			protected function writeViewToTableResult_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("view was not written to table", "Error C4");
+				Alert.show("View was not written to table", "Error C4");
 			}
 		
 			import controls.*;

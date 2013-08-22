@@ -15,7 +15,7 @@ class Depot5_sqlFormation {
 	}	
 	
 	public function formGetMacroCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames, $singleScenario, $wTypes) {
-			$scenarioClause = (!$singleScenario ? "(".$scenarioID.", 10001)" : "(".$scenarioID.")" );
+			$scenarioClause = (($singleScenario == 1) ? "(10001)" :  "(".$scenarioID.", 10001)" );
 			$batTypesNamesJoin = "\r\n JOIN Consulting.DC_namesBatSizeTypes nmz ON (nmz.id = sdt.typeID)";
 			$batTypesNamesCols = "nmz.namen as typeName, ";
 			//$a = array('a'=>"");		
@@ -262,7 +262,7 @@ class Depot5_sqlFormation {
 					ON ((sdt.countryID = dbt.countryID) AND (sdt.scenarioID = dbt.scenarioID))" : "").
 				($pwrType > 0 ? "\r\n JOIN Consulting.DC_scenarioData sdp
 					ON  (sdp.countryID = nc.".$joinOn.") AND (sdp.deviceID  = dbt.deviceID)	AND (sdp.scenarioID = dbt.scenarioID)" : "")."			
-				WHERE dbt.scenarioID IN (".$scenarioID.($singleScenario == 1 ? "" : ", 10001").")".
+				WHERE dbt.scenarioID IN (10001".($singleScenario == 1 ? "" : ", ".$scenarioID).")".
 				($pwrType  > 0 ? " AND sdp.indicatorID = 205 AND sdp.typeID = ".$pwrType : "").
 				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "");				
 
@@ -346,6 +346,55 @@ class Depot5_sqlFormation {
 		
 		return $mainQ;			
 	} 
+
+	public function formGetDemandByChemistry($countryIDs, $scenarioID, $isRegion, $perHH) {
+		$useCluster = 0;
+		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
+	
+		$a = array('a'=>"");				
+		$countryArray = (array)($countryIDs);		
+		$countryList = " (";		
+		
+		for ($i = 0; $i < count($countryArray); $i++) {
+			if ($i > 0) $countryList = $countryList.", ".$countryArray[$i]; 
+			else 		$countryList = $countryList.$countryArray[$i];
+		}
+		$countryList = $countryList." )";	
+		
+		$sumStmnt = "";
+		
+		for ($u = 2006; $u < 2022; $u++) {
+			if ((($u - 2006) % 3) == 0) $sumStmnt = $sumStmnt."
+				";
+			if ($perHH > 0) {
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.Y".$u.")/sum(sdt.Y".$u.") as Y".$u;
+			} else {
+				$sumStmnt = $sumStmnt.", ".$this->perHHmultiplier." * sum(dma.Y".$u." * chm.Y".$u.") as Y".$u;
+			};			
+		};		
+		
+		$stmnt = "
+			SELECT dma.scenarioID, 301 AS indicatorID, chm.chemid as chemistryID, 0 AS deviceID, 0 as categoryID, null as deviceName". 
+				($isRegion > 0 ? ", rg.namen as countryName, rg.id AS countryID" : ", nc.namen AS countryName, dma.countryID").
+				 $sumStmnt."
+			FROM Consulting.DC_demandAggregated dma
+				JOIN Consulting.DC_chemistry chm ON (chm.countryID = dma.countryID)
+			JOIN Consulting.DC_namesCountries AS nc ON (dma.countryID = nc.id) ".                    
+				($isRegion > 0 ? " JOIN Consulting.DC_namesCountries AS rg ON (nc.".$useCluster." = rg.id)" : "").
+			    ($perHH    > 0 ? "
+					JOIN Consulting.DC_scenarioData sdt 
+					ON ((sdt.countryID = dma.countryID) AND (sdt.scenarioID = dma.scenarioID))" : "")."					
+			WHERE dma.scenarioID IN (".$scenarioID.", 10001)".				
+				($isRegion > 0 ? " AND nc.".$useCluster : " AND dma.countryID ")." IN ".$countryList.
+				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "")."				
+			GROUP BY dma.scenarioID, chemistryID".
+				($isRegion > 0 ? ", nc.".$useCluster : ", dma.countryID");
+			
+		/*$result = $this->connection->fetchAll($stmnt); 
+		array_push($a, $result);		
+		return $result;*/
+		return $stmnt;
+	}
 
 	public function formGetIndicatorNames() {	
 		//$a = array('a'=>"");

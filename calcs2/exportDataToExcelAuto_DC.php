@@ -4,17 +4,20 @@ include 'Classes/PHPExcel/IOFactory.php';
 include 'Depot5_sqlFormation.php';
 
 $scenID    = $_GET['scenarioID']; $exportTypeID = $_GET['exportTypeID'];  $aggLevel  = $_GET['aggLevel']; 
-$batTypeID = $_GET['batTypeID'];  $pwrID  = $_GET['pwrID'];   $showPerHH = $_GET['perHH']; 
+$batTypeID = $_GET['batTypeID'];  $pwrID  = $_GET['pwrID'];   $showPerHH = $_GET['perHH']; $modeID = $_GET['modeID'];
 
 $link = mysql_connect('192.168.44.200', 'cFullUserPW', 'c5ul1Use1QP');
 mysql_select_db('Consulting');
 
 //query the database for the scenario data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$isSingleScenario = $modeID;
+
 $namesPart = ""; $groupPart = "";  $a = ""; $fromTable="";
 $indiCond = "";  $addTables  = ""; $indiJoin = "";
 $typeNames = ""; $typeJoins = ""; $typeGroupBy = "";
 
 $sizeNames = array("C", "D", "AAA", "9V", "AA", "Coin And Button", "Hearing Aid");
+$chemNames = array("Alkaline Battery","Lithium Battery","RCR Major Cells","Zinc Battery");
 
 $stmnt1 = "SELECT distinct indicatorID, nmi.namen, nmi.unit, hasSplitByTypes FROM `Consulting`.`DC_exportIDTable` xid
 			JOIN `Consulting`.`DC_namesIndicators` nmi ON (xid.indicatorID = nmi.id)
@@ -55,13 +58,10 @@ $tabName = "Input_Indicators";
 $indiName = $indicatorName;
 
 if (($exportTypeID == 0) and ($indis[0] < 401)) {
-
-	$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, true, $indicatorHasSplit);
-
+	$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, $isSingleScenario, $indicatorHasSplit);
 } else if ( ($exportTypeID == 0) and ($indis[0] == 401) ) { 
-
 	$query = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, 1);	
-
+// -----------demand tab with some exogenous vars---------
 } else if ($exportTypeID == 1) {				
 	$tabName  = "Demand"; $tabName2  = "Input_Indicators";	
 	$indiName = "Demand"; 
@@ -71,10 +71,22 @@ if (($exportTypeID == 0) and ($indis[0] < 401)) {
 		$queryMacro = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, 1);	
 		$indiName2 = "Device Base";
 	} else {
-		$queryMacro = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, true, $indicatorHasSplit);
+		$queryMacro = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, $isSingleScenario, $indicatorHasSplit);
 		$indiName2 = $indicatorName;
 	};		
+// -----------demand by chemistry tab with some exogenous vars---------
+} else if ($exportTypeID == 2) {				
+	$tabName  = "Demand"; $tabName2  = "Input_Indicators";	
+	$indiName = "Demand Split By Chemistry"; 
+	$query      = $sqlMaker->formGetDemandByChemistry($cntryIDs, $scenID, $isRegion, $showPerHH);
 	
+	if (($rw[0] == 401)||($indis[0] == 401))  {
+		$queryMacro = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, 1);	
+		$indiName2 = "Device Base";
+	} else {
+		$queryMacro = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, $isSingleScenario, $indicatorHasSplit);
+		$indiName2 = $indicatorName;
+	};		
 };
 
 $select_result = mysql_query($query); 
@@ -105,10 +117,14 @@ if ($select_result) {
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1,  $m + 1, $row["countryName"]);		
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 1, $indiName);				
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 1, (($showPerHH > 0) ? ($indicatorUnit.", per HH")       : $indicatorUnit));	
-		if (($indis[0] == 204)||($indis[0] ==206))      { $rz = ($sizeNames[$row["typeID"]    - 1]); } 
-		else if ($indis[0] == 205)              { $rz = ("Built-In RCR"); 					} 
-		else if (max($batTypeID, $pwrID) > 0)	{ $rz = ($sizeNames[$row["batTypeID"] - 1]); };
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 1, ((max($batTypeID, $pwrID) > 0) ? $rz : "All types"   ));				
+		
+		if (($indis[0] == 204)||($indis[0] ==206))      { $rz = ($sizeNames[$row["typeID"]      - 1]); } 
+		else if ($indis[0] == 205)              		{ $rz = ("Built-In RCR"); 	} 
+		else if ($exportTypeID == 2) 					{ $rz = ($chemNames[$row["chemistryID"] - 201]); } 
+		else if (max($batTypeID, $pwrID) > 0)			{ $rz = ($sizeNames[$row["batTypeID"]   - 1]); }
+		else 											{ $rz = ("All types"); 	};
+		
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 1, $rz);				
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 1, (($aggLevel  > 0) ? ($row["deviceName"]) : "All devices" ));		
 		for ($u = 0; $u < 16; $u++) {	
 			$yr = (string)("Y".(string)(2006+$u));
@@ -118,7 +134,7 @@ if ($select_result) {
 	}//while row
 		
 // ---------------- data export for macro---------------------------
-		if (($exportTypeID == 1)&&(!$isRegion)) {
+		if (($exportTypeID  > 0) && (!$isRegion)) {
 			$select_resultMacro = mysql_query($queryMacro); 
 			if ($select_resultMacro) {	
 				$i = 0;	$n = 0;
@@ -147,7 +163,7 @@ if ($select_result) {
 					$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 1, (($showPerHH > 0) ? ($indicatorUnit.", per HH")       : $indicatorUnit));	
 					if (($indis[0] == 204)||($indis[0] ==206))      { $rz = ($sizeNames[$row["typeID"]    - 1]); } 
 					else if ($indis[0] == 205)              { $rz = ("Built-In RCR"); 	} 
-					else if ($rw[0] == 401) 				{ $rz = "All types"; }
+					else if ($rw[0] == 401) 				{ $rz = "All types"; }					
 					else if (max($batTypeID, $pwrID) > 0)	{ $rz = ($sizeNames[$row["batTypeID"] - 1]); };
 					$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(4,  $m + 1, ((max($batTypeID, $pwrID) > 0) ? $rz : "All types"   ));				
 					$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(5,  $m + 1, (($aggLevel  > 0) ? ($row["deviceName"]) : "All devices" ));		

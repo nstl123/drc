@@ -587,8 +587,8 @@
 		!-->
 		<s:RadioButton x="245" label="9V"  value="4" groupName="batTypes" click="batTypes_clickHandler(event)" fontSize="11" 
 					   fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10"/>
-		<s:RadioButton label="Coin And Button"  value="6" groupName="batTypes" click="batTypes_clickHandler(event)" 
-					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" label.default="C&amp;B/Spec." y.viewingOnly="10"/>
+		<s:RadioButton value="6" groupName="batTypes" click="batTypes_clickHandler(event)" 
+					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" label="C&amp;B/Spec." y.viewingOnly="10"/>
 		<s:RadioButton x="227" label="Hearing Aid"  value="7" groupName="batTypes" click="batTypes_clickHandler(event)" 
 					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10" id="radioHA" enabled="false"/>		
 		

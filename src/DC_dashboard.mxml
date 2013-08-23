@@ -33,6 +33,7 @@
 		<s:CallResponder id="indicatorsNamesList" result="indicatorsNamesList_resultHandler(event)" /> 
 		
 		<s:RadioButtonGroup id="viewingModeGroup"/>
+		<s:RadioButtonGroup id="fdown_radio" />		
 
 		<s:CallResponder id="insertExportIdsResult" result="insertExportIdsResult_resultHandler(event)"
 						  fault="insertExportIdsResult_faultHandler(event)"/>
@@ -308,13 +309,14 @@
 			protected function refreshAllTabs(evt:Event):void {
 				this.masterTab.setStatusLabel("Data Prepation Done");
 				this.dispatchEvent(new Event("updateStatusLabel", true));
-				/*this.panelTabA2.refreshData(null);
+				
+				this.panelTabA2.refreshData(null);
 				this.panelTabB3.refreshData(null);		
 				if (this.panelTabC4.getWorkingScenario() == 0) 
 					this.panelTabC4.setWorkingScenario(this.workingScenarioID, false);				
-				this.panelTabD5.refreshData(null);*/				
+				this.panelTabD5.refreshData(null);				
 				this.panelTabF51.refreshData(null);
-				/*this.panelTabE61.refreshData(null);*/
+				this.panelTabE61.refreshData(null);
 				
 				this.cntryTree.resetScenarioCountries();
 			}
@@ -352,8 +354,9 @@
 			}
 			
 			protected function refreshSzWeightedIndis(evt:Event):void {
-				this.masterTab.setStatusLabel("Data Preparation Done");
-				this.dispatchEvent(new Event("updateStatusLabel", true));
+				//this.masterTab.setStatusLabel("Data Preparation Done");				
+				this.refreshAllTabs(null);				
+				//this.dispatchEvent(new Event("updateStatusLabel", true));
 			}
 			
 			protected function refreshReplacementRates(evt:Event):void {
@@ -990,7 +993,7 @@
 			}
 			
 			//public var address:String = "192.168.44.200";
-			public var address:String = "213.197.173.50";
+			public var address:String = "213.197.173.50";			
 			protected function exportToExcel():void 	{	
 				var tmpDevices:int = 0;	
 				var tmpBatTypes:int = 0;				
@@ -1025,9 +1028,10 @@
 
 			private var visibleDown:Boolean = false;
 			protected function button1_clickHandler(event:MouseEvent):void
-			{
-				visibleDown = !visibleDown;
-				this.fdwn.visible = visibleDown;					
+			{				
+				this.fdwn.visible = true;
+				this.selFileToDownload = int(this.fdown_radio.selectedValue);
+				this.fdwn.startDownload(this.selFileToDownload);
 			}
 
 			protected function fdwn_creationCompleteHandler(event:FlexEvent):void
@@ -1036,8 +1040,21 @@
 			}
 			
 			protected function hidePlate(evt:Event):void {
-				visibleDown = !visibleDown;
-				this.fdwn.visible = visibleDown;
+				//visibleDown = !visibleDown;
+				this.fdwn.visible = false;
+			}
+
+			private var selFileToDownload:int  = 1;
+			protected function fileDownRadio_clickHandler(event:Event):void
+			{
+				this.selFileToDownload = int(this.fdown_radio.selectedValue);
+			}
+
+
+			protected function downTutorial_clickHandler(event:MouseEvent):void
+			{
+				this.fdwn.visible = true;
+				this.fdwn.startDownload(4);
 			}
 
 		]]>
@@ -1074,27 +1091,29 @@
 		<s:Button label="Next &gt;&gt;" width="110" height="25" id="btnNext" 
 				  click="btnNext_clickHandler(event)"				   
 				  fontWeight="bold" fontFamily="Arial" fontSize="12"  right="5" 
-				  verticalCenter="0"/>
+				  verticalCenter="0" cornerRadius="1"/>
 		<s:Button label="&lt;&lt; Back" width="110" height="25" 
 				  verticalCenter="0" id="btnBack"  click="btnBack_clickHandler(event)"  
 				  fontWeight="bold" fontFamily="Arial" fontSize="12"
-				  enabled.landingState="false"  right="130"/>
+				  enabled.landingState="false"  right="130" cornerRadius="1"/>
 		<!-- <s:Label  text="emptyLabel" id="currentStateLabel" verticalCenter="0" 
 				 fontFamily="Verdana"  fontSize="12"/> !-->
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.32_wDown"/> 
+				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.33"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
-				  height="25" 
-				  verticalCenter="0" horizontalCenter="-25" width="125"		  
-				   />
+				  height="25" width="125"		  
+				  fontFamily.viewingState="Arial" fontSize.viewingState="12" horizontalCenter="6" verticalCenter="0" cornerRadius="1"/>
 		<s:Label includeIn="scenarioState" text="Status:" fontWeight="normal" fontSize="11" 
 				 fontFamily="Arial" fontStyle="normal" textDecoration="none" color="#247BDC" 
-				 verticalCenter="0" textAlign="left" width="206" id="statusBar" left="557" 
+				 verticalCenter="0" textAlign="left" width="183" id="statusBar" left="580" 
 				 height="35" verticalAlign="middle" backgroundAlpha="0.0" />
+		<s:Button includeIn="landingState"
+				  label="Tutorial" verticalCenter="0" height="25" right="255" width="110"
+				  fontWeight="bold" cornerRadius="1" id="downTutorial" click="downTutorial_clickHandler(event)"/>
 	</s:BorderContainer>
 
 	<s:BorderContainer height="30" excludeFrom="landingState" 
@@ -1128,9 +1147,14 @@
 		<mx:Text width="569" text="Choose this selection to look at the data output from the base case scenario. Output includes battery powered device data (in units), and battery demand forecast (in cells)." 
 				 y="231" height="45" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
 		<mx:Text width="557" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="295" height="94" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
-		<s:RadioButton includeIn="landingState" label="Final Data File (XLS)" y="429" left="246" enabled="false" color="#656565"/>
-		<s:RadioButton label="Executive Summary (PPT)" y="457" left="246" enabled="false" color="#656565"/>
-		<s:RadioButton label="Full Report (PPT)" y="483" left="246" enabled="true" color="#656565" selected="true"/>
+		
+		<s:RadioButton groupName="fdown_radio" includeIn="landingState" label="Final Data File (XLS)" y="429" left="246" 
+					   enabled="true" color="#656565" selected="true" value="1" click="fileDownRadio_clickHandler(event)"/>
+		<s:RadioButton groupName="fdown_radio" label="Executive Summary (PPT)" left="246" enabled="true" 
+					   color="#656565" top="457" value="2"  click="fileDownRadio_clickHandler(event)"/>
+		<s:RadioButton groupName="fdown_radio" label="Full Report (PPT)" y="483" left="246" enabled="true" 
+					   color="#656565" value="3"  click="fileDownRadio_clickHandler(event)"/>
+		
 		<s:Label text="Get final project files" fontWeight="bold" fontSize="14" left="200" top="398" color="#000000"/>
 	
 		<mx:Text text="If you have questions or need support using this tool, please contact the following:&#13;
@@ -1141,8 +1165,8 @@
 
 		<controls:fileIO id="fdwn" visible="false"
 						 creationComplete="fdwn_creationCompleteHandler(event)" left="400" top="250" width="289"/>
-		<s:Button includeIn="landingState" x="429" y="457" label="Save Data to Local Drive" 
-				  click="button1_clickHandler(event)"/>
+		<s:Button includeIn="landingState" label="Save to local drive" 
+				  click="button1_clickHandler(event)" height="25" top="457" left="437"/>
 	</s:BorderContainer>
 
 <s:BorderContainer width="992" height="100%" borderVisible="false" 

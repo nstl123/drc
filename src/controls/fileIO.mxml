@@ -16,15 +16,19 @@
 			/** * Define reference to the "Cancel" button which will immediately stop
 			 * the current download in progress. */
 			private var btn:Button;
+			private var btnOK:Button;
 			//private var address:String = "192.168.44.200";
 			private var address:String = "213.197.173.50";
+			private var fileID:int;
 			
 			public function init():void
 			{
 				// Set up the references to the progress bar and cancel button,
 				// which are passed from the calling script.
 				this.pb  = this.downloadProgress;
+				this.pb.label = "";
 				this.btn = this.cancelDownloadBtn;
+				this.btnOK = this.startDownloadBtn;	
 				
 				fr = new FileReference();
 				fr.addEventListener(Event.OPEN, openHandler);
@@ -33,15 +37,20 @@
 			}
 			
 			/** * Begin downloading the file specified in the DOWNLOAD_URL constant.*/
-			public function startDownload():void
+			//1 - finalData; 2 - exwec summary; 3 - full del; 4 -tutorial
+			private var fileNames:Array = new Array("Final Data file.zip", "Executive Summary.pptx", "Full Deliverable.pdf", "Tutorial.pdf");
+			public function startDownload(fileID:int):void
 			{
+				this.fileID = fileID;				
 				var request:URLRequest = new URLRequest();				
-				var fullSmry:String = "EMI-Duracell DBCM Full Report_CN, IN, BR, TR.pdf";
+				var fullSmry:String = this.fileNames[this.fileID - 1];				
+				
 				var u:String = "http://" + address
 							   + "/Consulting/Duracell/testData/"
 							   + fullSmry;	
 
 				request.url = u;
+				this.btnOK.enabled = false;
 				fr.download(request);
 			}
 			
@@ -65,9 +74,10 @@
 			 * already completed.	 */
 			private function completeHandler(event:Event):void
 			{
-				pb.label = "DOWNLOAD COMPLETE";
-				btn.enabled = false;				
-				Alert.show("Download Complete", "Info");
+				pb.label = "PROGRESS";
+				btn.enabled = true;		
+				this.btnOK.enabled = true;
+				//Alert.show("Download Complete", "Info");
 				this.dispatchEvent(new Event("downloadFinished", true));				
 			}
 			
@@ -75,18 +85,18 @@
 			public function cancelDownload():void
 			{
 				fr.cancel();
-				pb.label = "DOWNLOAD CANCELLED";
-				btn.enabled = false;
+				//pb.label = "DOWNLOAD CANCELLED ";
+				//btn.enabled = false;
 				this.dispatchEvent(new Event("downloadFinished", true));
 			}
 		]]>
 	</fx:Script>
 	
 	<mx:Panel title="Download File" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
-		<mx:ProgressBar id="downloadProgress" label="" mode="manual" />
+		<mx:ProgressBar id="downloadProgress" label="" mode="manual"  width="100%"/>
 		<mx:ControlBar horizontalAlign="right">
-			<mx:Button id="startDownloadBtn"  label="Download..." click="startDownload();"  />
-			<mx:Button id="cancelDownloadBtn" label="Cancel" click="cancelDownload();" 
+			<mx:Button id="startDownloadBtn" visible="true" enabled="false" label="OK" click=""  />
+			<mx:Button id="cancelDownloadBtn" label="Cancel"     click="cancelDownload();" 
 					   enabled="true" />
 		</mx:ControlBar>
 	</mx:Panel>

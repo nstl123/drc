@@ -82,12 +82,14 @@
 			{
 				this.cursorManager.removeBusyCursor();
 				
-				currentData = this.getMacroDataCategory.lastResult as ArrayCollection;			
-				this.currentDataChart.source = this.currentData.source;
-				this.currentDataGrid.source  = this.currentData.source;
+				currentData = this.getMacroDataCategory.lastResult as ArrayCollection;		
+				if (this.currentData) {
+					this.currentDataChart.source = this.currentData.source;
+					this.currentDataGrid.source  = this.currentData.source;
 				
-				//deviceListDrop_changeHandler(null);
-				this.dispatchEvent(new Event("updateCharts", false));
+					//deviceListDrop_changeHandler(null);
+					this.dispatchEvent(new Event("updateCharts", false));
+				};
 			}
 
 			protected function getDeviceBase_resultHandler(event:ResultEvent):void

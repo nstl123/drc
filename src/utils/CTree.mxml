@@ -492,8 +492,10 @@
 			}
 			
 			protected function handleHA():void {
-				//if (this.deviceListDrop_C.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
-				var isHA:Boolean = (this.deviceListDrop_C.selectedItem.categoryID == 213);
+				var isHA:Boolean = false;
+				if (this.deviceListDrop_C.selectedItem){
+					isHA = (this.deviceListDrop_C.selectedItem.categoryID == 213);
+				}
 				this.radioHA.enabled = isHA;
 				this.radioHA.selected = isHA;
 				
@@ -626,7 +628,7 @@
 						   click="batTypes_clickHandler(event)"/>
 			<s:RadioButton x="423" y="75" label="9V"  value="4" groupName="batTypes_C" fontFamily="Arial" fontSize="11" enabled="true" selected="false"
 						   click="batTypes_clickHandler(event)"/>
-			<s:RadioButton x="430" y="75" label="Coin And Button"  value="6" groupName="batTypes_C"  fontFamily="Arial" fontSize="11" enabled="true" selected="false"
+			<s:RadioButton x="430" y="75" label="C&amp;B/Spec."  value="6" groupName="batTypes_C"  fontFamily="Arial" fontSize="11" enabled="true" selected="false"
 						   click="batTypes_clickHandler(event)"/>
 			<s:RadioButton x="440" y="75" label="Hearing Aid"  value="7" groupName="batTypes_C" fontFamily="Arial" fontSize="11" selected="false"
 						   click="batTypes_clickHandler(event)" enabled="false" id="radioHA"/> 	

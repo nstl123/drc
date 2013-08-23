@@ -175,9 +175,11 @@
 				this.cursorManager.removeBusyCursor();
 				
 				this.currentData = this.getMacroDataResult.lastResult as ArrayCollection;				
-				this.currentDataChart.source = this.currentData.source;
-				this.currentDataGrid.source  = this.currentData.source;				
-				this.dispatchEvent(new Event("updateCharts", false));
+				if (this.currentData) {
+					this.currentDataChart.source = this.currentData.source;
+					this.currentDataGrid.source  = this.currentData.source;								
+					this.dispatchEvent(new Event("updateCharts", false));
+				};
 			}
 			
 			private function filterGrid(item:Object):Boolean {				

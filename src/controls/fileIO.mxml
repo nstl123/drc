@@ -38,7 +38,13 @@
 			
 			/** * Begin downloading the file specified in the DOWNLOAD_URL constant.*/
 			//1 - finalData; 2 - exwec summary; 3 - full del; 4 -tutorial
-			private var fileNames:Array = new Array("Final Data file.zip", "Executive Summary.pptx", "Full Deliverable.pdf", "Tutorial.pdf");
+			private var fileNames:Array = new Array(
+				"Final Data file.zip", 
+				"Executive Summary.pdf", 
+				"Executive Summary.pptx",
+				"15 Focus Market Charts.pdf",
+				"15 Focus Market Charts.pptx",				
+				"Tutorial.pdf");
 			public function startDownload(fileID:int):void
 			{
 				this.fileID = fileID;				
@@ -74,7 +80,7 @@
 			 * already completed.	 */
 			private function completeHandler(event:Event):void
 			{
-				pb.label = "PROGRESS";
+				pb.label = "INITIATING";
 				btn.enabled = true;		
 				this.btnOK.enabled = true;
 				//Alert.show("Download Complete", "Info");

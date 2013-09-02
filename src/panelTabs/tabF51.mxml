@@ -147,7 +147,7 @@
 			
 			private function filterB(item:Object):Boolean {				
 				var fl:Boolean = true;				
-				( ((item.id >= 204)&&(item.id <= 206))||(item.id == 277) ) ?  fl = true : fl = false;				
+				( ((item.id >= 204)&&(item.id <= 207))||(item.id == 277) ) ?  fl = true : fl = false;				
 				return fl;
 			}					
 			
@@ -185,6 +185,8 @@
 							tmpType = this.selPwrType; break;					
 						case 206: 
 							tmpType = this.selBatType; break;
+						case 207: 
+							tmpType = 0; fl = false; break;
 						case 277: 
 							tmpType = 0;
 							fl = false;
@@ -409,18 +411,22 @@
 				var lbls:String = this.batTypes.selection.label;			
 				var lbl : String = "";
 				var enFlag:Boolean = true;
+				var addValue:Boolean = true;
 				
 				if (this.indicatorsBox.selectedItem){
 					if ((indicatorsBox.selectedItem.id == 204)||(indicatorsBox.selectedItem.id == 206)) {
 						lbl = lbls;	enFlag = true;
-					} else 	if (indicatorsBox.selectedItem.id == 205) {
-						//lbl = lblp;
+						addValue = true;
+					} else 	if (indicatorsBox.selectedItem.id == 205) {						
 						enFlag = false;
+						addValue = true;
+					} else if ((indicatorsBox.selectedItem.id == 207)||(indicatorsBox.selectedItem.id == 277)) {
+						addValue = false;
 					};				
 				};		
 				
-				this.pwrTypes.enabled = !enFlag;				
-				this.batTypes.enabled = enFlag;				
+				this.pwrTypes.enabled =!enFlag && addValue;				
+				this.batTypes.enabled = enFlag && addValue;				
 				this.flMngr.setSelBatType(this.selBatType * int(enFlag) );
 				this.flMngr.setSelPwrType(this.selPwrType * int(!enFlag));
 				

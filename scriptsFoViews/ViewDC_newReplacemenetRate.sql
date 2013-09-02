@@ -1,6 +1,7 @@
 CREATE ALGORITHM=UNDEFINED DEFINER=`cFullUserPW`@`%` SQL SECURITY DEFINER VIEW `DC_newReplacementRate` AS 
 
 select `rp0`.`scenarioID` AS `scenarioID`,`rp0`.`countryID` AS `countryID`,`rp0`.`deviceID` AS `deviceID`,
+-- rp0.Y2006 as Y2006, rp0.Y2007 as Y2007, rp0.Y2008 as Y2008, rp0.Y2009 as Y2009, rp0.Y2010 as Y2010, rp0.Y2011 as Y2011,
 (((1 - `nosh`.`Y2006`) * `rp0`.`Y2006`) + (`nosh`.`Y2006` * ((1 - ifnull((floor(`rp0`.`Y2006`) DIV floor(`rp0`.`Y2006`)),0)) + (ifnull((floor(`rp0`.`Y2006`) DIV floor(`rp0`.`Y2006`)),0) * ((`rp0`.`Y2006` / 2) + (1 / (2 * `rp0`.`Y2006`))))))) AS `Y2006`,
 (((1 - `nosh`.`Y2007`) * `rp0`.`Y2007`) + (`nosh`.`Y2007` * ((1 - ifnull((floor(`rp0`.`Y2007`) DIV floor(`rp0`.`Y2007`)),0)) + (ifnull((floor(`rp0`.`Y2007`) DIV floor(`rp0`.`Y2007`)),0) * ((`rp0`.`Y2007` / 2) + (1 / (2 * `rp0`.`Y2007`))))))) AS `Y2007`,
 (((1 - `nosh`.`Y2008`) * `rp0`.`Y2008`) + (`nosh`.`Y2008` * ((1 - ifnull((floor(`rp0`.`Y2008`) DIV floor(`rp0`.`Y2008`)),0)) + (ifnull((floor(`rp0`.`Y2008`) DIV floor(`rp0`.`Y2008`)),0) * ((`rp0`.`Y2008` / 2) + (1 / (2 * `rp0`.`Y2008`))))))) AS `Y2008`,

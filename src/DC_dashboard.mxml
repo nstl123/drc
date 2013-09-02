@@ -1054,7 +1054,7 @@
 			protected function downTutorial_clickHandler(event:MouseEvent):void
 			{
 				this.fdwn.visible = true;
-				this.fdwn.startDownload(4);
+				this.fdwn.startDownload(6);
 			}
 
 		]]>
@@ -1148,13 +1148,6 @@
 				 y="231" height="45" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
 		<mx:Text width="557" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="295" height="94" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
 		
-		<s:RadioButton groupName="fdown_radio" includeIn="landingState" label="Final Data file (XLS – 8 MB)" y="429" left="246" 
-					   enabled="true" color="#656565" selected="true" value="1" click="fileDownRadio_clickHandler(event)"/>
-		<s:RadioButton groupName="fdown_radio" label="Executive Summary (PDF – 6 MB)" left="246" enabled="true" 
-					   color="#656565" top="457" value="2"  click="fileDownRadio_clickHandler(event)"/>
-		<s:RadioButton groupName="fdown_radio" label="Full Deliverable (PDF – 7 MB)" y="483" left="246" enabled="true" 
-					   color="#656565" value="3"  click="fileDownRadio_clickHandler(event)"/>
-		
 		<s:Label text="Get final project files" fontWeight="bold" fontSize="14" left="200" top="398" color="#000000"/>
 	
 		<mx:Text text="If you have questions or need support using this tool, please contact the following:&#13;
@@ -1166,7 +1159,22 @@
 		<controls:fileIO id="fdwn" visible="false"
 						 creationComplete="fdwn_creationCompleteHandler(event)" left="400" top="250" width="289"/>
 		<s:Button includeIn="landingState" label="Save to local drive" 
-				  click="button1_clickHandler(event)" height="25" top="457" left="455"/>
+				  click="button1_clickHandler(event)" height="25" top="460" left="478"/>
+		<s:BorderContainer x="225" y="420" backgroundAlpha="0.0" width="250" borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:RadioButton groupName="fdown_radio" includeIn="landingState" label="Final Data file (XLS – 8 MB)" y="13" 
+						   enabled="true" color="#656565" selected="true" value="1" click="fileDownRadio_clickHandler(event)" x="1"/>
+			<s:RadioButton groupName="fdown_radio" label="Executive Summary (PDF – 3 MB)" enabled="true" 
+						   color="#656565" value="2"  click="fileDownRadio_clickHandler(event)" x="1" y="41"/>
+			<s:RadioButton groupName="fdown_radio" label="Executive Summary (PPT – 6 MB)" enabled="true" 
+						   color="#656565" value="3"  click="fileDownRadio_clickHandler(event)" x="1" y="54"/>
+			<s:RadioButton groupName="fdown_radio" label="15 Focus Market Charts (PDF – 4 MB)" y="67" enabled="true" 
+						   color="#656565" value="4"  click="fileDownRadio_clickHandler(event)" x="1"/>
+			<s:RadioButton groupName="fdown_radio" label="15 Focus Market Charts (PPT – 13 MB)" enabled="true" 
+						   color="#656565" value="5"  click="fileDownRadio_clickHandler(event)"/>
+		</s:BorderContainer>
 	</s:BorderContainer>
 
 <s:BorderContainer width="992" height="100%" borderVisible="false" 

@@ -300,14 +300,14 @@
 			
 			protected function updateStatusLabel(evt:Event):void {
 				if (statusBar) {this.statusBar.text = this.masterTab.getStatusLabel(); };
-				if (this.masterTab.getStatusLabel() == "Status: Data Prepation Done") { 
+				if (this.masterTab.getStatusLabel() == "Status: Data Preparation Done") { 
 					this.cursorManager.removeAllCursors();
 					this.cursorManager.removeBusyCursor();
 				};
 			}		
 			
 			protected function refreshAllTabs(evt:Event):void {
-				this.masterTab.setStatusLabel("Data Prepation Done");
+				this.masterTab.setStatusLabel("Data Preparation Done");
 				this.dispatchEvent(new Event("updateStatusLabel", true));
 				
 				this.panelTabA2.refreshData(null);

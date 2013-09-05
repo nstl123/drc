@@ -156,7 +156,10 @@
 					vaxis1.baseAtZero = false;
 					vaxis2.baseAtZero = false;
 					vaxis1.labelFunction = this.defineLabel;				
-					if ((indi == 206)&&(isDevice))	this.vaxis1.maximum = 10; 
+					if ( (indi == 206)&&(isDevice) )	this.vaxis1.maximum = 10;
+					else 
+					if ( (indi == 204)||(indi == 205) ) this.vaxis1.maximum = 1;				
+					
 					else 							this.vaxis1.maximum= NaN;
 					//vaxis2.labelFunction = this.defineLabel;
 					mySeries.push(series2);

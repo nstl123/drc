@@ -94,7 +94,8 @@ class Depot5_sqlFormation {
 			return ($mainStmnt);	
 	}
 
-	public function formGetDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH) {
+	public function formGetDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH, $singleScenario) {
+		$scenarioClause = (($singleScenario == 1) ? "(10001)" :  "(".$scenarioID.", 10001)" );
 		$getWorldData = 0; $hasOtherCountries = 0;
 		
 		$countryArray = explode(",", $countryIDs); // (array)($countryIDs);			
@@ -149,7 +150,8 @@ class Depot5_sqlFormation {
 					JOIN Consulting.DC_namesDevicesVisual devNam ON devNam.id = deviceID
 					JOIN Consulting.DC_namesDeviceCategories devCat ON devCat.id = devNam.categoryID					
 					JOIN Consulting.DC_scenarioData sdt ON ((sdt.countryID = dm.countryID) AND (sdt.scenarioID = dm.scenarioID))
-				WHERE dm.scenarioID IN (10001, ".$scenarioID.") AND sdt.indicatorID = 101".
+				WHERE dm.scenarioID IN ".$scenarioClause."
+				AND sdt.indicatorID = 101".
 				($typeID > 0 ? " AND batTypeID = ".$typeID : "").($pwrID > 0 ? " AND pwrTypeID = ".$pwrID : "");				
 				
 		$selFields = "scenarioID,  indicatorID, deviceName, categoryName, countryID, countryName, regionID \r\n".
@@ -347,7 +349,8 @@ class Depot5_sqlFormation {
 		return $mainQ;			
 	} 
 
-	public function formGetDemandByChemistry($countryIDs, $scenarioID, $isRegion, $perHH) {
+	public function formGetDemandByChemistry($countryIDs, $scenarioID, $isRegion, $perHH, $singleScenario) {
+		$scenarioClause = (($singleScenario == 1) ? "(10001)" :  "(".$scenarioID.", 10001)" );
 		$useCluster = 0;
 		($isRegion > 1) ? $useCluster = "cluster" : $useCluster = "region";
 	
@@ -384,7 +387,7 @@ class Depot5_sqlFormation {
 			    ($perHH    > 0 ? "
 					JOIN Consulting.DC_scenarioData sdt 
 					ON ((sdt.countryID = dma.countryID) AND (sdt.scenarioID = dma.scenarioID))" : "")."					
-			WHERE dma.scenarioID IN (".$scenarioID.", 10001)".				
+			WHERE dma.scenarioID IN ".$scenarioClause.			
 				($isRegion > 0 ? " AND nc.".$useCluster : " AND dma.countryID ")." IN ".$countryList.
 				($perHH    > 0 ? " AND sdt.indicatorID = 101" : "")."				
 			GROUP BY dma.scenarioID, chemistryID".

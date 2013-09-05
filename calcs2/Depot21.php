@@ -77,7 +77,8 @@ class Depot21 {
 	// scenarioProxy data is distinct that uses proxy countries
 	public function getMacroDataCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames) {		
 		$rawText =  new Depot5_sqlFormation();
-		$mainStmnt = $rawText->formGetMacroCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames, false, false);
+		$mainStmnt = $rawText->formGetMacroCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames, 0, 0);		
+		//$mainStmnt = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, $isSingleScenario, $indicatorHasSplit);
 		
 		$a = array('a'=>"");		
 		$result = $this->connection->fetchAll($mainStmnt); 
@@ -88,7 +89,7 @@ class Depot21 {
 	
 	public function getDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH) { 							
 		$rawText =  new Depot5_sqlFormation();
-		$mainStmnt = $rawText->formGetDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH);
+		$mainStmnt = $rawText->formGetDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH, 0);
 		
 		$a = array('a'=>"");		
 		$result = $this->connection->fetchAll($mainStmnt); 
@@ -110,7 +111,7 @@ class Depot21 {
 	
 	public function getDemandByChemistry($countryIDs, $scenarioID, $isRegion, $perHH) {
 		$rawText =  new Depot5_sqlFormation();
-		$mainStmnt = $rawText->formGetDemandByChemistry($countryIDs, $scenarioID, $isRegion, $perHH);
+		$mainStmnt = $rawText->formGetDemandByChemistry($countryIDs, $scenarioID, $isRegion, $perHH, 0);
 		
 		$a = array('a'=>"");		
 		$result = $this->connection->fetchAll($mainStmnt); 

@@ -1003,7 +1003,7 @@
 					tmpPwrTypes = masterTab.selPwrType;
 				} else if (indicatorID == 204) {
 					tmpBatTypes = masterTab.selBatType;
-				} else if (indicatorID == 277) {
+				} else if ( (indicatorID == 277) || (indicatorID == 207) ) {
 					tmpBatTypes = 0;
 					tmpPwrTypes = 0; 
 				} else {				

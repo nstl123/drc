@@ -59,16 +59,18 @@ $indiName = $indicatorName;
 
 if (($exportTypeID == 0) and ($indis[0] < 401)) {
 	$query = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, $isSingleScenario, $indicatorHasSplit);
+	$indicatorUnit2 = $indicatorUnit;
 } else if ( ($exportTypeID == 0) and ($indis[0] == 401) ) { 
-	$query = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, 1);	
+	$query = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, $isSingleScenario);	
+	$indicatorUnit2 = $indicatorUnit;
 // -----------demand tab with some exogenous vars---------
 } else if ($exportTypeID == 1) {				
 	$tabName  = "Demand"; $tabName2  = "Input_Indicators";	
 	$indiName = "Demand"; 
-	$query      = $sqlMaker->formGetDemandData($cntryIDs, $scenID, $batTypeID, $pwrID, $isRegion, $aggLevel, $showPerHH);
+	$query      = $sqlMaker->formGetDemandData($cntryIDs, $scenID, $batTypeID, $pwrID, $isRegion, $aggLevel, $showPerHH, $isSingleScenario);
 	
 	if ($rw[0] == 401) {
-		$queryMacro = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, 1);	
+		$queryMacro = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, $isSingleScenario);	
 		$indiName2 = "Device Base";
 	} else {
 		$queryMacro = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, $isSingleScenario, $indicatorHasSplit);
@@ -78,10 +80,10 @@ if (($exportTypeID == 0) and ($indis[0] < 401)) {
 } else if ($exportTypeID == 2) {				
 	$tabName  = "Demand"; $tabName2  = "Input_Indicators";	
 	$indiName = "Demand Split By Chemistry"; 
-	$query      = $sqlMaker->formGetDemandByChemistry($cntryIDs, $scenID, $isRegion, $showPerHH);
+	$query      = $sqlMaker->formGetDemandByChemistry($cntryIDs, $scenID, $isRegion, $showPerHH, $isSingleScenario);
 	
 	if (($rw[0] == 401)||($indis[0] == 401))  {
-		$queryMacro = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, 1);	
+		$queryMacro = $sqlMaker->formGetDeviceBase($cntryIDs, $scenID, 0, $isRegion, $aggLevel, $showPerHH, $isSingleScenario);	
 		$indiName2 = "Device Base";
 	} else {
 		$queryMacro = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, $isSingleScenario, $indicatorHasSplit);
@@ -115,8 +117,9 @@ if ($select_result) {
 	while ($row = mysql_fetch_array($select_result, MYSQL_ASSOC)) {
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(0,  $m + 1, (($row["scenarioID"]==10001) ? "baseline" : "workingScenario")  );	
 		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(1,  $m + 1, $row["countryName"]);		
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 1, $indiName);				
-		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 1, (($showPerHH > 0) ? ($indicatorUnit.", per HH")       : $indicatorUnit));	
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(2,  $m + 1, $indiName);		
+		
+		$phpExcel->getActiveSheet()->setCellValueByColumnAndRow(3,  $m + 1, (($showPerHH > 0) ? ($indicatorUnit2.", per HH")       : $indicatorUnit2));	
 		
 		if (($indis[0] == 204)||($indis[0] ==206))      { $rz = ($sizeNames[$row["typeID"]      - 1]); } 
 		else if ($indis[0] == 205)              		{ $rz = ("Built-In RCR"); 	} 

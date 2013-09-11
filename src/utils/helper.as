@@ -91,7 +91,8 @@ package utils
 				if (!isLevel) {
 					for (var jj:int = newObj.length - 1; jj > 0 ; jj--) {
 						var f:Object;
-						(newObj[jj - 1] != 0) ? f = ((newObj[jj].data/newObj[jj-1].data)- 1)*100: f = null;						
+						// we could use null or 0-s interchangeably
+						f = ( (newObj[jj - 1].data != 0) ? ((newObj[jj].data/newObj[jj-1].data)-1)*100 : 0 );												
 						newObj[jj].data = f;
 					};				
 					newObj[0].data = null;

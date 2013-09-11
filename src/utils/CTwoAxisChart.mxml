@@ -177,7 +177,7 @@
 				this.redrawColors();							
 			}
 			
-			private var pssprtQualitativeMapColours:Array = [0x00AED9,0xF7941E,0xAB6DAD, 0xFFCB05, 0x50B848, 0xDA2128, 0x91632E, 0x0072BC];			
+			private var pssprtQualitativeMapColours:Array = [0x00AED9,0xF7941E,0xAB6DAD,0xFFCB05,0x50B848,0xDA2128,0x91632E,0x0072BC,0xAC161B];			
 			private static var baselineScenarioID:int = 10001;
 			
 			public function redrawLegend():void {
@@ -305,7 +305,8 @@
 			<s:Label text="Label" width="100%" height="15" verticalAlign="middle" textAlign="center" fontSize="10" id="chartSubtitle"/>
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
-	
+
+
 	<mx:verticalAxisRenderers>
  		<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
 			 <mx:axisStroke>

@@ -138,10 +138,10 @@
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					Alert.show("Please select at least one country", "Selection error");
 				} else {						
-					/*if (this.dataList.length >= 10 ) {
-						Alert.show("Maximum number of selected counties should less of equal to 10", "Info");
+					if (this.dataList.length > 10 ) {
+						//Alert.show("Maximum number of selected counties should less of equal to 10", "Info");
 						this.dataList.source.splice(10, this.dataList.source.length - 10);
-					};*/				
+					};				
 					var countryIDs:Array = this.dataList.source;				
 					var tmp:String = this.hlp.formStringFromIDs2(countryIDs);				
 					
@@ -502,8 +502,8 @@
 				if ((!this.dataList)||(this.dataList.length < 1)) {					
 					//Alert.show("Please Select at least one country", "Selection Error");
 				} else { 						
-					if (this.dataList.length >= 10 ) {
-						Alert.show("Maximum number of selected counties should less of equal to 10", "Info");
+					if (this.dataList.length > 10 ) {
+						//Alert.show("Maximum number of selected counties should less of equal to 10", "Info");
 						this.dataList.source.splice(10, this.dataList.source.length - 10);
 					};		
 					var countryIDs:Array = this.dataList.source;		

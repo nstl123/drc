@@ -113,18 +113,18 @@
 			//increment number of checked elements
 			private function onIncrValue(e:Event):void
 			{
-				checkedCount++;
-				
-				if (checkedCount == 1)
+				//checkedCount++;
+				// we never have > 10 regions
+				//if (checkedCount == 1)
 					dispatchEvent(new Event(CCheckBoxGrid.CHECKED, true));
 			}
 			
 			//decrement number of checked elements
 			private function onDecrValue(e:Event):void
 			{
-				checkedCount--;
+				//checkedCount--;
 				
-				if (checkedCount == 0)
+				//if (checkedCount == 0)
 					dispatchEvent(new Event(CCheckBoxGrid.UNCHECKED, true));
 			}
 

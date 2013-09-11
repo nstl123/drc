@@ -75,7 +75,8 @@
 				
 			public function get count():uint
 			{
-				return checkedCount;
+				//return checkedCount;
+				return this.flowManager.getCheckedCount();
 			}	
 			
 			public var labelText:String;		
@@ -97,6 +98,7 @@
 				return res;	
 			}	
 			
+			public var isRegionSelected:Boolean = false;
 			public function isRegionPresent():Boolean {		
 				var z:ArrayCollection;
 				if (this.regionsListGrid) {
@@ -104,7 +106,8 @@
 				} else {
 					z = new ArrayCollection();
 				}
-				return (z.length > 0);								
+				this.isRegionSelected = (z.length > 0); 
+				return (this.isRegionSelected);								
 			}
 			
 			public function getRegionsDataList():ArrayCollection {
@@ -167,13 +170,14 @@
 			{
 				trace("creation complete in checkBox component");
 				checkedCount = 0;	
+				
 				hlp = new helper();
 				
 				addEventListener(CCheckBoxRendererADG.INCR_COUNT, onIncrValue);
 				addEventListener(CCheckBoxRendererADG.DECR_COUNT, onDecrValue);
 				
-				this.addEventListener(CCheckBoxGrid.CHECKED, onIncrValue);
-				this.addEventListener(CCheckBoxGrid.UNCHECKED, onDecrValue);			
+				this.addEventListener(CCheckBoxGrid.CHECKED, onIncrValueReg);
+				this.addEventListener(CCheckBoxGrid.UNCHECKED, onDecrValueReg);			
 				
 				this.addEventListener("demandAggChanged", updateChemistrySplit);				
 				this.addEventListener("overSelection", cutOverSelections);
@@ -208,25 +212,41 @@
 			public var lastSelection:Object = {id:-1, namen:"null"};
 			private function onIncrValue(e:Event):void
 			{
-				checkedCount++;
+				if (!this.isRegionSelected) {
+					checkedCount = this.flowManager.getCheckedCount() + 1;
+					this.flowManager.setCheckedCount(checkedCount);
+				};				
+				
 				if (checkedCount <= 10) {							
 					if (cntryListGridADG.selectedItem) {
 						this.lastSelection = {id:cntryListGridADG.selectedItem.id, 
 											namen:cntryListGridADG.selectedItem.namen};
 					};								
 					dispatchEvent(new Event(CTree.CHECKED, true));					
-				}  // (this.checkedCount > 10) 
-				else {					
+				} else {					
 					this.dispatchEvent(new Event("overSelection", false));
 				}
-			}
+			}	
 			
 			//decrement number of checked elements
 			private function onDecrValue(e:Event):void
 			{
-				checkedCount--;				
+				if (!this.isRegionSelected) {
+					checkedCount = this.flowManager.getCheckedCount() - 1;
+					this.flowManager.setCheckedCount(checkedCount);
+				};
 				//if (checkedCount == 0)
 					dispatchEvent(new Event(CTree.UNCHECKED, true));
+			}
+			
+			private function onIncrValueReg(e:Event):void
+			{								
+				dispatchEvent(new Event(CTree.CHECKED, true));				
+			}		
+			
+			private function onDecrValueReg(e:Event):void
+			{
+				dispatchEvent(new Event(CTree.UNCHECKED, true));
 			}
 			
 			//modified
@@ -266,7 +286,8 @@
 				var i:uint;
 				if (this.selectionList != null) {
 					for (i = 0; i < selectionList.length; i++) selectionList[i].active = true;
-					checkedCount = selectionList.length;				
+					checkedCount = selectionList.length;
+					this.flowManager.setCheckedCount(this.checkedCount);
 					
 					this.preserveRefresh();	
 					dispatchEvent(new Event(CTree.CHECKED, true));
@@ -282,7 +303,8 @@
 				if (this.selectionList != null) {
 					for (i = 0; i < selectionList.length; i++) selectionList[i].active = false;
 					checkedCount = 0;				
-														
+					this.flowManager.setCheckedCount(this.checkedCount);
+					
 					dispatchEvent(new Event(CTree.UNCHECKED, true));
 				};
 				this.sortData();
@@ -375,7 +397,8 @@
 			
 			[bindable] private var flowManager:FlowManager;
 			public function setMasterTab(flowMngr:FlowManager):void {
-				this.flowManager = flowMngr;
+				this.flowManager = flowMngr;'' +
+				this.flowManager.setCheckedCount(checkedCount);
 			}		
 		
 			protected function deviceNamesList_resultHandler(event:ResultEvent):void

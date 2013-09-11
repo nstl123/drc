@@ -48,6 +48,16 @@ package controls
 		[bindable] private var selectedDeviceID:int = 21;
 
 		[bindable] private var statusLabel:String = "Status: Data ready";
+		private var checkedCount:int = 0;
+		private var checkedCountRegions:int = 0;
+		
+		public function getCheckedCount():int {
+			return this.checkedCount;
+		}		
+		
+		public function setCheckedCount(k:int):void {
+			this.checkedCount = k;
+		}		
 		
 		public function getStatusLabel():String {
 			return this.statusLabel;

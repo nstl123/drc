@@ -16,7 +16,7 @@
 			//when checkbox value is changed
 			protected function someAction(event:Event):void
 			{	
-				(chbID.selected) ? data.active = true : data.active = false;
+				data.active = chbID.selected;
 				
 				if (data.active)
 					dispatchEvent(new Event(CCheckBoxRendererADG.INCR_COUNT, true));

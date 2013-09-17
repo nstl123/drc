@@ -205,7 +205,7 @@
 			<!--<mx:DataGridColumn headerText="indicatorID" dataField="indicatorID" />!-->
 			<!-- <mx:DataGridColumn headerText="scenarioID" dataField="scenarioID"/> !-->
 			<!-- <mx:DataGridColumn headerText="deviceID" dataField="deviceID"/> !-->
-			<mx:DataGridColumn headerText="device" dataField="deviceName"/>	
+			<mx:DataGridColumn headerText="Device" dataField="deviceName"/>	
 			<mx:DataGridColumn headerText="2006" dataField="Y2006" labelFunction="formatCcy" />
 			<mx:DataGridColumn headerText="2007" dataField="Y2007" labelFunction="formatCcy"/>
 			<mx:DataGridColumn headerText="2008" dataField="Y2008" labelFunction="formatCcy"/>

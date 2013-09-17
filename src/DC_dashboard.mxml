@@ -1101,7 +1101,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.33"/> 
+				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.34"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
@@ -1136,10 +1136,10 @@
 					   click="modeSwitch_clickHandler(event)" fontFamily="Arial" fontSize="14" color="#000000" fontWeight="bold" left="200"/>
 		<s:Label y="18" text="Home" color="#F27C21" fontWeight="bold" fontFamily="Arial" fontSize="18" horizontalCenter="-331"/>
 		
-		<mx:Text width="667" text="Welcome to the Duracell Device &amp; Battery Demand Landscape Analysis Tool. This tool, developed by Euromonitor International, allows for immediate access to battery powered device data (in units) &amp; forecasted battery demand (in cells) across 53 markets globally. Forecasted years include 2006-2021. In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios."
+		<mx:Text width="667" text="Welcome to the Duracell Device &amp; Battery Demand Landscape Analysis Tool. This tool, developed by Euromonitor International, allows for immediate access to battery powered device data (in units) &amp; forecasted battery demand (in cells) across 53 markets globally. Historical and forecast years include 2006-2021. In addition to viewing the base forecasts, this tool can also be used to manipulate key inputs (e.g. macroeconomic factors, device demand, etc.) in order to run various scenarios."
 				 		 y="44" height="102" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 		
-		<mx:Text width="671" text="NOTE: The Device Based Consumption Model (DBCM) research was completed in FY2012"
+		<mx:Text width="671" text="Note: The Device &amp; Battery Landscape research was completed in FY2012"
 				 y="143" height="25" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 				
 		<mx:Text width="671" text="Step 1: Indicate below how you intend to use the tool:" 
@@ -1154,8 +1154,9 @@
 				 Mike Jozwik&#13;
 				 Euromonitor International&#13;
 				 Mike.jozwik@euromonitorintl.com&#13;
-				 312-922-1115 x 8238"  width="667" height="101" top="542" color="#656565" fontSize="12" fontFamily="Arial" horizontalCenter="0"/>
-
+				 312-922-1115 x 8238"  width="667" height="100" top="542" color="#656565" fontSize="12" fontFamily="Arial" horizontalCenter="0"/>
+		<mx:Text text="This dashboard is optimized for FlashPlayer ver.11.7 or later;&#13;Recommended browsers are: IE 8.0 or later, Chrome 29.x, Firefox 23.x"  horizontalCenter="0" top="642" width="667" height="50" color="#656565" fontStyle="italic"/>	
+		
 		<controls:fileIO id="fdwn" visible="false"
 						 creationComplete="fdwn_creationCompleteHandler(event)" left="400" top="250" width="289"/>
 		<s:Button includeIn="landingState" label="Save to local drive" 

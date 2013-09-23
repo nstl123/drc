@@ -194,7 +194,7 @@ class Depot31 {
 		$result = $this->connection->prepare($delStmnt);		
 		$result->execute();	
 		
-		$delStmnt2 = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID IN (213, 214, 215) AND scenarioID = ".$scenarioID.";";
+		$delStmnt2 = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE indicatorID IN (213, 214, 215, 216) AND scenarioID = ".$scenarioID.";";
 		$result = $this->connection->prepare($delStmnt2);		
 		$result->execute();	
 		
@@ -297,10 +297,22 @@ class Depot31 {
 		$rawDataArray = $this->connection->fetchAll($readStmnt);					
 		// calc
 		$rezArray = $depot->calcNewDevBase($rawDataArray);		
-		// update tbl
+		
+		// update tbl		
 		$updStmnt = $depot->formInsertDataForDevBase($scenarioID, $rezArray, 1000);
 		$resUpd = $this->connection->prepare($updStmnt);		
 		$resUpd->execute();
+		
+		// add total devices for dev base
+		/*$totalStmnt1 = $depot->formInsertTotalForDevBase($scenarioID);
+		$resTot1 = $this->connection->prepare($totalStmnt1);		
+		$resTot1->execute();
+		
+		// add total devices for scenarioData
+		$totalStmnt2 = $depot->formInsertTotalForAvg($scenarioID);
+		$resTot2 = $this->connection->prepare($totalStmnt2);		
+		$resTot2->execute();						*/
+		
 		// check if all ok
 		$testIns = $depot->formTestInsertion($scenarioID, $cntryList);	
 		$resIns  = $this->connection->fetchAll($testIns);					

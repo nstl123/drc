@@ -263,7 +263,8 @@
 			
 			private function filterB(item:Object):Boolean {
 				var fl:Boolean = true;				
-				fl = ( (item.id == 201)||(item.id == 202)||(item.id == 213)||(item.id == 215)||(item.id == 401) );
+				fl = ( (item.id == 201)||(item.id == 202)||(item.id == 213)||
+					   (item.id == 215)||(item.id == 216)||(item.id == 401) );
 				// added device base				
 				return fl;
 			}					

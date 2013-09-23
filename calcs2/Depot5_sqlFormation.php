@@ -473,7 +473,7 @@ class Depot5_sqlFormation {
 	}
 
 	public function formInsertDataForDevBase($scenID, $src, $cycleLength) {	
-		$s = "INSERT INTO `Consulting`.`DC_deviceBaseTable`
+		$s = "INSERT INTO `Consulting`.``
 					(`scenarioID`,`countryID`,`deviceID`,`indicatorID`,
 						`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,
 						`Y2014`,`Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`)
@@ -490,6 +490,38 @@ class Depot5_sqlFormation {
 		};
 		$baseSql = $s.$baseSql;
 		return $baseSql;
+	}
+	
+	public function formInsertTotalForDevBase($scenID) {		
+		$yrsField = "`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
+					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";					 
+	
+		$delStmnt1 = "DELETE FROM `Consulting`.`DC_deviceBaseTable` WHERE scenarioID = ".$scenarioID." AND deviceID = 200";
+		$result1 = $this->connection->prepare($delStmnt1);		
+		$result1->execute();	
+		// write from view to static table;
+		$insStmnt1 = "\r\n	INSERT INTO `Consulting`.`DC_deviceBaseTable` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`, ".$yrsField.")
+					SELECT `scenarioID`,`countryID`,`deviceID`, indicatorID, ".$yrsField."
+					FROM `Consulting`.`DC_totalDevices`
+					WHERE scenarioID = ".$scenarioID." AND indicatorID = 203;";	
+		//$result2 = $this->connection->prepare($insStmnt1);		
+		return $insStmnt1;	
+	}
+	
+	public function formInsertTotalForAvg($scenID) {	
+		$yrsField = "`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
+					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";					 
+	
+		$delStmnt1 = "DELETE FROM `Consulting`.`DC_scenarioData` WHERE scenarioID = ".$scenarioID." AND deviceID = 200;";
+		$result1 = $this->connection->prepare($delStmnt1);		
+		$result1->execute();	
+		// write from view to static table;
+		$insStmnt1 = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`,`deviceID`, `indicatorID`, ".$yrsField.")
+					SELECT `scenarioID`,`countryID`,`deviceID`, indicatorID, ".$yrsField."
+					FROM `Consulting`.`DC_totalDevices`
+					WHERE scenarioID = ".$scenarioID." AND indicatorID = 202";	
+		$result2 = $this->connection->prepare($insStmnt1);		
+		return null;	
 	}
 	
 	public function formTestInsertion($scenID, $cntryList) {

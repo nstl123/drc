@@ -71,7 +71,7 @@
 				this.shockYears.dataProvider = yrsList;
 				this.shockYears.labelField = "yrs";
 				
-				this.shockValue.value = 10;
+				this.shockValue.value = 50;
 			}			
 			
 			public function initNames():void {
@@ -406,7 +406,7 @@
 			<s:DropDownList id="shockYears" width="100" left="13" top="19" 
 							contentBackgroundAlpha="1.0" borderVisible="false" height="20">					
 			</s:DropDownList>
-			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19" height="20"/>
+			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19" height="20" minimum.default="-50" maximum.default="50"/>
 		</s:BorderContainer>
 	</s:BorderContainer>
 	<s:Button label="Update Chart" width="222" click="digestChanges(event)" 

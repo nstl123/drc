@@ -1142,8 +1142,9 @@
 		<mx:Text width="671" text="Note: The Device &amp; Battery Landscape research was completed in FY2012"
 				 y="143" height="25" horizontalCenter="0" fontSize="14" fontFamily="Arial" color="#656565"/>
 				
-		<mx:Text width="671" text="Step 1: Indicate below how you intend to use the tool:" 
-				 y="177" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" color="#007E9D"/>		
+		<mx:Text width="671" text="Step 1: Indicate below how you intend to use the tool and select “next” to continue:" 
+				 y="177" height="29" horizontalCenter="-1" fontSize="14" fontFamily="Arial" 
+				 color="#007E9D"/>		
 		<mx:Text width="569" text="Choose this selection to look at the data output from the base case scenario. Output includes battery powered device data (in units), and battery demand forecast (in cells)." 
 				 y="231" height="45" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>
 		<mx:Text width="557" text="Click this selection to follow three simple steps to scenario plan:&#13;&#13;1) Select business question to address&#13;2) Select geographies of interest&#13;3) Select inputs for modification" y="295" height="94" fontFamily="Arial" fontSize="12" fontStyle="italic" color="#656565" left="246"/>

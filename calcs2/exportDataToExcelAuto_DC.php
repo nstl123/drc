@@ -93,6 +93,7 @@ if (($exportTypeID == 0) and ($indis[0] < 401)) {
 
 $select_result = mysql_query($query); 
 //$select_result  = false;
+// -------------------------------------------------------------------
 if ($select_result) {	
 	$i = 0;	$n = 0;
 	$phpExcel = new PHPExcel();
@@ -192,7 +193,7 @@ if ($select_result) {
 else {	
 	//echo "cntry=".$cntryIDs.",scen=".$scenID.",batTypeID=".$batTypeID.",pwrID=".$pwrID.",isRegion=".$isRegion.",agg=".$aggLevel.",perHH=".$showPerHH;
 	//echo ($isRegion);
-	echo $queryMacro;
+	echo $query;
 	/*echo "DB_Error";	
 	exit;	*/
 };

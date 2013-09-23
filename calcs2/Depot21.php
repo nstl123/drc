@@ -76,15 +76,27 @@ class Depot21 {
 	
 	// scenarioProxy data is distinct that uses proxy countries
 	public function getMacroDataCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames) {		
-		$rawText =  new Depot5_sqlFormation();
-		$mainStmnt = $rawText->formGetMacroCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames, 0, 0);		
-		//$mainStmnt = $sqlMaker->formGetMacroCategory($cntryIDs, $indis[0], $scenID, 0, max(0, $batTypeID, $pwrID), 1, $isSingleScenario, $indicatorHasSplit);
-		
 		$a = array('a'=>"");		
-		$result = $this->connection->fetchAll($mainStmnt); 
+		
+		$rawText =  new Depot5_sqlFormation();
+		$mainStmnt = $rawText->formGetMacroCategory($countryIDs, $indicatorID, $scenarioID, $hasSplit, $typeID, $wNames, 0, 0);	
+		
+		$sumStmnt = $mainStmnt;
+		
+		if ($indicatorID == 202) {			
+			$addStmnt = $rawText ->formGetTotalNumberOfDev($countryIDs, $scenarioID, $indicatorID);		
+			$sumStmnt = $mainStmnt."\r\n UNION \r\n".$addStmnt;				
+		};
+		if ($indicatorID > 200) {
+			$sumStmnt = $sumStmnt."\r\n ORDER BY scenarioID, countryID, orderID";
+		} else {
+			$sumStmnt = $sumStmnt."\r\n ORDER BY scenarioID, countryID";
+		};		
+		$result = $this->connection->fetchAll($sumStmnt); 
 		array_push($a, $result);	
+		
 		return $result;		
-		//return $mainStmnt;
+		//return $sumStmnt;
 	}
 	
 	public function getDemandData($countryIDs, $scenarioID, $typeID, $pwrID, $isRegion, $showAtDeviceLevel, $perHH) { 							
@@ -99,14 +111,20 @@ class Depot21 {
 	}
 	
 	public function getDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH) {
+		$a = array('a'=>"");		
+		
 		$rawText =  new Depot5_sqlFormation();
 		$mainStmnt = $rawText->formGetDeviceBase($countryIDs, $scenarioID, $pwrType, $isRegion, $showAtDeviceLevel, $perHH, 0);
 		
-		$a = array('a'=>"");		
-		$result = $this->connection->fetchAll($mainStmnt); 
+		$addStmnt = $rawText ->formGetTotalNumberOfDev($countryIDs, $scenarioID, 203);
+		// 203 for dev base, 202 for avg # of dev per HH
+		$sumStmnt = $mainStmnt."\r\n UNION \r\n".$addStmnt;		
+		//$sumStmnt = $mainStmnt;
+		
+		$result = $this->connection->fetchAll($sumStmnt); 
 		array_push($a, $result);	
 		return $result;			
-		//return $mainStmnt;
+		//return $sumStmnt;
 	}
 	
 	public function getDemandByChemistry($countryIDs, $scenarioID, $isRegion, $perHH) {

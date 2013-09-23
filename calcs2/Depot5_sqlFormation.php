@@ -87,9 +87,11 @@ class Depot5_sqlFormation {
 				$mainStmnt = $stmnt;		
 			};	
 			if ($indicatorID > 200) {
-				$mainStmnt = "SELECT *, namen as deviceName FROM (\r\n".$mainStmnt.") AS a \r\n".$namesForDevices."\r\n ORDER BY scenarioID, countryID, orderID";
+				$mainStmnt = "SELECT *, namen as deviceName FROM (\r\n".$mainStmnt.") AS a \r\n".$namesForDevices; 
+				//."\r\n ORDER BY scenarioID, countryID, orderID";
 			} else {
-				$mainStmnt = "SELECT *,  null as deviceName FROM (\r\n".$mainStmnt.") AS a ORDER BY scenarioID, countryID";
+				$mainStmnt = "SELECT *,  null as deviceName FROM (\r\n".$mainStmnt.") AS a"; 
+				//."ORDER BY scenarioID, countryID";
 			};
 			return ($mainStmnt);	
 	}
@@ -293,6 +295,43 @@ class Depot5_sqlFormation {
 		return $mainStmnt;
 	}
 
+	public function formGetTotalNumberOfDev($countryIDs, $scenarioID, $indicatorID) {
+		$countryArray = explode(",", $countryIDs); //(array)($countryIDs);	
+		$countryList = " (";
+		for ($i = 0; $i < count($countryArray); $i++) {		
+			if ($countryArray[$i] < 10000) {
+				$hasOtherCountries = 1;
+				if ($i > 0)  $countryList = $countryList.", ".$countryArray[$i]; 
+				else 		 $countryList = $countryList.$countryArray[$i]; 
+			} else {
+				$getWorldData = 1;
+			}			
+		};			
+		$countryList = $countryList." )";	
+		
+		$avg = "0 AS batClass, scenarioID, indicatorID, deviceID, 0 AS typeID, 				
+			Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014,
+			Y2015, Y2016, Y2017, Y2018, Y2019, Y2020, Y2021,
+		nc.namen AS countryName, nc.id AS countryID, 0 AS categoryID,
+		'Total devices' AS namen, 0 AS categoryID, 0 AS orderID, null AS commnents, 'total dev' AS deviceName";
+		
+		$devB = "deviceID, 'Total devices' as deviceName, nc.namen AS countryName,
+				countryID,  null AS `batTypeID`, scenarioID, indicatorID, 0 AS indicatorID, 0 AS typeID,
+				Y2006, Y2007, Y2008, Y2009, Y2010, Y2011, Y2012, Y2013, Y2014,
+				Y2015, Y2016, Y2017, Y2018, Y2019, Y2020, Y2021,
+				4000 as orderID";
+		
+		$s = "SELECT ".($indicatorID == 203 ? $devB : $avg)."				
+				FROM Consulting.DC_totalDevices td JOIN Consulting.DC_namesCountries nc 
+					ON td.countryID = nc.id
+				WHERE 
+					indicatorID = ".$indicatorID." AND 
+					countryID IN ".$countryList." AND 
+					scenarioID IN (10001,".$scenarioID.")";
+		
+		return $s;
+	}
+
 	public function formGetHHPenSplitData($countryIDs, $scenarioID) {
 		$countryArray = explode(",", $countryIDs); 				
 		$hasOtherCountries = 0; $getWorldData = 0;
@@ -473,7 +512,7 @@ class Depot5_sqlFormation {
 	}
 
 	public function formInsertDataForDevBase($scenID, $src, $cycleLength) {	
-		$s = "INSERT INTO `Consulting`.``
+		$s = "INSERT INTO `Consulting`.`DC_deviceBaseTable`
 					(`scenarioID`,`countryID`,`deviceID`,`indicatorID`,
 						`Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,
 						`Y2014`,`Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`)
@@ -520,7 +559,7 @@ class Depot5_sqlFormation {
 					SELECT `scenarioID`,`countryID`,`deviceID`, indicatorID, ".$yrsField."
 					FROM `Consulting`.`DC_totalDevices`
 					WHERE scenarioID = ".$scenarioID." AND indicatorID = 202";	
-		$result2 = $this->connection->prepare($insStmnt1);		
+		//$result2 = $this->connection->prepare($insStmnt1);		
 		return null;	
 	}
 	

@@ -318,7 +318,7 @@ class Depot31 {
 		$resIns  = $this->connection->fetchAll($testIns);					
 		$cnt = $resIns[0]['tot'];
 		
-		return  $cnt;
+		return  $cnt;		
 	}
 }		
 ?>

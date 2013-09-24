@@ -604,7 +604,7 @@
 	
 	!-->
 	
-	<s:BorderContainer width="100%" height="450" borderVisible="false" includeIn="slicing">
+	<s:BorderContainer width="100%" height="400" borderVisible="false" includeIn="slicing">
 		<s:layout>
 			<s:VerticalLayout paddingLeft="10"/>
 		</s:layout>
@@ -662,7 +662,8 @@
 						   click="batTypes_clickHandler(event)"/>			
 		!-->
 			</s:BorderContainer>
-		
+
+		<!--
 		<s:Label text="Battery Types" id="selDeviceLabel0" fontStyle="italic" fontSize="11" left="13" fontFamily="Arial" top="104" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
 		<s:BorderContainer width="210" x="32" fontSize="11" fontFamily="Verdana" top="70" borderVisible="false" backgroundAlpha="0.0" id="pwrTypesBorder" height.default="67" height="60">
 			<s:layout>
@@ -670,13 +671,12 @@
 			</s:layout>
 			<s:RadioButton x="44" y="50" label="All battery types" value="0" groupName="pwrTypes_C" selected="true"
 						  fontSize="11" fontFamily="Arial" enabled="true" click="pwrTypes_clickHandler(event)"/>	
-			<s:RadioButton x="44" y="75" label="  Disposable (DPP)" value="101" groupName="pwrTypes_C" selected="false"
-						   fontSize="11" fontFamily="Arial" enabled="false" click="pwrTypes_clickHandler(event)"/>
-			<s:RadioButton x="44" y="93" label="  Round Cell Rechargeable (RCR)" value="102" groupName="pwrTypes_C"
-						 fontSize="11" fontFamily="Arial" selected="false" enabled="false" click="pwrTypes_clickHandler(event)"/>		
+
+			<s:RadioButton x="44" y="75" label="  General Purpose" value="105" groupName="pwrTypes_C" selected="false"
+						   fontSize="11" fontFamily="Arial" enabled="true" click="pwrTypes_clickHandler(event)"/>					
 			
 		</s:BorderContainer>
-
+!-->
 		
 		<s:Label text="Chemistry" id="selDeviceLabel2" fontStyle="italic" fontSize="11" fontFamily="Arial" x="10" top="244" width="100%" backgroundColor="#FFFFFF" backgroundAlpha="1.0" chromeColor="#FFFFFF"/>
 

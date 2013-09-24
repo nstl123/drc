@@ -40,7 +40,7 @@
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
 				if (!isLocal) this.tabEditable = flag;
 				this.testGrid.isEditable = flag  && isLevel;
-				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+				(flag && isLevel) ? this.flagLabel.text = "Table is Editable for 2012-2021" : this.flagLabel.text = "Table is not editable";
 				//this.saveBtn.enabled = (flag && isLevel);
 
 				this.shockBtn1.enabled = (flag && isLevel); 
@@ -161,6 +161,8 @@
 					this.selDevice = 200;
 					this.selDeviceNamen = "Total devices";					
 				};
+				deviceListDrop.enabled = !this.totDevFlag;
+				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
 
@@ -228,6 +230,10 @@
 				this.dataList = data;				
 			}	
 			
+			public function getDataList():ArrayCollection {
+				return this.dataList;				
+			}			
+			
 			public function initNames():void {
 				trace("init names inside panel B");				
 				//indicatorsNamesList.token = this.dataServiceNames.getIndicatorNames();			
@@ -268,8 +274,13 @@
 			}
 			
 			public function updateSelectedDeviceID():void {
-				this.selDevice = this.flMngr.getSelectedDeviceID();				
-				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);					
+				if (this.flMngr) {
+					this.selDevice = this.flMngr.getSelectedDeviceID();
+					this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);
+				} else {
+					this.selDevice = 0;
+					this.deviceListDrop.selectedIndex = 0;
+				};									
 			}			
 			
 			private function filterB(item:Object):Boolean {
@@ -324,7 +335,8 @@
 					splitByTypes.enabled = false;
 				};
 				sizesSplit_clickHandler(null);
-				//this.refreshData(null);
+				
+				this.totDev.enabled = ( (this.selectedIndi == 202) || (this.selectedIndi == 401) );								
 			}			
 			
 			protected function getMacroDataResult_resultHandler(event:ResultEvent):void
@@ -405,14 +417,18 @@
 			[bindable] private var selDeviceNamen:String = "";
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void {			
 				
-				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;				
-				this.selDevice = this.deviceListDrop.selectedItem.id;			
+				//if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;				
+				//this.selDevice = this.deviceListDrop.selectedItem.id;				
+				this.selDevice = (this.deviceListDrop.selectedIndex < 0) ? 0 : this.deviceListDrop.selectedItem.id; 
 				
 				this.flMngr.setSelectedDeviceID(this.selDevice);				
 				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
 				
 				this.flMngr.setSelBatType(0);
 				this.flMngr.setSelPwrType(0);
+				
+				this.flMngr.startDevLabelFlag = false;
+				this.startDevLabel.visible = this.flMngr.startDevLabelFlag;
 				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}
@@ -431,9 +447,12 @@
 			}
 			
 			protected function updateCharts(evt:Event):void {
-				if (!totDevFlag) {				
+				if (!this.totDev.selected) {				
 					this.selDevice = this.flMngr.getSelectedDeviceID();
 					this.selDeviceNamen = this.flMngr.selDeviceNamen;
+				} else {
+					this.selDevice = 200;
+					this.selDeviceNamen = "Total devices";
 				};
 				
 				this.testChart.setVwmode(this.flMngr.isViewingMode());
@@ -527,7 +546,7 @@
 			  left.default="535" label="Reset Scenario" enabled.default="true" enabled.viewingOnly="false"/>
 	<s:DropDownList width="272" id="deviceListDrop" labelField="namen" 
 					change="deviceListDrop_changeHandler(event)" selectedIndex="0" top="32" height="20" top.viewingOnly="17" top.default="32" left.default="482" left.viewingOnly="482"></s:DropDownList>	
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="456" top.viewingOnly="391" left.viewingOnly="10" top.default="456" left.default="10"/>
+	<s:Label text="Table activiy state" width="296" fontStyle="italic" fontSize="11" id="flagLabel" left="10" top="456" top.viewingOnly="391" left.viewingOnly="10" top.default="456" left.default="10"/>
 	<s:BorderContainer width="517" height="59" left="10" top="389" borderVisible="false" top.viewingOnly="335" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" top.default="389" left.default="10">
 		<s:Label fontStyle="italic" fontSize="11" y="8" fontFamily="Arial"
 				 id="shLbl" left.default="0" left.viewingOnly="0" 
@@ -538,7 +557,8 @@
 			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>
 			<s:DropDownList id="shockYears" width="100" left="13" top="19" height="20">					
 			</s:DropDownList>
-			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19" height="20"/>
+			<s:NumericStepper id="shockValue" minimum="-99" maximum="99" stepSize="1" 
+							  width="97" left="137" top="19" height="20"/>
 		</s:BorderContainer>
 		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
 					   selected="true" top="19" fontSize="11" click="changeShockType_handler(event)" id="shockBtn1"/>
@@ -583,6 +603,10 @@
 		<s:RadioButton label="HA" groupName="splitByTypes" fontSize="11"  
 					   x.default="13" y.default="92" value="3" click="sizeID_clickHandler(event)"/>
 	</s:BorderContainer>
-	<s:CheckBox x="482" y="60" label="Total Devices" id="totDev" 
-				enabled="true" selected="false" change="totDev_changeHandler(event)"/>
+	<s:CheckBox label="Total Devices" id="totDev" 
+				selected="false" change="totDev_changeHandler(event)" enabled="false" left.default="482" top.default="55" top.viewingOnly="40" left.viewingOnly="482"/>
+	<s:Label x="397" text="START -&gt;" width="68" height="16" visible="true" 
+			 verticalAlign="middle" textAlign="center" backgroundColor="#24C743" 
+			 chromeColor="#CCCCCC" fontFamily="Arial" color="#FFFFFF" fontWeight="bold" 
+			 fontSize="11" top.viewingOnly="20" top.default="35" id="startDevLabel"/>
 </s:Group>

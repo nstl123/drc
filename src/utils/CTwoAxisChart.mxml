@@ -23,8 +23,9 @@
 								thousandsSeparatorTo=","
 								useThousandsSeparator="true"
 								currencySymbol=""
-								useNegativeSign="true"                  
+								useNegativeSign="true"							 		
 								/>
+		
 		<mx:NumberFormatter id="numForm" useThousandsSeparator="true"/>
 		
 	</fx:Declarations>
@@ -124,6 +125,8 @@
 			
 			private var series2:Object;
 			private var mySeries:Array=new Array(); 
+	
+			private var scaleOfData:int = 1;
 			
 			public function createSeries(someData:ArrayCollection):void {
 				vaxis1 = new LinearAxis;
@@ -154,17 +157,22 @@
 					
 					hAxis.dataProvider = someData.getItemAt(i);					
 					vaxis1.baseAtZero = false;
-					vaxis2.baseAtZero = false;
+					vaxis2.baseAtZero = false;				
+					
+					if ( (tmp.indicatorID >= 157) && (tmp.indicatorID <= 170) && (this.isLevel) ) {
+						scaleOfData = 100;						
+					} else {
+						scaleOfData = 1;						
+					};
 					vaxis1.labelFunction = this.defineLabel;				
-					if ( ((indi == 206)||(indi == 207)) && isDevice ) {						
-						this.vaxis1.maximum = 10;
-						vaxis1.baseAtZero = true;
-					} else	if ( (indi == 204)||(indi == 205) ) {						
-						this.vaxis1.maximum = 1;
-						vaxis1.baseAtZero = true;
-					} else
-						this.vaxis1.maximum= NaN;
-					//vaxis2.labelFunction = this.defineLabel;
+					
+					if ( (indi >= 204) && (indi <= 207) ) {
+						var mx:Number = getMax(someData);
+						var mn:Number = getMin(someData);
+						var delta:Number = Math.max(mx - mn, 0.05);
+						this.vaxis1.maximum = mx  + (delta * 0.2);
+						this.vaxis1.minimum = Math.max(0, mn  - (delta * 0.2));
+					};											
 					mySeries.push(series2);
 				};	
 				
@@ -178,6 +186,26 @@
 				//this.lineChart.invalidateDisplayList();	
 				//----- redrawing colors here				
 				this.redrawColors();							
+			}
+			
+			private function getMax(src:ArrayCollection):Number {
+				var tmp:Number;
+				var mx:Number = Number(src.getItemAt(0)[0].data);				
+				for (var h:uint = 0; h < src.getItemAt(0).length; h++) {
+					tmp = Number(src.getItemAt(0)[h].data);
+					if (tmp > mx) mx = tmp;
+				}				
+				return mx;
+			}
+			
+			private function getMin(src:ArrayCollection):Number {
+				var tmp:Number;
+				var mn:Number = Number(src.getItemAt(0)[0].data);				
+				for (var h:uint = 0; h < src.getItemAt(0).length; h++) {
+					tmp = Number(src.getItemAt(0)[h].data);
+					if (tmp < mn) mn = tmp;
+				}				
+				return mn;
 			}
 			
 			private var pssprtQualitativeMapColours:Array = [0x00AED9,0xF7941E,0xAB6DAD,0xFFCB05,0x50B848,0xDA2128,0x91632E,0x0072BC,0xAC161B];			
@@ -247,11 +275,11 @@
 			public function defineLabel(cat:Object, pcat:Object, ax:LinearAxis):String 
 			{
 				if (cat < 1000)				
-					return stilius3.format(cat)
+					return stilius3.format( this.scaleOfData * (Number)(cat) );
 				else
-					return stilius2.format(cat)
+					return stilius2.format( this.scaleOfData * (Number)(cat) );
 				//return cat.toString();
-			}
+			}			
 			
 			[Bindable] private var chartDGToolTip:String;		 
 			public function tooltips_formater(m:Object):String		{			
@@ -261,9 +289,9 @@
 				chartDGToolTip = chartDGToolTip + m.item['yrs'] + ": ";
 				
 				if (Math.abs(m.item['data']) < 100) {
-					chartDGToolTip = chartDGToolTip + stilius3.format(m.item['data']);
+					chartDGToolTip = chartDGToolTip + stilius3.format(scaleOfData * m.item['data']);
 				} else {
-					chartDGToolTip = chartDGToolTip + stilius2.format(m.item['data']);
+					chartDGToolTip = chartDGToolTip + stilius2.format(scaleOfData * m.item['data']);
 				};				
 				
 				return chartDGToolTip + (!this.isLevel ? "%" : "");            
@@ -305,27 +333,28 @@
 			<s:Label width="100%" fontStyle="normal"
 					 verticalAlign="bottom" textAlign="center" fontSize="12" 
 					 fontFamily="Arial" id="chartTitle" color="#000000" fontWeight="normal" height="20"/>
-			<s:Label text="Label" width="100%" height="15" verticalAlign="middle" textAlign="center" fontSize="10" id="chartSubtitle"/>
+			<s:Label text="Label" width="100%" height="15" verticalAlign="middle" textAlign="center" 
+					 fontSize="10" id="chartSubtitle"/>
 			<mx:LineChart id="lineChart" width="100%" height="100%"
 						  seriesFilters="[]" showDataTips="true" top="0" horizontalCenter="0">
 
-<!--
+
 	<mx:verticalAxisRenderers>
- 		<mx:AxisRenderer placement="left" axis="{this.vaxis1}">
+ 		<mx:AxisRenderer placement="left" axis="{vaxis1}">
 			 <mx:axisStroke>
-				 <s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
+				 <s:SolidColorStroke weight="1" alpha=".6"/>
 			 </mx:axisStroke>
 		 </mx:AxisRenderer>									 
 	</mx:verticalAxisRenderers> 
 	
 	<mx:horizontalAxisRenderers>
-		<mx:AxisRenderer axis="{this.hAxis}">
+		<mx:AxisRenderer axis="{hAxis}">
 			<mx:axisStroke>
-				<s:SolidColorStroke weight="1" alpha=".6" caps="round"/>
+				<s:SolidColorStroke weight="1" alpha=".6"/>
 			</mx:axisStroke>
 		</mx:AxisRenderer>
 	</mx:horizontalAxisRenderers>
-!-->
+
 			</mx:LineChart>
 		</s:BorderContainer>
 	

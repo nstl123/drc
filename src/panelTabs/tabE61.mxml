@@ -578,8 +578,9 @@
 					flagForView = true;
 				};	
 				
-				if (this.flowManager.getSelDeviceAggLevel() == 0) {									
-					f = ( (item.deviceID == 0) && ((selExoIndi < 200)||(selExoIndi == 401)) );
+				if (this.flowManager.getSelDeviceAggLevel() == 0) {
+					var ff:Boolean = (item.deviceID == 200)||(item.deviceID == 0); 
+					f = ff && ( (selExoIndi < 200) || (selExoIndi == 401) || (selExoIndi == 202) );
 				} else 
 				if (this.flowManager.getSelDeviceAggLevel() == 1) {									
 					f = ( (item.deviceID == this.selDevice) || (this.selExoIndi < 200) );

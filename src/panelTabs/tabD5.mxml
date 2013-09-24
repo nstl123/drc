@@ -241,7 +241,7 @@
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
 				if (!isLocal) this.tabEditable = flag; // && isLevel;
 				this.testGrid.isEditable = flag && isLevel;
-				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";
+				(flag && isLevel) ? this.flagLabel.text = "Table is Editable for 2012-2021" : this.flagLabel.text = "Table is not editable";
 				//this.saveBtn.enabled = (flag && isLevel);				
 				this.shockBtn1.enabled = (flag && isLevel); 
 				this.shockBtn2.enabled = (flag && isLevel);
@@ -366,14 +366,19 @@
 			
 			public function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
-				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
-				this.selDevice = this.deviceListDrop.selectedItem.id;
+				/*if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
+				this.selDevice = this.deviceListDrop.selectedItem.id;*/
+				this.selDevice = (this.deviceListDrop.selectedIndex < 0) ? 0 : this.deviceListDrop.selectedItem.id;
 				
 				this.flMngr.setSelectedDeviceID(this.selDevice);
 				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
 
 				this.flMngr.setSelBatType(0);
 				this.flMngr.setSelPwrType(0);
+				
+				this.flMngr.startDevLabelFlag = false;
+				this.startDevLabel.visible = this.flMngr.startDevLabelFlag;
+				
 				this.dispatchEvent(new Event("updateCharts", false));
 			}			
 			
@@ -551,7 +556,8 @@
 			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>
 			<s:DropDownList id="shockYears" width="100" left="13" top="19" height="20">					
 			</s:DropDownList>
-			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19" height="20"/>
+			<s:NumericStepper id="shockValue" minimum="-99" maximum="99" stepSize="1" 
+							  width="97" left="137" top="19" height="20"/>
 		</s:BorderContainer>
 		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
 					   selected="true" top="19" fontSize="11" click="changeShockType_handler(event)" id="shockBtn1"/>
@@ -579,4 +585,8 @@
 				   click="devicesActive_clickHandler(event)" />
 	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF"  top.viewingOnly="6" left.viewingOnly="313" />
+	<s:Label x="397" text="START -&gt;" width="68" height="16" 
+			 verticalAlign="middle" textAlign="center" backgroundColor="#24C743" 
+			 chromeColor="#CCCCCC" fontFamily="Arial" color="#FFFFFF" fontWeight="bold" 
+			 fontSize="11" top="35" id="startDevLabel" top.viewingOnly="20"/>
 </s:Group>

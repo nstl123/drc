@@ -11,7 +11,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
-			[bindable] public var selPath:String = "";
+			[bindable] public var selPath:String = "A";
 			[bindable] public var selPathLabel:String = "";		
 			[bindable] public var selTabIndex:int = 0;
 			
@@ -99,7 +99,7 @@
 						   	   	groupName="pathTypes" click="radiobutton1_clickHandler(event)" 
 								width="100%" textAlign="left" height="30" 
 								fontFamily="Arial" fontSize="12" lineThrough="false" 
-						   	   	value="A"  selected="true" enabled="true" color="#000000"/>				
+						   	   	value="A"  selected="false" enabled="true" color="#000000"/>				
 				<s:RadioButton label="{this.pathNames.getItemAt(1)}" 
 							   	value="B" enabled="true" 
 						   	   	groupName="pathTypes" selected="false" click="radiobutton1_clickHandler(event)" width="100%" 

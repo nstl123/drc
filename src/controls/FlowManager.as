@@ -51,6 +51,8 @@ package controls
 		private var checkedCount:int = 0;
 		private var checkedCountRegions:int = 0;
 		
+		public var startDevLabelFlag:Boolean = true;
+		
 		public function getCheckedCount():int {
 			return this.checkedCount;
 		}		

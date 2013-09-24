@@ -147,7 +147,7 @@
 			
 			private function filterB(item:Object):Boolean {				
 				var fl:Boolean = true;				
-				( ((item.id >= 204)&&(item.id <= 207))||(item.id == 277) ) ?  fl = true : fl = false;				
+				( ((item.id >= 204)&&(item.id <= 207)) ) ?  fl = true : fl = false;				
 				return fl;
 			}					
 			
@@ -314,10 +314,15 @@
 			[bindable] private var selDeviceNamen:String = "";
 			protected function deviceListDrop_changeHandler(event:IndexChangeEvent):void
 			{
-				if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
-				this.selDevice = this.deviceListDrop.selectedItem.id;				
+				/*if (this.deviceListDrop.selectedIndex < 0) this.deviceListDrop.selectedIndex = 0;
+				this.selDevice = this.deviceListDrop.selectedItem.id;*/				
+				this.selDevice = (this.deviceListDrop.selectedIndex < 0) ? 0 : this.deviceListDrop.selectedItem.id;
+				
 				this.flMngr.setSelectedDeviceID(this.selDevice);
 				this.flMngr.setSelDeviceNamen(this.deviceListDrop.selectedItem.namen);
+				
+				this.flMngr.startDevLabelFlag = false;
+				this.startDevLabel.visible = this.flMngr.startDevLabelFlag;
 				
 				this.handleHA();
 			}		
@@ -372,7 +377,7 @@
 			public function enableGrid(flag:Boolean, isLocal:Boolean) : void {				
 				if (!isLocal) this.tabEditable = flag; 
 				this.testGrid.isEditable = flag && isLevel;
-				(flag && isLevel) ? this.flagLabel.text = "Table is editable" : this.flagLabel.text = "Table is not editable";				
+				(flag && isLevel) ? this.flagLabel.text = "Table is Editable for 2012-2021" : this.flagLabel.text = "Table is not editable";				
 				
 				this.shockBtn1.enabled = (flag && isLevel); 
 				this.shockBtn2.enabled = (flag && isLevel);
@@ -539,12 +544,12 @@
 			  fontWeight="bold" left="607" top="0" visible="false" top.viewingOnly="-15" left.viewingOnly="607"/>
 	
 	<s:Label text="Battery type/size" id="selDeviceLabel0" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="390" left.default="382"/>
-	<s:Label x="220" text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" x.viewingOnly="114" top.viewingOnly="46" x.default="119" top.default="64"/>
+	<s:Label text="Battery Power Type" id="selDeviceLabel1" fontSize="11" fontStyle="italic" top="57" fontFamily="Arial" top.viewingOnly="46" top.default="64" left.viewingOnly="144" left.default="144"/>
 	<s:RadioButton label="Absolutes" groupName="growthType" enabled="true" value="0" 
 				   selected="true" height="19" change="radiobutton2_changeHandler(event)" left="77" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="58" left.viewingOnly="30" top.default="74" left.default="31"/>
 	<s:RadioButton label="Growth Rates" groupName="growthType" value="1" 
 				   enabled="true" height="19" change="radiobutton2_changeHandler(event)" left="140" top="69" fontSize="11" fontFamily="Arial" top.viewingOnly="76" left.viewingOnly="30" top.default="91" left.default="31"/>
-	<s:Label text="Table activiy state" width="196" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" top.viewingOnly="425" left.default="10" top.default="490"/>
+	<s:Label text="Table activiy state" width="296" fontStyle="italic" fontSize="11" id="flagLabel" left="10" fontFamily="Arial" left.viewingOnly="10" top.viewingOnly="425" left.default="10" top.default="490"/>
 	<s:BorderContainer width="517" left="10" top="410" borderVisible="false" top.viewingOnly="367" left.viewingOnly="10" backgroundAlpha.viewingOnly="0.0" height.default="59" height.viewingOnly="55" top.default="428" left.default="10">
 		<s:Label text="Scenario Mechanism" fontStyle="italic" fontSize="11" y="8" 
 				 fontFamily="Arial" id="shLbl" left.default="0" left.viewingOnly="0"/>
@@ -553,7 +558,8 @@
 			<s:Label x="110" y="1" text="Percentage change" width="133" height="20" verticalAlign="middle" fontSize="10"/>
 			<s:DropDownList id="shockYears" width="100" left="13" top="19" height="20">					
 			</s:DropDownList>
-			<s:NumericStepper id="shockValue" minimum="-20" maximum="20" stepSize="1" width="97" left="137" top="19" height="20"/>
+			<s:NumericStepper id="shockValue" minimum="-99" maximum="99" stepSize="1" 
+							  width="97" left="137" top="19" height="20"/>
 		</s:BorderContainer>
 		<s:RadioButton x="66" label="Single Country (table below)" groupName="shockType" enabled="true" value="1"
 					   selected="true" top="19" fontSize="11" click="changeShockType_handler(event)" id="shockBtn1"/>
@@ -599,7 +605,7 @@
 					   fontSize="11" fontFamily="Arial" x.viewingOnly="724" top.viewingOnly="59" x.default="724" y="10" id="radioHA" enabled="false"/>		
 		
 	</s:BorderContainer>
-	<s:BorderContainer left="164" top="74" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" borderVisible="false" id="pwrTypesFrame" top.viewingOnly="58" left.viewingOnly="131" height.viewingOnly="55" width.default="236" top.default="75" left.default="133" height.default="55">
+	<s:BorderContainer left="164" top="74" contentBackgroundAlpha="0.0" backgroundAlpha="0.0" borderVisible="false" id="pwrTypesFrame" top.viewingOnly="58" left.viewingOnly="161" height.viewingOnly="55" width.default="236" top.default="75" left.default="161" height.default="55" width.viewingOnly="230">
 		<s:layout>
 			<s:VerticalLayout gap="2"/>
 		</s:layout>
@@ -608,17 +614,21 @@
 		</s:layout.default>
 		<s:layout.viewingOnly>
 			<s:TileLayout horizontalGap="5" verticalGap="1"/>
-		</s:layout.viewingOnly>
-		<s:RadioButton enabled="false" label="Disposable (DPP)" value="101" groupName="pwrTypes"
-					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
-					   top.viewingOnly="59" left.viewingOnly="197" x="10" y="15"/>
+		</s:layout.viewingOnly>		
 		<s:RadioButton label="Built-in RCR" value="103" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" selected="true" 
 					   left.viewingOnly="197" top.viewingOnly="77" x="11" y="27" enabled="true"/>
-		<s:RadioButton enabled="false" label="Round Cell Rechargeable (RCR)" value="102" groupName="pwrTypes"
+		<s:RadioButton enabled="true" label="AC Wall Outlet" value="104" groupName="pwrTypes"
+					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
+					   top.viewingOnly="59" left.viewingOnly="197" x="10" y="15"/>		
+		<s:RadioButton enabled="true" label="General Purpose" value="105" groupName="pwrTypes"
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
 					   top.viewingOnly="59" left.viewingOnly="319" x="-1" y="47"/>
 	</s:BorderContainer>
+	<s:Label x="320" text="START -&gt;" width="68" height="16" 
+			 verticalAlign="middle" textAlign="center" backgroundColor="#24C743" 
+			 chromeColor="#CCCCCC" fontFamily="Arial" color="#FFFFFF" fontWeight="bold" 
+			 fontSize="11" top="35" id="startDevLabel"  top.viewingOnly="20" x.viewingOnly="333"/>
 
 
 </s:Group>

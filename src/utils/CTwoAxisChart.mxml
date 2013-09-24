@@ -355,7 +355,7 @@
 		</mx:AxisRenderer>
 	</mx:horizontalAxisRenderers>
 
-			</mx:LineChart>
+		</mx:LineChart>
 		</s:BorderContainer>
 	
 	<mx:Legend  width="30%" height="100%" horizontalCenter="0"

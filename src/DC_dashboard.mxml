@@ -78,7 +78,7 @@
 			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
-				this.currentState = "landingState";
+				this.currentState = "pswrd";
 				hlp = new helper();		
 				this.addEventListener("downloadFinished", hidePlate);
 				//this.currentStateLabel.text = "Current State: " + this.currentState;				
@@ -1060,16 +1060,30 @@
 				this.fdwn.startDownload(6);
 			}
 
+
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				if (this.pswdField.text == "A") {
+					this.currentState = "landingState";
+				} else {
+					Alert.show("Incorrect Password", "Error");
+				};					
+			}
+
 		]]>
 	</fx:Script>
 		
 	<s:states>
+		<s:State name="pswrd" />		
 		<s:State name="landingState" />
 		<s:State name="BQList" />
 		<s:State name="geoList" />	
 		<s:State name="viewingState" />
 		<s:State name="scenarioState" />		
 	</s:states>
+	<s:layout.pswrd>
+		<s:BasicLayout/>
+	</s:layout.pswrd>
 	
 	<!-- <s:BorderContainer width="992" height="15" fontFamily="Verdana" 
 					   horizontalCenter="0" top="0" borderVisible="false" id="a">
@@ -1087,7 +1101,7 @@
 	
 	<s:BorderContainer id="playBorder" borderWeight="2" borderColor="#A7A7A7"
 					   borderAlpha="0.5" borderVisible="false" height="35"
-					   width="1012">
+					   width="1012" includeIn="BQList,geoList,landingState,scenarioState,viewingState">
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
@@ -1119,7 +1133,7 @@
 				  fontWeight="bold" cornerRadius="1" id="downTutorial" click="downTutorial_clickHandler(event)"/>
 	</s:BorderContainer>
 
-	<s:BorderContainer height="30" excludeFrom="landingState" 
+	<s:BorderContainer height="30" excludeFrom="landingState,pswrd" 
 					   borderVisible="false" width="1012" >	
 		<utils:navigatorLabels id="navigatorBox2" width="100%" height="100%"
 							    horizontalCenter="0" verticalCenter="0">
@@ -1183,7 +1197,7 @@
 	</s:BorderContainer>
 
 <s:BorderContainer width="992" height="100%" borderVisible="false" 
-				   excludeFrom="landingState" itemCreationPolicy="immediate">	
+				   excludeFrom="landingState,pswrd" itemCreationPolicy="immediate">	
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" paddingTop="10"  gap="0"/>
 	</s:layout>
@@ -1191,7 +1205,7 @@
 
 	<s:BorderContainer id="mainBC" width="992" horizontalCenter="0" top="25" 
 					   borderVisible="false" 
-					 excludeFrom="landingState, BQList" height="100%">	
+					   excludeFrom="BQList, pswrd, landingState" height="100%">	
 		<s:layout>
 			<s:HorizontalLayout gap="10" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"/>	
 		</s:layout>
@@ -1203,7 +1217,7 @@
 			</s:layout>
 			<s:layout.geoList>
 				<s:HorizontalLayout/>
-			</s:layout.geoList>
+			</s:layout.geoList>			
 			<utils:CTree id="cntryTree" width="100%" height="100%" horizontalCenter="0" 
 						 verticalCenter="0" creationComplete="cntryTree_creationCompleteHandler(event)" >
 			</utils:CTree>		
@@ -1321,6 +1335,14 @@
 		</panelTabs:tabPathSelection>
 	</s:BorderContainer>	
 </s:BorderContainer>
+	<s:BorderContainer includeIn="pswrd" width="482" height="118" horizontalCenter="0" top="150" borderWeight="2" borderColor="#B8B8B8" borderAlpha="0.5">
+		<s:layout>
+			<s:BasicLayout/>
+		</s:layout>
+		<s:Label includeIn="pswrd" text="Enter Password:" horizontalCenter="0" top="10" width="150" verticalAlign="middle" textAlign="center"/>
+		<s:TextInput includeIn="pswrd" id="pswdField" displayAsPassword="true" horizontalCenter="0" top="25" width="150"/>
+		<s:Button includeIn="pswrd" label="OK" click="button2_clickHandler(event)" y="79" horizontalCenter="0"/>
+	</s:BorderContainer>
 	
 </s:Application>
 

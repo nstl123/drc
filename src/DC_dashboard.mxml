@@ -78,7 +78,7 @@
 			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
-				this.currentState = "pswrd";
+				this.currentState = "landingState";//"pswrd";
 				hlp = new helper();		
 				this.addEventListener("downloadFinished", hidePlate);
 				//this.currentStateLabel.text = "Current State: " + this.currentState;				
@@ -217,11 +217,12 @@
 				//this.panelTabA2.refreshData(null);
 				this.panelTabB3.refreshData(null);
 				
-				this.updateLabelState();
-				
-				dispatchEvent(new Event("scenarioDataCleaned", true));
-				
-				Alert.show("Base data has been populated", "Info");
+				var z:int = (tabAcrCmp + tabBcrCmp + tabCcrCmp + tabDcrCmp + tabEcrCmp + tabFcrCmp);
+				if (z == 6) {					
+				 this.updateLabelState();				
+				 dispatchEvent(new Event("scenarioDataCleaned", true));				
+				 Alert.show("Base data has been populated", "Info");
+				};
 			}
 			
 			public function updateLabelState ():void {			
@@ -527,7 +528,7 @@
 				this.tabai.enabled = false;
 								
 				this.cursorManager.setBusyCursor();
-				
+				tabAcrCmp = 1;				
 				this.dispatchEvent(new Event("tabA", true));				
 				trace("creation complete of tab A1");				
 			}
@@ -543,7 +544,8 @@
 				this.masterTab.addTab(this.panelTabB3, 1);
 				this.panelTabB3.setFlowManagerRef(this.masterTab);
 				
-				this.dispatchEvent(new Event("tabB", true));
+				this.tabBcrCmp = 1;
+				if (tabAcrCmp > 0) this.dispatchEvent(new Event("tabB", true));
 				trace("creation complete of tab B1");
 			}
 
@@ -559,7 +561,8 @@
 				
 				this.panelTabC4.rewriteDeviceBase();
 				
-				this.dispatchEvent(new Event("tabC", true));
+				this.tabCcrCmp = 1;
+				if (tabBcrCmp > 0) this.dispatchEvent(new Event("tabC", true));
 				trace("creation complete of tab C4");
 			}
 
@@ -574,7 +577,8 @@
 				this.masterTab.addTab(this.panelTabD5, 3);	
 				this.panelTabD5.setFlowManagerRef(this.masterTab);
 				
-				this.dispatchEvent(new Event("tabD", true));
+				this.tabDcrCmp = 1;
+				if (tabCcrCmp > 0) this.dispatchEvent(new Event("tabD", true));
 				trace("creation complete of tab D1");
 			}
 
@@ -609,7 +613,8 @@
 				this.masterTab.addTab(this.panelTabF51, 4);
 				this.panelTabF51.setFlowManagerRef(this.masterTab);
 				
-				this.dispatchEvent(new Event("tabF", true));
+				this.tabFcrCmp = 1;
+				if (tabEcrCmp > 0)	this.dispatchEvent(new Event("tabF", true));
 				trace("creation complete of tab F5");
 								
 				this.tabaiCreationComplete = true;
@@ -628,9 +633,17 @@
 				
 				this.panelTabE61.setMasterTab(this.masterTab);
 				
-				this.dispatchEvent(new Event("tabE", true));
+				this.tabEcrCmp = 1;
+				if (tabDcrCmp > 0) this.dispatchEvent(new Event("tabE", true));
 				trace("creation complete of tab E61");				
 			}			
+			
+			public var tabAcrCmp:int = 0;
+			public var tabBcrCmp:int = 0;
+			public var tabCcrCmp:int = 0;
+			public var tabDcrCmp:int = 0;
+			public var tabEcrCmp:int = 0;
+			public var tabFcrCmp:int = 0;
 			
 			protected function createNext(evt:Event):void {
 				var c:String = evt.type;
@@ -671,8 +684,9 @@
 						//this.pathLabel.text = "Content Loaded";						
 						if (this.panelTabA2) this.panelTabA2.enabled = true;
 						this.panelTabB3.enabled = true;
-						//this.panelTabC4.enabled = false;					
-						this.panelTabE61.enabled = true;
+						//this.panelTabC4.enabled = false;
+						this.panelTabD5.enabled = true;
+						this.panelTabE61.enabled = true;						
 						this.panelTabF51.enabled = true;
 						//this.panelTabPath.enabled = false;
 					break;
@@ -884,54 +898,56 @@
 
 			protected function tabai_changeHandler(event:IndexChangedEvent):void
 			{
-				var f:int = this.tabai.selectedIndex;
-				this.masterTab.setSelBatType(0);
-				this.masterTab.setSelPwrType(0);
-				this.btnNext.enabled = true;
-				switch (f) {
-					case 0:
-						//tab A - macro
-						this.panelTabA2.refreshData(null);						
-						this.cntryTree.currentState = "default";						
-						break;
-					case 1:
-						//tab B - HHs
-						this.panelTabB3.updateSelectedDeviceID();						
-						if (this.panelTabB3.getDataList()) { 
-							this.panelTabB3.refreshData(null);
-						};
-						this.cntryTree.currentState = "default";
-						this.panelTabB3.startDevLabel.visible = this.masterTab.startDevLabelFlag;
-						break;
-					case 2:
-						//tab D - Market Size
-						this.panelTabD5.updateSelectedDeviceID();
-						this.panelTabD5.refreshData(null);
-						this.cntryTree.currentState = "default";
-						this.panelTabD5.startDevLabel.visible = this.masterTab.startDevLabelFlag;
-						break;
-					case 3:
-						//tab F - Other, Power Shares						
-						this.panelTabF51.updateSelectedDeviceID();	
-						this.masterTab.setBatTypesActiveFlag(true);
-						this.masterTab.setSelPwrType(this.panelTabF51.selPwrType);
-						this.masterTab.setSelBatType(this.panelTabF51.selBatType);						
-						this.panelTabF51.refreshData(null);
-						this.cntryTree.currentState = "default";
-						this.panelTabF51.startDevLabel.visible = this.masterTab.startDevLabelFlag;
-						break;
-					case 4:
-						//tab E - Demand	
-						this.btnNext.enabled = false;
-						this.cntryTree.currentState = "slicing";
-						this.cntryTree.updateSelectedDeviceID();						
-						this.panelTabE61.refreshData(null);
-						this.panelTabE61.exoIndi_clickHandler(null);	
-						this.cntryTree.setLabelDemand("Step " + (masterTab.isViewingMode() ? "3" : "6") 
-							+ " : select battery parameters");
-						break;		
-				};				
-				//Alert.show("Selected Tab:" + f,"info"); 
+				if (tabaiCreationComplete) {
+					var f:int = this.tabai.selectedIndex;
+					this.masterTab.setSelBatType(0);
+					this.masterTab.setSelPwrType(0);
+					this.btnNext.enabled = true;
+					switch (f) {
+						case 0:
+							//tab A - macro
+							this.panelTabA2.refreshData(null);						
+							this.cntryTree.currentState = "default";						
+							break;
+						case 1:
+							//tab B - HHs
+							this.panelTabB3.updateSelectedDeviceID();						
+							if (this.panelTabB3.getDataList()) { 
+								this.panelTabB3.refreshData(null);
+							};
+							this.cntryTree.currentState = "default";
+							this.panelTabB3.startDevLabel.visible = this.masterTab.startDevLabelFlag;
+							break;
+						case 2:
+							//tab D - Market Size
+							this.panelTabD5.updateSelectedDeviceID();
+							this.panelTabD5.refreshData(null);
+							this.cntryTree.currentState = "default";
+							this.panelTabD5.startDevLabel.visible = this.masterTab.startDevLabelFlag;
+							break;
+						case 3:
+							//tab F - Other, Power Shares						
+							this.panelTabF51.updateSelectedDeviceID();	
+							this.masterTab.setBatTypesActiveFlag(true);
+							this.masterTab.setSelPwrType(this.panelTabF51.selPwrType);
+							this.masterTab.setSelBatType(this.panelTabF51.selBatType);						
+							this.panelTabF51.refreshData(null);
+							this.cntryTree.currentState = "default";
+							this.panelTabF51.startDevLabel.visible = this.masterTab.startDevLabelFlag;
+							break;
+						case 4:
+							//tab E - Demand	
+							this.btnNext.enabled = false;
+							this.cntryTree.currentState = "slicing";
+							this.cntryTree.updateSelectedDeviceID();						
+							this.panelTabE61.refreshData(null);
+							this.panelTabE61.exoIndi_clickHandler(null);	
+							this.cntryTree.setLabelDemand("Step " + (masterTab.isViewingMode() ? "3" : "6") 
+								+ " : select battery parameters");
+							break;		
+					};				
+					//Alert.show("Selected Tab:" + f,"info");
+				};
 			}
 
 			protected function cntryTree_creationCompleteHandler(event:FlexEvent):void
@@ -1057,7 +1073,7 @@
 			protected function downTutorial_clickHandler(event:MouseEvent):void
 			{
 				this.fdwn.visible = true;
-				this.fdwn.startDownload(6);
+				this.fdwn.startDownload(7);
 			}
 
 
@@ -1118,7 +1134,7 @@
 		<s:Label id="topTitle" verticalCenter="0" 			
 				fontFamily="Arial"  fontWeight="bold" 
 				fontSize="13"				 
-				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.36"/> 
+				text = "Device &amp; Battery Demand Landscape - Analysis Tool v.1.37"/> 
 		<s:Button id="button" click="button_clickHandler(event)"				   
 				  label ="Export Data" fontSize="11" 
 				  includeIn="scenarioState,viewingState"
@@ -1172,8 +1188,8 @@
 				 Mike Jozwik&#13;
 				 Euromonitor International&#13;
 				 Mike.jozwik@euromonitorintl.com&#13;
-				 312-922-1115 x 8238"  width="667" height="100" top="542" color="#656565" fontSize="12" fontFamily="Arial" horizontalCenter="0"/>
-		<mx:Text text="This dashboard is optimized for FlashPlayer ver.11.7 or later;&#13;Recommended browsers are: IE 8.0 or later, Chrome 29.x, Firefox 23.x"  horizontalCenter="0" top="642" width="667" height="50" color="#656565" fontStyle="italic"/>	
+				 312-922-1115 x 8238"  width="667" height="67" top="570" color="#656565" fontSize="12" fontFamily="Arial" horizontalCenter="0"/>
+		<mx:Text text="This dashboard is optimized for FlashPlayer ver.11.7 or later;&#13;Recommended browsers are: IE 8.0 or later, Chrome 29.x, Firefox 23.x"  horizontalCenter="0" top="640" width="667" height="50" color="#656565" fontStyle="italic"/>	
 		
 		<controls:fileIO id="fdwn" visible="false"
 						 creationComplete="fdwn_creationCompleteHandler(event)" left="400" top="250" width="289"/>
@@ -1193,6 +1209,8 @@
 						   color="#656565" value="4"  click="fileDownRadio_clickHandler(event)" x="1"/>
 			<s:RadioButton groupName="fdown_radio" label="15 Focus Market Charts (PPT – 13 MB)" enabled="true" 
 						   color="#656565" value="5"  click="fileDownRadio_clickHandler(event)"/>
+			<s:RadioButton groupName="fdown_radio" label="Top Device Brands at Retail (via store visits) (XLS – 100 KB)" enabled="true" 
+						   color="#656565" value="6"  click="fileDownRadio_clickHandler(event)"/>
 		</s:BorderContainer>
 	</s:BorderContainer>
 

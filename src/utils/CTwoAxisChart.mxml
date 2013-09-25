@@ -159,7 +159,13 @@
 					vaxis1.baseAtZero = false;
 					vaxis2.baseAtZero = false;				
 					
-					if ( (tmp.indicatorID >= 157) && (tmp.indicatorID <= 170) && (this.isLevel) ) {
+					var z1:Boolean = false;
+					var z2:Boolean = false;
+						
+					z1 = ( (tmp.indicatorID >= 157) && (tmp.indicatorID <= 170) );
+					z2 = ( (tmp.indicatorID >= 204) && (tmp.indicatorID <= 205) );
+					
+					if ( ( z1 || z2) && (this.isLevel) ) {
 						scaleOfData = 100;						
 					} else {
 						scaleOfData = 1;						
@@ -274,7 +280,7 @@
 			
 			public function defineLabel(cat:Object, pcat:Object, ax:LinearAxis):String 
 			{
-				if (cat < 1000)				
+				if ( (this.scaleOfData * (Number)(cat)) < 1000 )				
 					return stilius3.format( this.scaleOfData * (Number)(cat) );
 				else
 					return stilius2.format( this.scaleOfData * (Number)(cat) );

@@ -50,7 +50,7 @@
 						break;
 					case 'E1':
 						i = 2;						
-						selTabIndex = 3;
+						selTabIndex = 1;
 						break;
 					case 'E2':
 						i = 3;

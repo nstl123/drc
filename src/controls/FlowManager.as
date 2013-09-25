@@ -309,7 +309,7 @@ package controls
 					activeIndi = 0;
 					break;				
 				case "E1": //batReplacement
-					pathFlags = [0, 0, 0, 0, 0, 1];
+					pathFlags = [0, 1, 0, 0, 0, 0];
 					activeIndi = 3;
 					break;	
 				case "E2": //pwrSplit

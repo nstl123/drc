@@ -605,7 +605,7 @@
 	</s:BorderContainer>
 	<s:CheckBox label="Total Devices" id="totDev" 
 				selected="false" change="totDev_changeHandler(event)" enabled="false" left.default="482" top.default="55" top.viewingOnly="40" left.viewingOnly="482"/>
-	<s:Label x="397" text="START -&gt;" width="68" height="16" visible="true" 
+	<s:Label x="397" text="START &gt;&gt;" width="68" height="16" visible="true" 
 			 verticalAlign="middle" textAlign="center" backgroundColor="#24C743" 
 			 chromeColor="#CCCCCC" fontFamily="Arial" color="#FFFFFF" fontWeight="bold" 
 			 fontSize="11" top.viewingOnly="20" top.default="35" id="startDevLabel"/>

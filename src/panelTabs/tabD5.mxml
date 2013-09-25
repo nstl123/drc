@@ -360,8 +360,13 @@
 			}
 
 			public function updateSelectedDeviceID():void {
-				this.selDevice = this.flMngr.getSelectedDeviceID();								
-				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);
+				if (this.flMngr) {
+					this.selDevice = this.flMngr.getSelectedDeviceID();								
+					this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);
+				} else {
+					this.selDevice = 0;
+					this.deviceListDrop.selectedIndex = 0;
+				};
 			}			
 			
 			public function deviceListDrop_changeHandler(event:IndexChangeEvent):void
@@ -585,7 +590,7 @@
 				   click="devicesActive_clickHandler(event)" />
 	<s:Label visible="false" text="Devices Aggeragtion Level" fontSize="11" fontStyle="italic" top="21" left="313" fontFamily="Arial" backgroundColor="#FFFFFF" 
 			 backgroundAlpha="1.0" chromeColor="#FFFFFF"  top.viewingOnly="6" left.viewingOnly="313" />
-	<s:Label x="397" text="START -&gt;" width="68" height="16" 
+	<s:Label x="397" text="START &gt;&gt;" width="68" height="16" 
 			 verticalAlign="middle" textAlign="center" backgroundColor="#24C743" 
 			 chromeColor="#CCCCCC" fontFamily="Arial" color="#FFFFFF" fontWeight="bold" 
 			 fontSize="11" top="35" id="startDevLabel" top.viewingOnly="20"/>

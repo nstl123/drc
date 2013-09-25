@@ -159,9 +159,14 @@
 			}
 			
 			public function updateSelectedDeviceID():void {
-				this.selDevice = this.flMngr.getSelectedDeviceID();								
-				this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);
-				this.handleHA();
+				if (this.flMngr) {
+					this.selDevice = this.flMngr.getSelectedDeviceID();								
+					this.deviceListDrop.selectedIndex = hlp.getIndexFromID(deviceNamesFullList.source, selDevice, 1);
+					this.handleHA();
+				} else {
+					this.selDevice = 0;
+					this.deviceListDrop.selectedIndex = 0;
+				};				
 			}	
 			
 			public function refreshData(evt:Event):void {
@@ -625,7 +630,7 @@
 					   click="pwrTypes_clickHandler(event)" fontSize="11" fontFamily="Arial" 
 					   top.viewingOnly="59" left.viewingOnly="319" x="-1" y="47"/>
 	</s:BorderContainer>
-	<s:Label x="320" text="START -&gt;" width="68" height="16" 
+	<s:Label x="320" text="START &gt;&gt;" width="68" height="16" 
 			 verticalAlign="middle" textAlign="center" backgroundColor="#24C743" 
 			 chromeColor="#CCCCCC" fontFamily="Arial" color="#FFFFFF" fontWeight="bold" 
 			 fontSize="11" top="35" id="startDevLabel"  top.viewingOnly="20" x.viewingOnly="333"/>

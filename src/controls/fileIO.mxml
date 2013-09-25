@@ -17,8 +17,8 @@
 			 * the current download in progress. */
 			private var btn:Button;
 			private var btnOK:Button;
-			//private var address:String = "192.168.44.200";
-			private var address:String = "213.197.173.50";
+			private var address:String = "192.168.44.200";
+			//private var address:String = "213.197.173.50";
 			private var fileID:int;
 			
 			public function init():void
@@ -42,8 +42,9 @@
 				"Final Data file.zip", 
 				"Executive Summary.pdf", 
 				"Executive Summary.pptx",
-				"15 Focus Market Charts.pdf",
-				"15 Focus Market Charts.pptx",				
+				"15 Focus Markets.pdf",
+				"15 Focus Markets.pptx",
+				"Top Device Brands at Retail (via Store Visits).xlsx",
 				"Tutorial.pdf");
 			public function startDownload(fileID:int):void
 			{

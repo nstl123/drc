@@ -76,7 +76,8 @@ class Depot1 {
 			SELECT * 
 			FROM `Consulting`.`DC_namesIndicators`
 				WHERE -- AND isOutputIndicator = 0 AND
-				hasTimeSeries = 1";
+				hasTimeSeries = 1
+			ORDER BY orderID;";
 		$result = $this->connection->fetchAll($stmnt);		
 		array_push($a, $result);		
 		return $result;

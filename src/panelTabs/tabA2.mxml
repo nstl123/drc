@@ -162,6 +162,8 @@
 				this.selectedIndi = this.indicatorsBox.selectedItem.id;			
 				this.flMngr.setSelBatType(0);
 				this.flMngr.setSelPwrType(0);
+				
+				this.isPop = (int)((this.selectedIndi >= 180)&&(this.selectedIndi<=185));
 				//this.dispatchEvent(new Event("refreshData", false));
 				this.refreshData(null);
 			}			
@@ -202,6 +204,7 @@
 				return f;
 			}	
 			
+			[bindable] public var isPop:int = 0; 
 			[bindable] public var alteredData:ArrayCollection = new ArrayCollection();
 			public function digestChanges(evt:Event):void {
 				//var tmp:int = 1 - int(this.growthType.selection.value);
@@ -223,7 +226,7 @@
 						this.flMngr.setStatusLabel("Updating Data...");
 						this.dispatchEvent(new Event("updateStatusLabel", true));
 						
-						this.updateData.token = this.dataServiceUpdate.updateData2(temp, int(false), 0, 0, yrs, val);						
+						this.updateData.token = this.dataServiceUpdate.updateData2(temp, int(false), 0, 0, yrs, val, this.isPop, workingScenarioID);						
 						this.dispatchEvent(new Event("changesMadeInScenario", true));
 					} else {
 						this.dispatchEvent(new Event("refreshData", false));
@@ -249,7 +252,8 @@
 
 			protected function updateData_faultHandler(event:FaultEvent):void
 			{
-				Alert.show("Data update error", "Error");
+				var z:String = event.message.body.toString();
+				Alert.show("Data update error: \r\n " + z, "Error");
 			}
 
 			[bindable] private var isSingleGeo:Boolean = true;

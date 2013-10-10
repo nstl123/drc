@@ -60,6 +60,12 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
         operation = new mx.rpc.remoting.Operation(null, "updateData");
          operation.resultType = Object;
         operations["updateData"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "writeViewToTablePop");
+         operation.resultType = Object;
+        operations["writeViewToTablePop"] = operation;
+        operation = new mx.rpc.remoting.Operation(null, "updateData2main");
+         operation.resultType = Object;
+        operations["updateData2main"] = operation;
 
         _serviceControl.operations = operations;
         _serviceControl.convertResultHandler = com.adobe.serializers.utility.TypeUtility.convertResultHandler;
@@ -197,10 +203,10 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
       *
       * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
       */
-    public function updateData2(data:Object, isDeviceBase:int, deviceID:int, typeID:int, startYear:int, shockValue:int) : mx.rpc.AsyncToken
+    public function updateData2(data:Object, isDeviceBase:int, deviceID:int, typeID:int, startYear:int, shockValue:Number, isPop:int, scenarioID:int) : mx.rpc.AsyncToken
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateData2");
-        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,isDeviceBase,deviceID,typeID,startYear,shockValue) ;
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,isDeviceBase,deviceID,typeID,startYear,shockValue,isPop,scenarioID) ;
 
         return _internal_token;
     }
@@ -258,6 +264,44 @@ internal class _Super_Depot31 extends com.adobe.fiber.services.wrapper.RemoteObj
     {
         var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateData");
         var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,deviceID,typeID) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'writeViewToTablePop' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function writeViewToTablePop(scenarioID:Object) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("writeViewToTablePop");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(scenarioID) ;
+
+        return _internal_token;
+    }
+     
+    /**
+      * This method is a generated wrapper used to call the 'updateData2main' operation. It returns an mx.rpc.AsyncToken whose 
+      * result property will be populated with the result of the operation when the server response is received. 
+      * To use this result from MXML code, define a CallResponder component and assign its token property to this method's return value. 
+      * You can then bind to CallResponder.lastResult or listen for the CallResponder.result or fault events.
+      *
+      * @see mx.rpc.AsyncToken
+      * @see mx.rpc.CallResponder 
+      *
+      * @return an mx.rpc.AsyncToken whose result property will be populated with the result of the operation when the server response is received.
+      */
+    public function updateData2main(data:Object, isDeviceBase:Object, deviceID:Object, typeID:Object, startYear:Object, shockValue:Object) : mx.rpc.AsyncToken
+    {
+        var _internal_operation:mx.rpc.AbstractOperation = _serviceControl.getOperation("updateData2main");
+        var _internal_token:mx.rpc.AsyncToken = _internal_operation.send(data,isDeviceBase,deviceID,typeID,startYear,shockValue) ;
 
         return _internal_token;
     }

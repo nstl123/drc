@@ -55,8 +55,7 @@ class Depot31 {
 
 	public function createNewWorkingScenario($scenarioID) {
 		$this -> deleteWorkingScenario($scenarioID);
-		$this -> insertWorkingScenario($scenarioID);
-		
+		$this -> insertWorkingScenario($scenarioID);		
 		
 		$a = array('a'=>"");
 		$stmnt = "SELECT count(*) as cnt FROM `Consulting`.`DC_scenarioNames` where id = ".$scenarioID.";";
@@ -68,7 +67,7 @@ class Depot31 {
 			$result->execute();	
 		};
 
-		return $stmnt;
+		//return $stmnt;
 		return true;
 	}
 	
@@ -233,11 +232,44 @@ class Depot31 {
 		//return $insStmnt;
 	}
 
+	public function writeViewToTablePop($scenarioID) {
+		$yrsField = "`Y2002`,`Y2003`,`Y2004`,`Y2005`, `Y2006`,`Y2007`,`Y2008`,`Y2009`,`Y2010`,`Y2011`,`Y2012`,`Y2013`,`Y2014`,
+					 `Y2015`,`Y2016`,`Y2017`,`Y2018`,`Y2019`,`Y2020`,`Y2021`";		
+		// clean table from old pop
+		$delStmnt1 = "DELETE FROM Consulting.DC_scenarioData WHERE scenarioID = ".$scenarioID." 
+						AND indicatorID IN (157,158,159,160,163,164,165,166,167,168,169,170);";
+		$result1 = $this->connection->prepare($delStmnt1);		
+		$result1->execute();	
+		// write from view to static table;
+		$insStmnt1 = "\r\n	INSERT INTO `Consulting`.`DC_scenarioData` \r\n (`scenarioID`,`countryID`, `indicatorID`,`deviceID`, ".$yrsField.")
+					SELECT `scenarioID`,`countryID`,`indicatorID`,`deviceID`, ".$yrsField."
+					FROM `Consulting`.`DC_scenarioDataNewPop` dnp
+					WHERE dnp.scenarioID = ".$scenarioID.";";	
+		$result2 = $this->connection->prepare($insStmnt1);		
+		$result2->execute();					
+		
+		return "ok"; // $insStmnt; // some error handling would be nice			
+	}
+
 	public function testFile($a) {
 		return $a;
 	}
 
-	public function updateData2($data, $isDeviceBase, $deviceID, $typeID, $startYear, $shockValue) { // id indicator hasSplit by batTypes
+	public function updateData2($data, $isDeviceBase, $deviceID, $typeID, $startYear, $shockValue, $isPop, $scenarioID) { 
+		// $isPop 0 for none, 1 for new population splits;
+		$rezSt = ""; $rezSt2 = "";
+		if ($isPop == 1) { 
+			// 1. update table scenarioData for newPop indicators
+			$rezSt  = $this -> updateData2main($data, $isDeviceBase, $deviceID, $typeID, $startYear, $shockValue);
+			// 2. write view to scenarioData to update oldPop indicators
+			$rezSt2 = $this -> writeViewToTablePop($scenarioID);
+		} else {
+			$rezSt  = $this -> updateData2main($data, $isDeviceBase, $deviceID, $typeID, $startYear, $shockValue);
+		};
+		return  $rezSt;	
+	}
+
+	public function updateData2main($data, $isDeviceBase, $deviceID, $typeID, $startYear, $shockValue) { // id indicator hasSplit by batTypes
 		$arr0 = (array)$data;
 		$arr = $arr0['data'];		
 		

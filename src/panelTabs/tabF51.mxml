@@ -296,10 +296,10 @@
 					
 					if (this.alteredData.length > 0) {					
 						if (this.selectedIndi == 277) {
-							this.updateData.token = this.dataServiceUpdate.updateData2(temp, 0, this.selDevice, tmpType, yrs, val);
+							this.updateData.token = this.dataServiceUpdate.updateData2(temp, 0, this.selDevice, tmpType, yrs, val, 0, this.workingScenarioID);
 						} else {				
 							//this.updateData.token = this.dataServiceUpdate.updateDataProxy(temp, this.selDevice, tmpType);
-							this.updateData.token = this.dataServiceUpdate.updateData2(temp, 0, this.selDevice, tmpType, yrs, val);
+							this.updateData.token = this.dataServiceUpdate.updateData2(temp, 0, this.selDevice, tmpType, yrs, val, 0, this.workingScenarioID);
 						};
 						this.dispatchEvent(new Event("changesMadeInScenario", true));
 					} else {

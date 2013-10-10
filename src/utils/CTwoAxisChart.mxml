@@ -162,7 +162,7 @@
 					var z1:Boolean = false;
 					var z2:Boolean = false;
 						
-					z1 = ( (tmp.indicatorID >= 157) && (tmp.indicatorID <= 170) );
+					z1 = ( (tmp.indicatorID >= 180) && (tmp.indicatorID <= 185) );
 					z2 = ( (tmp.indicatorID >= 204) && (tmp.indicatorID <= 205) );
 					
 					if ( ( z1 || z2) && (this.isLevel) ) {

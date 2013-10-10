@@ -78,7 +78,7 @@
 			
 			protected function application1_creationCompleteHandler(event:FlexEvent):void
 			{
-				this.currentState = "landingState";//"pswrd";
+				this.currentState = "landingState";//"pswrd"; "landingState"
 				hlp = new helper();		
 				this.addEventListener("downloadFinished", hidePlate);
 				//this.currentStateLabel.text = "Current State: " + this.currentState;				
@@ -1079,7 +1079,8 @@
 
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
-				if (this.pswdField.text == "A") {
+				//devicelandscape2013
+				if (this.pswdField.text == "devicelandscape2013") {
 					this.currentState = "landingState";
 				} else {
 					Alert.show("Incorrect Password", "Error");
@@ -1357,7 +1358,7 @@
 		<s:layout>
 			<s:BasicLayout/>
 		</s:layout>
-		<s:Label includeIn="pswrd" text="Enter Password:" horizontalCenter="0" top="10" width="150" verticalAlign="middle" textAlign="center"/>
+		<s:Label includeIn="pswrd" text="Please Enter Password:" horizontalCenter="0" top="10" width="150" verticalAlign="middle" textAlign="center"/>
 		<s:TextInput includeIn="pswrd" id="pswdField" displayAsPassword="true" horizontalCenter="0" top="25" width="150"/>
 		<s:Button includeIn="pswrd" label="OK" click="button2_clickHandler(event)" y="79" horizontalCenter="0"/>
 	</s:BorderContainer>

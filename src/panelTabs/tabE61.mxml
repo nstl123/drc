@@ -811,7 +811,7 @@
 	<s:DropDownList width="336" id="exoListDrop" labelField="namen" 
 					change="exoListDrop_changeHandler(event)" 
 					selectedIndex="0" height="20" top="314" enabled="true" 
-					fontFamily="Arial" fontSize="12" contentBackgroundAlpha="0.9"
+					fontFamily="Arial" fontSize="11" contentBackgroundAlpha="0.9"
 					borderVisible="false" left="50"/>
 	
 	<s:Button x="472" y="432" label="Update Chart" width="285" 

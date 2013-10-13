@@ -130,13 +130,18 @@
 			
 			public function createSeries(someData:ArrayCollection):void {
 				vaxis1 = new LinearAxis;
-				vaxis2 = new LinearAxis;		
+				//vaxis2 = new LinearAxis;		
 				
 				hAxis = new CategoryAxis();
 				mySeries.splice(0, mySeries.length);
 				var counter:int = 0;		
 				
-				for (var i:int = 0; i < someData.length; i++) {
+				var maxx:Number = 0;
+				var minn:Number = 0;
+				var changeAxisLimit:Boolean = false;			
+				
+				for (var i:int = 0; i < someData.length; i++) {				
+					
 					if (isLineSeries) series2 = new LineSeries();
 					else series2 = new ColumnSeries();
 					
@@ -157,7 +162,7 @@
 					
 					hAxis.dataProvider = someData.getItemAt(i);					
 					vaxis1.baseAtZero = false;
-					vaxis2.baseAtZero = false;				
+					//vaxis2.baseAtZero = false;				
 					
 					var z1:Boolean = false;
 					var z2:Boolean = false;
@@ -172,15 +177,27 @@
 					};
 					vaxis1.labelFunction = this.defineLabel;				
 					
+					changeAxisLimit = false;
 					if ( (indi >= 204) && (indi <= 207) ) {
-						var mx:Number = getMax(someData);
-						var mn:Number = getMin(someData);
-						var delta:Number = Math.max(mx - mn, 0.05);
-						this.vaxis1.maximum = mx  + (delta * 0.2);
-						this.vaxis1.minimum = Math.max(0, mn  - (delta * 0.2));
+						/*var mx:Number = getMax(someData.getItemAt(i));
+						var mn:Number = getMin(someData.getItemAt(i));						
+						if (maxx < mx) maxx = mx;
+						if (minn > mn) minn = mn;*/
+						changeAxisLimit = true;
+					} else {
+						this.vaxis1.autoAdjust = true;						
 					};											
 					mySeries.push(series2);
 				};	
+				
+				if ( (someData.length > 0)&& changeAxisLimit ) {
+					maxx = getMax(someData);
+					minn = getMin(someData);
+				
+					var delta:Number = Math.max(maxx - minn, 0.05);		
+					this.vaxis1.maximum = maxx  + (delta * 0.2);
+					this.vaxis1.minimum = Math.max(0, minn  - (delta * 0.2));
+				};
 				
 				hAxis.categoryField = "yrs";						
 				this.lineChart.horizontalAxis  = hAxis;				     
@@ -189,28 +206,32 @@
 				this.lineChart.showDataTips = true;
 				this.lineChart.dataTipFunction = tooltips_formater;			
 				
-				//this.lineChart.invalidateDisplayList();	
+				this.lineChart.invalidateDisplayList();	
 				//----- redrawing colors here				
 				this.redrawColors();							
 			}
 			
 			private function getMax(src:ArrayCollection):Number {
 				var tmp:Number;
-				var mx:Number = Number(src.getItemAt(0)[0].data);				
-				for (var h:uint = 0; h < src.getItemAt(0).length; h++) {
-					tmp = Number(src.getItemAt(0)[h].data);
-					if (tmp > mx) mx = tmp;
-				}				
+				var mx:Number = Number(src.getItemAt(0)[0].data);
+				for (var kk:int = 0; kk < src.length; kk++ ) {				
+					for (var h:uint = 0; h < src.getItemAt(kk).length; h++) {
+						tmp = Number(src.getItemAt(kk)[h].data);
+						if (tmp > mx) mx = tmp;
+					}				
+				}
 				return mx;
 			}
 			
 			private function getMin(src:ArrayCollection):Number {
 				var tmp:Number;
-				var mn:Number = Number(src.getItemAt(0)[0].data);				
-				for (var h:uint = 0; h < src.getItemAt(0).length; h++) {
-					tmp = Number(src.getItemAt(0)[h].data);
-					if (tmp < mn) mn = tmp;
-				}				
+				var mn:Number = Number(src.getItemAt(0)[0].data);
+				for (var kk:int = 0; kk < src.length; kk++ ) {
+					for (var h:uint = 0; h < src.getItemAt(kk).length; h++) {
+						tmp = Number(src.getItemAt(kk)[h].data);
+						if (tmp < mn) mn = tmp;
+					};
+				};		
 				return mn;
 			}
 			
@@ -313,12 +334,13 @@
 				var tx2:String = "";
 				var addTx:String = ": All Devices";
 				if ((selIndi >= 0) && (activityFlag)) 
-					tx1 = tx1 + ": "+ nm;
+					tx1 = tx1 + ( nm ? (": "+ nm) : "" );
 				else 
 					tx1 = tx1 + ( ((baseName.substr(0, 14) == "Battery demand")) ? addTx : "" );			
 				//tx1 = tx1 + defaultUnit;				
 				tx2 = tx2 + ( perHH ? ("per HH, ") : "");
-				tx2 = tx2 + ( isLv  ? defaultUnit : ("Growth (%)") );
+				var d:String = ( defaultUnit ? defaultUnit : "" );
+				tx2 = tx2 + ( isLv  ? d : ("Growth (%)") );
 				
 				this.chartTitle.text = tx1;
 				this.chartSubtitle.text = tx2;

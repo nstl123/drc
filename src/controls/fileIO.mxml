@@ -39,13 +39,13 @@
 			/** * Begin downloading the file specified in the DOWNLOAD_URL constant.*/
 			//1 - finalData; 2 - exwec summary; 3 - full del; 4 -tutorial
 			private var fileNames:Array = new Array(
-				"Final Data file.zip", 
-				"Executive Summary.pdf", 
-				"Executive Summary.pptx",
-				"15 Focus Markets.pdf",
-				"15 Focus Markets.pptx",
-				"Top Device Brands at Retail (via Store Visits).xlsx",
-				"Tutorial.pdf");
+				"Device & Battery Demand_Final Data file.zip", 
+				"Device & Battery Demand_Executive Summary.pdf", 
+				"Device & Battery Demand_Executive Summary.pptx",
+				"Device & Battery Demand_15 Focus Markets.pdf",
+				"Device & Battery Demand_15 Focus Markets.pptx",
+				"Device & Battery Demand_Top Device Brands at Retail (via Store Visits).xlsx",
+				"Device & Battery Demand_Tutorial.pdf");
 			public function startDownload(fileID:int):void
 			{
 				this.fileID = fileID;				
